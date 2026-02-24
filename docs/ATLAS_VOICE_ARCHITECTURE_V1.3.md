@@ -106,3 +106,7 @@ Proaktive Trigger zur Rollen-Umschaltung BEVOR Dissonanz entsteht.
   }
 }
 ```
+
+## Siehe auch
+- **Dev-Agent & Schnittstellen:** [DEV_AGENT_UND_SCHNITTSTELLEN.md](DEV_AGENT_UND_SCHNITTSTELLEN.md) (Modell, Abbrechen, Backup, OpenClaw).
+- **Backup-Plan:** [BACKUP_PLAN.md](BACKUP_PLAN.md).

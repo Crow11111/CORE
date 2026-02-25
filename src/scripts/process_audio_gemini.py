@@ -13,7 +13,7 @@ if not GEMINI_API_KEY:
     sys.exit(1)
 
 client = genai.Client(api_key=GEMINI_API_KEY)
-MODEL_NAME = "gemini-2.5-flash"
+MODEL_NAME = os.getenv("GEMINI_AUDIO_MODEL", "gemini-3.1-pro-preview")
 AUDIO_FILE = r"c:\ATLAS_CORE\media\REWE 2.m4a"
 OUTPUT_DIR = r"c:\ATLAS_CORE\docs\nd_insights_v4"
 

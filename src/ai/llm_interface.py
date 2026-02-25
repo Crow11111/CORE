@@ -29,7 +29,7 @@ class LLMInterface:
         gemini_api_key = os.getenv("GEMINI_API_KEY")
         if gemini_api_key:
             self.heavy_llm = ChatGoogleGenerativeAI(
-                model="gemini-2.5-flash", 
+                model=os.getenv("GEMINI_HEAVY_MODEL", "gemini-3.1-pro-preview"),
                 google_api_key=gemini_api_key,
                 temperature=0.7
             )

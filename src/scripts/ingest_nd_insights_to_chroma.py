@@ -1,24 +1,22 @@
 import os
-import chromadb
+import sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from loguru import logger
 
-# Paths & Setup
-INSIGHTS_DIR = r"c:\ATLAS_CORE\docs\nd_insights"
-DB_PATH = r"c:\ATLAS_CORE\data\chroma_db"
+from src.network.chroma_client import get_collection, COLLECTION_ARGOS, is_remote
+
+# Paths & Setup (Insights liegen lokal)
+_script_dir = os.path.dirname(os.path.abspath(__file__))
+_project_root = os.path.normpath(os.path.join(_script_dir, "..", ".."))
+INSIGHTS_DIR = os.path.join(_project_root, "docs", "nd_insights")
+if not os.path.exists(INSIGHTS_DIR):
+    INSIGHTS_DIR = r"c:\ATLAS_CORE\docs\nd_insights"
+
 
 def init_db():
-    if not os.path.exists(DB_PATH):
-        os.makedirs(DB_PATH)
-    logger.info(f"Verbinde zu ChromaDB auf Dreadnought (Pfad: {DB_PATH})...")
-    
-    # Init persistent client on Dreadnought (Windows Host)
-    client = chromadb.PersistentClient(path=DB_PATH)
-    
-    # Get or create the argos_knowledge_graph collection
-    collection = client.get_or_create_collection(
-        name="argos_knowledge_graph",
-        metadata={"description": "ATLAS_CORE Relational Knowledge Database for ND Insights"}
-    )
+    logger.info("Verbinde zu ChromaDB (lokal oder VPS laut .env)...")
+    collection = get_collection(COLLECTION_ARGOS, create_if_missing=True)
+    logger.info(f"Collection {COLLECTION_ARGOS} bereit (remote={is_remote()}).")
     return collection
 
 def ingest_document(collection, file_name, category):

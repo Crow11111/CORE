@@ -17,7 +17,7 @@ from dotenv import load_dotenv
 load_dotenv("c:/ATLAS_CORE/.env")
 
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-MODEL = "gemini-2.0-flash"
+MODEL = os.getenv("GEMINI_AUDIO_MODEL", "gemini-3.1-pro-preview")
 
 # ─── WhatsApp Media Decryption (Baileys-compatible) ─────────────────────────
 

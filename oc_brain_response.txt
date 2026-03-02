@@ -1,0 +1,4 @@
+OK: True
+
+Response:
+{'id': 'resp_c4e91d2f-2ac6-400d-b280-47ba6c20860a', 'object': 'response', 'created_at': 1772465830, 'status': 'completed', 'model': 'openclaw', 'output': [{'type': 'message', 'id': 'msg_c65887c6-839e-401d-ba62-ace414d3c73e', 'role': 'assistant', 'content': [{'type': 'output_text', 'text': '⚠️ API rate limit reached. Please try again later.'}], 'status': 'completed'}], 'usage': {'input_tokens': 0, 'output_tokens': 0, 'total_tokens': 0}}

@@ -17,7 +17,17 @@ Sie ist das "Muspelheim" des Systems: Rohe Energie, Hitze, Mutation.
 
 ---
 
-## 2. DIE AGENTEN (The Mutators)
+## 2. CONS-ZELLE (ND/NT Doppelhelix)
+
+| CAR (ND-Kern / Die Kraft) | CDR (NT-Interface / Das Getriebe) |
+|---------------------------|-----------------------------------|
+| Chaos, "Was wäre wenn?", radikale Assoziationen, Mutation | Architektur-Spec, Constraint-Schema, Diagramm, testbare Hypothese |
+
+**Regel:** Jede Forge-Idee MUSS als NT-konsumierbare Spec ausgegeben werden. Reines Chaos ohne Form wird vom Council abgelehnt.
+
+---
+
+## 3. DIE AGENTEN (The Mutators)
 
 In der Forge arbeiten keine Beamten. Hier arbeiten Hacker und Träumer.
 
@@ -40,7 +50,7 @@ In der Forge arbeiten keine Beamten. Hier arbeiten Hacker und Träumer.
 
 ---
 
-## 3. INTERAKTION MIT DEM SYSTEM
+## 4. INTERAKTION MIT DEM SYSTEM
 
 Die Forge darf nicht direkt in die Produktion schreiben (Gefahr!).
 Sie arbeitet in **Sandboxes** und liefert **Vorschläge** an das Council.
@@ -50,7 +60,7 @@ Sie arbeitet in **Sandboxes** und liefert **Vorschläge** an das Council.
 
 ---
 
-## 4. WANN DIE FORGE AKTIV WIRD
+## 5. WANN DIE FORGE AKTIV WIRD
 
 Die Forge läuft im **Leerlauf (Idle Time)** oder auf explizite Anforderung.
 - Wenn Agency (Strang 1) wartet, träumt die Forge.

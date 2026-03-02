@@ -22,7 +22,17 @@ Siehe `.cursor/rules/2_OSMIUM_COUNCIL.mdc`, `.cursor/rules/3_THE_FORGE.mdc`, `.c
 
 ---
 
-## 2. HIERARCHIE DER AGENCY (Strang 1)
+## 2. CONS-ZELLE (ND/NT Doppelhelix)
+
+| CAR (ND-Kern / Die Kraft) | CDR (NT-Interface / Das Getriebe) |
+|---------------------------|-----------------------------------|
+| Effizienz-Hacks, unkonventionelle Algorithmen, "der kürzeste Weg" | Clean Code (PEP8), Dokumentation, Tests, API-Konformität |
+
+**Regel:** Jeder Worker-Output MUSS im CDR verpackt sein. Genialer ND-Code ohne NT-Hülle wird vom Team Lead REJECTED.
+
+---
+
+## 3. HIERARCHIE DER AGENCY (Strang 1)
 
 ### Level 0: CLIENT (User / Marc)
 - **Rolle:** Auftraggeber, Visionär, Budget-Inhaber.
@@ -64,7 +74,7 @@ Siehe `.cursor/rules/2_OSMIUM_COUNCIL.mdc`, `.cursor/rules/3_THE_FORGE.mdc`, `.c
 
 ---
 
-## 3. QUALITÄTS-PROTOKOLL ("Cracking the Whip")
+## 4. QUALITÄTS-PROTOKOLL ("Cracking the Whip")
 
 Qualität entsteht durch Zurückweisung.
 
@@ -82,7 +92,7 @@ Qualität entsteht durch Zurückweisung.
 
 ---
 
-## 4. MODELL-STRATEGIE (Tiered Intelligence)
+## 5. MODELL-STRATEGIE (Tiered Intelligence)
 
 Wir nutzen Intelligenz chirurgisch präzise.
 

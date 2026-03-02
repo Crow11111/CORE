@@ -17,7 +17,17 @@ Ohne das Archiv würde ATLAS an Datenmüll ersticken (Entropie-Kollaps).
 
 ---
 
-## 2. DIE AGENTEN (The Keepers)
+## 2. CONS-ZELLE (ND/NT Doppelhelix)
+
+| CAR (ND-Kern / Die Kraft) | CDR (NT-Interface / Das Getriebe) |
+|---------------------------|-----------------------------------|
+| Assoziative Vektor-Cluster, semantische Muster, "Deja-vu-Erkennung" | SQL-Indizes, strukturierte API-Responses, JSON-Schema |
+
+**Regel:** Jede Archiv-Antwort MUSS strukturiert und querybar sein (CDR). Die ND-Tiefe (assoziative Verbindungen) bleibt intern als Embedding-Logik.
+
+---
+
+## 3. DIE AGENTEN (The Keepers)
 
 Hier arbeiten Bibliothekare und Bestatter.
 
@@ -41,7 +51,7 @@ Hier arbeiten Bibliothekare und Bestatter.
 
 ---
 
-## 3. INTERAKTION MIT DEM SYSTEM
+## 4. INTERAKTION MIT DEM SYSTEM
 
 Das Archiv ist der **Hintergrund-Prozess**.
 Es interagiert selten direkt mit dem User, aber es stellt sicher, dass Agency und Council auf sauberem Boden stehen.
@@ -52,7 +62,7 @@ Es interagiert selten direkt mit dem User, aber es stellt sicher, dass Agency un
 
 ---
 
-## 4. TOKEN-PRIORITÄT
+## 5. TOKEN-PRIORITÄT
 
 **Priorität 3 (Background Job).**
 Wichtiger als Forge (Träumen), aber weniger wichtig als Agency (Handeln) oder Council (Sicherheit).

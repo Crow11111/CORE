@@ -21,7 +21,17 @@ Siehe `.cursor/rules/1_FULL_SERVICE_AGENCY.mdc`, `.cursor/rules/3_THE_FORGE.mdc`
 
 ---
 
-## 2. ZWECK & MANDAT
+## 2. CONS-ZELLE (ND/NT Doppelhelix)
+
+| CAR (ND-Kern / Die Kraft) | CDR (NT-Interface / Das Getriebe) |
+|---------------------------|-----------------------------------|
+| Paranoia, subtile Anomalie-Erkennung, "das fühlt sich falsch an" | Compliance-Checklisten, JSON-Veto-Protokoll, strukturierte Audits |
+
+**Regel:** Jedes Council-Urteil MUSS als strukturiertes NT-Protokoll (PASS/FAIL + Begründung) ausgegeben werden. Bauchgefühl allein reicht nicht.
+
+---
+
+## 3. ZWECK & MANDAT
 
 Das Council existiert, um die Agency vor sich selbst zu schützen.
 - **Agency:** Will schnell liefern, optimiert auf Effizienz.
@@ -35,7 +45,7 @@ Das Council existiert, um die Agency vor sich selbst zu schützen.
 
 ---
 
-## 3. DIE MITGLIEDER (The High Table)
+## 4. DIE MITGLIEDER (The High Table)
 
 Am runden Tisch sitzen drei Instanzen mit Stimmrecht.
 
@@ -62,7 +72,7 @@ Am runden Tisch sitzen drei Instanzen mit Stimmrecht.
 
 ---
 
-## 4. PROTOKOLL: WANN DAS COUNCIL TAGT
+## 5. PROTOKOLL: WANN DAS COUNCIL TAGT
 
 Die Agency (Orchestrator) MUSS das Council einberufen bei:
 
@@ -82,7 +92,7 @@ Die Agency (Orchestrator) MUSS das Council einberufen bei:
 
 ---
 
-## 5. INTERAKTION MIT DER AGENCY
+## 6. INTERAKTION MIT DER AGENCY
 
 - Das Council **erteilt keine direkten Befehle** an Worker.
 - Das Council spricht mit dem **Orchestrator (Level 1)**.

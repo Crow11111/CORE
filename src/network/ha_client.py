@@ -24,7 +24,7 @@ class HAClient:
             "body": {"text": text}  # ← WhatsApp add-on expects nested body: {text: str}
         }
         try:
-            r = requests.post(url, headers=self.headers, json=payload, timeout=5, verify=False)
+            r = requests.post(url, headers=self.headers, json=payload, timeout=15, verify=False)
             r.raise_for_status()
             logger.info("WhatsApp Nachricht via HA gesendet an {}", to_number)
             return True
@@ -60,7 +60,7 @@ class HAClient:
                 "clientId": "default",
                 "to": to_number,
                 "body": {"audio": {"url": audio_url}, "ptt": True}
-            }, timeout=15, verify=False)
+            }, timeout=30, verify=False)
             r.raise_for_status()
             logger.info("WhatsApp Audio via HA gesendet an {}", to_number)
             return True

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Request, BackgroundTasks
+from fastapi.responses import JSONResponse
 from loguru import logger
 from src.network.ha_client import HAClient
 from src.ai.whatsapp_audio_processor import process_whatsapp_audio
@@ -11,6 +12,9 @@ load_dotenv("c:/ATLAS_CORE/.env")
 
 router = APIRouter(prefix="/webhook", tags=["webhooks"])
 ha_client = HAClient()
+
+# Sofort-Antwort an HA, damit rest_command (Default-Timeout 10s) nicht abbricht
+ACCEPTED_MSG = "[Scout] Nachricht erhalten, verarbeite …"
 
 
 @router.post("/whatsapp")
@@ -104,24 +108,36 @@ async def receive_whatsapp(request: Request, background_tasks: BackgroundTasks):
         if t.lower().startswith("@atlas"):
             t = t[6:].strip() or t
         logger.success(f"💬 Textnachricht von {sender}: {text}")
-        
-        # Triage → Command oder Reasoning (gleiche Pipeline wie ha_action)
+
+        # Triage → Command (schnell) oder Reasoning/Chat (LLM kann 30s+ dauern → Background)
         triage = atlas_llm.run_triage(t)
-        
+
         if triage.intent == "command":
-            # Steuerbefehl (HA) → [Scout]: kleines Modell / direkte Bestätigung
+            # Steuerbefehl (HA) → [Scout]: inline, typisch < 5s
             domain = triage.target_entity.split(".")[0] if "." in triage.target_entity else "homeassistant"
             service = triage.action or "turn_on"
             success = ha_client.call_service(domain=domain, service=service, entity_id=triage.target_entity)
             reply = f"[Scout] ✅ {service} → {triage.target_entity}" if success else f"[Scout] ❌ Fehler: {service} → {triage.target_entity}"
-        elif triage.intent in ["deep_reasoning", "chat"]:
-            # Schwere KI (Dreadnought) → [ATLAS]
-            sys_prompt = "Du bist ATLAS, ein intelligenter Assistent. Antworte präzise und knapp auf WhatsApp."
-            reply = atlas_llm.invoke_heavy_reasoning(sys_prompt, t)
-            reply = f"[ATLAS] {reply}" if reply else "[ATLAS] (keine Antwort)"
-        else:
-            reply = f"[Scout] Nicht verstanden: '{t}'"
-        
+            ha_client.send_whatsapp(to_number=sender, text=reply)
+            return {"status": "text_handled", "sender": sender, "intent": triage.intent}
+
+        if triage.intent in ["deep_reasoning", "chat"]:
+            # Schwere KI: HA rest_command hat nur ~10s Default-Timeout → sofort 202, Antwort im Hintergrund
+            ha_client.send_whatsapp(to_number=sender, text=ACCEPTED_MSG)
+
+            def run_heavy_and_reply():
+                sys_prompt = "Du bist ATLAS, ein intelligenter Assistent. Antworte präzise und knapp auf WhatsApp."
+                reply = atlas_llm.invoke_heavy_reasoning(sys_prompt, t)
+                reply = f"[ATLAS] {reply}" if reply else "[ATLAS] (keine Antwort)"
+                ha_client.send_whatsapp(to_number=sender, text=reply)
+
+            background_tasks.add_task(run_heavy_and_reply)
+            return JSONResponse(
+                status_code=202,
+                content={"status": "text_queued", "sender": sender, "intent": triage.intent},
+            )
+
+        reply = f"[Scout] Nicht verstanden: '{t}'"
         ha_client.send_whatsapp(to_number=sender, text=reply)
         return {"status": "text_handled", "sender": sender, "intent": triage.intent}
 

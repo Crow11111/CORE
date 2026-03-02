@@ -2,6 +2,8 @@
 
 Damit der komplette Weg **Nachricht → HA → ATLAS → Antwort im Chat** funktioniert, müssen in HA zwei Dinge stehen: **rest_command** (ruft ATLAS auf) und **Automation** (reagiert auf das WhatsApp-Event).
 
+**Ablauf:** Du startest ATLAS **einmal** (z.B. mit `START_ATLAS_KOMPLETT.bat` beim Anmelden oder Tagesstart). Ab dann triggert **die eingehende @Atlas-Nachricht** die Kette – nicht du vor jeder WhatsApp. Optional: Autostart (siehe [WIEDER_DA_ALLES_LAEUFT.md](../05_AUDIT_PLANNING/WIEDER_DA_ALLES_LAEUFT.md) Abschnitt 6), dann ist ATLAS bereit sobald der Rechner läuft.
+
 ---
 
 ## 1. rest_command in HA
@@ -15,9 +17,11 @@ rest_command:
     method: POST
     content_type: "application/json"
     payload: '{{ payload | tojson }}'
+    timeout: 15
 ```
 
 - **DEINE_ATLAS_IP** durch die IP des Rechners ersetzen, auf dem die ATLAS-CORE-API läuft (z. B. Dreadnought), oder die des Scouts, falls ATLAS dort läuft.
+- **timeout: 15** (Sekunden): ATLAS antwortet bei Chat/Reasoning sofort mit HTTP 202; 15s reichen. Ohne Angabe nutzt HA 10s – ausreichend, da keine lange Wartezeit mehr im Request.
 - Der Aufruf übergibt den Schlüssel **payload**; der Wert (Addon-Event-Daten) wird als JSON an ATLAS gesendet.
 
 Falls du eine Konfiguration über die UI nutzt: Der REST-Befehl soll **POST** an `http://ATLAS_IP:8000/webhook/whatsapp` senden, Body = JSON aus dem übergebenen **payload**.
@@ -92,4 +96,24 @@ Implementierung: `src/api/routes/whatsapp_webhook.py` setzt den Präfix je nach 
 
 ## 6. Abgrenzung zu OpenClaw (OC)
 
-OC (OpenClaw) hat einen **eigenen** WhatsApp-Kanal (Gateway mit Baileys auf dem VPS). Das ist ein **zweiter** Weg, unabhängig von HA. Der **HA-E2E** betrifft nur den Pfad über deinen Account + Addon + ATLAS. Siehe [WHATSAPP_OPENCLAW_VS_HA.md](WHATSAPP_OPENCLAW_VS_HA.md).
+OC (OpenClaw) hat einen **eigenen** WhatsApp-Kanal (Gateway mit Baileys auf dem VPS). Das ist ein **zweiter** Weg, unabhängig von HA. Der **HA-E2E** betrifft nur den Pfad über deinen Account + Addon + ATLAS. Siehe [WHATSAPP_OPENCLAW_VS_HA.md](../02_ARCHITECTURE/WHATSAPP_OPENCLAW_VS_HA.md).
+
+---
+
+## 7. Troubleshooting (Hänger / Timeout / „dreht minutenlang“)
+
+| Symptom | Ursache | Maßnahme |
+|--------|---------|---------|
+| Verbindung dreht minutenlang, bricht ab, danach wieder „warten“ | HA **rest_command** wartet auf ATLAS-Antwort; Default-Timeout 10s. Früher: ATLAS führte LLM (30s+) synchron aus → HA brach ab. | ATLAS antwortet bei Chat/Reasoning sofort mit **HTTP 202** und verarbeitet im Hintergrund. rest_command mit `timeout: 15` reicht. Doku oben prüfen. |
+| Keine Antwort im Chat | ATLAS-API von HA aus nicht erreichbar (Netz/Firewall, falsche IP). | `url` in rest_command prüfen (http://ATLAS_IP:8000). Von HA-Host aus: `curl -X POST http://ATLAS_IP:8000/webhook/whatsapp -H "Content-Type: application/json" -d '{}'` → erwartet 200/202 oder JSON. |
+| 4xx von ATLAS | Falsches Payload-Format (z. B. fehlendes `message`/`key.remoteJid`). | Automation muss `payload: "{{ trigger.event.data }}"` übergeben. Addon-Event-Struktur in HA unter Entwicklerwerkzeuge → Ereignisse prüfen. |
+| WhatsApp-Nachricht geht nicht raus (ATLAS → HA) | HA-Service `whatsapp/send_message` nicht erreichbar oder Timeout. | HASS_URL/HASS_TOKEN in .env. ATLAS nutzt 15s Timeout für send_whatsapp. HA-Logs und Addon-Status prüfen. |
+
+**E2E-Test (schnell prüfbar):**
+
+```bash
+cd C:\ATLAS_CORE
+python -m src.scripts.run_whatsapp_e2e_ha
+```
+
+Erwartung: Exit 0, in den ATLAS-Logs „WhatsApp Webhook“ bzw. „text_handled“/„text_queued“, und eine Antwort im Chat (z. B. „[Scout] …“ oder „[ATLAS] …“).

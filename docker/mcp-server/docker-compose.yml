@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  mcp-server:
+    build: .
+    container_name: mcp-server
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    volumes:
+      - /opt/atlas-core/workspace:/workspace
+    networks:
+      - atlas_net
+
+networks:
+  atlas_net:
+    external: true

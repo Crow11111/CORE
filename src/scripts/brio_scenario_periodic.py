@@ -50,7 +50,7 @@ def run_one_cycle() -> dict:
         logger.error("Kamera nicht konfiguriert (GO2RTC_* oder CAMERA_SNAPSHOT_URL).")
         return {"ok": False, "error": "camera_not_configured"}
 
-    ok, data = get_snapshot(timeout=15.0)
+    ok, data, _ = get_snapshot(timeout=15.0)
     if not ok or not isinstance(data, bytes):
         logger.warning(f"Snapshot fehlgeschlagen: {data}")
         return {"ok": False, "error": str(data), "ts": datetime.now(timezone.utc).isoformat()}
@@ -67,7 +67,7 @@ def run_one_cycle() -> dict:
         extra_frames = []
         for i in range(MAX_EXTRA_FRAMES):
             time.sleep(2)
-            ok2, data2 = get_snapshot(timeout=15.0)
+            ok2, data2, _ = get_snapshot(timeout=15.0)
             if ok2 and isinstance(data2, bytes):
                 p = save_image(data2, f"brio_extra_{i+1}")
                 extra_frames.append(data2)

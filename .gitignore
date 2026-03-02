@@ -3,6 +3,8 @@
 
 # === SECRETS (NIEMALS committen) ===
 .env
+*.mth
+.secrets.mth
 *.pem
 *.key
 

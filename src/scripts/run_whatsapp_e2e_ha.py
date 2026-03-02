@@ -73,20 +73,23 @@ def main():
     print("  Rufe HA-Service auf …")
 
     try:
-        r = requests.post(url, headers=headers, json=service_data, timeout=30, verify=False)
+        r = requests.post(url, headers=headers, json=service_data, timeout=45, verify=False)
         print(f"  HA Response Status: {r.status_code}")
         if r.text:
             print(f"  HA Response: {r.text[:400]}")
-        if r.status_code in (200, 201):
-            print("  OK – rest_command ausgeführt. Prüfe: ATLAS-Log und ob eine Antwort im WhatsApp-Chat ankommt.")
+        if r.status_code in (200, 201, 202):
+            print("  OK – rest_command ausgeführt. Prüfe: ATLAS-Log und ob eine Antwort im WhatsApp-Chat ankommt (ggf. 202 = Verarbeitung im Hintergrund).")
             return 0
-        print("  FEHLER – rest_command nicht erfolgreich. Prüfe: rest_command in HA konfiguriert? ATLAS-API erreichbar?")
+        print(f"  FEHLER – rest_command lieferte {r.status_code}. Prüfe: rest_command in HA (url, timeout), ATLAS-API von HA aus erreichbar?")
+        return 1
+    except requests.exceptions.Timeout:
+        print("  FEHLER – Timeout (45s). HA oder ATLAS antwortet nicht. ATLAS-URL in rest_command prüfen, ATLAS-API läuft?")
         return 1
     except requests.exceptions.ConnectionError as e:
-        print(f"  Verbindungsfehler zu HA: {e}")
+        print(f"  FEHLER – Verbindung zu HA: {e}. HASS_URL in .env prüfen.")
         return 1
     except Exception as e:
-        print(f"  Fehler: {e}")
+        print(f"  FEHLER: {e}")
         return 1
 
 

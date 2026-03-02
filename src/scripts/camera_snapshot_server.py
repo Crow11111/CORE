@@ -30,7 +30,7 @@ if not FFMPEG_PATH.is_file():
     FFMPEG_PATH = FFMPEG_EXE
 
 
-def capture_one_frame() -> tuple[bool, bytes | str]:
+def _capture_with_device(device_name: str) -> tuple[bool, bytes | str]:
     """Ein Einzelbild von der Webcam holen (FFmpeg dshow, -vframes 1)."""
     cmd = [
         str(FFMPEG_PATH),
@@ -38,7 +38,7 @@ def capture_one_frame() -> tuple[bool, bytes | str]:
         "-f", "dshow",
         "-video_size", CAMERA_VIDEO_SIZE,
         "-vframes", "1",
-        "-i", f'video="{CAMERA_DEVICE_NAME}"',
+        "-i", f'video="{device_name}"',
         "-f", "image2",
         "-c:v", "mjpeg",
         "pipe:1",
@@ -48,7 +48,7 @@ def capture_one_frame() -> tuple[bool, bytes | str]:
             cmd,
             capture_output=True,
             timeout=15,
-            cwd=str(FFMPEG_DIR) if (PROJECT_ROOT / "driver" / "go2rtc_win64" / FFMPEG_EXE).is_file() else None,
+            cwd=str(FFMPEG_DIR) if (FFMPEG_DIR / FFMPEG_EXE).is_file() else None,
         )
         if result.returncode != 0:
             err = (result.stderr or b"").decode("utf-8", errors="replace").strip()
@@ -63,6 +63,21 @@ def capture_one_frame() -> tuple[bool, bytes | str]:
         return False, f"FFmpeg nicht gefunden: {FFMPEG_PATH}"
     except Exception as e:
         return False, str(e)
+
+
+def capture_one_frame() -> tuple[bool, bytes | str]:
+    """Einzelbild von MX/Brio – versucht CAMERA_DEVICE_NAME, dann Fallback 'Logi Capture' / 'Logitech BRIO'."""
+    ok, out = _capture_with_device(CAMERA_DEVICE_NAME)
+    if ok:
+        return True, out
+    # Fallback: Windows zeigt Brio oft als "Logi Capture" (Logitech Capture)
+    for fallback in ("Logi Capture", "Logitech BRIO"):
+        if fallback == CAMERA_DEVICE_NAME:
+            continue
+        ok, out = _capture_with_device(fallback)
+        if ok:
+            return True, out
+    return False, out if isinstance(out, str) else "Keine Webcam gefunden"
 
 
 class SnapshotHandler(BaseHTTPRequestHandler):

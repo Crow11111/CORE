@@ -29,7 +29,9 @@ KEY_PATH = os.getenv("VPS_SSH_KEY", "").strip()
 PORT = int(os.getenv("VPS_SSH_PORT", "22"))
 TOKEN = (os.getenv("OPENCLAW_GATEWAY_TOKEN", "") or "").strip().strip('"')
 
-CONFIG_PATH_HOST = "/var/lib/openclaw/openclaw.json"
+# Am Admin-VPS (deploy_vps_full_stack): Config unter /opt/atlas-core/openclaw-admin/data/
+CONFIG_PATH_HOST = os.getenv("OPENCLAW_CONFIG_PATH", "").strip() or "/var/lib/openclaw/openclaw.json"
+CONFIG_PATH_FULLSTACK = "/opt/atlas-core/openclaw-admin/data/openclaw.json"
 
 
 def _run(ssh: paramiko.SSHClient, cmd: str) -> tuple[int, str, str]:
@@ -62,9 +64,34 @@ def _fix_empty_arrays(cfg: dict) -> None:
         s["allowBundled"] = [x for x in s["allowBundled"] if x != ""] or []
 
 
-# Gemini als Standardmodell für OC (main-Agent)
+# Gemini als Standardmodell für OC (main-Agent). primary/defaults.model.primary = Modell-ID (provider/id), nicht Alias.
 GEMINI_MODEL_ID = "google/gemini-3.1-pro-preview"
-GEMINI_ALIAS = "Gemini 3.1 Pro"
+
+# Vollständige Modelllisten (Schema: models.providers.<provider>.models = Array von {id, name})
+GOOGLE_MODELS = [
+    {"id": "gemini-3.1-pro-preview", "name": "Gemini 3.1 Pro"},
+    {"id": "gemini-3-pro-preview", "name": "Gemini 3 Pro"},
+    {"id": "gemini-2.5-pro", "name": "Gemini 2.5 Pro"},
+    {"id": "gemini-3.1-flash-preview", "name": "Gemini 3.1 Flash"},
+    {"id": "gemini-3-flash-preview", "name": "Gemini 3 Flash"},
+    {"id": "deep-research-pro-preview-12-2025", "name": "Gemini Deep Research"},
+]
+ANTHROPIC_MODELS = [
+    {"id": "claude-opus-4-6", "name": "Claude Opus 4.6"},
+    {"id": "claude-opus-4-5", "name": "Claude Opus 4.5"},
+    {"id": "claude-sonnet-4-6", "name": "Claude Sonnet 4.6"},
+    {"id": "claude-sonnet-4-5", "name": "Claude Sonnet 4.5"},
+]
+
+
+def _defaults_models_catalog() -> dict:
+    """agents.defaults.models: Key = provider/model-id, Value = {alias}. Alle konfigurierten Modelle für UI-Auswahl."""
+    out = {}
+    for m in GOOGLE_MODELS:
+        out["google/" + m["id"]] = {"alias": m["name"]}
+    for m in ANTHROPIC_MODELS:
+        out["anthropic/" + m["id"]] = {"alias": m["name"]}
+    return out
 
 
 def _ensure_agents(cfg: dict) -> None:
@@ -91,14 +118,19 @@ def _ensure_agents(cfg: dict) -> None:
     if "defaults" not in agents:
         agents["defaults"] = {}
     defaults = agents["defaults"]
+    if not isinstance(defaults.get("workspace"), str) or not defaults.get("workspace"):
+        defaults["workspace"] = "/home/node/.openclaw/workspace"
     if not isinstance(defaults.get("model"), dict):
         defaults["model"] = {}
-    # primary nur setzen wenn noch nicht gesetzt
-    if not defaults["model"].get("primary"):
-        defaults["model"]["primary"] = GEMINI_ALIAS
+    # primary = Modell-ID (provider/id), nicht Alias – Schema: "Primary model ID to use"
+    primary = defaults["model"].get("primary")
+    if not primary or "/" not in str(primary):
+        defaults["model"]["primary"] = GEMINI_MODEL_ID
+    # defaults.models: alle konfigurierten Modelle mit Alias, damit UI alle anzeigen kann
     if "models" not in defaults or not isinstance(defaults["models"], dict):
         defaults["models"] = {}
-    defaults["models"][GEMINI_MODEL_ID] = {"alias": GEMINI_ALIAS}
+    for mid, entry in _defaults_models_catalog().items():
+        defaults["models"][mid] = entry
 
 
 def main() -> int:
@@ -118,8 +150,18 @@ def main() -> int:
         print(f"SSH-Fehler: {e}")
         return 1
 
-    # Config lesen (Host oder aus Container)
-    code, raw, _ = _run(ssh, f"cat {CONFIG_PATH_HOST} 2>/dev/null || echo ''")
+    # Config lesen: Host (priorisiere Full-Stack-Pfad wenn vorhanden) oder aus Container
+    write_path = CONFIG_PATH_HOST
+    read_path = CONFIG_PATH_HOST
+    if CONFIG_PATH_HOST == "/var/lib/openclaw/openclaw.json":
+        c_check, out_check, _ = _run(ssh, f"cat {CONFIG_PATH_FULLSTACK} 2>/dev/null || echo ''")
+        if out_check and out_check.strip() and out_check.strip() != "{}":
+            read_path = write_path = CONFIG_PATH_FULLSTACK
+            raw = out_check
+        else:
+            raw = ""
+    if not raw or raw.strip() in ("", "{}"):
+        code, raw, _ = _run(ssh, f"cat {read_path} 2>/dev/null || echo ''")
     if not raw or raw.strip() in ("", "{}"):
         code2, out, _ = _run(ssh, "docker ps --format '{{.Names}}' 2>/dev/null | grep -iE 'openclaw|hvps' | head -1")
         if out.strip():
@@ -127,6 +169,7 @@ def main() -> int:
             code, raw, _ = _run(ssh, f"docker exec {container} cat /home/node/.openclaw/openclaw.json 2>/dev/null || echo ''")
             if raw:
                 print(f"Config aus Container {container} gelesen.")
+                write_path = CONFIG_PATH_FULLSTACK
 
     if not (raw and raw.strip()):
         print("FEHLER: openclaw.json weder auf Host noch im Container lesbar.")
@@ -140,6 +183,28 @@ def main() -> int:
         ssh.close()
         return 1
 
+    # 0) Platzhalter durch echte Env-Werte ersetzen (invalid config wegen REDACTED/$VAR vermeiden)
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip().strip('"')
+    ANTHROPIC_KEY = os.getenv("ANTHROPIC_API_KEY", "").strip().strip('"')
+    for key in ("apiKey", "token"):
+        for provider_key in ("google", "anthropic"):
+            p = (cfg.get("models") or {}).get("providers") or {}
+            if provider_key in p and isinstance(p[provider_key], dict):
+                val = p[provider_key].get(key)
+                if isinstance(val, str) and ("REDACTED" in val or val.strip().startswith("$")):
+                    if provider_key == "google" and GEMINI_API_KEY:
+                        p[provider_key][key] = GEMINI_API_KEY
+                        print(f"  Platzhalter in models.providers.{provider_key}.{key} durch .env ersetzt.")
+                    elif provider_key == "anthropic" and ANTHROPIC_KEY:
+                        p[provider_key][key] = ANTHROPIC_KEY
+                        print(f"  Platzhalter in models.providers.{provider_key}.{key} durch .env ersetzt.")
+    if cfg.get("gateway") and TOKEN:
+        for section in ("auth", "remote"):
+            g = cfg["gateway"].get(section)
+            if isinstance(g, dict) and g.get("token") and ("REDACTED" in str(g.get("token")) or str(g.get("token")).strip().startswith("$")):
+                cfg["gateway"][section]["token"] = TOKEN
+                print(f"  Platzhalter in gateway.{section}.token durch .env ersetzt.")
+
     # 1) imageModel entfernen → Schema-Warnung "Unsupported schema node" (Image Model) weg
     _remove_image_model(cfg)
     print("  imageModel entfernt (Schema-Warnung behoben).")
@@ -152,19 +217,34 @@ def main() -> int:
     _ensure_agents(cfg)
     print("  agents.list und agents.defaults gesetzt.")
 
-    # Provider Google hinzufügen
-    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip().strip('"')
+    # Provider Google hinzufügen (baseUrl + models nicht überschreiben falls vorhanden)
     if GEMINI_API_KEY:
         if "models" not in cfg:
             cfg["models"] = {}
         if "providers" not in cfg["models"]:
             cfg["models"]["providers"] = {}
-        cfg["models"]["providers"]["google"] = {
-            "apiKey": GEMINI_API_KEY
-        }
-        print("  Provider 'google' mit GEMINI_API_KEY hinzugefügt.")
+        g = cfg["models"]["providers"].setdefault("google", {})
+        g["apiKey"] = GEMINI_API_KEY
+        g.setdefault("baseUrl", "https://generativelanguage.googleapis.com/v1beta/")
+        if "models" not in g or not g["models"]:
+            g["models"] = list(GOOGLE_MODELS)
+        print("  Provider 'google' mit GEMINI_API_KEY und Modellliste gesetzt.")
     else:
         print("  WARNUNG: GEMINI_API_KEY nicht in .env gefunden. Provider 'google' konnte nicht gesetzt werden.")
+
+    # Provider Anthropic (Key aus .env, Modellliste falls fehlend)
+    if ANTHROPIC_KEY:
+        if "models" not in cfg:
+            cfg["models"] = {}
+        if "providers" not in cfg["models"]:
+            cfg["models"]["providers"] = {}
+        a = cfg["models"]["providers"].setdefault("anthropic", {})
+        a["apiKey"] = ANTHROPIC_KEY
+        a.setdefault("baseUrl", "https://api.anthropic.com/v1")
+        a.setdefault("api", "anthropic-messages")
+        if "models" not in a or not a["models"]:
+            a["models"] = list(ANTHROPIC_MODELS)
+        print("  Provider 'anthropic' mit ANTHROPIC_API_KEY und Modellliste gesetzt.")
 
     # 4) Gateway: Token und Endpoints (Chat/UI verbindet sich mit Gateway)
     if "gateway" not in cfg:
@@ -194,10 +274,11 @@ def main() -> int:
     b64 = __import__("base64").standard_b64encode(merged.encode("utf-8")).decode("ascii")
 
     # Auf Host schreiben (Container liest gemountete Datei)
-    _run(ssh, f"mkdir -p /var/lib/openclaw")
-    _run(ssh, f"echo '{b64}' | base64 -d > {CONFIG_PATH_HOST} && chmod 644 {CONFIG_PATH_HOST}")
-    _run(ssh, "chown -R 1000:1000 /var/lib/openclaw 2>/dev/null || true")
-    print(f"  Config nach {CONFIG_PATH_HOST} geschrieben.")
+    dir_oc = os.path.dirname(write_path)
+    _run(ssh, f"mkdir -p {dir_oc}")
+    _run(ssh, f"echo '{b64}' | base64 -d > {write_path} && chmod 644 {write_path}")
+    _run(ssh, f"chown -R 1000:1000 {dir_oc} 2>/dev/null || true")
+    print(f"  Config nach {write_path} geschrieben.")
 
     # Session-Locks entfernen, dann Container neu starten
     code, out, _ = _run(ssh, "docker ps --format '{{.Names}}' 2>/dev/null | grep -iE 'openclaw|hvps' || true")

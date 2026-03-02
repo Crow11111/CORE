@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  scout:
+    build:
+      context: ../../
+      dockerfile: docker/scout/Dockerfile
+    container_name: atlas_scout
+    restart: unless-stopped
+    network_mode: host  # Wichtig für mDNS/Chromecast Discovery & Sensor Zugriff
+    environment:
+      - TZ=Europe/Berlin
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - SCOUT_IP=${SCOUT_IP}
+      - VPS_ENDPOINT=${VPS_ENDPOINT}
+    volumes:
+      - ../../src:/app/src  # Development Mount (optional, remove in prod for cleaner image)
+      - /dev/bus/usb:/dev/bus/usb # Für Coral TPU Zugriff
+    privileged: true # Für Hardware-Zugriff oft nötig

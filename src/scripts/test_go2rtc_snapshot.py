@@ -22,16 +22,16 @@ def main():
         print("  Konfiguration unvollständig (GO2RTC_BASE_URL / GO2RTC_STREAM_NAME).")
         return 1
 
-    ok, result = get_snapshot()
+    ok, result, source = get_snapshot()
     if not ok:
-        print(f"  FEHLER: {result}")
+        print(f"  FEHLER (Quelle: {source or '?'}): {result}")
         if "404" in str(result):
             print("  Hinweis: 404 = Stream nicht gefunden. In go2rtc Web-UI (localhost:1984) Stream-Namen prüfen und GO2RTC_STREAM_NAME in .env anpassen.")
         return 1
 
     # result = bytes (JPEG)
     size = len(result)
-    print(f"  OK: JPEG-Bild erhalten, {size} Bytes")
+    print(f"  OK: JPEG-Bild erhalten, {size} Bytes (Quelle: {source})")
     # Optional: speichern
     media_dir = os.path.join(os.path.dirname(__file__), "..", "..", "data", "media")
     if not os.path.isabs(media_dir):

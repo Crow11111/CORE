@@ -28,7 +28,7 @@ def main():
     SAVE_DIR.mkdir(parents=True, exist_ok=True)
     print(f"Speichere {NUM_IMAGES} MX-Bilder nach {SAVE_DIR}")
     for i in range(NUM_IMAGES):
-        ok, data = get_snapshot(timeout=15.0)
+        ok, data, _ = get_snapshot(timeout=15.0)
         if not ok or not isinstance(data, bytes):
             print(f"  [{i+1}] Fehler: {data}")
             continue

@@ -1,6 +1,16 @@
 # ATLAS_CORE: ATLAS TETRALOGY (The 4-Strand Architecture)
 
-**Kontext:** `docs/05_AUDIT_PLANNING/ATLAS_KERN_CONTEXT.md` (Prioritär laden).
+## 0. KONTEXT-PRIMAER: WUJI-DIAGRAMM
+
+**VOR JEDER AUFGABE:** Lade `ATLAS_WUJI_MASTER_PLAN.png` im Root-Verzeichnis.
+Das Diagramm enthaelt die komplette Systemarchitektur:
+- Ring-0 (Wuji Core, Read-Only, Hugin+Munin)
+- Ring-1 (Operative Ausfuehrung, Cloud Agents, CrewAI)
+- Marc/ND als External Observer
+- Freeze Control bei Semantic Drift
+
+**KEINE langen Docs lesen fuer Grundkontext.** Das Bild ist die Wahrheit.
+Docs nur bei spezifischen Detail-Fragen.
 
 ---
 

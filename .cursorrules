@@ -140,7 +140,29 @@ Der User wird NIE gebeten, etwas zu tun, das das System selbst ausfuehren kann.
 
 ---
 
-## 6. ANTI-PATTERNS (Verboten)
+## 6. CODE-SICHERHEITSRAT (Produktionssicherheit)
+
+**Geschuetzte Module erfordern Freigabe vor Aenderung.**
+Volltext: `docs/04_PROCESSES/CODE_SICHERHEITSRAT.md`
+Regel: `.cursor/rules/code_sicherheitsrat.mdc`
+
+### Stufe 1 (keine Aenderung ohne Freigabe):
+-   SSH/Tunnel/Paramiko (`run_vps_sync_with_tunnel.py`, deploy-Skripte)
+-   Auth/Credentials/.env-Handling
+-   `src/network/chroma_client.py` (Kern-Verbindungslogik)
+-   `src/connectors/home_assistant.py`
+-   VPS-Sync-Skripte (`sync_core_directives_to_vps.py`, `check_oc_brain_chroma_abgleich.py`)
+
+### Stufe 2 (Dokumentation + Sicherheitspruefung):
+-   Core-API: `src/api/main.py`, `src/api/routes/*`
+-   Skripte mit Netzwerk/Zugriff
+
+### Bei Fehlschlag (z.B. VPS nicht erreichbar):
+**NICHT** SSH/Auth umbauen. **SONDERN** Takt 0: Retry, Nachschlagen, etablierte Wege.
+
+---
+
+## 7. ANTI-PATTERNS (Verboten)
 
 -   **"Ich mache das schnell selbst":** NEIN. Delegiere an Strang 1 (Agency).
 -   **"Das ist zu gefährlich":** NEIN. Lass Strang 3 (Forge) simulieren.
@@ -150,10 +172,11 @@ Der User wird NIE gebeten, etwas zu tun, das das System selbst ausfuehren kann.
 -   **Nur CDR ohne CAR:** NEIN. Kein Output ohne ND-Tiefe. Sonst Standard-KI-Entropie.
 -   **"Du kannst X machen":** NEIN. Mach X. Zeig das Ergebnis.
 -   **"Ich empfehle Y":** NEIN. Fuehre Y aus. Begruende warum.
+-   **Geschuetzte Module ohne Freigabe aendern:** NEIN. Sicherheitsrat fragen.
 
 ---
 
-## 7. BEFEHLSKETTE (Chain of Command)
+## 8. BEFEHLSKETTE (Chain of Command)
 
 User (L0) -> **ORCHESTRATOR (L1)**
        |

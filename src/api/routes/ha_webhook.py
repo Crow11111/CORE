@@ -87,6 +87,28 @@ async def receive_ha_action(
 class RawTextPayload(BaseModel):
     text: str
 
+
+@router.post("/assist")
+async def assist_pipeline(
+    payload: RawTextPayload,
+    _auth: None = Depends(verify_ha_auth),
+):
+    """
+    Assist-Pipeline Endpoint: Empfängt transkribierten Text von HA Assist
+    (Whisper STT) und leitet ihn in die Triage-Pipeline. Antwort wird per
+    TTS auf dem Mini-Speaker ausgegeben.
+    """
+    result = await inject_raw_text(payload)
+    reply = result.get("reply", "")
+    if reply:
+        try:
+            from src.voice.tts_dispatcher import dispatch_tts
+            await dispatch_tts(text=reply, target="mini", role_name="atlas_dialog")
+        except Exception as e:
+            logger.warning(f"TTS auf Mini fehlgeschlagen: {e}")
+    return result
+
+
 @router.post("/inject_text")
 async def inject_raw_text(
     payload: RawTextPayload,

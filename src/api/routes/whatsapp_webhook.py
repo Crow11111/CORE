@@ -1,3 +1,9 @@
+from __future__ import annotations
+
+import asyncio
+import json
+import os
+from dotenv import load_dotenv
 from fastapi import APIRouter, Request, BackgroundTasks, Depends
 from fastapi.responses import JSONResponse
 from loguru import logger
@@ -6,9 +12,6 @@ from src.api.auth_webhook import verify_whatsapp_auth
 from src.network.ha_client import HAClient
 from src.ai.whatsapp_audio_processor import process_whatsapp_audio
 from src.ai.llm_interface import atlas_llm
-import os
-import json
-from dotenv import load_dotenv
 
 load_dotenv("c:/ATLAS_CORE/.env")
 
@@ -115,15 +118,16 @@ async def receive_whatsapp(
             t = t[6:].strip() or t
         logger.success(f"💬 Textnachricht von {sender}: {text}")
 
-        # Triage → Command (schnell) oder Reasoning/Chat (LLM kann 30s+ dauern → Background)
-        triage = atlas_llm.run_triage(t)
+        # Ring-1 Perf: Triage (sync) in Thread → Event-Loop frei
+        triage = await asyncio.to_thread(atlas_llm.run_triage, t)
 
         if triage.intent == "command":
-            # Steuerbefehl (HA) → [Scout]: inline, typisch < 5s
-            domain = triage.target_entity.split(".")[0] if "." in triage.target_entity else "homeassistant"
-            service = triage.action or "turn_on"
-            success = ha_client.call_service(domain=domain, service=service, entity_id=triage.target_entity)
-            reply = f"[Scout] ✅ {service} → {triage.target_entity}" if success else f"[Scout] ❌ Fehler: {service} → {triage.target_entity}"
+            def _cmd():
+                domain = triage.target_entity.split(".")[0] if "." in (triage.target_entity or "") else "homeassistant"
+                service = triage.action or "turn_on"
+                success = ha_client.call_service(domain=domain, service=service, entity_id=triage.target_entity or "")
+                return f"[Scout] ✅ {service} → {triage.target_entity}" if success else f"[Scout] ❌ Fehler: {service} → {triage.target_entity}"
+            reply = await asyncio.to_thread(_cmd)
             ha_client.send_whatsapp(to_number=sender, text=reply)
             return {"status": "text_handled", "sender": sender, "intent": triage.intent}
 

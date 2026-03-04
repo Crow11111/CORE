@@ -243,7 +243,7 @@ def _migrate_from_chroma(client, dry_run: bool) -> dict[str, int]:
                     batch_ids = new_ids[i : i + BATCH_SIZE]
                     batch_docs = new_docs[i : i + BATCH_SIZE]
                     batch_meta = new_metas[i : i + BATCH_SIZE]
-                    if embeddings and len(embeddings) > i:
+                    if embeddings is not None and len(embeddings) > i:
                         batch_emb = [
                             e.tolist() if hasattr(e, "tolist") else list(e)
                             for e in embeddings[i : i + BATCH_SIZE]

@@ -54,3 +54,26 @@ def verify_oc_auth(
         token = authorization[7:].strip()
     if not _constant_time_compare(token, expected):
         raise HTTPException(status_code=401, detail="Ungültiger oder fehlender API-Key")
+
+
+def verify_ring0_write(
+    x_ring0_token: str | None = Header(None, alias="X-Ring0-Token"),
+    authorization: str | None = Header(None),
+):
+    """Ring-0 Write Gate: Token-Check für Schreibzugriffe auf core_directives/simulation_evidence.
+    X-Ring0-Token oder Bearer muss RING0_WRITE_TOKEN entsprechen.
+    Wenn RING0_WRITE_TOKEN nicht gesetzt: 503 (Fail-Closed)."""
+    expected = os.getenv("RING0_WRITE_TOKEN", "").strip()
+    if not expected:
+        raise HTTPException(
+            status_code=503,
+            detail="Ring-0 Write Gate: RING0_WRITE_TOKEN nicht konfiguriert (Fail-Closed)",
+        )
+    token = x_ring0_token
+    if not token and authorization and authorization.lower().startswith("bearer "):
+        token = authorization[7:].strip()
+    if not _constant_time_compare(token, expected):
+        raise HTTPException(
+            status_code=403,
+            detail="Ring-0 Write Gate: Ungültiger oder fehlender X-Ring0-Token",
+        )

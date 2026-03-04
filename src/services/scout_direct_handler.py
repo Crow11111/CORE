@@ -130,8 +130,19 @@ def process_text(text: str, context: dict | None = None) -> dict:
         # Fallback: lokaler Heavy-Layer (Gemini)
         try:
             from src.ai.llm_interface import atlas_llm
+            from src.logic_core.munin import inject_context_for_agent, check_semantic_drift, apply_veto
             sys_prompt = "Du bist Virtual Marc, Kopf des Osmium Councils für ATLAS_CORE. Antworte analytisch, auf Systemik fokussiert."
+            # Ring-0: Munin Context Injection (Wuji Archivor)
+            wuji_ctx = inject_context_for_agent(text, n_results=3, format="markdown")
+            if wuji_ctx:
+                sys_prompt += "\n\n## Relevanter Kontext (Wuji-Feld)\n" + wuji_ctx
             reply = atlas_llm.invoke_heavy_reasoning(sys_prompt, text)
+            # Ring-0: Munin Veto (Semantic Drift Block)
+            if wuji_ctx:
+                veto = check_semantic_drift(wuji_ctx, reply)
+                if veto.vetoed:
+                    apply_veto(veto)
+                    logger.warning("Munin Veto: Semantic Drift erkannt, z_widerstand erhöht")
             return {"reply": reply, "success": True, "routed": "local"}
         except Exception as e:
             logger.error("Heavy Reasoning fallback fehlgeschlagen: {}", e)

@@ -33,9 +33,14 @@ CRITICAL_PATH_PATTERNS = [
     re.compile(r"^/rotate", re.I),
     re.compile(r"^/api/backup", re.I),
     re.compile(r"^/backup", re.I),
+    # Ring-0 Write: core_directives, simulation_evidence
+    re.compile(r"^/api/atlas/knowledge/evidence/add", re.I),
+    re.compile(r"^/api/atlas/knowledge/directive/add", re.I),
+    re.compile(r"^/api/atlas/knowledge/evidence/delete", re.I),
+    re.compile(r"^/api/atlas/knowledge/directive/delete", re.I),
 ]
 
-# HTTP-Methoden die als kritisch gelten
+# HTTP-Methoden die als kritisch gelten (alle Pfade)
 CRITICAL_METHODS = {"DELETE"}
 
 # Header für explizite Council-Bestätigung (optional, Wert egal wenn gesetzt)

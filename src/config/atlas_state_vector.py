@@ -98,7 +98,48 @@ SIMULATION_EVIDENCE_STATS = {
 
 
 def get_current_state() -> ATLASStateVector:
-    """Gibt den aktuellen Systemzustand zurueck (Default: WUJI)."""
+    """Gibt den aktuellen Systemzustand zurueck (Default: WUJI).
+    Dynamisch aus Umgebung: ATLAS_Z_WIDERSTAND, ATLAS_STATE_PRESET.
+    Munin Veto: ring0_state Override hat Vorrang (Ring-0 Core Stability Anchor).
+    """
+    import os
+
+    # Munin Veto Override (Ring-0)
+    try:
+        from src.config.ring0_state import get_munin_veto_override
+
+        z_override = get_munin_veto_override()
+        if z_override is not None:
+            return ATLASStateVector(
+                x_car_cdr=WUJI.x_car_cdr,
+                y_gravitation=WUJI.y_gravitation,
+                z_widerstand=z_override,
+                w_takt=WUJI.w_takt,
+            )
+    except Exception:
+        pass
+
+    preset = os.getenv("ATLAS_STATE_PRESET", "").strip().upper()
+    if preset == "ANSAUGEN":
+        return ANSAUGEN
+    if preset == "VERDICHTEN":
+        return VERDICHTEN
+    if preset == "ARBEITEN":
+        return ARBEITEN
+    if preset == "AUSSTOSSEN":
+        return AUSSTOSSEN
+    z_raw = os.getenv("ATLAS_Z_WIDERSTAND", "")
+    if z_raw:
+        try:
+            z = float(z_raw)
+            return ATLASStateVector(
+                x_car_cdr=WUJI.x_car_cdr,
+                y_gravitation=WUJI.y_gravitation,
+                z_widerstand=max(0.0, min(1.0, z)),
+                w_takt=WUJI.w_takt,
+            )
+        except ValueError:
+            pass
     return WUJI
 
 

@@ -5,55 +5,100 @@ GET  /api/atlas/knowledge/evidence – Alle Simulationstheorie-Indizien
 POST /api/atlas/knowledge/evidence/add – Validierter Evidence-Ingest (V6+)
 GET  /api/atlas/knowledge/v10/duality – Quaternion-Dualitaet (V10)
 GET  /api/atlas/knowledge/temporal/validate – Temporale Konsistenz
+
+Ring-1 Perf: collection=all → 3 ChromaDB-Queries parallel (asyncio.gather).
 """
 from __future__ import annotations
 
+import asyncio
 import math
 from typing import Optional
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Depends, Query
 from pydantic import BaseModel, Field
+
+from src.api.auth_webhook import verify_ring0_write
 
 router = APIRouter(prefix="/api/atlas/knowledge", tags=["atlas-knowledge"])
 
 
+def _query_sim(q: str, limit: int):
+    from src.network.chroma_client import query_simulation_evidence
+    return query_simulation_evidence(q, n_results=limit)
+
+
+def _query_logs(q: str, limit: int):
+    from src.network.chroma_client import query_session_logs
+    return query_session_logs(q, n_results=limit)
+
+
+def _query_dirs(q: str, limit: int):
+    from src.network.chroma_client import query_core_directives
+    return query_core_directives(q, n_results=limit)
+
+
 @router.get("/search")
-def search_knowledge(
+async def search_knowledge(
     q: str = Query(..., description="Suchtext (semantisch)"),
     collection: str = Query("all", description="Collection: all, simulation_evidence, session_logs, core_directives"),
     limit: int = Query(5, ge=1, le=20),
 ):
-    """Semantische Suche ueber eine oder alle ChromaDB Collections."""
-    from src.network.chroma_client import (
-        query_simulation_evidence,
-        query_session_logs,
-        query_core_directives,
-    )
-
+    """Semantische Suche ueber eine oder alle ChromaDB Collections. collection=all: 3 Queries parallel."""
+    loop = asyncio.get_event_loop()
     results = {}
 
-    if collection in ("all", "simulation_evidence"):
+    if collection == "all":
+        sim_task = loop.run_in_executor(None, _query_sim, q, limit)
+        logs_task = loop.run_in_executor(None, _query_logs, q, limit)
+        dirs_task = loop.run_in_executor(None, _query_dirs, q, limit)
+        sim, logs, dirs = await asyncio.gather(sim_task, logs_task, dirs_task)
         try:
-            sim = query_simulation_evidence(q, n_results=limit)
             results["simulation_evidence"] = _format_results(sim)
         except Exception as e:
             results["simulation_evidence"] = {"error": str(e)}
-
-    if collection in ("all", "session_logs"):
         try:
-            logs = query_session_logs(q, n_results=limit)
             results["session_logs"] = _format_results(logs)
         except Exception as e:
             results["session_logs"] = {"error": str(e)}
-
-    if collection in ("all", "core_directives"):
         try:
-            dirs = query_core_directives(q, n_results=limit)
             results["core_directives"] = _format_results(dirs)
         except Exception as e:
             results["core_directives"] = {"error": str(e)}
+    else:
+        if collection == "simulation_evidence":
+            try:
+                sim = await loop.run_in_executor(None, _query_sim, q, limit)
+                results["simulation_evidence"] = _format_results(sim)
+            except Exception as e:
+                results["simulation_evidence"] = {"error": str(e)}
+        elif collection == "session_logs":
+            try:
+                logs = await loop.run_in_executor(None, _query_logs, q, limit)
+                results["session_logs"] = _format_results(logs)
+            except Exception as e:
+                results["session_logs"] = {"error": str(e)}
+        elif collection == "core_directives":
+            try:
+                dirs = await loop.run_in_executor(None, _query_dirs, q, limit)
+                results["core_directives"] = _format_results(dirs)
+            except Exception as e:
+                results["core_directives"] = {"error": str(e)}
 
     return {"ok": True, "query": q, "results": results}
+
+
+@router.get("/context")
+def get_munin_context(
+    q: str = Query(..., description="Suchtext für Wuji-Kontext"),
+    n: int = Query(5, ge=1, le=20, description="Max. Dokumente"),
+):
+    """Ring-0 Munin: Context Injection für Agents. Holt Kontext aus wuji_field via Gravitator."""
+    try:
+        from src.logic_core.munin import inject_context_for_agent
+        ctx = inject_context_for_agent(q, n_results=n, format="markdown")
+        return {"ok": True, "query": q, "context": ctx}
+    except Exception as e:
+        return {"ok": False, "query": q, "error": str(e), "context": ""}
 
 
 @router.get("/evidence")
@@ -527,9 +572,11 @@ class EvidenceInput(BaseModel):
     source: str = Field("atlas", description="Quelle (atlas, marc, external)")
 
 
-@router.post("/evidence/add")
+@router.post("/evidence/add", dependencies=[Depends(verify_ring0_write)])
 def add_evidence(body: EvidenceInput):
     """Fuegt ein neues Simulationstheorie-Indiz validiert hinzu.
+    Ring-0 Write Gate: X-Ring0-Token oder Bearer (RING0_WRITE_TOKEN) erforderlich.
+    Council Gate: Bei z_widerstand >= 0.618 zusaetzlich X-Council-Confirm.
 
     Fuehrt automatisch quaternaere Klassifikation (V6+), temporale
     Konsistenzpruefung und Chargaff-Balance-Analyse durch.

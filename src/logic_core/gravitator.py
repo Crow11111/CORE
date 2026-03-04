@@ -150,3 +150,20 @@ def route(
         CollectionTarget(name=name, score=score, type=ctype)
         for name, ctype, score in matches
     ]
+
+
+def route_to_wuji(
+    query_text: str,
+    top_k: int = 3,
+    threshold: float = 0.22,
+) -> list[CollectionTarget]:
+    """Routet zu wuji_field: Gibt CollectionTarget mit name='wuji_field' und type zurueck.
+
+    Nutzt dieselbe Embedding-Logik wie route(), aber Ziel ist stets wuji_field.
+    Consumer fragt wuji_field mit where={'type': target.type} ab.
+    """
+    targets = route(query_text, top_k=top_k, threshold=threshold)
+    return [
+        CollectionTarget(name="wuji_field", score=t.score, type=t.type)
+        for t in targets
+    ]

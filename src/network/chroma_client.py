@@ -23,6 +23,7 @@ COLLECTION_INSIGHTS = "insights"
 COLLECTION_SESSION_LOGS = "session_logs"
 COLLECTION_CORE_DIRECTIVES = "core_directives"
 COLLECTION_SIMULATION_EVIDENCE = "simulation_evidence"
+COLLECTION_WUJI = "wuji_field"
 
 
 def get_chroma_client():
@@ -303,6 +304,64 @@ def add_evidence_validated(
         result["error"] = str(e)
 
     return result
+
+
+def get_wuji_field_collection():
+    """Collection 'wuji_field' fuer einheitliches Gedaechtnis (GQA F8)."""
+    return get_collection(COLLECTION_WUJI, create_if_missing=True)
+
+
+def query_wuji_field(
+    query_text: str,
+    n_results: int = 10,
+    type_filter: str | list[str] | None = None,
+    where_filter: dict | None = None,
+) -> dict:
+    """Semantische Suche im Wuji-Feld mit optionalem type-Filter.
+
+    type_filter: Einzelner type (str) oder Liste (z.B. ["evidence", "directive"]).
+    where_filter: Zusaetzliche ChromaDB where-Bedingungen (werden mit type_filter kombiniert).
+    """
+    try:
+        col = get_wuji_field_collection()
+        where = where_filter.copy() if where_filter else {}
+        if type_filter is not None:
+            if isinstance(type_filter, str):
+                where["type"] = type_filter
+            else:
+                where["type"] = {"$in": list(type_filter)}
+        kwargs = {"query_texts": [query_text], "n_results": n_results}
+        if where:
+            kwargs["where"] = where
+        return col.query(**kwargs)
+    except Exception as e:
+        print(f"[ChromaDB] Wuji-Field Query fehlgeschlagen: {e}")
+        return {"ids": [[]], "documents": [[]], "metadatas": [[]], "distances": [[]]}
+
+
+def query_wuji_via_gravitator(
+    query_text: str,
+    n_results: int = 10,
+    top_k_types: int = 3,
+) -> dict:
+    """Routet via Gravitator zu relevanten Types, fragt wuji_field ab, merged Ergebnisse."""
+    try:
+        from src.logic_core.gravitator import route_to_wuji
+
+        targets = route_to_wuji(query_text, top_k=top_k_types)
+        if not targets:
+            return query_wuji_field(query_text, n_results=n_results)
+
+        types = [t.type for t in targets]
+        result = query_wuji_field(
+            query_text,
+            n_results=n_results,
+            type_filter=types,
+        )
+        return result
+    except Exception as e:
+        print(f"[ChromaDB] Wuji-via-Gravitator fehlgeschlagen: {e}")
+        return query_wuji_field(query_text, n_results=n_results)
 
 
 def add_core_directive(directive_id: str, document: str, category: str, ring_level: int = 0) -> bool:

@@ -52,7 +52,7 @@ Alle Datenpunkte (bestehend aus Dump/VPS und neu erfasst) werden mit derselben L
 
 - **0-Reset & Persistenz:** Axiom „API-Call beendet = Masse entfernt“ betrifft den *Laufzeit-Kontext*, nicht die Persistenz in Chroma. Spec sollte bestätigen: Schreiben/Migration ändert persistierte Daten; „0-Reset“ gilt pro Request-Zyklus, nicht für DB-Inhalt. Kein impliziter Konflikt mit Backup/Rollback.
 
-- **Risiken:** (1) VPS vs. lokale Chroma – Migration muss Ziel (VPS/lokal/beide) und Reihenfolge definieren. (2) Kein Rollback-Pfad in den Referenzen – bei Fehlern während Migration: Wiederherstellung aus Backup oder idempotente Re-Runs? (3) `core_directives`-Ring-0-Inhalt: Abgleich mit OC Brain und Dreadnought muss vor oder als Teil der Migration geklärt sein, damit keine divergierenden „Wahrheiten“ entstehen.
+- **Risiken:** (1) VPS vs. lokale Chroma – Migration muss Ziel (VPS/lokal/beide) und Reihenfolge definieren. (2) Kein Rollback-Pfad in den Referenzen – bei Fehlern während Migration: Wiederherstellung aus Backup oder idempotente Re-Runs? (3) `core_directives`-Ring-0-Inhalt: Abgleich mit OMEGA_ATTRACTOR und 4D_RESONATOR (MTHO_CORE) muss vor oder als Teil der Migration geklärt sein, damit keine divergierenden „Wahrheiten“ entstehen.
 
 **Fazit:** Spec ist noch zu ergänzen. Nach Ausfüllung erneuter Judge-Check empfohlen, insbesondere auf klare Trennung „Wuji-Abfragemodell“ vs. „Speicher-Metadaten“ und auf einheitliche Behandlung aller Datenquellen.
 
@@ -65,7 +65,7 @@ Alle Datenpunkte (bestehend aus Dump/VPS und neu erfasst) werden mit derselben L
 **Verbindliche Reihenfolge (Judge bestätigt):**
 1. **Ring-0 / VPS-Sync:** core_directives mit `sync_core_directives_to_vps.py` auf VPS bringen (SSH-Tunnel).
 2. **Cursor-Reduktion:** Gemäß CURSOR_ATLAS_SPEC (.cursorrules entlasten, 1–4.mdc ohne Tetralogie-Kopie, Holschuld in Schicht-3-Agenten).
-3. **VPS-Abgleich:** Prüfung, was OC Brain auf VPS in ChromaDB hat (optional, siehe VERGLEICHSDOKUMENT).
+3. **VPS-Abgleich:** Prüfung, was OMEGA_ATTRACTOR auf VPS in ChromaDB hat (optional, siehe VERGLEICHSDOKUMENT).
 4. **DB-Migration (Code/Query):** Abfragen in chroma_client und API auf gravitationskonformes Verhalten umstellen (kein where_filter; einheitliche Pipeline Alt/Neu); Rollback-Pfad definieren.
 
 **Begründung:** Die Reihenfolge ist sinnvoll: Zuerst die kanonische Wahrheit (Ring-0) auf den VPS bringen, dann die Agenten-Umgebung vereinheitlichen (Cursor-Reduktion), danach den Ist-Zustand auf dem VPS prüfen (VPS-Abgleich), zuletzt die Query-Logik umstellen – so bleibt ein klares Rollback (nur Schritt 4 code-seitig zurücknehmen) und es entstehen keine divergierenden Wahrheiten durch vorzeitige Code-Änderungen.

@@ -5,7 +5,7 @@
 <!-- ============================================================
 -->
 
-# MISSION OMEGA: Autonome Intelligenz für ATLAS
+# MISSION OMEGA: Autonome Intelligenz für MTHO
 
 **Status:** PLAN | **Datum:** 2026-03-05  
 **Referenz:** GHOST_AGENT_NIGHT_SHIFT_FAILOVER.md, ATLAS_AGI_ARCHITECTURE, ATLAS_NEOCORTEX_V1, AUTONOMOUS_VISION_LOOP
@@ -16,11 +16,11 @@
 
 | # | Prinzip | Bedeutung |
 |---|---------|-----------|
-| 1 | **Keine Kernfunktionen auf Dreadnought** | Scout + VPS/Brain sind das Backbone. Dreadnought = Turbo/Dev, nicht kritisch. |
-| 2 | **Failover: Dreadnought aus → VPS übernimmt** | Zero-Downtime. Scout routet transparent auf VPS, wenn Dreadnought nicht antwortet. |
+| 1 | **Keine Kernfunktionen auf 4D_RESONATOR (MTHO_CORE)** | Scout + VPS/Brain sind das Backbone. 4D_RESONATOR (MTHO_CORE) = Turbo/Dev, nicht kritisch. |
+| 2 | **Failover: 4D_RESONATOR (MTHO_CORE) aus → VPS übernimmt** | Zero-Downtime. Scout routet transparent auf VPS, wenn 4D_RESONATOR (MTHO_CORE) nicht antwortet. |
 | 3 | **Reaktive Abläufe** | Sensoren triggern Aktionen. Event → Triage → Aktion. |
 | 4 | **Proaktive Sensorik** | System erkennt Muster, handelt vorausschauend (Vision Loop, Präsenz-Inferenz). |
-| 5 | **Fühlen und Denken** | Kontext (Wuji-Feld) und Reasoning (OC Brain) fließen in die Kette ein. |
+| 5 | **Fühlen und Denken** | Kontext (Wuji-Feld) und Reasoning (OMEGA_ATTRACTOR) fließen in die Kette ein. |
 
 ---
 
@@ -31,14 +31,14 @@
 │                           MISSION OMEGA – AUTONOME INTELLIGENZ                            │
 ├─────────────────────────────────────────────────────────────────────────────────────────┤
 │                                                                                          │
-│   SENSORIK (Scout)                    BACKBONE (VPS/OC Brain)              AKTIONEN      │
+│   SENSORIK (Scout)                    BACKBONE (VPS/OMEGA_ATTRACTOR)              AKTIONEN      │
 │   ─────────────────                   ───────────────────────             ───────      │
 │                                                                                          │
 │   ┌──────────────┐                    ┌─────────────────────────────┐                   │
-│   │ openWakeWord │                    │  OC Brain (OpenClaw)         │     ┌──────────┐  │
+│   │ openWakeWord │                    │  OMEGA_ATTRACTOR (OpenClaw)         │     ┌──────────┐  │
 │   │ Whisper STT  │                    │  - Deep Reasoning (Gemini)   │     │ HA       │  │
 │   │ Assist Mic   │                    │  - Kontext-Aggregation      │     │ Services │  │
-│   └──────┬───────┘                    │  - WhatsApp, Rat-Submissions│     └────▲─────┘  │
+│   └──────┬───────┘                    │  - WhatsApp, OMEGA_ATTRACTOR Council-Submissions│     └────▲─────┘  │
 │          │                            └──────────────┬──────────────┘            │       │
 │          ▼                                           │                           │       │
 │   ┌──────────────┐                    ┌──────────────▼──────────────┐            │       │
@@ -50,16 +50,16 @@
 │          │                                                                       │       │
 │   ┌──────▼──────────────────────────────────────────────────────────────────────▼───┐  │
 │   │  SCOUT (Raspi 5 / HA OS)                                                          │  │
-│   │  - ATLAS Conversation Integration (Failover: Dreadnought → VPS)                  │  │
+│   │  - MTHO Conversation Integration (Failover: 4D_RESONATOR (MTHO_CORE) → VPS)                  │  │
 │   │  - scout_direct_handler: Smart Parser, Triage, HA-Calls                            │  │
 │   │  - Lokale Aktionen (Licht, etc.) direkt via HAClient                              │  │
-│   │  - Deep Reasoning → OC Brain (VPS)                                                │  │
+│   │  - Deep Reasoning → OMEGA_ATTRACTOR (VPS)                                                │  │
 │   └──────────────────────────────────────────────────────────────────────────────────┘  │
 │                                          │                                               │
-│                                          │ Failover wenn Dreadnought OFF                 │
+│                                          │ Failover wenn 4D_RESONATOR (MTHO_CORE) OFF                 │
 │   ┌──────────────────────────────────────▼──────────────────────────────────────────┐   │
 │   │  DREADNOUGHT (192.168.178.20) – NUR TURBO/DEV                                   │   │
-│   │  - ATLAS API (webhook/inject_text) – optional, nicht kritisch                    │   │
+│   │  - MTHO API (webhook/inject_text) – optional, nicht kritisch                    │   │
 │   │  - Lokales Heavy (Gemini) als Turbo bei Bedarf                                   │   │
 │   │  - Vision Daemon (kann auf Scout migriert werden)                                  │   │
 │   └──────────────────────────────────────────────────────────────────────────────────┘   │
@@ -75,33 +75,33 @@
 
 | Komponente | Funktion | Datenfluss |
 |------------|----------|------------|
-| **Assist Pipeline** | openWakeWord → Whisper STT → ATLAS Conversation Agent | Audio → Text |
-| **ATLAS Conversation** | Custom Integration, POST an Dreadnought oder VPS | Text → API |
-| **scout_direct_handler** | Triage, Smart Parser, HA-Calls, OC Brain | Text → Aktion |
+| **Assist Pipeline** | openWakeWord → Whisper STT → MTHO Conversation Agent | Audio → Text |
+| **MTHO Conversation** | Custom Integration, POST an 4D_RESONATOR (MTHO_CORE) oder VPS | Text → API |
+| **scout_direct_handler** | Triage, Smart Parser, HA-Calls, OMEGA_ATTRACTOR | Text → Aktion |
 | **MX Brio (Assist Mic)** | Mikrofon für Voice | Audio-Stream |
 | **go2rtc** | RTSP-Stream für Vision (Brio Kamera) | Video → Vision Daemon |
-| **HAClient** | Licht, Geräte, TTS auf Mini | ATLAS → HA Services |
+| **HAClient** | Licht, Geräte, TTS auf Mini | MTHO → HA Services |
 
 **Scout ist immer online.** Er führt lokale Befehle aus und leitet Deep Reasoning an VPS.
 
-### 3.2 Dreadnought – NUR Turbo/Dev
+### 3.2 4D_RESONATOR (MTHO_CORE) – NUR Turbo/Dev
 
 | Komponente | Funktion | Kritikalität |
 |------------|----------|--------------|
-| **ATLAS API** | /webhook/inject_text, /webhook/assist | Optional – Failover auf VPS |
+| **MTHO API** | /webhook/inject_text, /webhook/assist | Optional – Failover auf VPS |
 | **Lokales Gemini** | invoke_heavy_reasoning | Turbo bei Dev-Sessions |
 | **Vision Daemon** | Motion → Snapshot → Gemini Vision | Kann auf Scout migriert werden |
 
-**Dreadnought aus = kein Problem.** Scout routet an VPS.
+**4D_RESONATOR (MTHO_CORE) aus = kein Problem.** Scout routet an VPS.
 
-### 3.3 VPS / OC Brain – Backbone
+### 3.3 VPS / OMEGA_ATTRACTOR – Backbone
 
 | Komponente | Funktion | Datenfluss |
 |------------|----------|------------|
-| **ATLAS API (Slim)** | /webhook/forwarded_text | Scout → VPS bei Dreadnought OFF |
+| **MTHO API (Slim)** | /webhook/forwarded_text | Scout → VPS bei 4D_RESONATOR (MTHO_CORE) OFF |
 | **OpenClaw Gateway** | POST /v1/responses | Deep Reasoning, WhatsApp |
 | **ChromaDB** | Wuji-Feld, events, insights | Kontext für alle Agents |
-| **OC Brain (Gemini)** | Deep Reasoning, Kontext-Aggregation | Text → Antwort |
+| **OMEGA_ATTRACTOR (Gemini)** | Deep Reasoning, Kontext-Aggregation | Text → Antwort |
 
 **VPS ist das Rückgrat.** ChromaDB liegt hier (oder per SSH-Tunnel erreichbar).
 
@@ -112,15 +112,15 @@
 ### 4.1 Reaktiv: Voice → Aktion
 
 ```
-User: "Hey ATLAS, Regal 80%"
+User: "Hey MTHO, Regal 80%"
     │
     ▼
 openWakeWord (Scout) → Whisper STT
     │
     ▼
-ATLAS Conversation Agent
+MTHO Conversation Agent
     │
-    ├─► Dreadnought /webhook/inject_text (wenn erreichbar, Timeout 2s)
+    ├─► 4D_RESONATOR (MTHO_CORE) /webhook/inject_text (wenn erreichbar, Timeout 2s)
     │       │
     │       └─► scout_direct_handler.process_text()
     │               ├─► Smart Parser → HA light.turn_on(regal, brightness=80)
@@ -144,11 +144,11 @@ scout_direct_handler (command path übersprungen)
     ▼
 Triage: deep_reasoning
     │
-    ├─► OC Brain (VPS) send_message_to_agent()  [PRIMÄR]
+    ├─► OMEGA_ATTRACTOR (VPS) send_message_to_agent()  [PRIMÄR]
     │       │
     │       └─► OpenClaw nutzt ChromaDB (Wuji) für Kontext
     │
-    └─► Lokales Gemini (Dreadnought) [FALLBACK wenn OC nicht erreichbar]
+    └─► Lokales Gemini (4D_RESONATOR (MTHO_CORE)) [FALLBACK wenn OC nicht erreichbar]
             │
             └─► Munin: inject_context_for_agent() → Wuji-Feld aus ChromaDB
 ```
@@ -173,9 +173,9 @@ ChromaDB: add_wuji_observation(document, metadata)
     └─► Kontext für spätere Anfragen (inject_context_for_agent)
 ```
 
-**Standort Vision Daemon:** Aktuell Dreadnought. Ziel: Scout (Raspi 5) oder dedizierter Vision-Node, damit Dreadnought aus bleiben kann.
+**Standort Vision Daemon:** Aktuell 4D_RESONATOR (MTHO_CORE). Ziel: Scout (Raspi 5) oder dedizierter Vision-Node, damit 4D_RESONATOR (MTHO_CORE) aus bleiben kann.
 
-### 4.4 Proaktiv: Sensor-Events → OC Brain
+### 4.4 Proaktiv: Sensor-Events → OMEGA_ATTRACTOR
 
 ```
 Tapo C52A (Motion) / andere Sensoren
@@ -189,7 +189,7 @@ HA Automation: Triage (Nacht? Safe? Repetitiv?)
     ▼
 Wenn nicht trivial → POST https://VPS/v1/responses
     │
-    └─► OC Brain: Event loggen, ggf. WhatsApp-Eskalation
+    └─► OMEGA_ATTRACTOR: Event loggen, ggf. WhatsApp-Eskalation
 ```
 
 ---
@@ -203,7 +203,7 @@ Wenn nicht trivial → POST https://VPS/v1/responses
 | **Vision Daemon** | wuji_field | "Person betritt Raum", "Licht an" |
 | **Session Logs** | session_logs | Vorherige Dialoge |
 | **Core Directives** | core_directives | Ring-0 Regeln |
-| **Simulation Evidence** | simulation_evidence | LPIS, Indizien |
+| **Simulation Evidence** | simulation_evidence | GTAC/MTHO, Indizien |
 | **Events** | events | Sensor-Events (Motion, etc.) |
 | **Insights** | insights | Destillierte Erkenntnisse |
 
@@ -219,7 +219,7 @@ Wenn nicht trivial → POST https://VPS/v1/responses
          │                           │                           │
          ▼                           ▼                           ▼
 ┌─────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
-│ Munin           │     │ OC Brain           │     │ Vision Daemon       │
+│ Munin           │     │ OMEGA_ATTRACTOR           │     │ Vision Daemon       │
 │ inject_context  │     │ (OpenClaw Tools)   │     │ add_wuji_observation │
 │ _for_agent()    │     │ Kontext aus        │     │ (Schreibt Kontext)   │
 └────────┬────────┘     │ Workspace/Chroma   │     └─────────────────────┘
@@ -229,7 +229,7 @@ Wenn nicht trivial → POST https://VPS/v1/responses
 ┌─────────────────────────────────────────────────────────────────┐
 │  System-Prompt-Erweiterung                                        │
 │  "## Relevanter Kontext (Wuji-Feld)\n" + wuji_ctx                │
-│  → Gemini/OC Brain erhält semantisch relevante Fakten             │
+│  → Gemini/OMEGA_ATTRACTOR erhält semantisch relevante Fakten             │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
@@ -252,7 +252,7 @@ Wenn nicht trivial → POST https://VPS/v1/responses
 
 Bereits implementiert (api.py):
 
-1. **Versuch 1:** POST an `base_url` (Dreadnought) `/webhook/inject_text`
+1. **Versuch 1:** POST an `base_url` (4D_RESONATOR (MTHO_CORE)) `/webhook/inject_text`
    - Timeout: `FAILOVER_TIMEOUT` (z.B. 2s connect)
 2. **Bei Timeout/Error:** POST an `fallback_url` (VPS) `/webhook/forwarded_text`
 3. Gleiche Payload: `{"text": "..."}`
@@ -263,7 +263,7 @@ Der VPS muss bereit sein:
 
 | Endpoint | Erforderlich | Status |
 |----------|--------------|--------|
-| `/webhook/forwarded_text` | Ja | ATLAS API auf VPS (oder Proxy) |
+| `/webhook/forwarded_text` | Ja | MTHO API auf VPS (oder Proxy) |
 | ChromaDB-Zugriff | Ja | CHROMA_HOST auf VPS oder Tunnel |
 | HASS_URL | Ja | Zeigt auf Scout (Nabu Casa/Tunnel) für HA-Calls |
 | Munin/Wuji | Ja | inject_context_for_agent nutzt ChromaDB |
@@ -271,8 +271,8 @@ Der VPS muss bereit sein:
 ### 6.3 State-Sync (Wuji-Feld)
 
 - ChromaDB liegt auf VPS (oder zentral)
-- Dreadnought nutzt bei lokalem Chroma: `CHROMA_LOCAL_PATH` oder SSH-Tunnel zu VPS
-- **Empfehlung:** ChromaDB nur auf VPS. Dreadnought und Scout-Requests (via VPS) nutzen dieselbe DB.
+- 4D_RESONATOR (MTHO_CORE) nutzt bei lokalem Chroma: `CHROMA_LOCAL_PATH` oder SSH-Tunnel zu VPS
+- **Empfehlung:** ChromaDB nur auf VPS. 4D_RESONATOR (MTHO_CORE) und Scout-Requests (via VPS) nutzen dieselbe DB.
 - `sync_core_directives_to_vps.py` / `migrate_to_wuji_field.py` für Direktiven-Sync
 
 ---
@@ -282,9 +282,9 @@ Der VPS muss bereit sein:
 ### Phase 1: Failover absichern (bereits teilweise umgesetzt)
 
 - [x] atlas_conversation: base_url + fallback_url, Lazy Failover
-- [ ] VPS: ATLAS API mit /webhook/forwarded_text deployen (falls nicht vorhanden)
+- [ ] VPS: MTHO API mit /webhook/forwarded_text deployen (falls nicht vorhanden)
 - [ ] VPS: HASS_URL auf Scout (Tunnel) konfigurieren
-- [ ] ChromaDB: Einheitlich auf VPS, Dreadnought per Tunnel
+- [ ] ChromaDB: Einheitlich auf VPS, 4D_RESONATOR (MTHO_CORE) per Tunnel
 
 ### Phase 2: Vision auf Scout migrieren
 
@@ -296,7 +296,7 @@ Der VPS muss bereit sein:
 ### Phase 3: Proaktive Sensorik
 
 - [ ] HA Automation: Motion/Präsenz → Triage → POST an VPS /v1/responses
-- [ ] OC Brain: Event-Handler für Scout-Events (dreadnought_pending, Eskalation)
+- [ ] OMEGA_ATTRACTOR: Event-Handler für Scout-Events (dreadnought_pending, Eskalation)
 - [ ] ChromaDB: events-Collection befüllen
 
 ### Phase 4: Mustererkennung & Vorausschau
@@ -313,11 +313,11 @@ Der VPS muss bereit sein:
 
 | Variable | Wert | Zweck |
 |----------|------|-------|
-| atlas_api_url | http://192.168.178.20:8000 | Dreadnought (Primary) |
+| atlas_api_url | http://192.168.178.20:8000 | 4D_RESONATOR (MTHO_CORE) (Primary) |
 | atlas_fallback_url | https://187.77.68.250/... | VPS (Failover) |
 | atlas_webhook_token | HA_WEBHOOK_TOKEN | Auth |
 
-### VPS (ATLAS API)
+### VPS (MTHO API)
 
 | Variable | Wert | Zweck |
 |----------|------|-------|
@@ -326,7 +326,7 @@ Der VPS muss bereit sein:
 | CHROMA_HOST | 127.0.0.1 (lokal im Container) | ChromaDB |
 | HA_WEBHOOK_TOKEN | Wie Scout | Webhook-Auth |
 
-### Dreadnought
+### 4D_RESONATOR (MTHO_CORE)
 
 | Variable | Wert | Zweck |
 |----------|------|-------|
@@ -344,9 +344,9 @@ Der VPS muss bereit sein:
 - `docs/02_ARCHITECTURE/ATLAS_SCHNITTSTELLEN_UND_KANAALE.md` – Kanäle
 - `docs/02_ARCHITECTURE/ATLAS_CHROMADB_SCHEMA.md` – Collections
 - `docs/03_INFRASTRUCTURE/SCOUT_ASSIST_PIPELINE.md` – HA-Setup
-- `src/services/scout_direct_handler.py` – Triage, OC Brain, VPS-Fallback
+- `src/services/scout_direct_handler.py` – Triage, OMEGA_ATTRACTOR, VPS-Fallback
 - `ha_integrations/atlas_conversation/api.py` – Failover-Logik
 
 ---
 
-*Erstellt: 2026-03-05 | MISSION OMEGA – Autonome Intelligenz für ATLAS*
+*Erstellt: 2026-03-05 | MISSION OMEGA – Autonome Intelligenz für MTHO*

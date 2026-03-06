@@ -5,9 +5,9 @@
 <!-- ============================================================
 -->
 
-# Scout (HA auf Raspi): Event an OC Brain senden
+# Scout (HA auf Raspi): Event an OMEGA_ATTRACTOR senden
 
-Damit der Scout nach Neustart oder bei Sensor-/Kamera-Trigger ein Event an OC Brain schickt, muss HA den VPS-Endpunkt aufrufen.
+Damit der Scout nach Neustart oder bei Sensor-/Kamera-Trigger ein Event an OMEGA_ATTRACTOR schickt, muss HA den VPS-Endpunkt aufrufen.
 
 ---
 
@@ -15,7 +15,7 @@ Damit der Scout nach Neustart oder bei Sensor-/Kamera-Trigger ein Event an OC Br
 
 **1. Geheimnisse** (Einstellungen → Geheimnisse oder `secrets.yaml`):
 - `oc_brain_url`: `https://187.77.68.250` oder `http://187.77.68.250:18789`
-- `oc_brain_token`: aus ATLAS `.env` → `OPENCLAW_GATEWAY_TOKEN`
+- `oc_brain_token`: aus MTHO `.env` → `OPENCLAW_GATEWAY_TOKEN`
 
 **2. configuration.yaml** (oder YAML-Add-on):
 
@@ -31,7 +31,7 @@ rest_command:
     payload: '{"model":"openclaw","input":"{\"source\":\"scout\",\"node_id\":\"raspi5-ha-master\",\"event_type\":\"scout_online\",\"priority\":\"low\",\"data\":{}}}"}'
 
 automation:
-  - alias: "Scout online → OC Brain"
+  - alias: "Scout online → OMEGA_ATTRACTOR"
     trigger:
       - platform: homeassistant
         event: start
@@ -110,7 +110,7 @@ Beispiel (Start-Event):
 
 ```yaml
 automation:
-  - alias: "Scout online → OC Brain"
+  - alias: "Scout online → OMEGA_ATTRACTOR"
     trigger:
       - platform: homeassistant
         event: start
@@ -121,10 +121,10 @@ automation:
 
 ---
 
-## 5. Von Dreadnought aus testen (ohne HA)
+## 5. Von 4D_RESONATOR (MTHO_CORE) aus testen (ohne HA)
 
 ```bash
 python -m src.scripts.scout_send_event_to_oc --type scout_online --node raspi5-ha-master
 ```
 
-Damit wird das Event von deinem PC an OC Brain gesendet (gleicher Kanal wie vom Scout).
+Damit wird das Event von deinem PC an OMEGA_ATTRACTOR gesendet (gleicher Kanal wie vom Scout).

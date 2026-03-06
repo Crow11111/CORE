@@ -5,19 +5,19 @@
 # ============================================================
 
 """
-ATLAS Voice – Info-Assistent.
-Text einfügen → Sprache abspielen. Standard: atlas_info, neutrale Stimmlage.
+MTHO Voice – Info-Assistent.
+Text einfügen → Sprache abspielen. Standard: mtho_info, neutrale Stimmlage.
 Rollen und Stimmlage (State) wählbar; verdrahtet gegen voice_config, ElevenLabs TTS.
 """
 import streamlit as st
 from src.voice.elevenlabs_tts import speak_text
 from src.config.voice_config import OSMIUM_VOICE_CONFIG, EMOTIONAL_STATE_PREFIXES
 
-st.set_page_config(page_title="ATLAS Voice Info", layout="centered")
-st.title("ATLAS Voice – Info-Assistent")
+st.set_page_config(page_title="MTHO Voice Info", layout="centered")
+st.title("MTHO Voice – Info-Assistent")
 
 roles = sorted(OSMIUM_VOICE_CONFIG.keys())
-default_role_index = roles.index("atlas_info") if "atlas_info" in roles else 0
+default_role_index = roles.index("mtho_info") if "mtho_info" in roles else 0
 
 state_options = ["(neutral)"] + list(EMOTIONAL_STATE_PREFIXES)
 

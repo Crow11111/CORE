@@ -12,7 +12,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
-from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, atlas_knowledge, atlas_voice, atlas_events
+from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, mtho_knowledge, mtho_voice, mtho_events
 from src.api.middleware.council_gate import CouncilGateMiddleware
 
 _event_bus = None
@@ -21,7 +21,7 @@ _ghost_pool = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """ATLAS API Lifecycle: Ghost Pool + Event-Bus Startup/Shutdown."""
+    """MTHO API Lifecycle: Ghost Pool + Event-Bus Startup/Shutdown."""
     global _event_bus, _ghost_pool
 
     try:
@@ -35,7 +35,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     hass_token = (os.getenv("HASS_TOKEN") or "").strip()
     if hass_url and hass_token:
         try:
-            from src.daemons.atlas_event_bus import start_event_bus
+            from src.daemons.mtho_event_bus import start_event_bus
             _event_bus = await start_event_bus()
             logger.info("[API] Event-Bus gestartet (HASS_URL konfiguriert)")
         except Exception as exc:
@@ -43,8 +43,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     else:
         logger.info("[API] Event-Bus uebersprungen (HASS_URL/HASS_TOKEN nicht gesetzt)")
 
-    # --- CRADLE (ATLAS Sync Relay) ---
-    webhook_secret = (os.getenv("ATLAS_WEBHOOK_SECRET") or "").strip()
+    # --- CRADLE (MTHO Sync Relay) ---
+    webhook_secret = (os.getenv("MTHO_WEBHOOK_SECRET") or "").strip()
     if webhook_secret:
         try:
             import threading
@@ -52,18 +52,18 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             from aiohttp import web as _aio_web
 
             def _run_cradle():
-                from src.network.atlas_sync_relay import app as cradle_app
+                from src.network.mtho_sync_relay import app as cradle_app
                 loop = _aio.new_event_loop()
                 _aio.set_event_loop(loop)
                 loop.run_until_complete(_aio_web.run_app(cradle_app, port=8049, print=lambda *a: None))
 
-            _cradle_thread = threading.Thread(target=_run_cradle, daemon=True, name="atlas-cradle")
+            _cradle_thread = threading.Thread(target=_run_cradle, daemon=True, name="mtho-cradle")
             _cradle_thread.start()
             logger.info("[API] CRADLE Sync Relay gestartet (Port 8049)")
         except Exception as exc:
             logger.error("[API] CRADLE Start fehlgeschlagen: {} – API laeuft weiter", exc)
     else:
-        logger.info("[API] CRADLE uebersprungen (ATLAS_WEBHOOK_SECRET nicht gesetzt)")
+        logger.info("[API] CRADLE uebersprungen (MTHO_WEBHOOK_SECRET nicht gesetzt)")
 
     yield
 
@@ -84,7 +84,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 app = FastAPI(
     title="MTHO_CORE API",
-    description="Main Backend Interface for ATLAS Operations",
+    description="Main Backend Interface for MTHO Operations",
     version="1.0.0",
     lifespan=lifespan,
 )
@@ -104,9 +104,9 @@ app.add_middleware(
 app.include_router(whatsapp_webhook.router)
 app.include_router(ha_webhook.router)
 app.include_router(oc_channel.router)
-app.include_router(atlas_knowledge.router)
-app.include_router(atlas_voice.router)
-app.include_router(atlas_events.router)
+app.include_router(mtho_knowledge.router)
+app.include_router(mtho_voice.router)
+app.include_router(mtho_events.router)
 
 @app.get("/")
 def read_root():
@@ -133,7 +133,7 @@ def system_status() -> dict:
             "active": _ghost_pool is not None,
         },
         "cradle": {
-            "enabled": bool((os.getenv("ATLAS_WEBHOOK_SECRET") or "").strip()),
+            "enabled": bool((os.getenv("MTHO_WEBHOOK_SECRET") or "").strip()),
             "port": 8049,
         },
     }

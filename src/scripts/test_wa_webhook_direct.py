@@ -5,8 +5,8 @@
 # ============================================================
 
 """
-Test: POST an ATLAS_CORE /webhook/whatsapp (simuliert HA-Aufruf).
-Prüft die API-Route isoliert. ATLAS_CORE API muss laufen (z. B. uvicorn auf API_PORT).
+Test: POST an MTHO_CORE /webhook/whatsapp (simuliert HA-Aufruf).
+Prüft die API-Route isoliert. MTHO_CORE API muss laufen (z. B. uvicorn auf API_PORT).
 Payload-Format wie von HA rest_command: sender, message.conversation oder text/body.
 """
 import os
@@ -48,7 +48,7 @@ def main():
         print(f"Response: {r.text[:500] if r.text else '(leer)'}")
         return 0 if r.status_code == 200 else 1
     except requests.exceptions.ConnectionError:
-        print("Verbindungsfehler – läuft die ATLAS_CORE API (uvicorn)?")
+        print("Verbindungsfehler – läuft die MTHO_CORE API (uvicorn)?")
         return 1
     except Exception as e:
         print(f"Fehler: {e}")

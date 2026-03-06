@@ -37,17 +37,17 @@ async def fix_automation():
         automations = resp.get("result", [])
         print(f"Total automations: {len(automations)}")
         
-        # Find ATLAS WhatsApp automation
+        # Find MTHO WhatsApp automation
         target = None
         for a in automations:
             alias = a.get("alias", "")
-            if "atlas" in alias.lower() and "whatsapp" in alias.lower():
+            if "mtho" in alias.lower() and "whatsapp" in alias.lower():
                 print(f"\nGefunden: {alias} (id: {a.get('id')})")
                 target = a
                 break
         
         if not target:
-            print("ATLAS WhatsApp automation not found!")
+            print("MTHO WhatsApp automation not found!")
             # Show all with whatsapp in them
             for a in automations:
                 if "whatsapp" in str(a).lower():

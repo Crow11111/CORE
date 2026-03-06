@@ -23,7 +23,7 @@
 | **WhatsApp → whatsapp_webhook** | 4 | ~500–60000 ms | Sync (command) / BG (reasoning) |
 | Triage → HA/Heavy | | | |
 | **Scout → scout_direct_handler** | 3–5 | ~500–65000 ms | Sync |
-| Triage → HA / VPS-Fallback / OC Brain | | | |
+| Triage → HA / VPS-Fallback / OMEGA_ATTRACTOR | | | |
 | **VPS-Fallback → ha_webhook/forwarded_text** | 4 | ~3000–35000 ms | Sync |
 | Triage → HA / Heavy | | | |
 | **OC → oc_channel/send** | 2 | ~5000–60000 ms | Sync |
@@ -58,7 +58,7 @@
 |------|---------|----------------|
 | Ollama Triage | - | 200–800 ms |
 | Gemini Heavy | - | 3000–30000 ms |
-| OC Brain | 60 s | 5000–60000 ms |
+| OMEGA_ATTRACTOR | 60 s | 5000–60000 ms |
 | VPS-Fallback | 30 s | 2000–15000 ms |
 | HA call_service | 5 s | 100–500 ms |
 | ChromaDB query | - | 100–300 ms pro Collection |
@@ -74,7 +74,7 @@
 | ha_webhook/assist | 3000–15000 ms | process_text in Thread + dispatch_tts bereits async | Event-Loop frei |
 | atlas_knowledge/search (collection=all) | 300–900 ms | 3 ChromaDB-Queries parallel | ~60–70 % (900→300 ms) |
 | whatsapp_webhook (command) | 500–2000 ms | Triage bereits Fast-Path (lexical) | Bereits optimiert |
-| scout_direct_handler (deep_reasoning) | 5000–65000 ms | OC Brain extern, kein lokaler Fix | - |
+| scout_direct_handler (deep_reasoning) | 5000–65000 ms | OMEGA_ATTRACTOR extern, kein lokaler Fix | - |
 | oc_channel/send | 5000–60000 ms | Async-Client (httpx) – geschützt | Empfehlung: später |
 
 ---

@@ -6,12 +6,12 @@
 
 #!/usr/bin/env python3
 """
-ATLAS 4D State Vector – Validierung aller Schwellwerte und Konstanten.
+MTHO 4D State Vector – Validierung aller Schwellwerte und Konstanten.
 
 Validiert:
 - Mathematische Konstanten (PHI, INV_PHI, COMP_PHI, SYMMETRY_BREAK, BARYONIC_DELTA)
 - Vordefinierte Zustaende (WUJI, ANSAUGEN, VERDICHTEN, ARBEITEN, AUSSTOSSEN)
-- Agos-Zyklus-Konsistenz
+- Simultan-Kaskade-Zyklus-Konsistenz
 - Phi-Balance- und Symmetriebruch-Pruefung
 - get_current_state() mit Env-Variablen
 - Munin-Veto-Override (ring0_state)
@@ -33,7 +33,7 @@ COMP_PHI_EXACT = 1 - INV_PHI_EXACT
 
 def test_constants() -> list[str]:
     """Validiert mathematische Konstanten."""
-    from src.config.atlas_state_vector import PHI, INV_PHI, COMP_PHI, SYMMETRY_BREAK, BARYONIC_DELTA
+    from src.config.mtho_state_vector import PHI, INV_PHI, COMP_PHI, SYMMETRY_BREAK, BARYONIC_DELTA
 
     errors = []
     # PHI
@@ -76,8 +76,8 @@ def test_constants() -> list[str]:
 
 
 def test_predefined_states() -> list[str]:
-    """Validiert vordefinierte Zustaende gegen ATLAS_4_STRANG_THEORIE."""
-    from src.config.atlas_state_vector import (
+    """Validiert vordefinierte Zustaende gegen MTHO_4_STRANG_THEORIE."""
+    from src.config.mtho_state_vector import (
         WUJI,
         ANSAUGEN,
         VERDICHTEN,
@@ -108,8 +108,8 @@ def test_predefined_states() -> list[str]:
 
 
 def test_agos_cycle() -> list[str]:
-    """Prueft Agos-Zyklus-Konsistenz (Takt 0-4)."""
-    from src.config.atlas_state_vector import WUJI, ANSAUGEN, VERDICHTEN, ARBEITEN, AUSSTOSSEN
+    """Prueft Simultan-Kaskade-Zyklus-Konsistenz (Takt 0-4)."""
+    from src.config.mtho_state_vector import WUJI, ANSAUGEN, VERDICHTEN, ARBEITEN, AUSSTOSSEN
 
     cycle = [WUJI, ANSAUGEN, VERDICHTEN, ARBEITEN, AUSSTOSSEN]
     names = ["WUJI(0)", "ANSAUGEN(1)", "VERDICHTEN(2)", "ARBEITEN(3)", "AUSSTOSSEN(4)"]
@@ -126,8 +126,8 @@ def test_agos_cycle() -> list[str]:
 
 def test_phi_balance() -> list[str]:
     """Prueft is_in_phi_balance()."""
-    from src.config.atlas_state_vector import (
-        ATLASStateVector,
+    from src.config.mtho_state_vector import (
+        MTHOStateVector,
         INV_PHI,
         COMP_PHI,
         WUJI,
@@ -135,14 +135,14 @@ def test_phi_balance() -> list[str]:
 
     errors = []
     # Bei INV_PHI sollte True sein
-    v_inv = ATLASStateVector(INV_PHI, 0, 0.5, 0)
+    v_inv = MTHOStateVector(INV_PHI, 0, 0.5, 0)
     if not v_inv.is_in_phi_balance():
         errors.append(f"x={INV_PHI} sollte phi_balance=True liefern")
     else:
         print("  is_in_phi_balance(INV_PHI) OK")
 
     # Bei COMP_PHI sollte True sein
-    v_comp = ATLASStateVector(COMP_PHI, 0, 0.5, 0)
+    v_comp = MTHOStateVector(COMP_PHI, 0, 0.5, 0)
     if not v_comp.is_in_phi_balance():
         errors.append(f"x={COMP_PHI} sollte phi_balance=True liefern")
     else:
@@ -159,18 +159,18 @@ def test_phi_balance() -> list[str]:
 
 def test_symmetry_broken() -> list[str]:
     """Prueft is_symmetry_broken()."""
-    from src.config.atlas_state_vector import ATLASStateVector, SYMMETRY_BREAK
+    from src.config.mtho_state_vector import MTHOStateVector, SYMMETRY_BREAK
 
     errors = []
     # Bei y=0.49 sollte True sein
-    v = ATLASStateVector(0.5, SYMMETRY_BREAK, 0.5, 0)
+    v = MTHOStateVector(0.5, SYMMETRY_BREAK, 0.5, 0)
     if not v.is_symmetry_broken():
         errors.append(f"y={SYMMETRY_BREAK} sollte symmetry_broken=True liefern")
     else:
         print("  is_symmetry_broken(0.49) OK")
 
     # Bei y=0 sollte False sein
-    v0 = ATLASStateVector(0.5, 0.0, 0.5, 0)
+    v0 = MTHOStateVector(0.5, 0.0, 0.5, 0)
     if v0.is_symmetry_broken():
         errors.append("y=0 sollte symmetry_broken=False liefern")
     else:
@@ -181,7 +181,7 @@ def test_symmetry_broken() -> list[str]:
 
 def test_get_current_state() -> list[str]:
     """Prueft get_current_state() mit Env-Variablen."""
-    from src.config.atlas_state_vector import (
+    from src.config.mtho_state_vector import (
         get_current_state,
         WUJI,
         ANSAUGEN,
@@ -191,15 +191,15 @@ def test_get_current_state() -> list[str]:
     )
 
     errors = []
-    orig_preset = os.environ.get("ATLAS_STATE_PRESET")
-    orig_z = os.environ.get("ATLAS_Z_WIDERSTAND")
+    orig_preset = os.environ.get("MTHO_STATE_PRESET")
+    orig_z = os.environ.get("MTHO_Z_WIDERSTAND")
 
     try:
         # Default = WUJI
-        if "ATLAS_STATE_PRESET" in os.environ:
-            del os.environ["ATLAS_STATE_PRESET"]
-        if "ATLAS_Z_WIDERSTAND" in os.environ:
-            del os.environ["ATLAS_Z_WIDERSTAND"]
+        if "MTHO_STATE_PRESET" in os.environ:
+            del os.environ["MTHO_STATE_PRESET"]
+        if "MTHO_Z_WIDERSTAND" in os.environ:
+            del os.environ["MTHO_Z_WIDERSTAND"]
         # Munin-Veto zuruecksetzen
         try:
             from src.config.ring0_state import clear_munin_veto
@@ -214,39 +214,39 @@ def test_get_current_state() -> list[str]:
             print("  get_current_state() Default=WUJI OK")
 
         # Preset ANSAUGEN
-        os.environ["ATLAS_STATE_PRESET"] = "ANSAUGEN"
+        os.environ["MTHO_STATE_PRESET"] = "ANSAUGEN"
         s = get_current_state()
         if s.w_takt != 1 or abs(s.x_car_cdr - 0.3) > 1e-9:
             errors.append(f"Preset ANSAUGEN: {s}")
         else:
-            print("  ATLAS_STATE_PRESET=ANSAUGEN OK")
+            print("  MTHO_STATE_PRESET=ANSAUGEN OK")
 
         # Preset VERDICHTEN
-        os.environ["ATLAS_STATE_PRESET"] = "VERDICHTEN"
+        os.environ["MTHO_STATE_PRESET"] = "VERDICHTEN"
         s = get_current_state()
         if s.w_takt != 2:
             errors.append(f"Preset VERDICHTEN: w_takt={s.w_takt}")
         else:
-            print("  ATLAS_STATE_PRESET=VERDICHTEN OK")
+            print("  MTHO_STATE_PRESET=VERDICHTEN OK")
 
         # Z-Widerstand Override
-        os.environ["ATLAS_STATE_PRESET"] = ""
-        os.environ["ATLAS_Z_WIDERSTAND"] = "0.9"
+        os.environ["MTHO_STATE_PRESET"] = ""
+        os.environ["MTHO_Z_WIDERSTAND"] = "0.9"
         s = get_current_state()
         if abs(s.z_widerstand - 0.9) > 1e-9:
-            errors.append(f"ATLAS_Z_WIDERSTAND=0.9: z={s.z_widerstand}")
+            errors.append(f"MTHO_Z_WIDERSTAND=0.9: z={s.z_widerstand}")
         else:
-            print("  ATLAS_Z_WIDERSTAND=0.9 OK")
+            print("  MTHO_Z_WIDERSTAND=0.9 OK")
 
     finally:
         if orig_preset is not None:
-            os.environ["ATLAS_STATE_PRESET"] = orig_preset
-        elif "ATLAS_STATE_PRESET" in os.environ:
-            del os.environ["ATLAS_STATE_PRESET"]
+            os.environ["MTHO_STATE_PRESET"] = orig_preset
+        elif "MTHO_STATE_PRESET" in os.environ:
+            del os.environ["MTHO_STATE_PRESET"]
         if orig_z is not None:
-            os.environ["ATLAS_Z_WIDERSTAND"] = orig_z
-        elif "ATLAS_Z_WIDERSTAND" in os.environ:
-            del os.environ["ATLAS_Z_WIDERSTAND"]
+            os.environ["MTHO_Z_WIDERSTAND"] = orig_z
+        elif "MTHO_Z_WIDERSTAND" in os.environ:
+            del os.environ["MTHO_Z_WIDERSTAND"]
         try:
             from src.config.ring0_state import clear_munin_veto
             clear_munin_veto()
@@ -258,14 +258,14 @@ def test_get_current_state() -> list[str]:
 
 def test_munin_veto_override() -> list[str]:
     """Prueft Munin-Veto-Override (ring0_state)."""
-    from src.config.atlas_state_vector import get_current_state, WUJI
+    from src.config.mtho_state_vector import get_current_state, WUJI
     from src.config.ring0_state import set_munin_veto, clear_munin_veto, get_munin_veto_override
 
     errors = []
-    orig_preset = os.environ.get("ATLAS_STATE_PRESET")
+    orig_preset = os.environ.get("MTHO_STATE_PRESET")
     try:
-        if "ATLAS_STATE_PRESET" in os.environ:
-            del os.environ["ATLAS_STATE_PRESET"]
+        if "MTHO_STATE_PRESET" in os.environ:
+            del os.environ["MTHO_STATE_PRESET"]
         clear_munin_veto()
 
         set_munin_veto(0.95)
@@ -284,14 +284,14 @@ def test_munin_veto_override() -> list[str]:
     finally:
         clear_munin_veto()
         if orig_preset is not None:
-            os.environ["ATLAS_STATE_PRESET"] = orig_preset
+            os.environ["MTHO_STATE_PRESET"] = orig_preset
 
     return errors
 
 
 def test_magnitude() -> list[str]:
     """Prueft magnitude()."""
-    from src.config.atlas_state_vector import ATLASStateVector, WUJI
+    from src.config.mtho_state_vector import MTHOStateVector, WUJI
 
     errors = []
     m = WUJI.magnitude()
@@ -305,13 +305,13 @@ def test_magnitude() -> list[str]:
 
 
 def main() -> int:
-    print("=== ATLAS 4D State Vector – Validierung ===\n")
+    print("=== MTHO 4D State Vector – Validierung ===\n")
 
     all_errors = []
     sections = [
         ("1. Mathematische Konstanten", test_constants),
         ("2. Vordefinierte Zustaende", test_predefined_states),
-        ("3. Agos-Zyklus", test_agos_cycle),
+        ("3. Simultan-Kaskade-Zyklus", test_agos_cycle),
         ("4. Phi-Balance", test_phi_balance),
         ("5. Symmetriebruch", test_symmetry_broken),
         ("6. get_current_state()", test_get_current_state),

@@ -9,7 +9,7 @@
 
 ## 1. Status Quo (Vorher)
 - **Skills:** `docs/osmium_council/SKILL.md` war ein monolithisches File. Viele Rollen waren unklar definiert oder doppelt.
-- **Agenten:** Keine echte Trennung; "Rat" war nur Prompt-Rollenspiel.
+- **Agenten:** Keine echte Trennung; "OMEGA_ATTRACTOR Council" war nur Prompt-Rollenspiel.
 - **Dokumente:** Lagen flach im `docs/` Root. Unübersichtlich. Gefahr von "Untracked Files".
 - **Trigger:** `.cursorrules` triggerte nur auf `/council`, aber nicht automatisch bei kritischen Änderungen.
 

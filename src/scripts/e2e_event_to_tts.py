@@ -23,7 +23,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="E2E: Event an OC Brain, Antwort als TTS speichern")
     parser.add_argument("--type", default="e2e_test", help="event_type")
     parser.add_argument("--node", default="dreadnought", help="node_id")
-    parser.add_argument("--role", default="atlas_dialog", help="TTS-Rolle")
+    parser.add_argument("--role", default="mtho_dialog", help="TTS-Rolle")
     parser.add_argument("--out", default=None, help="MP3-Ausgabepfad (default: media/e2e_<id>.mp3)")
     args = parser.parse_args()
 

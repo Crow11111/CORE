@@ -1,22 +1,22 @@
 rest_command:
-  atlas_event:
-    url: "http://192.168.178.20:8000/api/atlas/event"
+  mtho_event:
+    url: "http://192.168.178.20:8000/api/mtho/event"
     method: POST
     headers:
       Content-Type: "application/json"
     payload: '{"source": "ha_automation", "node_id": "scout", "event_type": "{{ event_type | default(''generic'') }}", "priority": "{{ priority | default(''medium'') }}", "data": {{ data | default({}) | tojson }}}'
     timeout: 5
 
-  atlas_event_vps_fallback:
-    url: "http://187.77.68.250:8080/api/atlas/event"
+  mtho_event_vps_fallback:
+    url: "http://187.77.68.250:8080/api/mtho/event"
     method: POST
     headers:
       Content-Type: "application/json"
     payload: '{"source": "ha_automation", "node_id": "scout", "event_type": "{{ event_type | default(''generic'') }}", "priority": "{{ priority | default(''medium'') }}", "data": {{ data | default({}) | tojson }}}'
     timeout: 10
 
-  atlas_events_list:
-    url: "http://192.168.178.20:8000/api/atlas/events?limit={{ limit | default(10) }}"
+  mtho_events_list:
+    url: "http://192.168.178.20:8000/api/mtho/events?limit={{ limit | default(10) }}"
     method: GET
     headers:
       Content-Type: "application/json"

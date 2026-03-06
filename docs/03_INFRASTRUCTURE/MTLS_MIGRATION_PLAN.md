@@ -7,7 +7,7 @@
 
 # mTLS-Migrationsplan – GQA Refactor F3 (unified-auth-mtls)
 
-**Zweck:** Einheitliches mTLS-Schema für alle Service-to-Service-Kommunikation in ATLAS. Ersetzt den Wildcard-Token-Ansatz durch Zertifikats-basierte gegenseitige Authentifizierung.
+**Zweck:** Einheitliches mTLS-Schema für alle Service-to-Service-Kommunikation in MTHO. Ersetzt den Wildcard-Token-Ansatz durch Zertifikats-basierte gegenseitige Authentifizierung.
 
 **Stand:** 2026-03  
 **Status:** Konzept / Planung  
@@ -21,7 +21,7 @@
 
 | Funktion | Methode | Env-Variable | Verwendung |
 |----------|---------|---------------|------------|
-| `verify_whatsapp_auth` | Shared-Secret Header | `ATLAS_WEBHOOK_SECRET` | X-ATLAS-WEBHOOK-SECRET |
+| `verify_whatsapp_auth` | Shared-Secret Header | `ATLAS_WEBHOOK_SECRET` | X-MTHO-WEBHOOK-SECRET |
 | `verify_ha_auth` | Bearer Token | `HA_WEBHOOK_TOKEN` | Bearer für /webhook/ha_action, /webhook/inject_text |
 | `verify_oc_auth` | API-Key / Bearer | `OPENCLAW_GATEWAY_TOKEN` | X-API-Key oder Bearer für /api/oc/* |
 
@@ -32,11 +32,11 @@
 
 | Verbindung | Protokoll | Auth | Env |
 |------------|-----------|------|-----|
-| ATLAS → OpenClaw Gateway | HTTP/HTTPS | Bearer | OPENCLAW_GATEWAY_TOKEN |
+| MTHO → OpenClaw Gateway | HTTP/HTTPS | Bearer | OPENCLAW_GATEWAY_TOKEN |
 | Scout/HA → OpenClaw | HTTP POST | Bearer | OPENCLAW_GATEWAY_TOKEN |
-| Scout → Dreadnought (SSH) | SSH | Passwort/Key | HA_SSH_USER, HA_SSH_PASSWORD, SSH_KEY_PATH |
+| Scout → 4D_RESONATOR (MTHO_CORE) (SSH) | SSH | Passwort/Key | HA_SSH_USER, HA_SSH_PASSWORD, SSH_KEY_PATH |
 | Cursor → VPS (MCP) | HTTP/SSH | (nicht dokumentiert) | MCP-Server auf VPS:8001 |
-| Dreadnought → ChromaDB (VPS) | HTTP | Keine | CHROMA_HOST, CHROMA_PORT |
+| 4D_RESONATOR (MTHO_CORE) → ChromaDB (VPS) | HTTP | Keine | CHROMA_HOST, CHROMA_PORT |
 | VPS SSH | SSH | Passwort/Key | VPS_USER, VPS_PASSWORD, VPS_SSH_KEY |
 
 ---
@@ -47,7 +47,7 @@
 
 ```
                     ┌─────────────────────────────────────┐
-                    │  ATLAS Root CA (self-signed)         │
+                    │  MTHO Root CA (self-signed)         │
                     │  CN=atlas-ca.local, 10 Jahre        │
                     └─────────────────┬───────────────────┘
                                       │
@@ -63,7 +63,7 @@
     │         │              │           │
     ▼         ▼              ▼           ▼
 ┌───────┐ ┌───────┐    ┌─────────┐ ┌─────────┐
-│ATLAS  │ │ MCP   │    │ cursor  │ │ oc-brain│
+│MTHO  │ │ MCP   │    │ cursor  │ │ oc-brain│
 │ API   │ │ Server│    │ client  │ │ client  │
 │(Dread)│ │(VPS)  │    │         │ │         │
 └───────┘ └───────┘    └─────────┘ └─────────┘
@@ -78,9 +78,9 @@
 ```
 
 **Prinzip:**  
-- **Root CA:** Eine zentrale CA pro ATLAS-Installation (oder pro Mandant).  
-- **Server CA:** Signiert Server-Zertifikate (ATLAS API, MCP Server, OpenClaw Gateway).  
-- **Client CA:** Signiert Client-Zertifikate (Cursor, Scout, OC Brain, HA).  
+- **Root CA:** Eine zentrale CA pro MTHO-Installation (oder pro Mandant).  
+- **Server CA:** Signiert Server-Zertifikate (MTHO API, MCP Server, OpenClaw Gateway).  
+- **Client CA:** Signiert Client-Zertifikate (Cursor, Scout, OMEGA_ATTRACTOR, HA).  
 - **Trennung:** Server- und Client-CA getrennt → Revocation pro Rolle möglich.
 
 ### 2.2 Zertifikats-Mapping pro Verbindung
@@ -88,11 +88,11 @@
 | Verbindung | Server-Cert | Client-Cert | Port |
 |------------|-------------|-------------|------|
 | **Cursor → VPS (MCP)** | MCP-Server (VPS) | cursor-client | 8001 (TLS) |
-| **Scout → Dreadnought** | ATLAS API | scout-client | 8000 (TLS) |
-| **OC Brain → ATLAS API** | ATLAS API | oc-brain-client | 8000 (TLS) |
-| **HA → ATLAS API** | ATLAS API | ha-client | 8000 (TLS) |
-| **ATLAS → OpenClaw** | OpenClaw Gateway | atlas-client | 18789/443 (TLS) |
-| **ATLAS → ChromaDB** | ChromaDB (optional) | atlas-client | 8000 (TLS) |
+| **Scout → 4D_RESONATOR (MTHO_CORE)** | MTHO API | scout-client | 8000 (TLS) |
+| **OMEGA_ATTRACTOR → MTHO API** | MTHO API | oc-brain-client | 8000 (TLS) |
+| **HA → MTHO API** | MTHO API | ha-client | 8000 (TLS) |
+| **MTHO → OpenClaw** | OpenClaw Gateway | atlas-client | 18789/443 (TLS) |
+| **MTHO → ChromaDB** | ChromaDB (optional) | atlas-client | 8000 (TLS) |
 
 **Hinweis:** ChromaDB unterstützt mTLS nicht nativ; Option: Reverse-Proxy (z. B. Nginx) mit mTLS vor ChromaDB.
 
@@ -128,7 +128,7 @@
 
 ### Phase 2: Dual-Mode (mTLS + Token parallel)
 
-4. **ATLAS API:** TLS aktivieren (uvicorn mit ssl_context), mTLS optional  
+4. **MTHO API:** TLS aktivieren (uvicorn mit ssl_context), mTLS optional  
    - Client-Cert-Validierung: Nur wenn Request Client-Cert mitschickt  
    - Token weiterhin akzeptiert für Legacy-Clients
 
@@ -139,9 +139,9 @@
 ### Phase 3: Migration pro Client
 
 7. **Scout/HA:** Client-Cert auf Raspi deployen, HA Automation auf HTTPS+mTLS umstellen  
-8. **OC Brain:** Client-Cert in OpenClaw-Container, Requests mit Cert  
+8. **OMEGA_ATTRACTOR:** Client-Cert in OpenClaw-Container, Requests mit Cert  
 9. **Cursor:** MCP-Client mit Client-Cert konfigurieren  
-10. **ATLAS → OpenClaw:** openclaw_client.py auf mTLS umstellen
+10. **MTHO → OpenClaw:** openclaw_client.py auf mTLS umstellen
 
 ### Phase 4: Token-Deprecation
 
@@ -182,8 +182,8 @@ def verify_oc_auth_mtls_or_token(request):
 |--------|----------------------|------------|
 | WhatsApp Webhook | Niedrig | Externer Dienst (Meta), kein Client-Cert möglich → Token bleibt |
 | HA/Scout | Mittel | Raspi kann Cert hosten; HA-Automation anpassbar |
-| OC Brain | Hoch | VPS-Container, Cert-Deploy machbar |
-| Cursor | Hoch | Lokaler Client, Cert auf Dreadnought/PC |
+| OMEGA_ATTRACTOR | Hoch | VPS-Container, Cert-Deploy machbar |
+| Cursor | Hoch | Lokaler Client, Cert auf 4D_RESONATOR (MTHO_CORE)/PC |
 | ChromaDB-Zugriff | Optional | Proxy mit mTLS oder SSH-Tunnel |
 
 **Ausnahme:** WhatsApp-Webhook (`ATLAS_WEBHOOK_SECRET`) bleibt dauerhaft Token-basiert – Meta sendet kein Client-Cert.
@@ -217,7 +217,7 @@ Erzeugt CA, Server- und Client-Zertifikate für Entwicklung und erste Tests.
 |-------|------------|
 | `ca_root.pem`, `ca_root.key` | Root CA (geheim halten) |
 | `ca_srv.pem`, `ca_cli.pem` | Intermediate CAs |
-| `atlas-api.pem/.key` | ATLAS API Server |
+| `atlas-api.pem/.key` | MTHO API Server |
 | `mcp-server.pem/.key` | MCP-Server (VPS) |
 | `openclaw-server.pem/.key` | OpenClaw Gateway |
 | `cursor.pem/.key`, `scout.pem/.key`, etc. | Client-Zertifikate |

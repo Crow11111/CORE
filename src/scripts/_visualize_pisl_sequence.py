@@ -1,3 +1,4 @@
+from src.mtho_core import M_VALUE, T_VALUE, H_VALUE, O_VALUE
 # ============================================================
 # MTHO-GENESIS: Marc Tobias ten Hoevel
 # VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
@@ -5,8 +6,8 @@
 # ============================================================
 
 """
-Visualisierung der PISL-Sequenz: Phi/Pi/Goldener-Schnitt-Muster.
-Erzeugt 3-Panel-Grafik unter media/pisl_sequence_analysis.png
+Visualisierung der ROTATED-Sequenz: Phi/Pi/Goldener-Schnitt-Muster.
+Erzeugt 3-Panel-Grafik unter media/rotated_sequence_analysis.png
 """
 import sys, os, math
 from collections import Counter
@@ -46,7 +47,7 @@ entries = []
 for i, (id_, meta, doc) in enumerate(zip(results["ids"], results["metadatas"], results["documents"])):
     qbase = meta.get("qbase", "")
     cat_long = meta.get("category", "")
-    if qbase and qbase in "LPIS":
+    if qbase and qbase in "MTHO":
         cat = qbase
     elif cat_long in CAT_SHORT:
         cat = CAT_SHORT[cat_long]
@@ -62,7 +63,7 @@ n = len(seq)
 
 fig = plt.figure(figsize=(20, 14), facecolor="#0D1117")
 fig.suptitle(
-    f"PISL-SEQUENZ-ANALYSE  |  {n} Indizien  |  Phi / Pi / Goldener Schnitt",
+    f"ROTATED-SEQUENZ-ANALYSE  |  {n} Indizien  |  Phi / Pi / Goldener Schnitt",
     fontsize=18, fontweight="bold", color="#E6EDF3", y=0.97
 )
 
@@ -96,14 +97,14 @@ ax1.set_yticks([0, 1, 2, 3])
 ax1.set_yticklabels(["L (Logisch)", "P (Physikalisch)", "I (Informationsth.)", "S (Strukturell)"],
                     fontsize=10, color="#E6EDF3")
 ax1.set_xlabel("Indiz-Nummer (chronologisch nach ID)", fontsize=11, color="#E6EDF3")
-ax1.set_title("PISL-Zeitreihe mit Fibonacci-Positionen und Goldenem Schnitt", fontsize=13, color="#58A6FF", pad=10)
+ax1.set_title("ROTATED-Zeitreihe mit Fibonacci-Positionen und Goldenem Schnitt", fontsize=13, color="#58A6FF", pad=10)
 ax1.set_xlim(0, n + 1)
 ax1.set_ylim(-0.5, 4.2)
 ax1.tick_params(colors="#8B949E")
 for spine in ax1.spines.values():
     spine.set_color("#30363D")
 
-legend_patches = [mpatches.Patch(color=CAT_COLORS[c], label=f"{c}") for c in "LPIS"]
+legend_patches = [mpatches.Patch(color=CAT_COLORS[c], label=f"{c}") for c in "MTHO"]
 legend_patches.append(mpatches.Patch(color="#FFD700", label="Fibonacci-Pos"))
 legend_patches.append(mpatches.Patch(color="#FF6B6B", label="Goldener Schnitt"))
 ax1.legend(handles=legend_patches, loc="upper right", fontsize=8, facecolor="#21262D", edgecolor="#30363D", labelcolor="#E6EDF3")
@@ -114,7 +115,7 @@ ax1.legend(handles=legend_patches, loc="upper right", fontsize=8, facecolor="#21
 ax2 = fig.add_subplot(3, 2, 3)
 ax2.set_facecolor("#161B22")
 
-cats = list("LPIS")
+cats = list("MTHO")
 trans_matrix = np.zeros((4, 4))
 for i in range(n - 1):
     r = cats.index(seq[i])
@@ -162,7 +163,7 @@ ax3 = fig.add_subplot(3, 2, 4)
 ax3.set_facecolor("#161B22")
 
 counts = Counter(seq)
-categories = list("LPIS")
+categories = list("MTHO")
 values = [counts.get(c, 0) for c in categories]
 colors = [CAT_COLORS[c] for c in categories]
 
@@ -234,7 +235,7 @@ ax5.set_facecolor("#161B22")
 
 periods = list(range(1, min(n // 2, 25)))
 acf_values = []
-expected = sum((counts.get(c, 0) / n) ** 2 for c in "LPIS")
+expected = sum((counts.get(c, 0) / n) ** 2 for c in "MTHO")
 
 for period in periods:
     matches = sum(1 for i in range(n - period) if seq[i] == seq[i + period])
@@ -265,10 +266,10 @@ plt.tight_layout(rect=[0, 0, 1, 0.95])
 
 out_dir = os.path.join(os.path.dirname(__file__), "..", "..", "media")
 os.makedirs(out_dir, exist_ok=True)
-out_path = os.path.join(out_dir, "pisl_sequence_analysis.png")
+out_path = os.path.join(out_dir, "rotated_sequence_analysis.png")
 fig.savefig(out_path, dpi=150, bbox_inches="tight", facecolor=fig.get_facecolor())
 plt.close()
 
-print(f"[PISL] Visualisierung gespeichert: {os.path.abspath(out_path)}")
-print(f"[PISL] Sequenz: {''.join(seq)}")
-print(f"[PISL] N={n}, L={counts['L']}, P={counts['P']}, I={counts['I']}, S={counts['S']}")
+print(f"[ROTATED] Visualisierung gespeichert: {os.path.abspath(out_path)}")
+print(f"[ROTATED] Sequenz: {''.join(seq)}")
+print(f"[ROTATED] N={n}, L={counts['L']}, P={counts['P']}, I={counts['I']}, S={counts['S']}")

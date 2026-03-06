@@ -7,7 +7,7 @@
 
 # Entry Adapter Spec (GQA F13)
 
-**Status:** Implementiert  
+**Status:** Implementiert
 **Priorität:** Vor F5 (Gravitator) – Gravitator benötigt normalisierte Inputs.
 
 ---
@@ -72,11 +72,17 @@ def normalize_request(source: str, raw_payload: Any, auth_ctx: dict | None = Non
 2. Ruft `normalize_request(source, raw_payload, auth_ctx)` auf.
 3. Übergibt `NormalizedEntry` an Downstream (Gravitator, Triage, etc.).
 
-**PoC:** `ha_webhook.receive_ha_action` – erste Integration.
+**Integration (2026-03-06):** `whatsapp_webhook.receive_whatsapp`, `ha_webhook.receive_ha_action` – beide nutzen ausschließlich `normalize_request()`; der Adapter ruft **niemals** OMEGA_ATTRACTOR oder Kern-Logik direkt auf. Ausgabe geht an Triage/Gravitator (ggf. nach Takt-0-Gate).
 
 ---
 
 ## 6. Abhängigkeiten
 
 - **Vor:** Keine (Entry Adapter ist Einstiegspunkt).
-- **Nach:** F5 Gravitator, Triage-Pipeline.
+- **Nach:** Takt-0-Gate (optional), F5 Gravitator, Triage-Pipeline.
+
+---
+
+## 7. Tesserakt-Topologie
+
+Der Entry Adapter ist die **Membran** des Tesserakts: Außenhülle, isoliert von der Kern-Logik. Siehe `docs/02_ARCHITECTURE/MTHO_SCHNITTSTELLEN_UND_KANAALE.md` und `docs/MTHO_GENESIS_FINAL_ARCHIVE.md` (§4).

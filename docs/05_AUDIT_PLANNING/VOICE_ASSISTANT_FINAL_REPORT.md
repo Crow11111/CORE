@@ -5,7 +5,7 @@
 <!-- ============================================================
 -->
 
-# ATLAS Voice Assistant – Final Report
+# MTHO Voice Assistant – Final Report
 
 **Datum:** 2026-03-04  
 **Status:** Integration abgeschlossen
@@ -18,13 +18,13 @@
 |------------|--------|---------|
 | smart_command_parser in scout_direct_handler | ✅ | Zeilen 106–128, bevorzugt bei Steuerbefehlen |
 | ElevenLabs für Antworten | ✅ | TTS_TARGET=elevenlabs_stream in .env setzen |
-| Kette Wake Word → STT → ATLAS → Parser → HA → TTS | ✅ | Vollständig (siehe Architektur) |
+| Kette Wake Word → STT → MTHO → Parser → HA → TTS | ✅ | Vollständig (siehe Architektur) |
 
 ### Kette im Detail
 
 1. **Wake Word:** openWakeWord (Wyoming)
 2. **STT:** Whisper (Wyoming)
-3. **ATLAS:** ATLAS Conversation Agent → `/webhook/inject_text` oder `/webhook/assist`
+3. **MTHO:** MTHO Conversation Agent → `/webhook/inject_text` oder `/webhook/assist`
 4. **Parser:** `scout_direct_handler.process_text()` → `smart_command_parser.parse_command()`
 5. **HA Action:** `HAClient.call_service(domain, service, entity_id, data)`
 6. **TTS:** `dispatch_tts(reply, target=TTS_TARGET)` → mini / elevenlabs_stream

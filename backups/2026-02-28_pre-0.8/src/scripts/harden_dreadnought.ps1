@@ -1,7 +1,7 @@
 # harden_dreadnought.ps1
-# ATLAS_CORE: Phase 1 Hardware Hardening Script
+# MTHO_CORE: Phase 1 Hardware Hardening Script
 
-Write-Host "=== ATLAS_CORE: Dreadnought Hardening ===" -ForegroundColor Cyan
+Write-Host "=== MTHO_CORE: Dreadnought Hardening ===" -ForegroundColor Cyan
 
 # 1. Telemetry Level 0 (Windows 11 Enterprise IoT 25H2 Spezifisch)
 Write-Host "[*] Deaktiviere Windows Telemetrie (Setze auf Level 0)..."

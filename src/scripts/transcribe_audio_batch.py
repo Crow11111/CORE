@@ -6,7 +6,7 @@
 
 """
 Batch-Transkription von Audio-Dateien ueber Gemini API.
-Nutzt die bestehende ATLAS Pipeline (process_audio_gemini.py Pattern).
+Nutzt die bestehende MTHO Pipeline (process_audio_gemini.py Pattern).
 """
 import os
 import sys

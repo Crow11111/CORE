@@ -5,7 +5,7 @@
 # ============================================================
 
 """
-Liest Einreichungen von OC für den Osmium Rat (OC → ATLAS).
+Liest Einreichungen von OC für den Osmium Rat (OC → MTHO).
 
 OC (oder ein Agent auf OC) legt JSON-Dateien in
 /var/lib/openclaw/workspace/rat_submissions/ ab. Dieses Skript verbindet per SSH,
@@ -41,8 +41,8 @@ PORT = int(os.getenv("VPS_SSH_PORT", "22"))
 USER = os.getenv("VPS_USER", "root")
 PASSWORD = os.getenv("VPS_PASSWORD", "")
 KEY_PATH = os.getenv("VPS_SSH_KEY", "").strip()
-# Full-Stack VPS: /opt/atlas-core/openclaw-admin/data/workspace/rat_submissions
-REMOTE_DIR = os.getenv("OPENCLAW_RAT_SUBMISSIONS_DIR", "").strip() or "/opt/atlas-core/openclaw-admin/data/workspace/rat_submissions"
+# Full-Stack VPS: /opt/mtho-core/openclaw-admin/data/workspace/rat_submissions
+REMOTE_DIR = os.getenv("OPENCLAW_RAT_SUBMISSIONS_DIR", "").strip() or "/opt/mtho-core/openclaw-admin/data/workspace/rat_submissions"
 REMOTE_ARCHIVE = (os.getenv("OPENCLAW_RAT_SUBMISSIONS_ARCHIVE", "").strip()
     or (os.path.dirname(REMOTE_DIR) + "/rat_submissions_archive"))
 

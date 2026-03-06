@@ -5,7 +5,7 @@
 <!-- ============================================================
 -->
 
-# ATLAS Voice Assistant – Troubleshooting
+# MTHO Voice Assistant – Troubleshooting
 
 ---
 
@@ -13,10 +13,10 @@
 
 | Symptom | Ursache | Lösung |
 |---------|---------|--------|
-| Kein Reaktion auf "Hey ATLAS" | openWakeWord nicht aktiv | HA: Einstellungen → Sprachassistenten → Wake Word prüfen |
+| Kein Reaktion auf "Hey MTHO" | openWakeWord nicht aktiv | HA: Einstellungen → Sprachassistenten → Wake Word prüfen |
 | STT startet nicht | Whisper Add-on fehlt | Wyoming Add-ons installieren (Whisper, Piper, openWakeWord) |
-| Text wird nicht an ATLAS gesendet | Conversation Agent falsch | ATLAS Conversation Integration als Agent wählen |
-| 401/503 von ATLAS | HA_WEBHOOK_TOKEN fehlt | `.env`: HA_WEBHOOK_TOKEN setzen, in HA-Geheimnisse eintragen |
+| Text wird nicht an MTHO gesendet | Conversation Agent falsch | MTHO Conversation Integration als Agent wählen |
+| 401/503 von MTHO | HA_WEBHOOK_TOKEN fehlt | `.env`: HA_WEBHOOK_TOKEN setzen, in HA-Geheimnisse eintragen |
 
 ---
 
@@ -87,6 +87,6 @@ python -m src.scripts.test_elevenlabs_output
 
 ## 7. Logs
 
-- **ATLAS API:** `loguru` – LOG_LEVEL in `.env`
+- **MTHO API:** `loguru` – LOG_LEVEL in `.env`
 - **HA:** Einstellungen → System → Logs
 - **Wyoming:** Add-on-Logs in HA

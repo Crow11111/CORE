@@ -8,10 +8,10 @@ services:
     ports:
       - "8001:8001"
     volumes:
-      - /opt/atlas-core/workspace:/workspace
+      - /opt/mtho-core/workspace:/workspace
     networks:
-      - atlas_net
+      - mtho_net
 
 networks:
-  atlas_net:
+  mtho_net:
     external: true

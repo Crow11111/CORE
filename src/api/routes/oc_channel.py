@@ -5,7 +5,7 @@
 # ============================================================
 
 """
-Schnittstelle ATLAS ↔ OC (OpenClaw) im laufenden Backend.
+Schnittstelle MTHO ↔ OC (OpenClaw) im laufenden Backend.
 
 Wird mit dem Backend angeboten; Cursor-Orchestrator oder andere Komponenten können
 damit testweise Nachrichten austauschen und Einreichungen abholen, ohne
@@ -35,7 +35,7 @@ class SendBody(BaseModel):
 
 
 class OCSubmissionPayload(BaseModel):
-    """Schema für OC → ATLAS Webhook-Push (rat_submission)."""
+    """Schema für OC → MTHO Webhook-Push (rat_submission)."""
     from_: str = Field(default="oc", alias="from")
     type: str = Field(default="rat_submission")  # rat_submission | info | question
     created: str | None = None
@@ -45,14 +45,14 @@ class OCSubmissionPayload(BaseModel):
 
 
 def _get_rat_submissions_dir() -> Path:
-    root = Path(__file__).resolve().parents[3]  # ATLAS_CORE project root
+    root = Path(__file__).resolve().parents[3]  # MTHO_CORE project root
     return root / "data" / "rat_submissions"
 
 
 @router.post("/webhook")
 def oc_webhook_push(body: OCSubmissionPayload, _auth: None = Depends(verify_oc_auth)):
     """
-    GQA F2 - oc-webhook-push: OC Brain pusht Einreichungen direkt an ATLAS.
+    GQA F2 - oc-webhook-push: OC Brain pusht Einreichungen direkt an MTHO.
     Ersetzt SFTP-Polling durch sofortige Verarbeitung.
     Auth: X-API-Key oder Bearer (OPENCLAW_GATEWAY_TOKEN).
     """
@@ -84,7 +84,7 @@ def oc_status(_auth: None = Depends(verify_oc_auth)):
 
 @router.post("/send")
 def oc_send(body: SendBody, _auth: None = Depends(verify_oc_auth)):
-    """Sendet eine Nachricht an einen OC-Agenten (ATLAS → OC)."""
+    """Sendet eine Nachricht an einen OC-Agenten (MTHO → OC)."""
     from src.network.openclaw_client import send_message_to_agent, is_configured
 
     if not is_configured():
@@ -99,7 +99,7 @@ def oc_send(body: SendBody, _auth: None = Depends(verify_oc_auth)):
 
 @router.post("/fetch")
 def oc_fetch(_auth: None = Depends(verify_oc_auth)):
-    """Holt Einreichungen von OC (OC → ATLAS): SFTP-Polling-Fallback, wenn Webhook-Push nicht genutzt wird."""
+    """Holt Einreichungen von OC (OC → MTHO): SFTP-Polling-Fallback, wenn Webhook-Push nicht genutzt wird."""
     from src.scripts.fetch_oc_submissions import run_fetch
 
     ok, count, items = run_fetch(dry_run=False)

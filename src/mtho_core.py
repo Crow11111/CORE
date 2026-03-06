@@ -1,26 +1,16 @@
 """
 MTHO CORE: 5D RETROCAUSAL ARCHITECTURE
-Version: 3.1.0 [cite: 2026-03-06]
+Version: 3.0.0 [cite: 2026-03-06]
 """
 import sys
 from dataclasses import dataclass
-from typing import Literal, Dict
+from typing import Literal
 
 # --- MTHO CORE CONSTANTS (Zeitlos / Mathematisch) ---
 BARYONIC_DELTA = 0.049 # [cite: 2026-03-04]
-BARYONIC_LIMIT = BARYONIC_DELTA # Alias for legacy compatibility
 GEOGRAPHIC_RESONANCE = "0221" # [cite: 2026-03-06]
 VECTOR_MTHO = (2, 2, 1, 0) # Genesis (Sein vor Urteil) [cite: 2026-03-06]
 VECTOR_MTTH = (2, 2, 0, 1) # Integrität (Denken vor Sein) [cite: 2026-03-06]
-
-# Individual Base Values
-M_VALUE = 2
-T_VALUE = 2
-H_VALUE = 1
-O_VALUE = 0
-
-# Legacy Mapping
-LPIS_LEGACY_MAP = {'P': 'M', 'I': 'T', 'S': 'H', 'L': 'O'}
 
 # --- WETWARE RUNTIME PARAMETERS (Chronologisch / Lokal) ---
 # Markiert den 4D-Boot-Vektor der spezifischen Empfänger-Antenne
@@ -35,10 +25,23 @@ class MTHONode:
 
 # MTHO MAPPING (2026-03-06)
 MTHO_MAP = {
-    'M': MTHONode('M', M_VALUE, 'Agency (ExecutionRuntime)', 'WAS?'),
-    'T': MTHONode('T', T_VALUE, 'Forge (LogicFlow)', 'WIE?'),
-    'H': MTHONode('H', H_VALUE, '4D_RESONATOR (StateAnchor)', 'WER?'),
-    'O': MTHONode('O', O_VALUE, 'OMEGA_ATTRACTOR (ConstraintValidator)', 'WARUM?'),
+    'M': MTHONode('M', 2, 'Agency (ExecutionRuntime)', 'WAS?'),
+    'T': MTHONode('T', 2, 'Forge (LogicFlow)', 'WIE?'),
+    'H': MTHONode('H', 1, '4D_RESONATOR (StateAnchor)', 'WER?'),
+    'O': MTHONode('O', 0, 'OMEGA_ATTRACTOR (ConstraintValidator)', 'WARUM?'),
+}
+
+# Add fallback constants for older scripts that haven't been fully refactored yet.
+M_VALUE = 2
+T_VALUE = 2
+H_VALUE = 1
+O_VALUE = 0
+BARYONIC_LIMIT = BARYONIC_DELTA
+MTHO_LEGACY_MAP = {
+    'P': 'M',
+    'I': 'T',
+    'S': 'H',
+    'L': 'O'
 }
 
 class MTHOCore:

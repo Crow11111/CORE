@@ -13,7 +13,7 @@ Kurz: **GatewayRequestError: invalid config** = Schema-Validierung schlägt fehl
 
 ## 1. Exakte Fehlerstelle ermitteln: `openclaw doctor`
 
-**Von Dreadnought aus (mit .env für VPS):**
+**Von 4D_RESONATOR (MTHO_CORE) aus (mit .env für VPS):**
 
 ```bash
 python -m src.scripts.openclaw_doctor_vps
@@ -84,7 +84,7 @@ Damit das Brain **andere Modelle** (z. B. Claude, Nexos, weitere Gemini-Variante
 4. **Defaults / Aliase:**  
    Unter `agents.defaults.models` für **jedes** genutzte Modell einen Eintrag: Key = `provider/model-id`, Value = `{ "alias": "Anzeigename" }`. Ohne diese Einträge erscheinen nicht alle Modelle in der UI.
 
-Nach Änderungen: Config ohne REDACTED/$VAR auf den VPS deployen, Container neustarten, dann erneut `openclaw doctor` und einen Test-Request (z. B. über ATLAS) ausführen.
+Nach Änderungen: Config ohne REDACTED/$VAR auf den VPS deployen, Container neustarten, dann erneut `openclaw doctor` und einen Test-Request (z. B. über MTHO) ausführen.
 
 ---
 

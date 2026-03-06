@@ -11,10 +11,10 @@ class NTMappingService:
     NT-Mapping Service (Osmium Standard)
     Acts as the 'Social Firewall' described by the NT_SPECIALIST.
     Translates complex, ambiguous neurotypical organizational structures (like LDAP/Active Directory)
-    into flat, deterministic constants for Marc's ATLAS engine.
+    into flat, deterministic constants for Marc's MTHO engine.
     """
     def __init__(self):
-        # Maps complex AD roles to internal clear-cut ATLAS security clearance levels
+        # Maps complex AD roles to internal clear-cut MTHO security clearance levels
         # Level 0 = Zero Trust (Guest)
         # Level 1 = Sensor / Edge Node
         # Level 5 = Admin / Architect (Marc / Dreadnought)
@@ -27,7 +27,7 @@ class NTMappingService:
 
     def translate_nt_identity(self, ldap_string: str) -> Dict[str, Any]:
         """
-        Translates an external NT-actor string into an ATLAS-native identity block.
+        Translates an external NT-actor string into an MTHO-native identity block.
         """
         # Determine Clearance
         clearance = self.ad_to_clearance_map.get(ldap_string, 0) # Default to Zero Trust
@@ -64,4 +64,4 @@ if __name__ == "__main__":
     for identity in test_identities:
         mapped = mapper.translate_nt_identity(identity)
         print(f"\nIncoming NT Identity: {identity}")
-        print(f"ATLAS Internal Mapping: {mapped}")
+        print(f"MTHO Internal Mapping: {mapped}")

@@ -85,7 +85,7 @@ Transkribiere diese WhatsApp-Sprachnachricht vollständig und genau.
 Behalte alle Details, Pausen, Füllwörter und emotionalen Nuancen bei.
 Gib nur die Transkription zurück, keine Kommentare."""
 
-PROMPT_ANALYST = """Du bist der ND Analyst im ATLAS-System.
+PROMPT_ANALYST = """Du bist der ND Analyst im MTHO-System.
 Basierend auf dieser Transkription einer WhatsApp-Sprachnachricht:
 1. Extrahiere alle Aufgaben, Erinnerungen oder To-Dos
 2. Identifiziere den emotionalen Zustand des Sprechers

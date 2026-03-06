@@ -18,7 +18,7 @@ from pydantic import BaseModel, Field
 
 from src.api.auth_webhook import verify_ha_auth
 
-_is_prod = os.getenv("ATLAS_ENV", "production").lower() == "production"
+_is_prod = os.getenv("MTHO_ENV", "production").lower() == "production"
 
 app = FastAPI(
     title="MTHO_CORE VPS Slim",
@@ -53,11 +53,11 @@ class ForwardedTextPayload(BaseModel):
 
 def _forwarded_text_pipeline(text: str) -> str:
     """VPS-Fallback Pipeline: Triage -> HA-Command oder Heavy-Reasoning. Sync."""
-    from src.ai.llm_interface import atlas_llm
+    from src.ai.llm_interface import mtho_llm
     from src.network.ha_client import HAClient
 
     ha_client = HAClient()
-    triage = atlas_llm.run_triage(text)
+    triage = mtho_llm.run_triage(text)
 
     if triage.intent == "command" or triage.intent in [
         "turn_on", "turn_off", "toggle", "light.turn_on", "light.turn_off",
@@ -93,14 +93,14 @@ def _forwarded_text_pipeline(text: str) -> str:
             wuji_ctx = inject_context_for_agent(text, n_results=3, format="markdown")
             if wuji_ctx:
                 sys_prompt += "\n\n## Relevanter Kontext (Wuji-Feld)\n" + wuji_ctx
-            reply = atlas_llm.invoke_heavy_reasoning(sys_prompt, text)
+            reply = mtho_llm.invoke_heavy_reasoning(sys_prompt, text)
             if wuji_ctx:
                 veto = check_semantic_drift(wuji_ctx, reply)
                 if veto.vetoed:
                     apply_veto(veto)
             return reply
         except Exception:
-            return atlas_llm.invoke_heavy_reasoning(sys_prompt, text)
+            return mtho_llm.invoke_heavy_reasoning(sys_prompt, text)
 
     return "[SLM Triage] Unbekannter Intent."
 

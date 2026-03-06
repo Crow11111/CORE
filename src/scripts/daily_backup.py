@@ -5,7 +5,7 @@
 # ============================================================
 
 """
-Tägliches Backup für MTHO_CORE → Hostinger-VPS (/var/backups/atlas).
+Tägliches Backup für MTHO_CORE → Hostinger-VPS (/var/backups/mtho).
 
 - Archiv: Code (ohne .git, __pycache__, venv, data/backups, logs), config/, data/argos_db/
 - .env nur verschlüsselt (Fernet), wenn BACKUP_ENCRYPTION_KEY gesetzt
@@ -39,7 +39,7 @@ VPS_USER = os.getenv("VPS_USER", "root").strip()
 VPS_PASSWORD = (os.getenv("VPS_PASSWORD") or "").strip().strip('"').strip("'")
 VPS_SSH_KEY = (os.getenv("VPS_SSH_KEY") or "").strip()
 VPS_PORT = int(os.getenv("VPS_SSH_PORT", "22"))
-REMOTE_BACKUP_DIR = "/var/backups/atlas"
+REMOTE_BACKUP_DIR = "/var/backups/mtho"
 RETENTION_DAYS = int(os.getenv("BACKUP_RETENTION_DAYS", "7"))
 BACKUP_ENCRYPTION_KEY = (os.getenv("BACKUP_ENCRYPTION_KEY") or "").strip()
 HEALTHCHECK_URL = (os.getenv("HEALTHCHECK_URL") or "").strip()
@@ -113,7 +113,7 @@ def main() -> int:
         logger.warning("VPS-Backup (ChromaDB/Postgres) übersprungen: %s", e)
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M")
-    archive_name = f"atlas_backup_{timestamp}.tar.gz"
+    archive_name = f"mtho_backup_{timestamp}.tar.gz"
 
     try:
         import paramiko
@@ -178,7 +178,7 @@ def main() -> int:
             sftp.close()
 
         # 3) Retention auf dem VPS
-        cmd = f"find {REMOTE_BACKUP_DIR} -maxdepth 1 -type f \\( -name 'atlas_backup_*.tar.gz' -o -name 'atlas_env_*.enc' \\) -mtime +{RETENTION_DAYS} -delete"
+        cmd = f"find {REMOTE_BACKUP_DIR} -maxdepth 1 -type f \\( -name 'mtho_backup_*.tar.gz' -o -name 'mtho_env_*.enc' \\) -mtime +{RETENTION_DAYS} -delete"
         stdin, stdout, stderr = ssh.exec_command(cmd)
         stdout.channel.recv_exit_status()
         logger.info("Retention (älter als %d Tage) auf VPS ausgeführt.", RETENTION_DAYS)

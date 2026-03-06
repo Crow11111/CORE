@@ -12,7 +12,7 @@ Sicherstellung der Datenintegrität und -verfügbarkeit durch automatisierte tä
 
 ## 2. Was wird gesichert?
 - **Anwendungscode:** Das gesamte Projektverzeichnis (exklusive temporärer Dateien, `node_modules`, `.git`, etc.).
-- **Datenbank:** Vollständiger Dump der primären Datenbank (z.B. PostgreSQL, MySQL, SQLite für ATLAS_CORE).
+- **Datenbank:** Vollständiger Dump der primären Datenbank (z.B. PostgreSQL, MySQL, SQLite für MTHO_CORE).
 - **Konfigurationsdateien:** `.env`, `config/` Verzeichnis.
 - **(Optional) Benutzerdaten/Uploads:** Spezifisches Verzeichnis, falls vorhanden (z.B. `media/`, `uploads/`).
 
@@ -23,7 +23,7 @@ Sicherstellung der Datenintegrität und -verfügbarkeit durch automatisierte tä
 ## 4. Wie wird gesichert? (Automatisierung)
 Ein Python-Skript (`scripts/daily_backup.py`) wird erstellt, das folgende Schritte automatisiert:
 
-1. **Datenbank-Dump erstellen** (Beispiel SQLite für ATLAS_CORE):
+1. **Datenbank-Dump erstellen** (Beispiel SQLite für MTHO_CORE):
    - `data/argos_db/`, `*.sqlite` in ein zeitgestempeltes Archiv.
 
 2. **Anwendungscode/Konfiguration archivieren:**
@@ -47,4 +47,4 @@ Ein Python-Skript (`scripts/daily_backup.py`) wird erstellt, das folgende Schrit
 - Mindestens einmal pro Monat vollständiger Wiederherstellungstest auf Staging.
 
 ---
-*Quelle: Projekt-Plan. Anbindung an ATLAS_CORE siehe docs/DEV_AGENT_UND_SCHNITTSTELLEN.md.*
+*Quelle: Projekt-Plan. Anbindung an MTHO_CORE siehe docs/DEV_AGENT_UND_SCHNITTSTELLEN.md.*

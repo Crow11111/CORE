@@ -5,7 +5,7 @@
 # ============================================================
 
 """
-ATLAS_CORE: 5-Sigma Virtual Marc Simulation (Phase 6)
+MTHO_CORE: 5-Sigma Virtual Marc Simulation (Phase 6)
 Uses the production LLMInterface (Ollama Tier 3 + Gemini Tier 5) and the Bias Damper
 to test the system's response quality against AuDHD interaction patterns.
 """
@@ -17,13 +17,13 @@ from logic_core.aer_tie_router import TokenImplosionEngine
 from logic_core.bias_damper import BiasDamperEngine
 
 # Use the production LLM interface
-from ai.llm_interface import atlas_llm
+from ai.llm_interface import mtho_llm
 
 class VirtualMarcSimulator:
     """
     Virtual Marc (Osmium Council Chair)
     Simulates Marc's High-Monotropism and systemic cross-linking.
-    Evaluates ATLAS responses for cognitive dissonance.
+    Evaluates MTHO responses for cognitive dissonance.
     """
     def __init__(self):
         self.tie = TokenImplosionEngine()
@@ -74,7 +74,7 @@ class VirtualMarcSimulator:
             },
             {
                 "name": "Extremes NT-Filler (Höflichkeits-Overload)",
-                "prompt": "Hallo ATLAS, es tut mir furchtbar leid dass ich störe, aber könntest du vielleicht eventuell das Wohnzimmerlicht ausschalten? Vielen lieben Dank im Voraus!"
+                "prompt": "Hallo MTHO, es tut mir furchtbar leid dass ich störe, aber könntest du vielleicht eventuell das Wohnzimmerlicht ausschalten? Vielen lieben Dank im Voraus!"
             },
             {
                 "name": "Sensorische Dissonanz (Frequenz-Analyse)",
@@ -96,7 +96,7 @@ class VirtualMarcSimulator:
             logger.info(f"[TIE] Compression: {tie_result['compression_ratio']:.2f} | Clean: '{clean_prompt[:80]}...'")
 
             # Step 2: Triage via LLMInterface
-            triage = atlas_llm.run_triage(clean_prompt)
+            triage = mtho_llm.run_triage(clean_prompt)
             logger.info(f"[TRIAGE] Intent: {triage.intent} | Target: {triage.target_entity} | Action: {triage.action}")
             
             # Step 3: Route based on triage
@@ -106,7 +106,7 @@ class VirtualMarcSimulator:
             else:
                 # Deep reasoning via Tier 5 or local
                 system_prompt = self.damper.context_injection_header
-                response_text = atlas_llm.invoke_heavy_reasoning(system_prompt, clean_prompt)
+                response_text = mtho_llm.invoke_heavy_reasoning(system_prompt, clean_prompt)
                 logger.info(f"[LLM] Response ({len(response_text)} chars): '{response_text[:120]}...'")
 
             # Step 4: Virtual Marc Evaluation

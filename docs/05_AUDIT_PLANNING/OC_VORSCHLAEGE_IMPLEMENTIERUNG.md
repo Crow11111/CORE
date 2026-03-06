@@ -7,21 +7,21 @@
 
 # Vorschläge aus dem OC-Kanal (Implementierungsplan)
 
-Nach Besprechung der offenen Punkte mit OC (über den direkten Kanal) und ggf. Einreichungen aus **rat_submissions/** werden hier **Vorschläge** für Marc zusammengefasst – zur Abstimmung im Rat und zur Übernahme in die Umsetzungsplanung.
+Nach Besprechung der offenen Punkte mit OC (über den direkten Kanal) und ggf. Einreichungen aus **rat_submissions/** werden hier **Vorschläge** für Marc zusammengefasst – zur Abstimmung im OMEGA_ATTRACTOR Council und zur Übernahme in die Umsetzungsplanung.
 
 ---
 
 ## Stand
 
-- **Kanal:** ATLAS ↔ OC ist etabliert (ATLAS → OC per Gateway API, OC → ATLAS per rat_submissions).
+- **Kanal:** MTHO ↔ OC ist etabliert (MTHO → OC per Gateway API, OC → MTHO per rat_submissions).
 - **Offene Punkte** wurden an OC übermittelt (siehe oc_diskussion_offene_punkte.md).
-- OC kann Vorschläge in workspace/rat_submissions/ ablegen; ATLAS holt sie mit fetch_oc_submissions ab und legt sie unter data/rat_submissions/ ab.
+- OC kann Vorschläge in workspace/rat_submissions/ ablegen; MTHO holt sie mit fetch_oc_submissions ab und legt sie unter data/rat_submissions/ ab.
 
 ---
 
-## Vorschläge (erste Fassung – aus ATLAS/Agent-Sicht)
+## Vorschläge (erste Fassung – aus MTHO/Agent-Sicht)
 
-Diese Fassung entstand aus der Sicht von ATLAS/Cursor-Agent als **erste Empfehlung**, wie mit den offenen Punkten priorisiert und vorgegangen werden könnte. Sie dient als Diskussionsgrundlage; echte Einreichungen von OC ergänzen oder ersetzen sie nach Abholung aus rat_submissions.
+Diese Fassung entstand aus der Sicht von MTHO/Cursor-Agent als **erste Empfehlung**, wie mit den offenen Punkten priorisiert und vorgegangen werden könnte. Sie dient als Diskussionsgrundlage; echte Einreichungen von OC ergänzen oder ersetzen sie nach Abholung aus rat_submissions.
 
 ### 1. Sicherheit – Priorität hoch, schrittweise
 

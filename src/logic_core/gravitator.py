@@ -6,16 +6,21 @@
 
 """
 Gravitator – Embedding-basiertes Collection-Routing (GQA Refactor F5).
+4D-Prisma auf der Diagonalen Strebe.
 
 Routet query_text semantisch zu den relevantesten ChromaDB-Collections
 via Kosinus-Similarität gegen Collection-Repräsentanten.
 
-Repräsentanten nutzen state_to_embedding_text() + Collection-Signatur.
+[UPDATE 2026-03-06] ASYNC + TAKT 0 GATE
+Integriert Takt 0 Gate und async I/O.
 """
 from __future__ import annotations
 
+import asyncio
 from dataclasses import dataclass
 import math
+from src.logic_core.takt_gate import check_takt_zero
+
 @dataclass
 class CollectionTarget:
     """Ziel-Collection mit Score für GQA-Routing."""
@@ -30,12 +35,12 @@ _COLLECTION_SIGNATURES: dict[str, tuple[str, str]] = {
     "simulation_evidence": (
         "evidence",
         "Simulationstheorie-Indizien, Evidenz, physikalische und informationstheoretische Argumente, "
-        "wissenschaftliche Indizien für oder gegen Simulation, LPIS-Klassifikation.",
+        "wissenschaftliche Indizien für oder gegen Simulation, MTHO-Klassifikation.",
     ),
     "core_directives": (
         "directive",
         "Ring-0/1 Direktiven, System-Prompts, Governance, Compliance, Paranoia, Bias-Check, "
-        "Regeln und Vorgaben für ATLAS-Verhalten.",
+        "Regeln und Vorgaben für MTHO-Verhalten.",
     ),
     "session_logs": (
         "session",
@@ -79,9 +84,9 @@ def _cosine_similarity(a: list[float], b: list[float]) -> float:
     return dot / (norm_a * norm_b)
 
 
-def _build_representatives() -> list[tuple[str, str, str, list[float]]]:
-    """Baut Repräsentanten: (name, type, text, embedding)."""
-    from src.config.atlas_state_vector import state_to_embedding_text
+def _build_representatives_sync() -> list[tuple[str, str, str, list[float]]]:
+    """Baut Repräsentanten: (name, type, text, embedding). Sync implementation."""
+    from src.config.mtho_state_vector import state_to_embedding_text
 
     base_text = state_to_embedding_text()
     ef = _get_embedding_function()
@@ -98,47 +103,58 @@ def _build_representatives() -> list[tuple[str, str, str, list[float]]]:
 _REPRESENTATIVES_CACHE: list[tuple[str, str, str, list[float]]] | None = None
 
 
-def _get_representatives() -> list[tuple[str, str, str, list[float]]]:
-    """Liefert gecachte Repräsentanten."""
+async def _get_representatives() -> list[tuple[str, str, str, list[float]]]:
+    """Liefert gecachte Repräsentanten (Async Wrapper)."""
     global _REPRESENTATIVES_CACHE
     if _REPRESENTATIVES_CACHE is None:
-        _REPRESENTATIVES_CACHE = _build_representatives()
+        _REPRESENTATIVES_CACHE = await asyncio.to_thread(_build_representatives_sync)
     return _REPRESENTATIVES_CACHE
 
 
-def route(
+async def route(
     query_text: str,
     top_k: int = 3,
     threshold: float = 0.22,
 ) -> list[CollectionTarget]:
-    """Routet query_text zu den relevantesten Collections.
+    """Routet query_text zu den relevantesten Collections (Async).
 
     Ablauf:
-        1. query_text → Embedding
-        2. Kosinus-Similarität vs. Collection-Repräsentanten
-        3. Top-K mit Score > Threshold
-        4. Fallback: simulation_evidence + core_directives wenn kein Match
-
-    Args:
-        query_text: Suchanfrage
-        top_k: Max. Anzahl Collections (Default: 3)
-        threshold: Min. Kosinus-Similarität (Default: 0.22)
+        1. Takt 0 Gate Check (Hard Async Barrier)
+        2. query_text → Embedding (in Thread)
+        3. Kosinus-Similarität vs. Collection-Repräsentanten
+        4. Top-K mit Score > Threshold
+        5. Fallback wenn kein Match
 
     Returns:
         Liste von CollectionTarget, absteigend nach Score.
-        Bei Fallback: score=0.0 als Indikator.
+        Bei Takt 0 Veto: Leere Liste (oder Exception, aber leere Liste ist sicherer Flow).
     """
+    # 1. Takt 0 Gate
+    gate_open = await check_takt_zero()
+    if not gate_open:
+        # Request bounces off the membrane
+        print(f"[GRAVITATOR] Takt 0 Veto for: '{query_text[:50]}...'")
+        return []
+
     if not query_text or not query_text.strip():
         return list(_FALLBACK_TARGETS)
 
+    # 2. Embedding Calculation (CPU Bound -> Thread)
     try:
-        ef = _get_embedding_function()
-        query_emb = ef([query_text.strip()])[0]
+        def _calc_query_embedding():
+            ef = _get_embedding_function()
+            return ef([query_text.strip()])[0]
+
+        query_emb = await asyncio.to_thread(_calc_query_embedding)
     except Exception:
         return list(_FALLBACK_TARGETS)
 
-    reps = _get_representatives()
+    # 3. Similarity
+    reps = await _get_representatives()
     scored: list[tuple[str, str, float]] = []
+
+    # Calculation is fast enough for main thread usually, but strict simultaneity
+    # prefers yielding. We'll do it here as it's pure math on small lists.
     for name, ctype, _text, rep_emb in reps:
         score = _cosine_similarity(list(query_emb), list(rep_emb))
         scored.append((name, ctype, score))
@@ -158,17 +174,13 @@ def route(
     ]
 
 
-def route_to_wuji(
+async def route_to_wuji(
     query_text: str,
     top_k: int = 3,
     threshold: float = 0.22,
 ) -> list[CollectionTarget]:
-    """Routet zu wuji_field: Gibt CollectionTarget mit name='wuji_field' und type zurueck.
-
-    Nutzt dieselbe Embedding-Logik wie route(), aber Ziel ist stets wuji_field.
-    Consumer fragt wuji_field mit where={'type': target.type} ab.
-    """
-    targets = route(query_text, top_k=top_k, threshold=threshold)
+    """Routet zu wuji_field: Gibt CollectionTarget mit name='wuji_field' und type zurueck (Async)."""
+    targets = await route(query_text, top_k=top_k, threshold=threshold)
     return [
         CollectionTarget(name="wuji_field", score=t.score, type=t.type)
         for t in targets

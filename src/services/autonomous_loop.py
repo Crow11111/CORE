@@ -23,7 +23,7 @@ EVENTS_DIR = os.path.join(ROOT, "data", "events")
 PROCESSED_DIR = os.path.join(EVENTS_DIR, "processed")
 
 SYSTEM_INSTRUCTION = (
-    "Du bist ATLAS 1.0, die AGI-Schnittstelle von Marc. "
+    "Du bist MTHO 1.0, die AGI-Schnittstelle von Marc. "
     "Du agierst autonom. Wenn ein Event eintrifft, analysiere es. "
     "Du kannst Home Assistant steuern mit dem Format: [HA: domain.service(entity_id, {\"key\": \"value\"})]. "
     "Halte deine Antworten präzise. Wenn eine Aktion nötig ist, führe sie aus. "
@@ -69,7 +69,7 @@ def process_event(event_path: str, dispatcher: ActionDispatcher):
         return False
 
 def run_loop():
-    logger.info("ATLAS 1.0 Autonomer Loop gestartet.")
+    logger.info("MTHO 1.0 Autonomer Loop gestartet.")
     dispatcher = ActionDispatcher()
     
     while True:

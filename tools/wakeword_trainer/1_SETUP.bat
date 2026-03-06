@@ -1,5 +1,5 @@
 @echo off
-echo === ATLAS Wake Word Trainer Setup ===
+echo === MTHO Wake Word Trainer Setup ===
 echo.
 echo 1. Pruefe Python Installation...
 python --version

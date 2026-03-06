@@ -7,8 +7,8 @@
 
 # Gravitator Spec (GQA Refactor F5)
 
-**Status:** Implementiert (gravitator-prototype)  
-**Ziel:** Embedding-basiertes Routing ersetzt statische Collection-Auswahl in GQA (General Query Architecture).
+**Status:** Implementiert (2026-03-06: async + Takt-0-Gate integriert)
+**Ziel:** Embedding-basiertes Routing ersetzt statische Collection-Auswahl in GQA (General Query Architecture). Kein `collection=all`; Route ausschließlich via Kosinus-Similarität (θ=0.22). Vor jedem Routing wird asynchron das Takt-0-Gate geprüft.
 
 ---
 
@@ -69,14 +69,14 @@ query_text
 
 Jeder Collection-Repräsentant kombiniert:
 
-1. **ATLAS-Bootloader** (`state_to_embedding_text()` aus `atlas_state_vector.py`)
-2. **Collection-spezifische Signatur** (Keywords, LPIS-Bezug)
+1. **MTHO-Bootloader** (`state_to_embedding_text()` aus `atlas_state_vector.py`)
+2. **Collection-spezifische Signatur** (Keywords, GTAC/MTHO-Bezug)
 
 ```python
 repr_text = state_to_embedding_text() + "\n" + collection_signature
 ```
 
-Dadurch ist der Repräsentant sowohl im ATLAS-Kontext verankert als auch semantisch unterscheidbar.
+Dadurch ist der Repräsentant sowohl im MTHO-Kontext verankert als auch semantisch unterscheidbar.
 
 ---
 
@@ -145,9 +145,10 @@ for t in targets:
 
 ## 9. Referenzen
 
-- `src/config/atlas_state_vector.py` (state_to_embedding_text)
+- `src/config/mtho_state_vector.py` (state_to_embedding_text)
 - `docs/02_ARCHITECTURE/WUJI_FIELD_SCHEMA.md` (Collection-Typen)
-- `src/network/chroma_client.py` (Collection-Namen, Query-Funktionen)
+- `src/network/chroma_client.py` (Collection-Namen, async Query-Funktionen)
+- `src/logic_core/takt_gate.py` (Takt-0-Check vor Routing)
 
 ---
 

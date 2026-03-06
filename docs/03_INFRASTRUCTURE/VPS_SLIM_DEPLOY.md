@@ -18,7 +18,7 @@
 
 ## Voraussetzungen
 
-- ATLAS_CORE `src/` inkl. Abhängigkeiten (atlas_llm, HAClient, logic_core.munin)
+- MTHO_CORE `src/` inkl. Abhängigkeiten (atlas_llm, HAClient, logic_core.munin)
 - `.env` mit: `HA_WEBHOOK_TOKEN`, `GEMINI_API_KEY`, `HA_URL`, `HA_TOKEN`, `CHROMA_HOST` (optional)
 
 ## Automatischer Deploy (empfohlen)
@@ -51,7 +51,7 @@ VPS_SLIM_PORT=8001 python -m uvicorn src.api.vps_slim:app --host 0.0.0.0 --port 
 ```ini
 # /etc/systemd/system/atlas-vps-slim.service
 [Unit]
-Description=ATLAS VPS-Slim Failover
+Description=MTHO VPS-Slim Failover
 After=network.target
 
 [Service]

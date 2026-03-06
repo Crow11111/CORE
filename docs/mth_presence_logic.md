@@ -5,11 +5,11 @@
 <!-- ============================================================
 -->
 
-# Robuste Anwesenheitserkennung ohne KI-Overhead (ATLAS Standard)
+# Robuste Anwesenheitserkennung ohne KI-Overhead (MTHO Standard)
 
 Die sicherste und schnellste Methode, um deine Anwesenheit zu tracken, ist ein kombiniertes System direkt in Home Assistant (YAML). 
 
-Anstatt Ollama alle paar Minuten zu fragen (was extrem viel Rechenleistung kostet und fehleranfällig ist) oder simple "if/else" Boolean-Sprawls zu pflegen, die nach 3 Jahren unübersichtlich werden, nutzen wir den **ATLAS Standard: Bayesian Sensors & Proximity**.
+Anstatt Ollama alle paar Minuten zu fragen (was extrem viel Rechenleistung kostet und fehleranfällig ist) oder simple "if/else" Boolean-Sprawls zu pflegen, die nach 3 Jahren unübersichtlich werden, nutzen wir den **MTHO Standard: Bayesian Sensors & Proximity**.
 
 ---
 
@@ -60,7 +60,7 @@ Diese Automation triggert deine alten, vertrauten Input Booleans (`input_boolean
 Du kannst beim Erstellen einer neuen Automation oben rechts auf die 3 Punkte -> "Als YAML bearbeiten" klicken und das hier einfügen:
 
 ```yaml
-alias: "System: ATLAS Presence Director"
+alias: "System: MTHO Presence Director"
 description: "Ersetzt das alte Boolean-Sprawl durch eine saubere Bayes'sche und Proximity-Steuerung."
 mode: queued
 trigger:

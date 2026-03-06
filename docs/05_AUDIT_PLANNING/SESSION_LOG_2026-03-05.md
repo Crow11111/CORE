@@ -9,7 +9,7 @@
 
 **Drift-Level:** 0.21 (Threshold 0.382 -- unter Kontrolle)
 **Council-Urteil:** FREIGABE (einstimmig, Auflage erfuellt)
-**Agos-Zyklus:** Takt 3 abgeschlossen (Ansaugen → Verdichten → Arbeiten → done)
+**Simultanität (2210/2201)-Zyklus:** Takt 3 abgeschlossen (Ansaugen → Verdichten → Arbeiten → done)
 
 ---
 
@@ -27,7 +27,7 @@
 | 8 | .env fehlende Variablen | 5 ergaenzt | CEO-Direktfix | `.env.template` |
 | 9 | 85 Temp-Dateien | GELOESCHT | TEAM HYGIENE | `tmp_scripts/` bereinigt |
 | 10 | vps_slim.py | ERSTELLT (140 LoC) | TEAM A | `src/api/vps_slim.py`, `docs/03_INFRASTRUCTURE/VPS_SLIM_DEPLOY.md` |
-| 11 | G-ATLAS Circle Doku | ERSTELLT | TEAM B | `docs/02_ARCHITECTURE/G_ATLAS_CIRCLE.md` |
+| 11 | G-MTHO Circle Doku | ERSTELLT | TEAM B | `docs/02_ARCHITECTURE/G_ATLAS_CIRCLE.md` |
 | 12 | CRADLE in Lifespan | INTEGRIERT | TEAM B | `src/api/main.py` (Zeile 39-60) |
 | 13 | Ring-0 Read-Only (.env) | ERWEITERT | TEAM C | `docs/04_PROCESSES/CODE_SICHERHEITSRAT.md` |
 | 14 | IDE Rauschen-Reduktion | 18 Settings | TEAM C | `.vscode/settings.json` |
@@ -59,11 +59,11 @@
 | # | Aenderung | Datei | Status |
 |---|-----------|-------|--------|
 | 17 | Event-Bus async | `src/daemons/atlas_event_bus.py` | `_forward_to_oc_brain()` jetzt async mit `asyncio.create_task()` |
-| 18 | Vision Daemon non-blocking | `src/daemons/atlas_vision_daemon.py` | OC Brain Forward in separatem Thread |
+| 18 | Vision Daemon non-blocking | `src/daemons/atlas_vision_daemon.py` | OMEGA_ATTRACTOR Forward in separatem Thread |
 | 19 | atlas_events Router | `src/api/main.py` | Import + `app.include_router()` registriert |
 | 20 | rest_commands URLs | `rest_commands.yaml` | `/api/atlas/event` statt `/api/v1/event` |
 | 21 | Automationen | `automations_atlas.yaml` | Neues Schema mit event_type, priority, data |
-| 22 | OC Brain Skills | VPS | home-assistant, chromadb, heartbeat installiert |
+| 22 | OMEGA_ATTRACTOR Skills | VPS | home-assistant, chromadb, heartbeat installiert |
 | 23 | SOUL.md erweitert | VPS | Heartbeat-Direktive, Logikketten, HA-Steuerung |
 | 24 | httpx | `src/requirements.txt` | Bereits vorhanden (Zeile 8) |
 | 25 | **Cursor Permissions** | `.cursor/cli.json` | Secrets hard-blocked, Code soft-blocked (Governance) |
@@ -72,8 +72,8 @@
 
 ```
 Scout/HA → Event-Bus (WebSocket) → Triage + ChromaDB persist
-    → async forward → OC Brain (Skills: HA, ChromaDB, Heartbeat)
-    → OC Brain → ha_skill call_service → Scout/HA (Aktionen)
+    → async forward → OMEGA_ATTRACTOR (Skills: HA, ChromaDB, Heartbeat)
+    → OMEGA_ATTRACTOR → ha_skill call_service → Scout/HA (Aktionen)
     → Ghost Agents (DEEP_REASONING, TTS_DISPATCH, COMMAND)
     → Munin inject_context → wuji_field → Kontext-Loop
 ```

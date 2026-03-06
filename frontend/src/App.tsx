@@ -17,8 +17,8 @@ export default function App() {
     {
       id: '1',
       role: 'agent',
-      sender: 'Atlas',
-      content: 'Hello. I am the ATLAS Dev Agent. How can we build today?',
+      sender: 'Mtho',
+      content: 'Hello. I am the MTHO Dev Agent. How can we build today?',
       timestamp: new Date(),
     }
   ]);
@@ -29,7 +29,7 @@ export default function App() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
 
-  const apiBase = (import.meta.env.VITE_ATLAS_API_URL || 'http://localhost:8000').replace(/\/$/, '');
+  const apiBase = (import.meta.env.VITE_MTHO_API_URL || 'http://localhost:8000').replace(/\/$/, '');
   const wsUrl = apiBase.replace(/^http/, 'ws') + '/ws';
 
   // Status Indicators State
@@ -89,7 +89,7 @@ export default function App() {
             const msg: Message = {
               id: payload.id || Date.now().toString(),
               role: payload.role || 'agent',
-              sender: payload.sender || 'Atlas',
+              sender: payload.sender || 'Mtho',
               content: payload.content ?? '',
               timestamp: payload.timestamp ? new Date(payload.timestamp) : new Date(),
             };
@@ -153,8 +153,8 @@ export default function App() {
       setMessages((prev) => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'agent',
-        sender: 'Atlas',
-        content: 'Nicht verbunden. Bitte ATLAS-CORE-API starten (z. B. uvicorn) und Seite neu laden.',
+        sender: 'Mtho',
+        content: 'Nicht verbunden. Bitte MTHO-CORE-API starten (z. B. uvicorn) und Seite neu laden.',
         timestamp: new Date(),
       }]);
       setIsTyping(false);
@@ -274,7 +274,7 @@ export default function App() {
               <Menu className="w-5 h-5" />
             </button>
             <div>
-              <h1 className="text-lg font-medium tracking-tight text-[#E0E0E0]">ATLAS</h1>
+              <h1 className="text-lg font-medium tracking-tight text-[#E0E0E0]">MTHO</h1>
               <p className="text-xs text-[#777] font-mono tracking-wider uppercase">Dev Agent</p>
             </div>
           </div>
@@ -323,7 +323,7 @@ export default function App() {
               >
                 <div className="flex items-center gap-2 mb-1.5 px-1">
                   <span className={`text-[10px] font-mono uppercase tracking-widest ${msg.role === 'external' ? 'text-[#8A94C9]' : 'text-[#666]'}`}>
-                    {msg.sender || (msg.role === 'user' ? 'You' : 'Atlas')}
+                    {msg.sender || (msg.role === 'user' ? 'You' : 'Mtho')}
                   </span>
                 </div>
                 <div
@@ -348,7 +348,7 @@ export default function App() {
               className="flex flex-col max-w-[85%] mr-auto items-start"
             >
               <div className="flex items-center gap-2 mb-1.5 px-1">
-               <span className="text-[10px] font-mono text-[#666] uppercase tracking-widest">Atlas</span>
+               <span className="text-[10px] font-mono text-[#666] uppercase tracking-widest">Mtho</span>
               </div>
               <div className="px-5 py-4 rounded-2xl bg-[#252525] border border-[#333] rounded-tl-sm shadow-sm flex items-center gap-1.5">
                 <motion.div
@@ -396,7 +396,7 @@ export default function App() {
               </button>
             </form>
             <div className="text-center mt-3">
-               <p className="text-[10px] text-[#555] font-mono tracking-wide">ATLAS DEV AGENT • V1.0.0</p>
+               <p className="text-[10px] text-[#555] font-mono tracking-wide">MTHO DEV AGENT • V1.0.0</p>
             </div>
           </div>
         </div>

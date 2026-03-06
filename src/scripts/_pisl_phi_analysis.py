@@ -1,3 +1,4 @@
+from src.mtho_core import M_VALUE, T_VALUE, H_VALUE, O_VALUE
 # ============================================================
 # MTHO-GENESIS: Marc Tobias ten Hoevel
 # VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
@@ -5,7 +6,7 @@
 # ============================================================
 
 """
-PISL-Phi-Analyse: Sucht Phi/Pi/Goldener-Schnitt-Muster in der
+ROTATED-Phi-Analyse: Sucht Phi/Pi/Goldener-Schnitt-Muster in der
 chronologischen Reihenfolge der Simulationstheorie-Indizien.
 
 Quaternaere Basen: L(ogisch), P(hysikalisch), I(nformationstheoretisch), S(trukturell)
@@ -34,7 +35,7 @@ entries = []
 for i, (id_, meta, doc) in enumerate(zip(results["ids"], results["metadatas"], results["documents"])):
     qbase = meta.get("qbase", "")
     cat_long = meta.get("category", "")
-    if qbase and qbase in "LPIS":
+    if qbase and qbase in "MTHO":
         cat = qbase
     elif cat_long in CAT_SHORT:
         cat = CAT_SHORT[cat_long]
@@ -57,7 +58,7 @@ seq = [e["qbase"][0].upper() if e["qbase"] else "?" for e in entries]
 seq_str = "".join(seq)
 
 print("=" * 80)
-print("  PISL-SEQUENZ-ANALYSE: Phi / Pi / Goldener Schnitt")
+print("  ROTATED-SEQUENZ-ANALYSE: Phi / Pi / Goldener Schnitt")
 print("=" * 80)
 print()
 
@@ -108,7 +109,7 @@ print(f"  NACH Phi-Punkt ({len(after)} Elemente): {''.join(after)}")
 print()
 
 print("  Kategorie-Verhaeltnisse um Phi-Punkt:")
-for cat in "LPIS":
+for cat in "MTHO":
     b = before.count(cat)
     a = after.count(cat)
     ratio = b / a if a > 0 else float('inf')
@@ -124,7 +125,7 @@ print()
 for power, name in [(2, "Phi^2=2.618"), (3, "Phi^3=4.236")]:
     phi_n = PHI ** power
     print(f"  {name} Vergleich:")
-    for cat in "LPIS":
+    for cat in "MTHO":
         b = before.count(cat)
         a = after.count(cat)
         ratio = b / a if a > 0 else float('inf')
@@ -144,27 +145,27 @@ for i in range(len(seq) - 1):
     transitions[(seq[i], seq[i + 1])] += 1
 
 print("       L    P    I    S")
-for a in "LPIS":
+for a in "MTHO":
     row = []
-    for b in "LPIS":
+    for b in "MTHO":
         count = transitions.get((a, b), 0)
         row.append(f"{count:4d}")
-    total_from = sum(transitions.get((a, b), 0) for b in "LPIS")
+    total_from = sum(transitions.get((a, b), 0) for b in "MTHO")
     print(f"  {a} [{' '.join(row)}]  (Sum={total_from})")
 print()
 
 print("  Uebergangs-Wahrscheinlichkeiten:")
-for a in "LPIS":
-    total_from = sum(transitions.get((a, b), 0) for b in "LPIS")
+for a in "MTHO":
+    total_from = sum(transitions.get((a, b), 0) for b in "MTHO")
     if total_from > 0:
         probs = []
-        for b in "LPIS":
+        for b in "MTHO":
             p = transitions.get((a, b), 0) / total_from
             probs.append(f"{b}:{p:.3f}")
         print(f"    {a} -> {', '.join(probs)}")
 print()
 
-# Komplementaere Uebergaenge (L->I, I->L, S->P, P->S) vs Non-Komplementaere
+# Komplementaere Uebergaenge (O->T, T->O, S->P, P->S) vs Non-Komplementaere
 comp_trans = sum(transitions.get(t, 0) for t in [("L", "I"), ("I", "L"), ("S", "P"), ("P", "S")])
 non_comp = sum(transitions.values()) - comp_trans
 total_trans = sum(transitions.values())
@@ -197,8 +198,8 @@ targets = [
     ("Phi^2", PHI ** 2),
 ]
 best_matches = []
-for a in "LPIS":
-    for b in "LPIS":
+for a in "MTHO":
+    for b in "MTHO":
         if a < b and counts[b] > 0:
             ratio = counts[a] / counts[b]
             for name, target in targets:
@@ -209,8 +210,8 @@ for a in "LPIS":
 
 if not best_matches:
     print("    (Keine exakten Treffer < 0.15)")
-    for a in "LPIS":
-        for b in "LPIS":
+    for a in "MTHO":
+        for b in "MTHO":
             if a < b and counts[b] > 0:
                 ratio = counts[a] / counts[b]
                 closest = min(targets, key=lambda t: abs(ratio - t[1]))

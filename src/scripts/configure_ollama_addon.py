@@ -64,7 +64,7 @@ async def start_addon_via_service(client: httpx.AsyncClient) -> bool:
 
 async def main():
     async with httpx.AsyncClient(timeout=15.0) as client:
-        logger.info("=== ATLAS: Ollama Raspi5 Aktivierung ===")
+        logger.info("=== MTHO: Ollama Raspi5 Aktivierung ===")
         
         # Step 1: Check if port is already open
         if await check_ollama_port(client):

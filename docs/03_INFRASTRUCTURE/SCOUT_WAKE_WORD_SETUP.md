@@ -7,7 +7,7 @@
 
 # Scout Wake Word & Whisper/Wyoming Setup
 
-**Zweck:** Whisper, Piper und openWakeWord als Wyoming-Integration in Home Assistant einrichten, Assist-Pipeline mit ATLAS verbinden und Wake Word konfigurieren.
+**Zweck:** Whisper, Piper und openWakeWord als Wyoming-Integration in Home Assistant einrichten, Assist-Pipeline mit MTHO verbinden und Wake Word konfigurieren.
 
 **Voraussetzung:** Add-ons Whisper, Piper, openWakeWord sind installiert und laufen (Scout/Raspi 5).
 
@@ -44,9 +44,9 @@ Nach dem Start der Add-ons erscheinen die Dienste unter **Einstellungen → Ger�
 ## 2. Assist-Pipeline erstellen
 
 1. **Einstellungen → Sprachassistenten → Assistent hinzufügen**
-2. **Name:** z.B. „ATLAS“
+2. **Name:** z.B. „MTHO“
 3. **Sprache:** Deutsch (oder gewünschte Sprache)
-4. **Conversation Agent:** Home Assistant (Standard) – für ATLAS-Anbindung siehe Abschnitt 6
+4. **Conversation Agent:** Home Assistant (Standard) – für MTHO-Anbindung siehe Abschnitt 6
 5. **Speech-to-Text:** Wyoming (Whisper)
 6. **Text-to-Speech:** Wyoming (Piper)
 7. **Wake Word:** Wyoming (openWakeWord) – siehe Abschnitt 3
@@ -85,7 +85,7 @@ Nach dem Start der Add-ons erscheinen die Dienste unter **Einstellungen → Ger�
 Ab Home Assistant 2025.10 unterstützen Voice Satellites **bis zu zwei Wake Words** pro Gerät.  
 → Zwei verschiedene Assistenten/Pipelines mit unterschiedlichen Wake Words (z.B. „hey atlas“ und „computer“) können parallel aktiv sein.
 
-### 3.4 Setup-Skripte (ATLAS)
+### 3.4 Setup-Skripte (MTHO)
 
 | Skript | Zweck |
 |--------|-------|
@@ -107,13 +107,13 @@ Ab Home Assistant 2025.10 unterstützen Voice Satellites **bis zu zwei Wake Word
 | Komponente | IP / Host | Port |
 |------------|-----------|------|
 | Scout (HA) | 192.168.178.54 | 8123 (HTTPS) |
-| Dreadnought (ATLAS API) | 192.168.178.20 | 8000 (HTTP) |
+| 4D_RESONATOR (MTHO_CORE) (MTHO API) | 192.168.178.20 | 8000 (HTTP) |
 
-Scout muss Dreadnought per HTTP erreichen können: `http://192.168.178.20:8000`
+Scout muss 4D_RESONATOR (MTHO_CORE) per HTTP erreichen können: `http://192.168.178.20:8000`
 
 ---
 
-## 5. configuration.yaml – ATLAS-Anbindung
+## 5. configuration.yaml – MTHO-Anbindung
 
 ### 5.1 Geheimnisse (empfohlen)
 
@@ -157,16 +157,16 @@ rest_command:
 ```yaml
 input_text:
   assist_command:
-    name: "Assist-Befehl für ATLAS"
+    name: "Assist-Befehl für MTHO"
     max: 500
 ```
 
-### 5.4 Automation: Text an ATLAS senden
+### 5.4 Automation: Text an MTHO senden
 
 ```yaml
 automation:
-  - alias: "Assist-Text an ATLAS senden"
-    description: "Leitet Text aus input_text.assist_command an ATLAS weiter"
+  - alias: "Assist-Text an MTHO senden"
+    description: "Leitet Text aus input_text.assist_command an MTHO weiter"
     trigger:
       - platform: state
         entity_id:
@@ -185,11 +185,11 @@ automation:
           value: ""
 ```
 
-**Verwendung:** Text in `input_text.assist_command` setzen (z.B. per Dashboard-Button oder Service-Aufruf) → Automation ruft ATLAS auf.
+**Verwendung:** Text in `input_text.assist_command` setzen (z.B. per Dashboard-Button oder Service-Aufruf) → Automation ruft MTHO auf.
 
 ---
 
-## 6. Voice-Pipeline → ATLAS
+## 6. Voice-Pipeline → MTHO
 
 ### 6.1 Einschränkung
 
@@ -199,9 +199,9 @@ Die Standard-Assist-Pipeline leitet den transkribierten Text an den **Conversati
 
 | Ansatz | Aufwand | Beschreibung |
 |--------|---------|--------------|
-| **input_text + Button** | Gering | Text manuell eingeben oder per Button setzen → Automation → ATLAS |
+| **input_text + Button** | Gering | Text manuell eingeben oder per Button setzen → Automation → MTHO |
 | **assist_pipeline.run_stage Event** | Mittel | Automation auf `assist_pipeline`-Event (z.B. `stt-end`, `intent-start`) – Event-Struktur prüfen |
-| **Custom Conversation Agent** | Hoch | Eigene Integration, die an ATLAS weiterleitet |
+| **Custom Conversation Agent** | Hoch | Eigene Integration, die an MTHO weiterleitet |
 
 ### 6.3 Experimentell: Event-basierte Automation
 
@@ -210,7 +210,7 @@ Falls HA ein Event mit dem transkribierten Text ausgibt:
 ```yaml
 # Beispiel – Event-Namen und Daten je nach HA-Version prüfen
 automation:
-  - alias: "Assist STT-Text an ATLAS (experimentell)"
+  - alias: "Assist STT-Text an MTHO (experimentell)"
     trigger:
       - platform: event
         event_type: "assist_pipeline.run_stage"
@@ -224,9 +224,9 @@ automation:
 
 **Hinweis:** Event-Struktur in den Entwicklerwerkzeugen (Ereignisse) prüfen.
 
-### 6.4 ATLAS-Verhalten bei /webhook/assist
+### 6.4 MTHO-Verhalten bei /webhook/assist
 
-- ATLAS führt Triage durch (Befehl vs. Chat/Deep Reasoning)
+- MTHO führt Triage durch (Befehl vs. Chat/Deep Reasoning)
 - Antwort wird per TTS auf dem Mini-Speaker ausgegeben (`tts_dispatcher`, Ziel: `media_player.schreibtisch` oder `TTS_CONFIRMATION_ENTITY`)
 - Keine zusätzliche HA-Automation für TTS nötig
 
@@ -253,7 +253,7 @@ curl -X POST http://192.168.178.20:8000/webhook/assist \
 2. `input_text.set_value` aufrufen:
    - `entity_id`: `input_text.assist_command`
    - `value`: `Licht an`
-3. Automation sollte auslösen und ATLAS aufrufen
+3. Automation sollte auslösen und MTHO aufrufen
 
 ---
 
@@ -265,7 +265,7 @@ curl -X POST http://192.168.178.20:8000/webhook/assist \
 | Custom Training | [CUSTOM_WAKE_WORD_TRAINING.md](CUSTOM_WAKE_WORD_TRAINING.md) |
 | Download-Skript | `src/scripts/download_openwakeword_models.py` |
 | Setup-Skript | `src/scripts/setup_scout_wake_words.py` |
-| ATLAS HA-Client | `src/connectors/home_assistant.py` |
+| MTHO HA-Client | `src/connectors/home_assistant.py` |
 | Webhook-Routen | `src/api/routes/ha_webhook.py` – `/webhook/assist`, `/webhook/inject_text` |
 | Auth | `src/api/auth_webhook.py` – `verify_ha_auth` (Bearer) |
 | TTS | `src/voice/tts_dispatcher.py` |
@@ -282,5 +282,5 @@ curl -X POST http://192.168.178.20:8000/webhook/assist \
 |---------|----------|
 | `HA_WEBHOOK_TOKEN` in `.env` | ✅ `778aabf5b13c7b5120161168811908da51448b9435423aacf4b67f31e3bb57e7` |
 | Scout IP | ✅ 192.168.178.54 |
-| Dreadnought IP | ✅ 192.168.178.20 |
+| 4D_RESONATOR (MTHO_CORE) IP | ✅ 192.168.178.20 |
 | `/webhook/assist` Endpoint | ✅ `ha_webhook.assist_pipeline` – Payload `{"text": "..."}` |

@@ -18,7 +18,7 @@
 | **Z1** | **LÄUFT** | `openclaw doctor` sauber; Container-Logs: `[gateway] listening on ws://0.0.0.0:18789`, Agent-Modell gesetzt, API 200 |
 | **Z2** | **LÄUFT** | Browser: Config-Seite zeigt **Formular** (Schema geladen), KEIN "Schema unavailable" |
 | **Z3** | **LÄUFT** | Browser: Agents/Channels/Config/Chat – alle Buttons reagieren, Seiten öffnen sich |
-| **Z4** | **LÄUFT** | Browser: 2 Agents (ATLAS, Agent), 5 Instances, WhatsApp-Channel sichtbar, Config editierbar |
+| **Z4** | **LÄUFT** | Browser: 2 Agents (MTHO, Agent), 5 Instances, WhatsApp-Channel sichtbar, Config editierbar |
 | **Z5** | **LÄUFT** | API-Call: `POST /v1/chat/completions` → Agent antwortet: "Signal verstanden. Status: bereit." |
 
 **Alle Z1–Z5 bestanden. OpenClaw Admin ist eine funktionsfähige Installation.**
@@ -47,5 +47,5 @@
 ## Nächste Schritte (nach Z1–Z5)
 
 - WhatsApp-Kanal pairen und testen
-- Spine-Anbindung (OC Spine ↔ OC Brain)
+- Spine-Anbindung (OC Spine ↔ OMEGA_ATTRACTOR)
 - SOUL.md / Agent-Routing prüfen

@@ -20,12 +20,12 @@ HEADERS = {
 }
 
 # Trigger the rest_command directly to see if it works
-print("=== Test 1: Trigger rest_command.atlas_whatsapp_webhook direkt ===")
+print("=== Test 1: Trigger rest_command.mtho_whatsapp_webhook direkt ===")
 payload = {
-    "payload": {"test_key": "test_value", "sender": "debug", "message": "atlas_test_ping"}
+    "payload": {"test_key": "test_value", "sender": "debug", "message": "mtho_test_ping"}
 }
 r = requests.post(
-    f"{HA_URL}/api/services/rest_command/atlas_whatsapp_webhook",
+    f"{HA_URL}/api/services/rest_command/mtho_whatsapp_webhook",
     headers=HEADERS,
     json=payload,
     verify=False
@@ -40,6 +40,6 @@ r2 = requests.get(
     verify=False
 )
 all_states = r2.json()
-atlas_automations = [s for s in all_states if "atlas" in s.get("entity_id", "").lower()]
-for a in atlas_automations:
+mtho_automations = [s for s in all_states if "mtho" in s.get("entity_id", "").lower()]
+for a in mtho_automations:
     print(f"ID: {a['entity_id']} | State: {a['state']} | Last triggered: {a['attributes'].get('last_triggered', 'never')}")

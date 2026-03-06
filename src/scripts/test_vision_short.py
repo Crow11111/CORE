@@ -13,14 +13,14 @@ import os
 sys.path.append(os.getcwd())
 
 try:
-    from src.daemons.atlas_vision_daemon import AtlasVisionDaemon
+    from src.daemons.mtho_vision_daemon import MthoVisionDaemon
 except ImportError as e:
     print(f"Import Error: {e}")
     print("Bitte installieren: pip install opencv-python google-generativeai")
     sys.exit(1)
 
 print("Starte Vision Test (15s)...")
-daemon = AtlasVisionDaemon()
+daemon = MthoVisionDaemon()
 
 # Run in thread to not block
 t = threading.Thread(target=daemon.run)

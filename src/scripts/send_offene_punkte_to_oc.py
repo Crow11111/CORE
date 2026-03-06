@@ -35,7 +35,7 @@ STAMM_DIR = os.path.join(PROJECT_ROOT, "docs", "stammdokumente_oc")
 def _read_stammdokumente_compact() -> str:
     """Kompakte Version von was/warum/wer/wie aus den Stammdokumenten."""
     parts = []
-    for name in ["01_PROJEKT_ATLAS.md", "02_MARC_UND_TEAM.md", "03_OC_ROLLE_UND_GRENZEN.md"]:
+    for name in ["01_PROJEKT_MTHO.md", "02_MARC_UND_TEAM.md", "03_OC_ROLLE_UND_GRENZEN.md"]:
         path = os.path.join(STAMM_DIR, name)
         if os.path.isfile(path):
             with open(path, "r", encoding="utf-8") as f:
@@ -79,10 +79,10 @@ def main() -> int:
         text = text[:max_chars] + "\n\n[... gekürzt ...]"
 
     prompt = (
-        "Das ist die aktuelle Liste offener Punkte aus der ATLAS-Implementierungsplanung, "
+        "Das ist die aktuelle Liste offener Punkte aus der MTHO-Implementierungsplanung, "
         "die wir mit dir besprechen möchten. Bitte lies sie und lege bei Bedarf eine Einreichung "
         "in rat_submissions/ ab (type rat_submission oder info, payload mit topic und body), "
-        "mit deinen Vorschlägen oder Priorisierungen. ATLAS holt die Einreichungen ab und bringt sie in den Rat ein.\n\n"
+        "mit deinen Vorschlägen oder Priorisierungen. MTHO holt die Einreichungen ab und bringt sie in den Rat ein.\n\n"
         + text
     )
 

@@ -135,6 +135,6 @@ class LLMInterface:
             return f"Fehler in Tier 5: {e}"
 
 # Singleton instance for the app
-atlas_llm = LLMInterface()
+mtho_llm = LLMInterface()
 
 # force reload

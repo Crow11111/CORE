@@ -15,7 +15,7 @@
 
 | Name | Zweck | Wo |
 |------|--------|-----|
-| **Tampermonkey** | Browser-Extension: Markierter Text → ATLAS TTS (Strg+Shift+S). GM_xmlhttpRequest → localhost:8000/api/atlas/speak | docs/03_INFRASTRUCTURE/TAMPERMONKEY_TTS_INTEGRATION.md |
+| **Tampermonkey** | Browser-Extension: Markierter Text → MTHO TTS (Strg+Shift+S). GM_xmlhttpRequest → localhost:8000/api/atlas/speak | docs/03_INFRASTRUCTURE/TAMPERMONKEY_TTS_INTEGRATION.md |
 | **ElevenLabs** | TTS-API; Rollen (atlas_dialog, therapeut, analyst). Backend: atlas_voice.py, voice_config | src/api/routes/atlas_voice.py, .env ELEVENLABS_* |
 | **React/Vite** | Frontend Dashboard, WebSocket Chat, Backend-Status | frontend/, BACKEND_INTEGRATION.md |
 | **ChromaDB** | Vektor-Store, Session-Turns, Core-Directives, Embeddings | src/config/engine_patterns.py, ATLAS_CHROMADB_SCHEMA.md |
@@ -24,16 +24,16 @@
 | **LangChain** | ChatOllama, ChatGoogleGenerativeAI, Message-Ketten | src/ai/llm_interface.py, requirements.txt |
 | **Extract-Pipelines** | Textauswertung: extract_topics (heuristisch), extract_pipeline_v4, extract_nd_insights, ingest_session_log | src/scripts/ingest_session_log.py, extract_pipeline_v4.py, extract_nd_insights.py |
 | **MCP** | cursor-ide-browser (Browser-Automation), deploy_mcp.py (VPS Port 8001) | mcps/cursor-ide-browser, src/scripts/deploy_mcp.py |
-| **OpenClaw** | OC Admin (Gateway, WhatsApp, Nexos), ATLAS→OC über openclaw_client | KANAL_ATLAS_OC.md, OPENCLAW_ADMIN_ARCHITEKTUR.md |
+| **OpenClaw** | OC Admin (Gateway, WhatsApp, Nexos), MTHO→OC über openclaw_client | KANAL_ATLAS_OC.md, OPENCLAW_ADMIN_ARCHITEKTUR.md |
 
 ---
 
-## 2. Empfohlene Tools für ATLAS (Textauswertung, Zusammenfassung, Extensions)
+## 2. Empfohlene Tools für MTHO (Textauswertung, Zusammenfassung, Extensions)
 
 | Name | Zweck | Priorität | Begründung / Integration |
 |------|--------|-----------|---------------------------|
 | **LLM-basierte Zusammenfassung (vorhanden)** | Lange Texte/Logs komprimieren vor Chroma/OC | P0 | Bereits über Gemini/Ollama abdeckbar; kein neues Tool, nur klare Pipeline (z. B. summarise → add_session_turn). |
-| **TIE/ND-Extract (Codebase)** | Strukturierte Extraktion aus Journallen/Transkripten | P0 | extract_pipeline_v4 + extract_nd_insights ausbauen statt neuer externer Service; bleibt in ATLAS-Pipeline, keine zusätzliche API. |
+| **TIE/ND-Extract (Codebase)** | Strukturierte Extraktion aus Journallen/Transkripten | P0 | extract_pipeline_v4 + extract_nd_insights ausbauen statt neuer externer Service; bleibt in MTHO-Pipeline, keine zusätzliche API. |
 | **Tampermonkey (erweitert)** | Optional: Shortcuts für weitere Stimmen oder „Zusammenfassen & TTS“ | P1 | Gleiche Extension; neues Endpoint z. B. POST /api/atlas/summarise-and-speak (Backend macht Summarise + TTS). Security: weiterhin nur localhost. |
 | **Cursor Rules/Skills** | Keine Installation; .cursorrules + .cursor/skills bereits genutzt | P0 | Keine neuen Tools; Dokumentation prüfen, ob alle Text-/Summarize-Flows in Rules abgedeckt sind. |
 | **tiktoken / Token-Zählung** | Token-Budget, Circuit Breaker, Kostenkontrolle | P1 | In Docs erwähnt (ATLAS_CORE_BRAIN_REGISTR); für Summarize-Pipeline sinnvoll (Max-Length vor LLM-Call). Prüfung: API-Key/Netzwerk nicht nötig, nur lokale Zählung. |

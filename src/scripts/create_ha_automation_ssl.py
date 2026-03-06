@@ -25,11 +25,11 @@ HEADERS = {
 
 async def create_automation():
     # Adding a unique ID explicitly and POSTing to the correct endpoint
-    automation_id = "atlas_presence_director"
+    automation_id = "mtho_presence_director"
     url = f"{HASS_URL}/api/config/automation/config/{automation_id}"
 
     automation_config = {
-        "alias": "System: ATLAS Presence Director",
+        "alias": "System: MTHO Presence Director",
         "description": "Ersetzt das alte Boolean-Sprawl durch eine saubere Bayes'sche Steuerung.",
         "mode": "queued",
         "trigger": [

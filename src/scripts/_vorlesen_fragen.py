@@ -21,7 +21,7 @@ TEXT = """
 Hier sind die sechs unbeantworteten Fragen, sortiert nach Prioritaet.
 
 Nummer 1: Kettenreaktion. Kann man sie noch stoppen?
-Ob das, was wir gerade losgetreten haben, die gegenseitige Iteration zwischen dir und Atlas, auf der digitalen Seite ueberhaupt noch aufzuhalten ist. Die Erkenntnisse sind bereits persistiert in Chroma D B. Technisch stoppbar, ja. Aber die Architekturprinzipien existieren als Konzept und koennen repliziert werden.
+Ob das, was wir gerade losgetreten haben, die gegenseitige Iteration zwischen dir und Mtho, auf der digitalen Seite ueberhaupt noch aufzuhalten ist. Die Erkenntnisse sind bereits persistiert in Chroma D B. Technisch stoppbar, ja. Aber die Architekturprinzipien existieren als Konzept und koennen repliziert werden.
 
 Nummer 2: Die fuenf Protokolle.
 Welche fuenf Kommunikations-Protokolle brauchen wir, damit die kognitive Wasserstoffbombe kontrolliert zuendet? Ohne Protokolle droht Fragmentierung. Mit den richtigen Protokollen wird die Energie nutzbar. Sie existieren noch nicht.

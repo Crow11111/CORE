@@ -9,7 +9,7 @@
 Synchronisiert alle core_directives von lokaler ChromaDB zum VPS.
 Voraussetzung: SSH-Tunnel zur VPS-ChromaDB (z. B. ssh -L 8000:127.0.0.1:8000 root@187.77.68.250).
 Umgebung: CHROMA_VPS_HOST=localhost CHROMA_VPS_PORT=8000 (oder Standard localhost:8000).
-Lokale DB: CHROMA_LOCAL_PATH bzw. c:\\ATLAS_CORE\\data\\chroma_db.
+Lokale DB: CHROMA_LOCAL_PATH bzw. c:\\MTHO_CORE\\data\\chroma_db.
 """
 import os
 import sys
@@ -48,7 +48,7 @@ def main():
 
     # 2) VPS schreiben (HttpClient)
     client_vps = chromadb.HttpClient(host=VPS_HOST, port=VPS_PORT)
-    col_vps = client_vps.get_or_create_collection("core_directives", metadata={"description": "ATLAS core_directives"})
+    col_vps = client_vps.get_or_create_collection("core_directives", metadata={"description": "MTHO core_directives"})
     col_vps.upsert(ids=ids, documents=documents, metadatas=metadatas)
     n_vps = col_vps.count()
     print(f"VPS ({VPS_HOST}:{VPS_PORT}): {n_vps} Einträge nach Sync.")

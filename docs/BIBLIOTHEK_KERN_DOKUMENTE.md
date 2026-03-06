@@ -5,7 +5,7 @@
 <!-- ============================================================
 -->
 
-# ATLAS_CORE Bibliothek – Kerndokumente
+# MTHO_CORE Bibliothek – Kerndokumente
 
 Hier sind die wichtigsten Dokumente nach Themen sortiert. Nutze diese Pfade für `@`-Referenzen.
 

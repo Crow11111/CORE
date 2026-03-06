@@ -28,7 +28,7 @@ DATABASE = "default_database"
 
 DOCUMENT = """NT/ND CONS-ZELLEN-PROTOKOLL (Binäre Symmetrie-Logik)
 
-Jede Zelle im ATLAS-System ist ein Binär-Paar (Lisp cons-cell):
+Jede Zelle im MTHO-System ist ein Binär-Paar (Lisp cons-cell):
 - CAR (ND-Kern): Tiefe, monotropistischer Fokus, Mustererkennung, divergentes Denken, antike Matrix.
 - CDR (NT-Interface): Mapping, Dokumentation, API-Syntax, Clean Code, Cursor-Kompatibilität, operative Realität.
 

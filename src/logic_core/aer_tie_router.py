@@ -22,7 +22,7 @@ class TokenImplosionEngine:
             r"kannst du bitte",
             r"Ich wuerde gerne",
             r"Vielen Dank im Voraus",
-            r"Hallo ATLAS,",
+            r"Hallo MTHO,",
             r"As an AI,",
             r"Als KI",
             r"Ich glaube,",
@@ -122,7 +122,7 @@ if __name__ == "__main__":
     tie = TokenImplosionEngine()
     aer = AgnosticEntropyRouter()
 
-    test_prompt = "Hallo ATLAS, kannst du bitte den Status überprüfen? Ich glaube, das System ist offline."
+    test_prompt = "Hallo MTHO, kannst du bitte den Status überprüfen? Ich glaube, das System ist offline."
     print(f"Original: {test_prompt}")
     
     tie_result = tie.process_prompt(test_prompt)

@@ -4,4 +4,4 @@
 # LOGIC: 2-2-1-0 (NON-BINARY)
 # ============================================================
 
-"""ATLAS API Middleware."""
+"""MTHO API Middleware."""

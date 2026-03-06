@@ -6,9 +6,9 @@
 
 #!/usr/bin/env python3
 """
-ATLAS Voice Assistant – End-to-End Test
+MTHO Voice Assistant – End-to-End Test
 ========================================
-Simuliert: "ATLAS Regal 80% Helligkeit"
+Simuliert: "MTHO Regal 80% Helligkeit"
 - Verifiziert Smart Command Parser → light.turn_on
 - Optional: HA-Service-Aufruf (wenn HASS_URL gesetzt)
 - Optional: NASA Sound auf Mini (wenn data/sounds/nasa_mission_complete.mp3 existiert)
@@ -109,7 +109,7 @@ async def test_nasa_sound():
 
 
 async def main():
-    print("=== ATLAS Voice E2E Test ===\n")
+    print("=== MTHO Voice E2E Test ===\n")
 
     action = await test_parser()
     await test_scout_direct_handler()

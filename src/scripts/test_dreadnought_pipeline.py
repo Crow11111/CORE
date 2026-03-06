@@ -33,10 +33,10 @@ def main():
     except Exception as e:
         out.append(("OC Brain", "FAIL", str(e)[:150]))
 
-    # 2) Lokale API: /api/atlas/voice/roles (kein Key nötig)
+    # 2) Lokale API: /api/mtho/voice/roles (kein Key nötig)
     try:
         r = urllib.request.urlopen(urllib.request.Request(
-            "http://127.0.0.1:8000/api/atlas/voice/roles",
+            "http://127.0.0.1:8000/api/mtho/voice/roles",
             method="GET",
         ), timeout=3)
         d = json.loads(r.read().decode())
@@ -48,7 +48,7 @@ def main():
     # 3) Event-Ingest (API muss laufen)
     try:
         r = urllib.request.urlopen(urllib.request.Request(
-            "http://127.0.0.1:8000/api/atlas/event",
+            "http://127.0.0.1:8000/api/mtho/event",
             data=json.dumps({"source": "test", "node_id": "dreadnought", "event_type": "pipeline_test", "data": {}}).encode(),
             headers={"Content-Type": "application/json"},
             method="POST",

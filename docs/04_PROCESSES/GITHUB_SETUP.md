@@ -5,9 +5,9 @@
 <!-- ============================================================
 -->
 
-﻿# GitHub Repository Setup für ATLAS_CORE
+﻿# GitHub Repository Setup für MTHO_CORE
 
-> Anleitung zur Verbindung des lokalen ATLAS_CORE Repos mit GitHub für Cloud Agents und Push-Funktionalität.
+> Anleitung zur Verbindung des lokalen MTHO_CORE Repos mit GitHub für Cloud Agents und Push-Funktionalität.
 
 ## Voraussetzungen
 
@@ -18,8 +18,8 @@
 ## Schritt 1: GitHub Repository erstellen
 
 1. Öffne [github.com/new](https://github.com/new)
-2. Repository name: `ATLAS_CORE`
-3. Description: `ATLAS Orchestration Core - Private Infrastructure`
+2. Repository name: `MTHO_CORE`
+3. Description: `MTHO Orchestration Core - Private Infrastructure`
 4. Visibility: **Private** (wichtig!)
 5. **KEIN** README, .gitignore oder License hinzufügen (Repo existiert lokal bereits)
 6. Klicke **Create repository**
@@ -38,7 +38,7 @@
 Führe im Terminal (in `c:\MTHO_CORE`) aus:
 
 ```powershell
-git remote add origin https://github.com/Crow11111/ATLAS_CORE.git
+git remote add origin https://github.com/Crow11111/MTHO_CORE.git
 ```
 
 Prüfe mit:
@@ -49,8 +49,8 @@ git remote -v
 
 Erwartete Ausgabe:
 ```
-origin  https://github.com/Crow11111/ATLAS_CORE.git (fetch)
-origin  https://github.com/Crow11111/ATLAS_CORE.git (push)
+origin  https://github.com/Crow11111/MTHO_CORE.git (fetch)
+origin  https://github.com/Crow11111/MTHO_CORE.git (push)
 ```
 
 ## Schritt 4: Initial Push
@@ -75,7 +75,7 @@ Bei Authentifizierungsprompt:
 
 1. In Cursor: Öffne **Cloud Agents** Tab (Sidebar oder Ctrl+Shift+P -> Cloud Agents)
 2. Klicke **Manage Settings** oder **Configure**
-3. Wähle Repository: `Crow11111/ATLAS_CORE`
+3. Wähle Repository: `Crow11111/MTHO_CORE`
 4. Aktiviere Cloud Agents für das Repo
 
 ## Troubleshooting
@@ -83,7 +83,7 @@ Bei Authentifizierungsprompt:
 ### Remote existiert bereits
 ```powershell
 git remote remove origin
-git remote add origin https://github.com/Crow11111/ATLAS_CORE.git
+git remote add origin https://github.com/Crow11111/MTHO_CORE.git
 ```
 
 ### Authentication failed
@@ -103,7 +103,7 @@ git push -u origin 2026-02-25-cjle
 Die `.gitignore` schützt bereits:
 - `.env` - Umgebungsvariablen/Secrets
 - `*.pem`, `*.key` - SSH/TLS Schlüssel
-- `.secrets.mth` - ATLAS Secrets
+- `.secrets.mth` - MTHO Secrets
 
 **NIEMALS** folgende Dateien committen:
 - API-Keys

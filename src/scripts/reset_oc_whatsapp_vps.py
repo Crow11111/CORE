@@ -30,7 +30,7 @@ ADMIN_KEY = (os.getenv("OPENCLAW_ADMIN_VPS_SSH_KEY") or os.getenv("VPS_SSH_KEY",
 ADMIN_PORT = int(os.getenv("OPENCLAW_ADMIN_VPS_SSH_PORT") or os.getenv("VPS_SSH_PORT", "22"))
 
 # Full-Stack: Volume auf Host
-BASE_DATA = "/opt/atlas-core/openclaw-admin/data"
+BASE_DATA = "/opt/mtho-core/openclaw-admin/data"
 CREDENTIALS_WHATSAPP = f"{BASE_DATA}/credentials/whatsapp"
 
 
@@ -70,7 +70,7 @@ def main():
 
     # 2) Container neu starten
     print("  Starte openclaw-admin neu …")
-    code, out, err = run(ssh, "cd /opt/atlas-core && docker compose restart openclaw-admin 2>&1")
+    code, out, err = run(ssh, "cd /opt/mtho-core && docker compose restart openclaw-admin 2>&1")
     if code != 0:
         print(f"    Warnung: {err or out}")
     else:

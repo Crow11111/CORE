@@ -40,7 +40,7 @@ RUN pip install --no-cache-dir \
     loguru \
     httpx
 
-# Code kopieren (wird vom Context-Root c/ATLAS_CORE gestartet)
+# Code kopieren (wird vom Context-Root c/MTHO_CORE gestartet)
 COPY ./src/edge/ /app/src/edge/
 COPY ./src/services/ /app/src/services/
 

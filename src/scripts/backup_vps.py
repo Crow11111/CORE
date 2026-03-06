@@ -64,7 +64,7 @@ def _scp(remote_path: str, local_path: Path, timeout: int = 120) -> bool:
 def backup_chromadb() -> bool:
     logger.info("ChromaDB Backup starten...")
     ok, out = _ssh(
-        "docker exec atlas_chroma_state sh -c "
+        "docker exec mtho_chroma_state sh -c "
         "'cd / && tar czf /tmp/chroma_backup.tar.gz chroma/chroma 2>/dev/null'"
     )
     if not ok:
@@ -84,8 +84,8 @@ def backup_chromadb() -> bool:
 def backup_postgres() -> bool:
     logger.info("PostgreSQL Backup starten...")
     ok, out = _ssh(
-        "docker exec atlas_postgres_state "
-        "pg_dump -U postgres atlas_state > /tmp/pg_backup.sql 2>/dev/null"
+        "docker exec mtho_postgres_state "
+        "pg_dump -U postgres mtho_state > /tmp/pg_backup.sql 2>/dev/null"
     )
     if not ok:
         logger.error(f"PostgreSQL dump fehlgeschlagen: {out}")

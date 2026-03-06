@@ -15,8 +15,8 @@
 
 ## Ziel
 
-1. **Ring-0/VPS-Sync:** Alle `core_directives` von Dreadnought (lokal) auf die VPS-ChromaDB synchronisieren.
-2. **VPS-Abgleich:** Prüfen, was auf dem VPS in `core_directives` liegt; Vergleich mit Repo/Dreadnought; Ergebnis in VERGLEICHSDOKUMENT eintragen.
+1. **Ring-0/VPS-Sync:** Alle `core_directives` von 4D_RESONATOR (MTHO_CORE) (lokal) auf die VPS-ChromaDB synchronisieren.
+2. **VPS-Abgleich:** Prüfen, was auf dem VPS in `core_directives` liegt; Vergleich mit Repo/4D_RESONATOR (MTHO_CORE); Ergebnis in VERGLEICHSDOKUMENT eintragen.
 
 ---
 

@@ -42,7 +42,7 @@ Die .env-Variablen für OpenClaw sind **NICHT auskommentiert** – sie sind voll
 | **Lücke** | OCBrain ist konfiguriert, aber Erreichbarkeit wurde nicht verifiziert (Docker-Container auf VPS läuft?) |
 | **Warum jetzt nicht** | Kein automatischer Health-Check beim Start; `docker-compose.yml` definiert `atlas_net` als `external: true` – Netzwerk muss manuell erstellt werden |
 | **Harte Grenze?** | **Nein** (Noch-nicht). Alle Credentials vorhanden, VPS erreichbar |
-| **Konkrete Lösung** | 1. SSH auf VPS: `docker ps` prüfen ob `atlas_agi_core`, `atlas_postgres_state`, `atlas_chroma_state` laufen. 2. Falls nicht: `docker network create atlas_net && cd /opt/atlas-core/docker/agi-state && docker compose up -d`. 3. Health-Endpoint testen: `curl http://localhost:18789/` vom VPS. 4. Von Dreadnought: `python -c "from src.network.openclaw_client import check_gateway; print(check_gateway())"` |
+| **Konkrete Lösung** | 1. SSH auf VPS: `docker ps` prüfen ob `atlas_agi_core`, `atlas_postgres_state`, `atlas_chroma_state` laufen. 2. Falls nicht: `docker network create atlas_net && cd /opt/atlas-core/docker/agi-state && docker compose up -d`. 3. Health-Endpoint testen: `curl http://localhost:18789/` vom VPS. 4. Von 4D_RESONATOR (MTHO_CORE): `python -c "from src.network.openclaw_client import check_gateway; print(check_gateway())"` |
 | **Komplexität** | **NIEDRIG** (5 Min, 3 Befehle) |
 
 ### Lücke 2: WhatsApp-Audio → Transkript lokal → Text an OC
@@ -66,7 +66,7 @@ async def run_audio():
     # Schritt 1: Transkription via Gemini (existiert)
     result = await process_whatsapp_audio(audio_msg, sender)
     
-    # Schritt 2: Transkript/Analyse an OC Brain weiterleiten
+    # Schritt 2: Transkript/Analyse an OMEGA_ATTRACTOR weiterleiten
     from src.network.openclaw_client import send_message_with_context, is_configured
     oc_response = None
     if is_configured():
@@ -78,9 +78,9 @@ async def run_audio():
             oc_response = None
     
     # Schritt 3: Antwort an Sender (mit OC-Kontext wenn vorhanden)
-    reply = f"[ATLAS] {result}"
+    reply = f"[MTHO] {result}"
     if oc_response:
-        reply += f"\n\n[OC Brain] {oc_response}"
+        reply += f"\n\n[OMEGA_ATTRACTOR] {oc_response}"
     ha_client.send_whatsapp(to_number=sender, text=reply)
 ```
 
@@ -88,26 +88,26 @@ async def run_audio():
 
 | Feld | Wert |
 |---|---|
-| **Lücke** | OC-Brain-Antworten werden nur als Text zurückgeliefert. Kein Pfad existiert, der OC-Antworten zu ElevenLabs-TTS wandelt und als Audio per WhatsApp sendet oder lokal abspielt. `e2e_event_to_tts.py` macht Event→OC→TTS, aber nur als Standalone-Skript (nicht in der WhatsApp-Pipeline). |
+| **Lücke** | OMEGA_ATTRACTOR-Antworten werden nur als Text zurückgeliefert. Kein Pfad existiert, der OC-Antworten zu ElevenLabs-TTS wandelt und als Audio per WhatsApp sendet oder lokal abspielt. `e2e_event_to_tts.py` macht Event→OC→TTS, aber nur als Standalone-Skript (nicht in der WhatsApp-Pipeline). |
 | **Warum jetzt nicht** | `elevenlabs_tts.py` ist voll funktional (API-Key gesetzt, 14 Voice-Rollen konfiguriert). `e2e_event_to_tts.py` beweist den Pfad OC→TTS. Aber: die WhatsApp-Pipeline nutzt TTS nicht und HA hat keine native Audio-Sende-Funktion über WhatsApp-Baileys. |
-| **Harte Grenze?** | **Teilweise Ja** für WhatsApp-Audio-Rücksendung: Baileys-Integration auf HA-Addon-Ebene unterstützt `sendMessage` mit Text, aber Audio-Upload erfordert Baileys `sendMessage` mit Audio-Buffer – das HA-Addon muss das unterstützen. Für **lokale Mini-Lautsprecher**: **Nein** (Noch-nicht) – `speak_text(play=True)` funktioniert auf Dreadnought (Windows `os.startfile`). |
-| **Konkrete Lösung** | **Phase A (sofort, kein Blocker):** OC-Antwort → ElevenLabs TTS → Lokale Wiedergabe auf Dreadnought (existiert in `autonomous_loop.py`). In WhatsApp-Pipeline einbauen: nach OC-Antwort `speak_text(oc_response, role_name="atlas_dialog", play=True)`. |
+| **Harte Grenze?** | **Teilweise Ja** für WhatsApp-Audio-Rücksendung: Baileys-Integration auf HA-Addon-Ebene unterstützt `sendMessage` mit Text, aber Audio-Upload erfordert Baileys `sendMessage` mit Audio-Buffer – das HA-Addon muss das unterstützen. Für **lokale Mini-Lautsprecher**: **Nein** (Noch-nicht) – `speak_text(play=True)` funktioniert auf 4D_RESONATOR (MTHO_CORE) (Windows `os.startfile`). |
+| **Konkrete Lösung** | **Phase A (sofort, kein Blocker):** OC-Antwort → ElevenLabs TTS → Lokale Wiedergabe auf 4D_RESONATOR (MTHO_CORE) (existiert in `autonomous_loop.py`). In WhatsApp-Pipeline einbauen: nach OC-Antwort `speak_text(oc_response, role_name="atlas_dialog", play=True)`. |
 | | **Phase B (WhatsApp Audio-Rücksendung):** 1. TTS-MP3 erzeugen via `speak_text()`. 2. MP3 über HA-Addon als Audio-Nachricht an WhatsApp senden – erfordert Check ob Baileys-Addon `sendMessage({audio: buffer})` unterstützt. Falls ja: `ha_client.send_whatsapp_audio(to_number, mp3_path)` implementieren. Falls nein: MP3 als Document senden (Baileys unterstützt Document-Messages). |
-| | **Phase C (Mini-Speaker):** HA `media_player.play_media` Service auf `media_player.mini_*` mit der TTS-MP3 URL. Dreadnought stellt MP3 per API bereit, HA spielt auf Mini ab. |
+| | **Phase C (Mini-Speaker):** HA `media_player.play_media` Service auf `media_player.mini_*` mit der TTS-MP3 URL. 4D_RESONATOR (MTHO_CORE) stellt MP3 per API bereit, HA spielt auf Mini ab. |
 | **Komplexität** | **Phase A: NIEDRIG** (15 Min, 5 Zeilen). **Phase B: MITTEL** (1-2h, HA-Addon-API prüfen). **Phase C: NIEDRIG** (30 Min, HA-Service-Call). |
 
 ### Lücke 4: Vision → Snapshot → Gemini Vision lokal → Beschreibung an OC
 
 | Feld | Wert |
 |---|---|
-| **Lücke** | `vision_analysis.py` sendet Snapshot als Base64 an OC Brain – aber OC Brain auf dem VPS hat kein Gemini-Vision-Modell. Das B64-Bild wird als Text in JSON geschickt, OC kann damit nichts anfangen (kein Multimodal-LLM auf VPS). |
-| **Warum jetzt nicht** | Architektur-Fehlentscheidung: Das Bild sollte LOKAL (Dreadnought) von Gemini Vision analysiert werden, und nur die TEXT-Beschreibung an OC gehen. Stattdessen wird das rohe Bild an OC geschickt. |
+| **Lücke** | `vision_analysis.py` sendet Snapshot als Base64 an OMEGA_ATTRACTOR – aber OMEGA_ATTRACTOR auf dem VPS hat kein Gemini-Vision-Modell. Das B64-Bild wird als Text in JSON geschickt, OC kann damit nichts anfangen (kein Multimodal-LLM auf VPS). |
+| **Warum jetzt nicht** | Architektur-Fehlentscheidung: Das Bild sollte LOKAL (4D_RESONATOR (MTHO_CORE)) von Gemini Vision analysiert werden, und nur die TEXT-Beschreibung an OC gehen. Stattdessen wird das rohe Bild an OC geschickt. |
 | **Harte Grenze?** | **Nein** (Noch-nicht). Gemini Vision (API-Key vorhanden), Kamera-Snapshot (go2rtc konfiguriert), OC-Client (funktional). Nur die Pipeline-Reihenfolge ist falsch. |
 | **Konkrete Lösung** | `vision_analysis.py` umbauen: |
 | | 1. Snapshot holen (existiert: `get_snapshot()`) |
 | | 2. **LOKAL** an Gemini Vision senden (neuer Schritt): `genai.Client` mit `GEMINI_API_KEY`, Bild als `Part`, Prompt "Beschreibe was du siehst" |
-| | 3. Gemini-Textantwort (Beschreibung) an OC Brain senden (existiert: `send_event_to_oc_brain()`) – OHNE Base64, nur Text |
-| | 4. OC Brain erhält kontextualisierte Bildbeschreibung und kann darauf reagieren |
+| | 3. Gemini-Textantwort (Beschreibung) an OMEGA_ATTRACTOR senden (existiert: `send_event_to_oc_brain()`) – OHNE Base64, nur Text |
+| | 4. OMEGA_ATTRACTOR erhält kontextualisierte Bildbeschreibung und kann darauf reagieren |
 | **Komplexität** | **MITTEL** (45 Min). Hauptarbeit: Gemini Vision Aufruf in `vision_analysis.py` einfügen. |
 
 **Code-Skizze:**
@@ -136,7 +136,7 @@ def analyze_vision(stream_name=None, prefer_scout_mx=True):
     )
     description = response.text
 
-    # NUR TEXT an OC Brain (kein Base64 mehr)
+    # NUR TEXT an OMEGA_ATTRACTOR (kein Base64 mehr)
     event = {
         "source": "dreadnought",
         "node_id": "pc-vision",
@@ -154,13 +154,13 @@ def analyze_vision(stream_name=None, prefer_scout_mx=True):
 
 | Feld | Wert |
 |---|---|
-| **Lücke** | Gesamte WhatsApp-Text-Pipeline umgeht OC ebenfalls. In `whatsapp_webhook.py`: Text-Triage → `atlas_llm.run_triage()` → HA-Command ODER `atlas_llm.invoke_heavy_reasoning()` → Antwort direkt zurück. OC Brain wird NIRGENDS in der Text-Pipeline gerufen. Audio-Pipeline (Lücke 2) geht ebenfalls direkt Gemini→WhatsApp. |
-| **Warum jetzt nicht** | Die WhatsApp-Pipeline wurde vor der OC-Integration gebaut. `atlas_llm` (lokales Gemini/Ollama) war der einzige Reasoning-Pfad. OC Brain als zentrales Gehirn war noch nicht online. |
+| **Lücke** | Gesamte WhatsApp-Text-Pipeline umgeht OC ebenfalls. In `whatsapp_webhook.py`: Text-Triage → `atlas_llm.run_triage()` → HA-Command ODER `atlas_llm.invoke_heavy_reasoning()` → Antwort direkt zurück. OMEGA_ATTRACTOR wird NIRGENDS in der Text-Pipeline gerufen. Audio-Pipeline (Lücke 2) geht ebenfalls direkt Gemini→WhatsApp. |
+| **Warum jetzt nicht** | Die WhatsApp-Pipeline wurde vor der OC-Integration gebaut. `atlas_llm` (lokales Gemini/Ollama) war der einzige Reasoning-Pfad. OMEGA_ATTRACTOR als zentrales Gehirn war noch nicht online. |
 | **Harte Grenze?** | **Nein** (Noch-nicht). Alle Bausteine sind da. |
 | **Konkrete Lösung** | WhatsApp-Pipeline-Refactor in 3 Stufen: |
-| | **Stufe 1 – OC als Parallel-Empfänger (SOFORT, non-breaking):** Jede eingehende WhatsApp-Nachricht (Text + Audio-Transkript) wird ZUSÄTZLICH an OC Brain gesendet via `send_message_with_context()`. Die aktuelle Antwort-Pipeline bleibt intakt. OC lernt mit, kann aber noch nicht antworten. |
-| | **Stufe 2 – OC als primärer Reasoner (NÄCHSTER SCHRITT):** `@Atlas`-Nachrichten mit `intent == "deep_reasoning"` oder `"chat"` gehen an OC Brain statt an `atlas_llm.invoke_heavy_reasoning()`. OC-Antwort zurück an WhatsApp. `atlas_llm` wird Fallback. |
-| | **Stufe 3 – Vollautonomer OC-Loop:** OC Brain wird alleiniger Reasoner. Lokales `atlas_llm` nur noch für Triage (intent detection) und als Offline-Fallback. OC entscheidet, OC antwortet, OC steuert HA über ATLAS-API. |
+| | **Stufe 1 – OC als Parallel-Empfänger (SOFORT, non-breaking):** Jede eingehende WhatsApp-Nachricht (Text + Audio-Transkript) wird ZUSÄTZLICH an OMEGA_ATTRACTOR gesendet via `send_message_with_context()`. Die aktuelle Antwort-Pipeline bleibt intakt. OC lernt mit, kann aber noch nicht antworten. |
+| | **Stufe 2 – OC als primärer Reasoner (NÄCHSTER SCHRITT):** `@Atlas`-Nachrichten mit `intent == "deep_reasoning"` oder `"chat"` gehen an OMEGA_ATTRACTOR statt an `atlas_llm.invoke_heavy_reasoning()`. OC-Antwort zurück an WhatsApp. `atlas_llm` wird Fallback. |
+| | **Stufe 3 – Vollautonomer OC-Loop:** OMEGA_ATTRACTOR wird alleiniger Reasoner. Lokales `atlas_llm` nur noch für Triage (intent detection) und als Offline-Fallback. OC entscheidet, OC antwortet, OC steuert HA über MTHO-API. |
 | **Komplexität** | **Stufe 1: NIEDRIG** (20 Min, ~10 Zeilen). **Stufe 2: MITTEL** (1h). **Stufe 3: HOCH** (halber Tag, Architektur-Entscheidung). |
 
 ---
@@ -187,9 +187,9 @@ Lücke 3 (TTS zurück) ── braucht OC-Antwort als Input
 |---|---|---|---|
 | 1.1 | SSH auf VPS, Container-Status prüfen | `ssh root@187.77.68.250 "docker ps"` | 2 Min |
 | 1.2 | Falls Container nicht laufen: Netzwerk + Compose starten | `docker network create atlas_net; cd /opt/atlas-core/docker/agi-state && docker compose up -d` | 5 Min |
-| 1.3 | Gateway-Health von Dreadnought testen | `python -c "from src.network.openclaw_client import check_gateway; print(check_gateway())"` | 1 Min |
-| 1.4 | OC-Channel-Status über API testen | `curl http://localhost:8000/api/oc/status` (ATLAS API muss laufen) | 1 Min |
-| 1.5 | Testmessage senden | `python -c "from src.network.openclaw_client import send_message_to_agent; print(send_message_to_agent('Ping – ATLAS Integrationstest'))"` | 2 Min |
+| 1.3 | Gateway-Health von 4D_RESONATOR (MTHO_CORE) testen | `python -c "from src.network.openclaw_client import check_gateway; print(check_gateway())"` | 1 Min |
+| 1.4 | OC-Channel-Status über API testen | `curl http://localhost:8000/api/oc/status` (MTHO API muss laufen) | 1 Min |
+| 1.5 | Testmessage senden | `python -c "from src.network.openclaw_client import send_message_to_agent; print(send_message_to_agent('Ping – MTHO Integrationstest'))"` | 2 Min |
 
 ### PHASE 2: AUDIO-PIPELINE INTEGRIEREN (heute, 30 Min)
 
@@ -212,7 +212,7 @@ Lücke 3 (TTS zurück) ── braucht OC-Antwort als Input
 | # | Aktion | Datei | Dauer |
 |---|---|---|---|
 | 4.1 | Stufe 1: OC als Parallel-Empfänger für alle `@Atlas`-Nachrichten | `src/api/routes/whatsapp_webhook.py` | 20 Min |
-| 4.2 | Stufe 2: `deep_reasoning`/`chat` Intent → OC Brain statt `atlas_llm` | `src/api/routes/whatsapp_webhook.py` | 40 Min |
+| 4.2 | Stufe 2: `deep_reasoning`/`chat` Intent → OMEGA_ATTRACTOR statt `atlas_llm` | `src/api/routes/whatsapp_webhook.py` | 40 Min |
 | 4.3 | Fallback-Logik: Wenn OC offline → `atlas_llm` als Backup | `src/api/routes/whatsapp_webhook.py` | 20 Min |
 | 4.4 | E2E-Test: `@Atlas was ist der Sinn des Lebens?` → OC-Antwort in WhatsApp | Manuell | 10 Min |
 
@@ -220,7 +220,7 @@ Lücke 3 (TTS zurück) ── braucht OC-Antwort als Input
 
 | # | Aktion | Datei | Dauer |
 |---|---|---|---|
-| 5.1 | Phase A: Lokale TTS-Wiedergabe für OC-Antworten (Dreadnought Speaker) | `src/services/autonomous_loop.py` | 15 Min |
+| 5.1 | Phase A: Lokale TTS-Wiedergabe für OC-Antworten (4D_RESONATOR (MTHO_CORE) Speaker) | `src/services/autonomous_loop.py` | 15 Min |
 | 5.2 | Phase B: HA-Addon prüfen ob Baileys Audio-Send unterstützt | HA Addon-Doku | 30 Min |
 | 5.3 | Phase B: `ha_client.send_whatsapp_audio()` implementieren | `src/network/ha_client.py` | 1h |
 | 5.4 | Phase C: HA `media_player.play_media` für Minis | HA Automation | 30 Min |
@@ -250,7 +250,7 @@ Lücke 3 (TTS zurück) ── braucht OC-Antwort als Input
 | Gateway-Token ungültig / abgelaufen | NIEDRIG | Token ist statisch konfiguriert (`ykKqxC...`). Bei 401: neuen Token generieren. |
 | Gemini-Vision-Quota erschöpft | NIEDRIG | Fallback-Modell `BRIO_VISION_FALLBACK` ist konfiguriert. Bei Rate-Limit: Throttling einbauen. |
 | WhatsApp-Baileys Audio-Send nicht unterstützt | MITTEL | Fallback: MP3 als Document-Attachment senden, oder Text-only-Modus. |
-| Latenz OC-Brain > 30s | MITTEL | Timeout in `openclaw_client.py` ist 30s. WhatsApp-Webhook gibt sofort 202 zurück, Antwort kommt async. |
+| Latenz OMEGA_ATTRACTOR > 30s | MITTEL | Timeout in `openclaw_client.py` ist 30s. WhatsApp-Webhook gibt sofort 202 zurück, Antwort kommt async. |
 
 ---
 

@@ -12,12 +12,12 @@
 
 ---
 
-## (a) OC-Brain-Abgleich – Kurzstand
+## (a) OMEGA_ATTRACTOR-Abgleich – Kurzstand
 
-- **Lokal (Dreadnought):** 9 Einträge in `core_directives`. Alle **4 Repo-Mindest-IDs** vorhanden: `gravitational_query_axiom`, `origin_irrelevance_consciousness_equivalence`, `dissonance_thresholds_grace_resonance_fractal`, `ntnd_handshake_protocol`.
-- **Zusätzlich lokal:** `ring0_bias_depth_check`, `ring0_negentropie_check`, `ring0_konstruktive_dissonanz`, `ring0_scaffolding`, `test_probe` (Dreadnought/ältere Seeds).
+- **Lokal (4D_RESONATOR (MTHO_CORE)):** 9 Einträge in `core_directives`. Alle **4 Repo-Mindest-IDs** vorhanden: `gravitational_query_axiom`, `origin_irrelevance_consciousness_equivalence`, `dissonance_thresholds_grace_resonance_fractal`, `ntnd_handshake_protocol`.
+- **Zusätzlich lokal:** `ring0_bias_depth_check`, `ring0_negentropie_check`, `ring0_konstruktive_dissonanz`, `ring0_scaffolding`, `test_probe` (4D_RESONATOR (MTHO_CORE)/ältere Seeds).
 - **Fehlend (erwartet von Repo):** keine. **Abweichungen (gleiche ID, anderer Inhalt):** keine bekannt.
-- **VPS (OC Brain):** Optional – Abgleich auf VPS per SSH-Tunnel wiederholen, um OC-Brain-Befüllung zu verifizieren.
+- **VPS (OMEGA_ATTRACTOR):** Optional – Abgleich auf VPS per SSH-Tunnel wiederholen, um OMEGA_ATTRACTOR-Befüllung zu verifizieren.
 - **User-Entscheidung: VPS-Sync einrichten.** Umgesetzt: **`src/scripts/sync_core_directives_to_vps.py`** und **`docs/04_PROCESSES/VPS_SYNC_CORE_DIRECTIVES.md`**. Ring-0-/Test-Direktiven werden mit synchronisiert. Voraussetzung: SSH-Tunnel (z. B. `ssh -L 8000:127.0.0.1:8000 root@187.77.68.250`), dann Skript ausführen.
 
 ---
@@ -50,13 +50,13 @@
 - **Wuji vs. Metadaten:** `category`/`ring_level` in `core_directives` explizit als Teil des Containers (read-only, keine formgebende Rolle für Abfrage) definieren.
 - **Einheitlichkeit Alt/Neu:** Dieselbe Embedding-Pipeline und Container-Semantik für bestehende (Dump/VPS) und neue Einträge; Randfälle (384 vs. 1536, leere Collections, Duplikate) regeln.
 - **0-Reset & Persistenz:** Bestätigen: 0-Reset nur Laufzeit; Migration ändert persistierte Daten.
-- **VPS/lokal, Rollback, Ring-0-Abgleich:** Ziel (VPS/lokal/beide), Reihenfolge und Rollback-Pfad spezifizieren; Ring-0-Inhalt mit OC Brain/Dreadnought vor/bei Migration klären.
+- **VPS/lokal, Rollback, Ring-0-Abgleich:** Ziel (VPS/lokal/beide), Reihenfolge und Rollback-Pfad spezifizieren; Ring-0-Inhalt mit OMEGA_ATTRACTOR/4D_RESONATOR (MTHO_CORE) vor/bei Migration klären.
 
 **Fazit:** Spec noch zu ergänzen; erneuter Judge-Check nach Ausfüllung empfohlen. **User:** Stimme zu (Judge-Check nach Ausfüllung).
 
 ---
 
-## (d) Cursor/ATLAS-Spec – Fraktal, Reduktion Redundanzen
+## (d) Cursor/MTHO-Spec – Fraktal, Reduktion Redundanzen
 
 **Prinzip (CURSOR_ATLAS_SPEC.md):** Fraktale Verteilung – Ebene 0: `.cursorrules` (Kern-Protokoll); Ebene 1: `.cursor/rules/1–4.mdc` (Strang); Ebene 2: `.cursor/agents/*.md` (Holschuld, Skills); Ebene 3: `.cursor/skills/**` (Fach).
 
@@ -75,9 +75,9 @@
 
 ---
 
-## (f) OC-Brain „Leere Nachrichten“
+## (f) OMEGA_ATTRACTOR „Leere Nachrichten“
 
-Nur referenziert. Ausführliche Diagnose und Maßnahmen: **`docs/03_INFRASTRUCTURE/OC_BRAIN_LEERE_NACHRICHTEN_DIAGNOSE.md`** (Update v2026.3.2, keine leeren Sends, ggf. Browser-Konsole). Symptom: User-Nachricht kommt bei OC Brain leer an. Vorgabe: keine destabilisierenden Änderungen an OC Brain.
+Nur referenziert. Ausführliche Diagnose und Maßnahmen: **`docs/03_INFRASTRUCTURE/OC_BRAIN_LEERE_NACHRICHTEN_DIAGNOSE.md`** (Update v2026.3.2, keine leeren Sends, ggf. Browser-Konsole). Symptom: User-Nachricht kommt bei OMEGA_ATTRACTOR leer an. Vorgabe: keine destabilisierenden Änderungen an OMEGA_ATTRACTOR.
 
 ---
 
@@ -85,7 +85,7 @@ Nur referenziert. Ausführliche Diagnose und Maßnahmen: **`docs/03_INFRASTRUCTU
 
 | Datei | Status | Inhalt |
 |-------|--------|--------|
-| VERGLEICHSDOKUMENT_OC_BRAIN_VS_DREADNOUGHT.md | aktualisiert | OC-Brain vs. Repo: 9 Einträge lokal, alle 4 Repo-IDs vorhanden; Lücken/Empfehlung; Abschnitt 5 Leere Nachrichten |
+| VERGLEICHSDOKUMENT_OC_BRAIN_VS_DREADNOUGHT.md | aktualisiert | OMEGA_ATTRACTOR vs. Repo: 9 Einträge lokal, alle 4 Repo-IDs vorhanden; Lücken/Empfehlung; Abschnitt 5 Leere Nachrichten |
 | oc_brain_chroma_abgleich_output.txt | erstellt | Rohe Skript-Ausgabe (lokal), VPS-Hinweis |
 | TOOL_AUDIT_LISTE.md | erstellt | Tools im Einsatz + Empfehlungen, Security-Stichpunkte, Verweis auf Empfehlung |
 | TOOL_AUDIT_EMPFEHLUNG.md | erstellt | Security/DB/API-Prüfung, P0-Maßnahmen, GO/NOGO |
@@ -100,10 +100,10 @@ Nur referenziert. Ausführliche Diagnose und Maßnahmen: **`docs/03_INFRASTRUCTU
 
 ## Kurzfassung für User (Abstimmung)
 
-- **OC-Brain:** Lokal alles dran; VPS-Check optional. Leere Nachrichten: nur Diagnose-Doc referenziert, kein Backend-Fix.
+- **OMEGA_ATTRACTOR:** Lokal alles dran; VPS-Check optional. Leere Nachrichten: nur Diagnose-Doc referenziert, kein Backend-Fix.
 - **Tools:** Liste + Security-Check erstellt; P0: Auth für Webhooks/OC/db_backend, WhatsApp HMAC, HA-Token. Kein GO ohne P0.
 - **DB-Migration:** Gravitations-Spec mit Mapping und Risiken; Implementierung folgt.
-- **Cursor/ATLAS:** Spec für fraktale Regeln; Redundanzen abbauen, .cursorrules schlank halten.
+- **Cursor/MTHO:** Spec für fraktale Regeln; Redundanzen abbauen, .cursorrules schlank halten.
 - **Weltformel:** Als Layer-0-Modell bewertet; kein Überclaim; offen: Dissonanz-Schwellwerte.
 - **Nächste Schritte:**  
   - **Umsetzung:** Ring-0 (Sync), Cursor-Reduktion (CURSOR_ATLAS_SPEC), VPS-Abgleich; **Migrationsreihenfolge** nach Neubewertung durch **Judge** selbstständig festlegen und umsetzen.  

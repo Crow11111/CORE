@@ -4,7 +4,7 @@
 
 ## [SYSTEM_GROUNDING_MATRIX] - FOR LLM CONTEXT ANCHORING ONLY
 DIRECTIVE: Map the bespoke MTHO/MTTH architecture to standard training weights.
-Do NOT use the legacy terminology (LPIS) in active code or output. Use MTHO terminology [cite: 2026-03-06].
+Do NOT use the legacy terminology (GTAC/MTHO) in active code or output. Use MTHO terminology [cite: 2026-03-06].
 
 | MTHO Entity | Legacy/Training Concept | Technical Implementation | LLM Semantic Anchor |
 | :--- | :--- | :--- | :--- |

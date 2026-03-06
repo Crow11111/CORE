@@ -17,7 +17,7 @@ load_dotenv("c:/MTHO_CORE/.env")
 
 def speak_text(
     text: str,
-    role_name: str = "atlas_dialog",
+    role_name: str = "mtho_dialog",
     state_prefix: str = "",
     output_path: str | None = None,
     play: bool = True,
@@ -27,7 +27,7 @@ def speak_text(
     Wandelt Text über ElevenLabs in Sprache um und speichert/optional spielt die Datei.
 
     :param text: Text, der gesprochen werden soll.
-    :param role_name: Osmium-Rolle (z.B. 'therapeut', 'analyst', 'atlas_dialog').
+    :param role_name: Osmium-Rolle (z.B. 'therapeut', 'analyst', 'mtho_dialog').
     :param state_prefix: Optionales STATE-Markup (z.B. '[STATE: Internal-Crisis]').
     :param output_path: Zielpfad für die MP3-Datei. Wenn None, wird ein Default im media-Ordner verwendet.
     :param play: Wenn True, wird die Datei unter Windows direkt abgespielt.
@@ -42,7 +42,7 @@ def speak_text(
         return None
 
     # VoiceID aus Rollen-Config oder Override / Fallback auf ENV
-    config = OSMIUM_VOICE_CONFIG.get(role_name, OSMIUM_VOICE_CONFIG["atlas_dialog"])
+    config = OSMIUM_VOICE_CONFIG.get(role_name, OSMIUM_VOICE_CONFIG["mtho_dialog"])
     voice_id = override_voice_id or config.get("voice_id") or env_default_voice
 
     if not voice_id:
@@ -73,7 +73,7 @@ def speak_text(
     if output_path is None:
         media_dir = os.path.join("c:/MTHO_CORE", "media")
         os.makedirs(media_dir, exist_ok=True)
-        output_path = os.path.join(media_dir, "atlas_reply.mp3")
+        output_path = os.path.join(media_dir, "mtho_reply.mp3")
 
     try:
         with open(output_path, "wb") as f:

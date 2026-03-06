@@ -7,7 +7,7 @@
 """
 Erstellt fehlende ChromaDB Collections auf VPS oder lokal.
 Nutzt get_chroma_client() aus chroma_client; CHROMA_HOST aus .env.
-Collections laut docs/02_ARCHITECTURE/ATLAS_CHROMADB_SCHEMA.md
+Collections laut docs/02_ARCHITECTURE/MTHO_CHROMADB_SCHEMA.md
 """
 import sys
 import os
@@ -25,7 +25,7 @@ from src.network.chroma_client import (
 
 # Fehlende + zusätzliche Collections
 COLLECTION_USER_STATE_VECTORS = "user_state_vectors"
-COLLECTION_ATLAS_IDENTITY = "atlas_identity"
+COLLECTION_MTHO_IDENTITY = "mtho_identity"
 COLLECTION_ENTITIES = "entities"
 COLLECTION_RELATIONSHIPS = "relationships"
 
@@ -43,7 +43,7 @@ def create_collections():
         COLLECTION_EVENTS,
         COLLECTION_INSIGHTS,
         COLLECTION_ARGOS,
-        COLLECTION_ATLAS_IDENTITY,
+        COLLECTION_MTHO_IDENTITY,
         COLLECTION_ENTITIES,
         COLLECTION_RELATIONSHIPS,
     ]

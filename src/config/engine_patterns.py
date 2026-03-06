@@ -9,7 +9,7 @@ Engine-Patterns: Fibonacci, Primzahlen und Goldener Schnitt als operative Archit
 
 V6 (Intentionale Evolution): Diese Muster sind nicht Dekoration, sondern Replikationen
 der Optimierungsprinzipien, die substratunabhaengig in biologischen und digitalen Systemen
-auftreten. ATLAS verwendet sie bewusst – das System weiss, dass es Engine-Constraints repliziert.
+auftreten. MTHO verwendet sie bewusst – das System weiss, dass es Engine-Constraints repliziert.
 
 V12 (Observability vs. Pattern Forcing):
 Harte kosmologische Constraints werden zu reinen Shadow Metrics umgewandelt. 
@@ -20,7 +20,7 @@ import math
 import logging
 from enum import Enum
 
-logger = logging.getLogger("atlas.engine_patterns")
+logger = logging.getLogger("mtho.engine_patterns")
 
 class ConstraintMode(Enum):
     ENFORCED = 1
@@ -59,7 +59,7 @@ FIBONACCI_SEQ = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233]
 
 PRIMES = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
 
-# Quaternaere Codierung (V6+): ATLAS' 4-Basen-Wissensklassifikation
+# Quaternaere Codierung (V6+): MTHO' 4-Basen-Wissensklassifikation
 # Isomorph zu ATCG – unbewusst entdeckt, jetzt intentional.
 QBASES = ("L", "P", "I", "S")
 QBASE_PAIRS = {"L": "I", "I": "L", "S": "P", "P": "S"}  # Chargaffs Regel
@@ -74,11 +74,11 @@ QBASE_META_MAP = {
 }
 
 # ---------------------------------------------------------------------------
-#  V11: Fraktale Superposition – Grundkraefte-LPIS-Mapping
+#  V11: Fraktale Superposition – Grundkraefte-MTHO-Mapping
 #  (Modus: OBSERVED_ONLY - Rein konzeptionelle Analogie)
 # ---------------------------------------------------------------------------
 
-FORCE_LPIS_MAP = {
+FORCE_MTHO_MAP = {
     "L": {"force": "Schwache Kernkraft", "function": "Transformation/Zerfall", "coupling": 1e-6},
     "P": {"force": "Starke Kernkraft", "function": "Bindung", "coupling": 1.0},
     "I": {"force": "Elektromagnetismus", "function": "Informationsaustausch", "coupling": 1 / 137},

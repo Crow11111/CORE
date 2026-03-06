@@ -9,7 +9,7 @@ import ollama
 from loguru import logger
 
 MODEL_NAME = "llama3.1"
-SOURCE_FILE = r"c:\MTHO_CORE\docs\ATLAS_CORE_BRAIN_REGISTR_RAW.txt"
+SOURCE_FILE = r"c:\MTHO_CORE\docs\MTHO_CORE_BRAIN_REGISTR_RAW.txt"
 OUTPUT_DIR = r"c:\MTHO_CORE\docs\nd_insights"
 
 # --- PERSONAS ---

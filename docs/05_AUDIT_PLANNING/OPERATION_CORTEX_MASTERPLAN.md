@@ -7,7 +7,7 @@
 
 # OPERATION CORTEX MASTERPLAN (Status: 2026-03-02 - FINAL)
 
-**Ziel:** Vollständige Integration von OpenClaw (Brain/Admin) und ATLAS (Spine/Executor) inkl. Audio-Pipeline.
+**Ziel:** Vollständige Integration von OpenClaw (Brain/Admin) und MTHO (Spine/Executor) inkl. Audio-Pipeline.
 
 ## 1. Status Quo (ABGESCHLOSSEN)
 
@@ -32,7 +32,7 @@
 - [x] Spine Container Check: **SUCCESS**.
 
 ## 3. Ergebnis
-Das System **ATLAS CORTEX** ist operativ.
+Das System **MTHO CORTEX** ist operativ.
 -   Das Gehirn (Admin) denkt.
 -   Das Rückgrat (Spine) läuft.
 -   Die Stimme (Audio) ist bereit.

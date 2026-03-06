@@ -44,7 +44,7 @@
 
 ## 5. Gateway-Token
 
-- **Handling:** Klar definiert und dokumentiert in [OPENCLAW_GATEWAY_TOKEN.md](../02_ARCHITECTURE/OPENCLAW_GATEWAY_TOKEN.md) (Speicherort, Rotation, Verwendung in ATLAS/OpenClaw).
+- **Handling:** Klar definiert und dokumentiert in [OPENCLAW_GATEWAY_TOKEN.md](../02_ARCHITECTURE/OPENCLAW_GATEWAY_TOKEN.md) (Speicherort, Rotation, Verwendung in MTHO/OpenClaw).
 
 ---
 

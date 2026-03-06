@@ -5,7 +5,7 @@
 <!-- ============================================================
 -->
 
-# ATLAS Voice Assistant – Smart Command Patterns
+# MTHO Voice Assistant – Smart Command Patterns
 
 Dokumentation der vom Smart Command Parser unterstützten Sprachbefehle.
 

@@ -20,7 +20,7 @@ def main():
     
     path = speak_text(
         text=text,
-        role_name="atlas_dialog",
+        role_name="mtho_dialog",
         play=False # Nur generieren, nicht abspielen auf Server
     )
     

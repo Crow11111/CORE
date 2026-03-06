@@ -21,7 +21,7 @@ def main() -> int:
         print("FEHLER: WHATSAPP_TARGET_ID in .env nicht gesetzt.")
         return 1
 
-    text = "[ATLAS] Test-Nachricht über HAClient.send_whatsapp()"
+    text = "[MTHO] Test-Nachricht über HAClient.send_whatsapp()"
     print(f"Sende WhatsApp an {target!r}: {text!r}")
 
     ha = HAClient()

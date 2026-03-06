@@ -44,7 +44,7 @@ Bitte lege deine Antwort als Einreichung in **rat_submissions/** ab:
 - **payload.topic:** "WhatsApp-Plan Abschnitt 6"
 - **payload.body:** dein Text (Vorschläge, Procedere, wie du Nachrichten siehst).
 
-ATLAS holt die Einreichungen mit fetch_oc_submissions ab und trägt sie in den Plan ein.
+MTHO holt die Einreichungen mit fetch_oc_submissions ab und trägt sie in den Plan ein.
 """
 
 

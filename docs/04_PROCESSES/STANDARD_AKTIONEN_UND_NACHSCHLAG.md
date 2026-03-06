@@ -57,10 +57,19 @@
 
 ---
 
-## 5. Kritische Änderungen (Umbau)
+## 5. Commit / Refactor / Modul entfernen
+
+| Aktion | Wo nachschauen | Regel |
+|--------|----------------|--------|
+| Wann committen? | `docs/04_PROCESSES/COMMIT_UND_REFACTOR.md` | Nur fertige Zwischenstände (Code + Doku). Vor Refactor/Optimierung aktuellen Stand committen. |
+| Modul oder Komponente entfernen | `docs/04_PROCESSES/COMMIT_UND_REFACTOR.md`, Session-Log, Architektur-Doku | Nur bewusst entfernen; in Session-Log oder Architektur vermerken (was, warum, Referenzen bereinigt). |
+
+---
+
+## 6. Kritische Änderungen (Umbau)
 
 Änderungen an **geschützten Modulen** (SSH, Auth, Chroma-Client, HA-Connector, VPS-Skripte, .env-Handling, Core-API) erfordern **interne Freigabe** durch den Code-Sicherheitsrat. Siehe `docs/04_PROCESSES/CODE_SICHERHEITSRAT.md` und `.cursor/rules/code_sicherheitsrat.mdc`.
 
 ---
 
-**Stand:** 2026-03. Bei neuen Standard-Aktionen: Eintrag hier ergänzen, Verweis in .cursorrules oder Takt-0-Regel setzen.
+**Stand:** 2026-03-06. Bei neuen Standard-Aktionen: Eintrag hier ergänzen, Verweis in .cursorrules oder Takt-0-Regel setzen.

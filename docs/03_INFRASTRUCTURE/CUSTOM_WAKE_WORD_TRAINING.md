@@ -7,7 +7,7 @@
 
 # Custom Wake Word Training – „hey atlas“ und „computer“
 
-**Zweck:** Anleitung zum Trainieren eigener openWakeWord-Modelle für ATLAS und Computer.
+**Zweck:** Anleitung zum Trainieren eigener openWakeWord-Modelle für MTHO und Computer.
 
 ---
 

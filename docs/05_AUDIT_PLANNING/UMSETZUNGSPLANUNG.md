@@ -5,7 +5,7 @@
 <!-- ============================================================
 -->
 
-# Umsetzungsplanung ATLAS_CORE
+# Umsetzungsplanung MTHO_CORE
 
 Konkrete Tasks aus Projektplan und Doku. Status: offen / in Arbeit / erledigt.
 
@@ -19,7 +19,7 @@ Konkrete Tasks aus Projektplan und Doku. Status: offen / in Arbeit / erledigt.
 
 - [ ] **In Implementierung und Schnittstellen/Architektur aufnehmen:** OC ist im WhatsApp-Kanal aktiv (eigene Session auf dem VPS). Wir werden **später getrennte Kanäle** brauchen: Wenn OC Zugriff auf einen Chat hat, in dem alle verknüpft sind und in dem auch Steuerbefehle ankommen, kann OC damit Dinge außerhalb seiner Umgebung anstoßen, die nicht in seinen Zuständigkeitsbereich gehören.
 - [ ] **Jetzt:** Beschränkungen für OC können **bewusst niedriger** sein, um das Gesamtsystem einfacher hochzufahren. **Später:** Diese Lücken wieder schließen (getrennte Kanäle, klare Grenzen).
-- [ ] **Generell:** Potenzielle Einfallstore (nicht nur OC, sondern alle Gateways/Messenger-Einstiege) **regelmäßig hinterfragen**; sicherstellen, dass **lokales ATLAS** immer die **letzte Entscheidungsgewalt** hat.
+- [ ] **Generell:** Potenzielle Einfallstore (nicht nur OC, sondern alle Gateways/Messenger-Einstiege) **regelmäßig hinterfragen**; sicherstellen, dass **lokales MTHO** immer die **letzte Entscheidungsgewalt** hat.
 
 **Referenz:** [DEV_AGENT_UND_SCHNITTSTELLEN.md](../02_ARCHITECTURE/DEV_AGENT_UND_SCHNITTSTELLEN.md) (Netzarchitektur Messenger & OC), [WHATSAPP_OPENCLAW_VS_HA.md](../02_ARCHITECTURE/WHATSAPP_OPENCLAW_VS_HA.md).
 
@@ -29,7 +29,7 @@ Konkrete Tasks aus Projektplan und Doku. Status: offen / in Arbeit / erledigt.
 
 ## Task: Dev-Agent-Frontend (AI Studio) – Anbindung und Stand
 
-**Ziel:** Chat-UI für den Dev-Agenten (aus AI Studio) an ATLAS-CORE-Backend anbinden; ein Klick startet alles.
+**Ziel:** Chat-UI für den Dev-Agenten (aus AI Studio) an MTHO-CORE-Backend anbinden; ein Klick startet alles.
 
 **Umsetzung (erledigt):**
 - [x] Backend: WebSocket `/ws` (chat:send → Dev-Agent → chat:reply), REST `POST /api/services/{name}/restart`, `GET /api/chat/history`. CORS für Frontend-Origin. Siehe [BACKEND_INTEGRATION.md](../../BACKEND_INTEGRATION.md), `src/api/routes/dev_agent_ws.py`.
@@ -48,20 +48,20 @@ Konkrete Tasks aus Projektplan und Doku. Status: offen / in Arbeit / erledigt.
 
 ## Task: Stammdokumente und Kanal zu OC – Stand und offene Schritte
 
-**Ziel:** OC hat Kontext (was/warum/wer/wie) und kann mit ATLAS/Rat kommunizieren.
+**Ziel:** OC hat Kontext (was/warum/wer/wie) und kann mit MTHO/OMEGA_ATTRACTOR Council kommunizieren.
 
 **Aktueller Stand:**
 
 | Was | Wo | OC hat es? |
 |-----|-----|------------|
-| **Stammdokumente** (Projekt, Marc, Team, OC-Rolle) | Im Repo: `docs/stammdokumente_oc/`. Auf dem VPS: nur nach Ausführung von `deploy_stammdokumente_vps.py`. | **Noch nicht auf dem Server** – Deploy-Skript wurde (nach Rat-Freigabe) noch nicht ausgeführt. OC kann die Dokumente also nicht im Workspace lesen. |
+| **Stammdokumente** (Projekt, Marc, Team, OC-Rolle) | Im Repo: `docs/stammdokumente_oc/`. Auf dem VPS: nur nach Ausführung von `deploy_stammdokumente_vps.py`. | **Noch nicht auf dem Server** – Deploy-Skript wurde (nach OMEGA_ATTRACTOR Council-Freigabe) noch nicht ausgeführt. OC kann die Dokumente also nicht im Workspace lesen. |
 | **Kanal (Nachricht an OC)** | `send_offene_punkte_to_oc` sendet Kontext + offene Punkte per Gateway-API (`POST /v1/responses`). | **OC hat noch nichts erhalten** – Versand ist bisher an Timeout (oder 405) gescheitert. Gateway muss `/v1/responses` freigeben und ggf. Container neustarten. |
 
 **Was fehlt / nächste Schritte:**
 
-- [ ] **Gateway auf VPS:** In `/var/lib/openclaw/openclaw.json` muss `gateway.http.endpoints.responses.enabled: true` stehen (siehe `setup_vps_hostinger.py`). Danach **OpenClaw-Container neustarten:** `docker restart openclaw-gateway` (per SSH auf dem VPS). Ohne das antwortet das Gateway nicht auf Nachrichten von ATLAS (405 oder Timeout).
+- [ ] **Gateway auf VPS:** In `/var/lib/openclaw/openclaw.json` muss `gateway.http.endpoints.responses.enabled: true` stehen (siehe `setup_vps_hostinger.py`). Danach **OpenClaw-Container neustarten:** `docker restart openclaw-gateway` (per SSH auf dem VPS). Ohne das antwortet das Gateway nicht auf Nachrichten von MTHO (405 oder Timeout).
 - [ ] **Nach Neustart:** Erneut `python -m src.scripts.send_offene_punkte_to_oc` ausführen – dann erhält OC Kontext + offene Punkte per Kanal (auch ohne Stammdokumente auf dem Server).
-- [ ] **Stammdokumente auf Server (optional, nach Rat-Freigabe):** `python -m src.scripts.deploy_stammdokumente_vps` – legt die Dokumente unter `/var/lib/openclaw/workspace/stammdokumente/` ab. Danach per WhatsApp OC informieren (Vorlage in [STAMMDOKUMENTE_DEPLOY.md](../04_PROCESSES/STAMMDOKUMENTE_DEPLOY.md)).
+- [ ] **Stammdokumente auf Server (optional, nach OMEGA_ATTRACTOR Council-Freigabe):** `python -m src.scripts.deploy_stammdokumente_vps` – legt die Dokumente unter `/var/lib/openclaw/workspace/stammdokumente/` ab. Danach per WhatsApp OC informieren (Vorlage in [STAMMDOKUMENTE_DEPLOY.md](../04_PROCESSES/STAMMDOKUMENTE_DEPLOY.md)).
 
 **Referenz:** [KANAL_ATLAS_OC.md](../02_ARCHITECTURE/KANAL_ATLAS_OC.md), [STAMMDOKUMENTE_DEPLOY.md](../04_PROCESSES/STAMMDOKUMENTE_DEPLOY.md), `send_offene_punkte_to_oc.py`, `deploy_stammdokumente_vps.py`.
 
@@ -93,8 +93,8 @@ Konkrete Tasks aus Projektplan und Doku. Status: offen / in Arbeit / erledigt.
 **Kamerastream (MX/Brio, go2rtc, Snapshot-Server):**
 - [ ] **Schalter/Button oder Hinweis:** Anzeige, ob der Kamerastream **läuft** oder **nicht läuft** / nicht gestattet / langsam / muss angefordert werden. Optional: Button oder Aktion, um den Stream (oder Snapshot-Server) anzufordern bzw. neu anzustoßen. Wird parallel in AI Studio aufgesetzt; hier im Projekt (z. B. Dashboard/Dev-Agent-Frontend) eine entsprechende Anzeige oder Integration einplanen.
 
-**WhatsApp-Webhook (ATLAS über HA):**
-- [ ] **Anzeige Verbindungsstatus:** Welche Teile der Kette sind da, welche fehlen? (z. B. HA erreichbar? rest_command konfiguriert? ATLAS-CORE-API läuft? Webhook-Route erreichbar?) Anzeige, ob etwas **nicht verbunden** ist und ggf. **per Script neu angestoßen** werden muss (z. B. „API starten“, „Snapshot-Server starten“).
+**WhatsApp-Webhook (MTHO über HA):**
+- [ ] **Anzeige Verbindungsstatus:** Welche Teile der Kette sind da, welche fehlen? (z. B. HA erreichbar? rest_command konfiguriert? MTHO-CORE-API läuft? Webhook-Route erreichbar?) Anzeige, ob etwas **nicht verbunden** ist und ggf. **per Script neu angestoßen** werden muss (z. B. „API starten“, „Snapshot-Server starten“).
 
 **Referenz:** Dashboard/UI siehe [DEV_AGENT_SCHNITTSTELLE_FRONTEND.md](DEV_AGENT_SCHNITTSTELLE_FRONTEND.md); Kamera-Code `go2rtc_client`, `camera_snapshot_server`; WhatsApp `whatsapp_webhook.py`, `ha_client.py`.
 
@@ -106,9 +106,9 @@ Konkrete Tasks aus Projektplan und Doku. Status: offen / in Arbeit / erledigt.
 
 **Ziel:** Im Frontend (Dev-Agent/Dashboard) einen **Schalter** sowie **Anzeige** dafür, dass Dienste laufen bzw. was fehlt – damit du nicht raten musst und ggf. per Klick starten kannst.
 
-- [ ] **ATLAS-CORE-API:** Anzeige, ob die API läuft (z. B. Ping `GET /` oder Status-Check); optional Schalter/Button „API starten“ (z. B. startet uvicorn im Hintergrund oder öffnet Hinweis zum manuellen Start).
+- [ ] **MTHO-CORE-API:** Anzeige, ob die API läuft (z. B. Ping `GET /` oder Status-Check); optional Schalter/Button „API starten“ (z. B. startet uvicorn im Hintergrund oder öffnet Hinweis zum manuellen Start).
 - [ ] **Kamerastream (MX/go2rtc/Snapshot-Server):** Anzeige, ob der Stream/Snapshot erreichbar ist; optional Schalter „Snapshot-Server starten“ oder Hinweis „go2rtc starten“.
-- [ ] **WhatsApp-Webhook-Kette:** Anzeige, welche Teile der Verbindung stehen (HA erreichbar? ATLAS-Webhook erreichbar? rest_command konfiguriert?) und ob etwas neu angestoßen werden muss.
+- [ ] **WhatsApp-Webhook-Kette:** Anzeige, welche Teile der Verbindung stehen (HA erreichbar? MTHO-Webhook erreichbar? rest_command konfiguriert?) und ob etwas neu angestoßen werden muss.
 
 **Referenz:** [DEV_AGENT_SCHNITTSTELLE_FRONTEND.md](DEV_AGENT_SCHNITTSTELLE_FRONTEND.md), Task „Status-Anzeige Kamera & WhatsApp-Webhook“ oben.
 
@@ -127,7 +127,7 @@ Konkrete Tasks aus Projektplan und Doku. Status: offen / in Arbeit / erledigt.
 - [x] **1** Skript `src/scripts/daily_backup.py`: Archiv (Code, config/, data/argos_db/), .env nur verschlüsselt (Fernet); Upload per SFTP; Retention 7 Tage auf VPS.
 - [ ] **2** Scheduler einrichten (einmalig):
   - **Windows:** Task Scheduler, täglich z.B. 04:00 Uhr, Aufruf `C:\MTHO_CORE\scripts\run_daily_backup.bat` oder `python C:\MTHO_CORE\src\scripts\daily_backup.py` mit Arbeitsverzeichnis `C:\MTHO_CORE`.
-  - **Linux:** cron, z.B. `0 4 * * * cd /pfad/zu/ATLAS_CORE && python3 src/scripts/daily_backup.py >> logs/backup.log 2>&1`.
+  - **Linux:** cron, z.B. `0 4 * * * cd /pfad/zu/MTHO_CORE && python3 src/scripts/daily_backup.py >> logs/backup.log 2>&1`.
 - [ ] **3** Wiederherstellungstest: Einmal pro Monat Restore aus Backup auf Testordner prüfen.
 
 **Konfiguration (.env):** `VPS_HOST`, `VPS_USER`, `VPS_PASSWORD` (bereits für VPS-Setup); optional `BACKUP_ENCRYPTION_KEY`, `BACKUP_RETENTION_DAYS`, `HEALTHCHECK_URL`.
@@ -144,14 +144,14 @@ Konkrete Tasks aus Projektplan und Doku. Status: offen / in Arbeit / erledigt.
 
 **Zu klären / umzusetzen:**
 
-- [ ] **1 Wo schreibe ich hin, um ATLAS auszulösen?**  
+- [ ] **1 Wo schreibe ich hin, um MTHO auszulösen?**  
   Es gibt **keine separate Bot-Nummer**. Das Addon nutzt **deinen** WhatsApp-Account (WhatsApp Web). Du löst aus, indem eine Nachricht **in deinem Account eingeht** – z. B. du schreibst von einem zweiten Gerät an dich selbst, oder ein Kontakt schreibt dir. Die Automation in HA reagiert auf das Event und ruft den Webhook mit dem Payload auf. **Umsetzung:** Doku/Cheat-Sheet für dich: „Nachricht von anderem Gerät an mich selbst“ oder „Kontakt X schreibt mir“ → gleicher Effekt.
 - [ ] **2 Wer bekommt die Nachricht genau?**  
-  Der **Empfänger** der eingehenden Nachricht (also der Chat, aus dem die Nachricht kam) ist im Payload als `remoteJid` / `sender` (z. B. `491788360264@s.whatsapp.net`). **ATLAS antwortet genau an diesen Absender** über `send_whatsapp(to_number=sender, text=reply)`. Also: Wer dir geschrieben hat, bekommt die Antwort. Wenn du „an dich selbst“ schreibst (anderes Gerät), bekommst du die Antwort in demselben Chat.
-- [ ] **3 Was bekommt der Empfänger / was sieht ATLAS?**  
-  ATLAS bekommt **alles, was im Event-Payload steht** – das ist die **eine** Nachricht, die gerade eingegangen ist (inkl. Absender, Text, ggf. Audio/Media). Es werden **nicht** dauerhaft alle Chats mitgelesen; nur die Nachricht, die das Event ausgelöst hat. Der Empfänger bekommt **eine Antwort** von ATLAS (Text oder Fehlermeldung), die über HA/Addon an seinen Chat gesendet wird.
+  Der **Empfänger** der eingehenden Nachricht (also der Chat, aus dem die Nachricht kam) ist im Payload als `remoteJid` / `sender` (z. B. `491788360264@s.whatsapp.net`). **MTHO antwortet genau an diesen Absender** über `send_whatsapp(to_number=sender, text=reply)`. Also: Wer dir geschrieben hat, bekommt die Antwort. Wenn du „an dich selbst“ schreibst (anderes Gerät), bekommst du die Antwort in demselben Chat.
+- [ ] **3 Was bekommt der Empfänger / was sieht MTHO?**  
+  MTHO bekommt **alles, was im Event-Payload steht** – das ist die **eine** Nachricht, die gerade eingegangen ist (inkl. Absender, Text, ggf. Audio/Media). Es werden **nicht** dauerhaft alle Chats mitgelesen; nur die Nachricht, die das Event ausgelöst hat. Der Empfänger bekommt **eine Antwort** von MTHO (Text oder Fehlermeldung), die über HA/Addon an seinen Chat gesendet wird.
 - [ ] **4 Optional: WhatsApp-Basis auf Scout**  
-  Damit der Kanal auch ohne Dreadnought funktioniert: Basis-Handler (nur Steuerbefehle) auf Scout; rest_command zeigt auf Scout-URL statt Dreadnought. Siehe DEV_AGENT_UND_SCHNITTSTELLEN.md „Latenz & Platzierung“.
+  Damit der Kanal auch ohne 4D_RESONATOR (MTHO_CORE) funktioniert: Basis-Handler (nur Steuerbefehle) auf Scout; rest_command zeigt auf Scout-URL statt 4D_RESONATOR (MTHO_CORE). Siehe DEV_AGENT_UND_SCHNITTSTELLEN.md „Latenz & Platzierung“.
 
 **Status:** dokumentiert; Implementierung Basis-Handler auf Scout offen.
 
@@ -181,7 +181,7 @@ Konkrete Tasks aus Projektplan und Doku. Status: offen / in Arbeit / erledigt.
 **Ziel:** Konkrete Tests von allen Seiten – ausführbare Prüfungen.
 
 **Umsetzung (Dev-Agent-Spec):**
-- [x] **Test-Skript Webhook direkt:** `src/scripts/test_wa_webhook_direct.py` – POST an `/webhook/whatsapp` (simuliert HA). Voraussetzung: ATLAS_CORE API läuft (uvicorn). Aufruf: `python -m src.scripts.test_wa_webhook_direct`.
+- [x] **Test-Skript Webhook direkt:** `src/scripts/test_wa_webhook_direct.py` – POST an `/webhook/whatsapp` (simuliert HA). Voraussetzung: MTHO_CORE API läuft (uvicorn). Aufruf: `python -m src.scripts.test_wa_webhook_direct`.
 - [x] **Test-Skript OpenClaw:** `src/scripts/test_wa_openclaw.py` – prüft Gateway-Erreichbarkeit (check_gateway). Aufruf: `python -m src.scripts.test_wa_openclaw`. Getestet: Gateway OK.
 - [x] **Von HA aus (E2E):** Skript `src/scripts/run_whatsapp_e2e_ha.py` ruft `rest_command.atlas_whatsapp_webhook` mit addon-ähnlichem Payload auf → gleiche Kette wie echte Nachricht. Voraussetzung: rest_command + Automation in HA (siehe [WHATSAPP_E2E_HA_SETUP.md](../03_INFRASTRUCTURE/WHATSAPP_E2E_HA_SETUP.md)). Manuell: echte Nachricht senden und Antwort im Chat prüfen.
 

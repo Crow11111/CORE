@@ -5,9 +5,9 @@
 <!-- ============================================================
 -->
 
-# Backup-Plan (final) – ATLAS_CORE
+# Backup-Plan (final) – MTHO_CORE
 
-**Einziges Backup-Ziel: Hostinger-VPS** (`/var/backups/atlas`). Kein lokales Primärziel, kein S3 – alles geht per Push vom Rechner (Dreadnought) zum VPS.
+**Einziges Backup-Ziel: Hostinger-VPS** (`/var/backups/atlas`). Kein lokales Primärziel, kein S3 – alles geht per Push vom Rechner (4D_RESONATOR (MTHO_CORE)) zum VPS.
 
 ---
 
@@ -29,7 +29,7 @@ ChromaDB-Daten liegen auf dem VPS; Backup der ChromaDB erfolgt auf dem VPS (Cold
 ## 3. Wohin?
 
 - **Ziel:** Hostinger-VPS, Verzeichnis `/var/backups/atlas`
-- **Transport:** Push per SSH/SFTP (Paramiko) von Dreadnought aus; der VPS pullt nicht.
+- **Transport:** Push per SSH/SFTP (Paramiko) von 4D_RESONATOR (MTHO_CORE) aus; der VPS pullt nicht.
 - **Berechtigung:** `/var/backups/atlas` wird von `setup_vps_hostinger.py` mit `chmod 700` angelegt (bereits vorhanden).
 
 ## 4. Wie wird gesichert? (Automatisierung)
@@ -54,10 +54,10 @@ ChromaDB läuft im Container auf dem VPS. Ein Cold-Backup (Container kurz stoppe
   - **Arbeitsverzeichnis:** `C:\MTHO_CORE`  
   - Oder direkt: Programm `python`, Argument `C:\MTHO_CORE\src\scripts\daily_backup.py`, Starten in `C:\MTHO_CORE`.
 - **Linux (cron):**  
-  `0 4 * * * cd /pfad/zu/ATLAS_CORE && python3 src/scripts/daily_backup.py >> logs/backup.log 2>&1`
+  `0 4 * * * cd /pfad/zu/MTHO_CORE && python3 src/scripts/daily_backup.py >> logs/backup.log 2>&1`
 - **Windows Task Scheduler (einmalig anlegen):**  
   Als Administrator in cmd/PowerShell:  
-  `schtasks /create /tn "ATLAS Daily Backup" /tr "C:\MTHO_CORE\scripts\run_daily_backup.bat" /sc daily /st 04:00 /ru SYSTEM`  
+  `schtasks /create /tn "MTHO Daily Backup" /tr "C:\MTHO_CORE\scripts\run_daily_backup.bat" /sc daily /st 04:00 /ru SYSTEM`  
   (Oder GUI: Aufgabenplanung → Aufgabe erstellen → Trigger täglich 04:00, Aktion: Batch-Datei oder `python …\daily_backup.py`.)
 
 ## 7. Aufbewahrung (Retention)

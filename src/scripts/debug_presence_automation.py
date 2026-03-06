@@ -62,7 +62,7 @@ def main():
 
     # 1. Automations
     autos = [s for s in states if s["entity_id"].startswith("automation.")]
-    presence_autos = filter_by_keyword(autos, KEYWORDS + ["atlas", "director", "mth"])
+    presence_autos = filter_by_keyword(autos, KEYWORDS + ["mtho", "director", "mth"])
     print("--- AUTOMATIONS (präsenz-relevant) ---")
     for a in presence_autos:
         print(f"  {a['entity_id']}: {a.get('state','?')} | {a.get('attributes',{}).get('friendly_name','')}")
@@ -122,15 +122,15 @@ def main():
     print()
 
     # 8. Automation-Details (Config API)
-    print("--- ATLAS PRESENCE DIRECTOR (Details) ---")
-    atlas_auto = [a for a in presence_autos if "atlas" in (a.get("attributes",{}).get("friendly_name","")).lower() or "director" in (a.get("attributes",{}).get("friendly_name","")).lower()]
-    if atlas_auto:
-        a = atlas_auto[0]
+    print("--- MTHO PRESENCE DIRECTOR (Details) ---")
+    mtho_auto = [a for a in presence_autos if "mtho" in (a.get("attributes",{}).get("friendly_name","")).lower() or "director" in (a.get("attributes",{}).get("friendly_name","")).lower()]
+    if mtho_auto:
+        a = mtho_auto[0]
         print(f"  Entity: {a['entity_id']}")
         print(f"  State: {a.get('state')}")
         print(f"  Last triggered: {a.get('last_triggered', 'N/A')}")
     else:
-        print("  Keine ATLAS Presence Director Automation gefunden!")
+        print("  Keine MTHO Presence Director Automation gefunden!")
     print()
 
     # 9. Problem-Check

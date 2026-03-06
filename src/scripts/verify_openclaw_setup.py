@@ -28,7 +28,7 @@ def print_status(step, status, message=""):
         print(f"{step:<40} [{status}] {message}")
 
 def verify_openclaw_setup():
-    print(f"\n=== ATLAS Swarm OpenClaw Verification ===\n")
+    print(f"\n=== MTHO Swarm OpenClaw Verification ===\n")
 
     # 1. Config laden
     load_dotenv()

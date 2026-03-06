@@ -5,7 +5,7 @@
 <!-- ============================================================
 -->
 
-# ATLAS_CORE – Dokumentationsindex
+# MTHO_CORE – Dokumentationsindex
 
 Zentrale Übersicht der Projekt-Struktur.
 
@@ -29,7 +29,7 @@ Zentrale Übersicht der Projekt-Struktur.
 **System-Design & Logik.**
 - `OPENCLAW_ADMIN_ARCHITEKTUR.md` – Admin vs. Spine Architektur
 - `WHATSAPP_ROUTING_ATLAS_OC.md` – Routing-Logik (Wer antwortet wann)
-- `KANAL_ATLAS_OC.md` – Direkter Kanal zwischen ATLAS und OC
+- `KANAL_ATLAS_OC.md` – Direkter Kanal zwischen MTHO und OC
 - `WHATSAPP_OPENCLAW_VS_HA.md` – Vergleich der Pfade
 
 ---

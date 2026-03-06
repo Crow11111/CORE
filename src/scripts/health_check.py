@@ -5,7 +5,7 @@
 # ============================================================
 
 """
-ATLAS Health Check: Prueft alle Dienste und gibt JSON-Status zurueck.
+MTHO Health Check: Prueft alle Dienste und gibt JSON-Status zurueck.
 """
 import json
 import os
@@ -91,7 +91,7 @@ def run_health_check() -> dict:
         s["vps_docker"] = {"ok": False, "detail": "SSH nicht verfuegbar"}
 
     s["vps_chromadb_8000"] = {"ok": _tcp_check(VPS_HOST, 8000)}
-    s["atlas_api_local"] = {"ok": _tcp_check("127.0.0.1", 8000)}
+    s["mtho_api_local"] = {"ok": _tcp_check("127.0.0.1", 8000)}
     s["ha_scout"] = {"ok": _http_check(f"https://{SCOUT_IP}:8123")}
     s["ha_vps"] = {"ok": _tcp_check(VPS_HOST, 18123)}
 

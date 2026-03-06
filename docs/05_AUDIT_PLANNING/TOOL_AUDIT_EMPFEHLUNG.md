@@ -70,6 +70,6 @@
 
 ## 4. Anhang: Referenzen
 
-- ATLAS Auth: Bearer/API-Key, OpenClaw Gateway Token (Outbound).
+- MTHO Auth: Bearer/API-Key, OpenClaw Gateway Token (Outbound).
 - OWASP: Injection, Broken Access Control; Webhook-Signatur (HMAC).
 - Skill: `.cursor/skills/expertise/security/SKILL.md`

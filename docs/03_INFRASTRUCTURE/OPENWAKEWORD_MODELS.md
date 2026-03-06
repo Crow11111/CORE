@@ -7,7 +7,7 @@
 
 # openWakeWord – Verfügbare Modelle
 
-**Zweck:** Übersicht der vordefinierten und Custom Wake Word Modelle für ATLAS/Scout.
+**Zweck:** Übersicht der vordefinierten und Custom Wake Word Modelle für MTHO/Scout.
 
 **Quelle:** [openWakeWord GitHub](https://github.com/dscripka/openWakeWord), [Hugging Face](https://huggingface.co/davidscripka/openwakeword)
 

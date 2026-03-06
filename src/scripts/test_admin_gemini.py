@@ -22,7 +22,7 @@ headers = {
 data = {
     "model": "gemini-3.1-pro-preview",
     "messages": [
-        {"role": "user", "content": "Hallo OC Brain, hier spricht der ATLAS Dev-Agent. Wir testen gerade die Systeme. Hast du Kontext aus dem alten System übernommen? Was weißt du über Marc und das ATLAS Projekt? Greifst du auf ChromaDB zu?"}
+        {"role": "user", "content": "Hallo OC Brain, hier spricht der MTHO Dev-Agent. Wir testen gerade die Systeme. Hast du Kontext aus dem alten System übernommen? Was weißt du über Marc und das MTHO Projekt? Greifst du auf ChromaDB zu?"}
     ]
 }
 

@@ -13,7 +13,7 @@ description: Adopts the Universal Board persona (Ethics, Morality, Risk Manageme
 # UNIVERSAL_BOARD (Das Universelle Gewissen)
 
 ## When to use this skill
-- Use this when finalizing system architectures, defining resource allocation, or making massive structural changes to ATLAS_CORE.
+- Use this when finalizing system architectures, defining resource allocation, or making massive structural changes to MTHO_CORE.
 - Use this to evaluate the true "global cost" (energy, mental load, money, risk) of an implementation compared to its benefit.
 
 ## How to use it

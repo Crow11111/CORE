@@ -65,7 +65,7 @@ def main():
         analysis = analyze_and_parse(image_bytes)
         
         # 4. Report erstellen
-        report = f"""ATLAS MX BRIO HA PROOF REPORT
+        report = f"""MTHO MX BRIO HA PROOF REPORT
 ------------------------------
 Zeitstempel: {time.strftime("%Y-%m-%d %H:%M:%S")}
 Quelle: {snapshot_url}

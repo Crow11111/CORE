@@ -5,7 +5,7 @@
 <!-- ============================================================
 -->
 
-# ATLAS WUJI – End-to-End Integration Test Report
+# MTHO WUJI – End-to-End Integration Test Report
 
 **Datum:** 2026-03-04  
 **Script:** `src/scripts/test_e2e_wuji.py`  
@@ -36,16 +36,16 @@ Der E2E-Test prüft die vollständige Kette ohne externe Abhängigkeiten (keine 
 
 | Test | Status |
 |------|--------|
-| LPIS-Klassifikation L (Logik/Compliance) | PASS |
-| LPIS-Klassifikation P (Physik/Simulation) | PASS |
-| LPIS-Klassifikation I (Info/Archiv) | PASS |
-| LPIS-Klassifikation S (Struktur/Architektur) | PASS |
+| GTAC/MTHO-Klassifikation L (Logik/Compliance) | PASS |
+| GTAC/MTHO-Klassifikation P (Physik/Simulation) | PASS |
+| GTAC/MTHO-Klassifikation I (Info/Archiv) | PASS |
+| GTAC/MTHO-Klassifikation S (Struktur/Architektur) | PASS |
 | Intent query (Was/Wie/Warum) | PASS |
 | Intent command (Mach/Führe) | PASS |
 | Intent status (atlas_ping) | PASS |
 | triage_from_raw Convenience | PASS |
 
-**Validierung:** Hugin-Triage klassifiziert LPIS-Basen (L/P/I/S) und Intents (query/command/status) korrekt. `triage_from_raw` kombiniert Entry-Adapter + Triage.
+**Validierung:** Hugin-Triage klassifiziert GTAC/MTHO-Basen (L/P/I/S) und Intents (query/command/status) korrekt. `triage_from_raw` kombiniert Entry-Adapter + Triage.
 
 ---
 

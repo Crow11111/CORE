@@ -19,7 +19,7 @@ import math
 from dataclasses import dataclass
 from typing import Any
 
-from src.config.atlas_state_vector import INV_PHI, get_current_state
+from src.config.mtho_state_vector import INV_PHI, get_current_state
 # Semantic Drift Threshold: Abweichung > (1 - INV_PHI) → Veto
 DRIFT_THRESHOLD = 1.0 - INV_PHI  # ~0.382 (Komplement zu Phi)
 

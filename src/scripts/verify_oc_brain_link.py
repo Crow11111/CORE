@@ -18,7 +18,7 @@ def main():
     
     # 1. Ping
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
-    message = f"ATLAS_CORE PING {timestamp}. Status Report anfordern."
+    message = f"MTHO_CORE PING {timestamp}. Status Report anfordern."
     
     print(f"Sending to OC Brain (Agent 'main'): '{message}'")
     

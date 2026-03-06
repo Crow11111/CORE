@@ -5,9 +5,9 @@
 <!-- ============================================================
 -->
 
-# Scout Assist-Pipeline: Sprachbefehle an ATLAS
+# Scout Assist-Pipeline: Sprachbefehle an MTHO
 
-**Zweck:** Sprachbefehle vom Scout-Mikrofon über die HA Assist-Pipeline an ATLAS weiterleiten. ATLAS führt Triage durch (HA-Aktion oder OC Brain), die Antwort wird per TTS auf dem Mini-Speaker ausgegeben.
+**Zweck:** Sprachbefehle vom Scout-Mikrofon über die HA Assist-Pipeline an MTHO weiterleiten. MTHO führt Triage durch (HA-Aktion oder OMEGA_ATTRACTOR), die Antwort wird per TTS auf dem Mini-Speaker ausgegeben.
 
 ---
 
@@ -22,12 +22,12 @@ openWakeWord ("hey atlas" / "atlas") → Pipeline startet
     ↓
 Whisper STT → transkribierter Text
     ↓
-ATLAS API (Dreadnought) POST /webhook/assist
+MTHO API (4D_RESONATOR (MTHO_CORE)) POST /webhook/assist
     ↓
 Triage (SLM): command | deep_reasoning | chat
     ↓
 ├─ command → HA-Aktion (Licht, etc.) via HAClient
-└─ deep_reasoning/chat → OC Brain oder lokales Gemini
+└─ deep_reasoning/chat → OMEGA_ATTRACTOR oder lokales Gemini
     ↓
 Antwort-Text
     ↓
@@ -36,25 +36,25 @@ Piper TTS → Mini-Speaker (media_player.schreibtisch o.ä.)
 
 **Netzwerk:**
 - **Scout (HA):** 192.168.178.54 (Raspi 5)
-- **Dreadnought (ATLAS API):** 192.168.178.20, Port 8000
-- Scout muss Dreadnought per HTTP erreichen können: `http://192.168.178.20:8000`
+- **4D_RESONATOR (MTHO_CORE) (MTHO API):** 192.168.178.20, Port 8000
+- Scout muss 4D_RESONATOR (MTHO_CORE) per HTTP erreichen können: `http://192.168.178.20:8000`
 
 ---
 
-## 2. ATLAS-Verbindung zu HA
+## 2. MTHO-Verbindung zu HA
 
-ATLAS verbindet sich **zu** HA (nicht umgekehrt):
+MTHO verbindet sich **zu** HA (nicht umgekehrt):
 
 - **Client:** `src/connectors/home_assistant.py` (HomeAssistantClient)
 - **Variablen:** `HASS_URL` / `HA_URL`, `HASS_TOKEN` / `HA_TOKEN`
 - **Funktionen:** `call_service()`, `get_states()`, etc.
-- **Richtung:** Dreadnought → Scout (HTTPS zu 192.168.178.54:8123)
+- **Richtung:** 4D_RESONATOR (MTHO_CORE) → Scout (HTTPS zu 192.168.178.54:8123)
 
-Die **Assist-Pipeline** benötigt die **umgekehrte** Richtung: HA (Scout) → ATLAS (Dreadnought). Dafür nutzt HA einen `rest_command`, der an die ATLAS API sendet.
+Die **Assist-Pipeline** benötigt die **umgekehrte** Richtung: HA (Scout) → MTHO (4D_RESONATOR (MTHO_CORE)). Dafür nutzt HA einen `rest_command`, der an die MTHO API sendet.
 
 ---
 
-## 3. Benötigte HA-Variablen (.env auf Dreadnought)
+## 3. Benötigte HA-Variablen (.env auf 4D_RESONATOR (MTHO_CORE))
 
 | Variable | Beschreibung | Beispiel |
 |---------|--------------|----------|
@@ -62,7 +62,7 @@ Die **Assist-Pipeline** benötigt die **umgekehrte** Richtung: HA (Scout) → AT
 | `HASS_TOKEN` / `HA_TOKEN` | Long-Lived Token für HA | (aus HA Profil) |
 | `HA_WEBHOOK_TOKEN` | Bearer-Token für `/webhook/assist`, `/webhook/inject_text` | Zufälliger String (z.B. `openssl rand -hex 24`) |
 
-**Wichtig:** `HA_WEBHOOK_TOKEN` muss in `.env` gesetzt sein, sonst lehnt die ATLAS API Anfragen ab (503).
+**Wichtig:** `HA_WEBHOOK_TOKEN` muss in `.env` gesetzt sein, sonst lehnt die MTHO API Anfragen ab (503).
 
 ---
 
@@ -89,7 +89,7 @@ Installation: Einstellungen → Add-ons → Add-on-Store. Nach Installation ersc
 
 ---
 
-## 6. rest_command: Text an ATLAS senden
+## 6. rest_command: Text an MTHO senden
 
 In `configuration.yaml` oder als YAML-Konfiguration:
 
@@ -123,16 +123,16 @@ rest_command:
 
 ---
 
-## 7. ATLAS Conversation Agent (empfohlen)
+## 7. MTHO Conversation Agent (empfohlen)
 
-**Custom Integration** `atlas_conversation` – empfängt Text von der Assist-Pipeline, sendet an ATLAS `/webhook/inject_text`, gibt Antwort für TTS zurück.
+**Custom Integration** `atlas_conversation` – empfängt Text von der Assist-Pipeline, sendet an MTHO `/webhook/inject_text`, gibt Antwort für TTS zurück.
 
-### 7.0 Installation der ATLAS Conversation Integration
+### 7.0 Installation der MTHO Conversation Integration
 
 1. Ordner `ha_integrations/atlas_conversation` nach `config/custom_components/atlas_conversation/` kopieren.
 2. HA neu starten.
-3. **Einstellungen → Geräte & Dienste → Integration hinzufügen** → "ATLAS Conversation".
-4. **ATLAS API URL:** z.B. `http://192.168.178.20:8000`
+3. **Einstellungen → Geräte & Dienste → Integration hinzufügen** → "MTHO Conversation".
+4. **MTHO API URL:** z.B. `http://192.168.178.20:8000`
 5. **Bearer Token:** `HA_WEBHOOK_TOKEN` aus `.env`
 
 Vollständige Anleitung: `ha_integrations/atlas_conversation/README.md`
@@ -144,11 +144,11 @@ Wenn der Text auf anderem Weg in `input_text.assist_command` landet (z.B. von ei
 ```yaml
 input_text:
   assist_command:
-    name: "Assist-Befehl für ATLAS"
+    name: "Assist-Befehl für MTHO"
     max: 500
 
 automation:
-  - alias: "Assist-Text an ATLAS senden"
+  - alias: "Assist-Text an MTHO senden"
     trigger:
       - platform: state
         entity_id:
@@ -167,29 +167,29 @@ automation:
           value: ""
 ```
 
-**Hinweis:** Damit die volle Voice-Pipeline funktioniert, muss der transkribierte Text aus der Assist-Pipeline in `input_text.assist_command` geschrieben werden. Dafür ist ein **Custom Conversation Agent** nötig – die ATLAS Conversation Integration (Abschnitt 7.0) löst das vollständig.
+**Hinweis:** Damit die volle Voice-Pipeline funktioniert, muss der transkribierte Text aus der Assist-Pipeline in `input_text.assist_command` geschrieben werden. Dafür ist ein **Custom Conversation Agent** nötig – die MTHO Conversation Integration (Abschnitt 7.0) löst das vollständig.
 
-**Event-basierte Alternative:** `assist_pipeline.run_stage` feuert `stt-end` (mit `stt_output.text`) und `intent-start`. Eine Automation könnte auf `stt-end` triggern und ATLAS aufrufen – aber die Antwort kann nicht zurück in die Pipeline injiziert werden (TTS würde fehlen). Daher: Custom Agent erforderlich.
+**Event-basierte Alternative:** `assist_pipeline.run_stage` feuert `stt-end` (mit `stt_output.text`) und `intent-start`. Eine Automation könnte auf `stt-end` triggern und MTHO aufrufen – aber die Antwort kann nicht zurück in die Pipeline injiziert werden (TTS würde fehlen). Daher: Custom Agent erforderlich.
 
-### 7.2 ATLAS API Antwort und TTS
+### 7.2 MTHO API Antwort und TTS
 
-Mit **ATLAS Conversation Integration**: Der Agent ruft `/webhook/inject_text` auf. ATLAS gibt `{"status":"ok","reply":"<Antworttext>"}` zurück. **HA Piper** spricht die Antwort über den konfigurierten Media Player (TTS in der Assist-Pipeline).
+Mit **MTHO Conversation Integration**: Der Agent ruft `/webhook/inject_text` auf. MTHO gibt `{"status":"ok","reply":"<Antworttext>"}` zurück. **HA Piper** spricht die Antwort über den konfigurierten Media Player (TTS in der Assist-Pipeline).
 
-Ohne Custom Agent (rest_command-Workaround): `/webhook/assist` würde ATLAS-seitig TTS auslösen – für die volle Voice-Pipeline ist die Integration vorzuziehen.
+Ohne Custom Agent (rest_command-Workaround): `/webhook/assist` würde MTHO-seitig TTS auslösen – für die volle Voice-Pipeline ist die Integration vorzuziehen.
 
 ---
 
 ## 8. Assist-Pipeline einrichten
 
 1. **Einstellungen → Sprachassistenten → Assistent hinzufügen**
-2. **Name:** z.B. "ATLAS"
+2. **Name:** z.B. "MTHO"
 3. **Sprache:** Deutsch (oder gewünschte Sprache)
-4. **Conversation Agent:** **ATLAS Conversation** (nach Installation der Custom Integration, siehe Abschnitt 7.0)
+4. **Conversation Agent:** **MTHO Conversation** (nach Installation der Custom Integration, siehe Abschnitt 7.0)
 5. **Speech-to-Text:** Whisper
 6. **Text-to-Speech:** Piper
 7. **Wake Word:** openWakeWord (falls verfügbar)
 
-Ohne ATLAS Conversation Agent arbeitet die Pipeline mit dem Standard-HA-Agent. Für ATLAS-Anbindung die Integration aus Abschnitt 7.0 installieren.
+Ohne MTHO Conversation Agent arbeitet die Pipeline mit dem Standard-HA-Agent. Für MTHO-Anbindung die Integration aus Abschnitt 7.0 installieren.
 
 ---
 
@@ -197,8 +197,8 @@ Ohne ATLAS Conversation Agent arbeitet die Pipeline mit dem Standard-HA-Agent. F
 
 | Von | Nach | Port | Protokoll |
 |-----|------|------|-----------|
-| Scout (HA) | Dreadnought | 8000 | HTTP |
-| Dreadnought | Scout (HA) | 8123 | HTTPS |
+| Scout (HA) | 4D_RESONATOR (MTHO_CORE) | 8000 | HTTP |
+| 4D_RESONATOR (MTHO_CORE) | Scout (HA) | 8123 | HTTPS |
 | Scout | Wyoming (Whisper, Piper, openWakeWord) | Add-on-intern | - |
 
 **Test von Scout aus:**
@@ -234,10 +234,10 @@ Prüft ob Whisper STT, Piper TTS und openWakeWord in HA verfügbar sind. Nutzt `
 
 ## 11. Referenzen
 
-- `src/connectors/home_assistant.py` – ATLAS HA-Client
+- `src/connectors/home_assistant.py` – MTHO HA-Client
 - `src/api/routes/ha_webhook.py` – `/webhook/assist`, `/webhook/inject_text`
 - `src/voice/tts_dispatcher.py` – TTS an Mini-Speaker
-- `docs/03_INFRASTRUCTURE/SCOUT_HA_EVENT_AN_OC_BRAIN.md` – Scout-Events an OC Brain
+- `docs/03_INFRASTRUCTURE/SCOUT_HA_EVENT_AN_OC_BRAIN.md` – Scout-Events an OMEGA_ATTRACTOR
 - [HA Assist Pipeline](https://www.home-assistant.io/integrations/assist_pipeline/)
 - [HA Lokale Voice Pipeline](https://www.home-assistant.io/voice_control/voice_remote_local_assistant/)
 - `src/scripts/test_ha_voice_integration.py` – Wyoming-Verifizierung

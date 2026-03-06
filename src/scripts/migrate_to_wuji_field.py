@@ -9,7 +9,7 @@
 GQA Refactor F8: Migration zu einheitlicher wuji_field Collection.
 
 Liest simulation_evidence, core_directives, session_logs (optional argos_knowledge_graph)
-aus ChromaDB, transformiert in einheitliches Schema mit type + LPIS-Encoding,
+aus ChromaDB, transformiert in einheitliches Schema mit type + MTHO-Encoding,
 schreibt in Collection "wuji_field".
 
 Schema: docs/02_ARCHITECTURE/WUJI_FIELD_SCHEMA.md
@@ -24,8 +24,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-# LPIS category -> base mapping (quaternary_codec)
-_CATEGORY_TO_LPIS = {
+# MTHO category -> base mapping (quaternary_codec)
+_CATEGORY_TO_MTHO = {
     "logisch": "L",
     "logisch-mathematisch": "L",
     "physikalisch": "P",
@@ -35,7 +35,7 @@ _CATEGORY_TO_LPIS = {
     "systemisch-emergent": "S",
 }
 
-_LPIS_PAIRINGS = {"L": "I", "I": "L", "S": "P", "P": "S"}
+_MTHO_PAIRINGS = {"L": "I", "I": "L", "S": "P", "P": "S"}
 
 COLLECTION_WUJI = "wuji_field"
 BATCH_SIZE = 50
@@ -56,12 +56,12 @@ def _sanitize_metadata(m: dict) -> dict:
     return out
 
 
-def _resolve_lpis(meta: dict) -> tuple[str, str, float | None, str | None]:
-    """Extrahiert lpis_base, lpis_complement, lpis_confidence, lpis_scores aus Metadata."""
-    base = meta.get("qbase") or _CATEGORY_TO_LPIS.get(
+def _resolve_mtho(meta: dict) -> tuple[str, str, float | None, str | None]:
+    """Extrahiert mtho_base, mtho_complement, mtho_confidence, mtho_scores aus Metadata."""
+    base = meta.get("qbase") or _CATEGORY_TO_MTHO.get(
         (meta.get("category") or "").lower().strip(), ""
     )
-    complement = meta.get("qbase_complement") or _LPIS_PAIRINGS.get(base, "")
+    complement = meta.get("qbase_complement") or _MTHO_PAIRINGS.get(base, "")
     confidence = meta.get("qbase_confidence")
     if confidence is not None:
         try:
@@ -76,7 +76,7 @@ def _transform_evidence(
     doc_id: str, document: str, meta: dict, source: str
 ) -> tuple[str, str, dict]:
     """Transformiert simulation_evidence-Eintrag."""
-    base, comp, conf, scores = _resolve_lpis(meta)
+    base, comp, conf, scores = _resolve_mtho(meta)
     date_added = meta.get("date_added") or date.today().isoformat()
     out = {
         "type": "evidence",
@@ -87,13 +87,13 @@ def _transform_evidence(
         "source": meta.get("source", ""),
     }
     if base:
-        out["lpis_base"] = base
+        out["mtho_base"] = base
     if comp:
-        out["lpis_complement"] = comp
+        out["mtho_complement"] = comp
     if conf is not None:
-        out["lpis_confidence"] = conf
+        out["mtho_confidence"] = conf
     if scores:
-        out["lpis_scores"] = scores
+        out["mtho_scores"] = scores
     return (doc_id, document, _sanitize_metadata(out))
 
 
@@ -169,7 +169,7 @@ def _migrate_from_chroma(client, dry_run: bool) -> dict[str, int]:
     if not dry_run:
         wuji = client.get_or_create_collection(
             name=COLLECTION_WUJI,
-            metadata={"description": "ATLAS Wuji-Feld (GQA F8)", "hnsw:space": "cosine"},
+            metadata={"description": "MTHO Wuji-Feld (GQA F8)", "hnsw:space": "cosine"},
         )
 
     transforms = [
@@ -280,7 +280,7 @@ def _migrate_from_json(json_path: str, client, dry_run: bool) -> dict[str, int]:
     if not dry_run:
         wuji = client.get_or_create_collection(
             name=COLLECTION_WUJI,
-            metadata={"description": "ATLAS Wuji-Feld (GQA F8)", "hnsw:space": "cosine"},
+            metadata={"description": "MTHO Wuji-Feld (GQA F8)", "hnsw:space": "cosine"},
         )
 
     for coll_key, transform_fn, source in [

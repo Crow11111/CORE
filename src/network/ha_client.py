@@ -46,7 +46,7 @@ class HAClient:
         import threading, time, os
         from http.server import HTTPServer, SimpleHTTPRequestHandler
         
-        host_ip = host_ip or os.getenv("ATLAS_HOST_IP", "192.168.178.20")
+        host_ip = host_ip or os.getenv("MTHO_HOST_IP", "192.168.178.20")
         filename = os.path.basename(audio_path)
         serve_dir = os.path.dirname(os.path.abspath(audio_path))
         audio_url = f"http://{host_ip}:{port}/{filename}"
@@ -87,8 +87,8 @@ class HAClient:
                 "data": {
                     "actions": [
                         {
-                            "action": "atlas_ping",
-                            "title": "Ping an ATLAS"
+                            "action": "mtho_ping",
+                            "title": "Ping an MTHO"
                         }
                     ]
                 }
@@ -122,4 +122,4 @@ class HAClient:
 
 if __name__ == "__main__":
     ha = HAClient()
-    ha.send_mobile_app_notification("WhatsApp Brücke wurde soeben durch ATLAS konzeptioniert. Bitte prüfe den ATLAS Chat für weitere Schritte zu HTTPS und WhatsApp Nummer.")
+    ha.send_mobile_app_notification("WhatsApp Brücke wurde soeben durch MTHO konzeptioniert. Bitte prüfe den MTHO Chat für weitere Schritte zu HTTPS und WhatsApp Nummer.")

@@ -7,7 +7,7 @@
 
 # Kamera-Anbindung: go2rtc (Windows / Scout)
 
-ATLAS_CORE kann Kamerabilder über go2rtc beziehen. go2rtc läuft entweder **auf dem PC** (Windows, z.B. Logitech Brio) oder **auf dem Scout (Pi)** – letzteres ist oft stabiler.
+MTHO_CORE kann Kamerabilder über go2rtc beziehen. go2rtc läuft entweder **auf dem PC** (Windows, z.B. Logitech Brio) oder **auf dem Scout (Pi)** – letzteres ist oft stabiler.
 
 ---
 
@@ -16,14 +16,14 @@ ATLAS_CORE kann Kamerabilder über go2rtc beziehen. go2rtc läuft entweder **auf
 - **Überwachungs-/IP-Kamera:** Läuft dauerhaft, streamt 24/7, LED oft dauerhaft an. Typisch für go2rtc auf dem **Scout** (Pi-Kamera oder USB-Kamera am Pi).
 - **Webcam (z.B. Logitech Brio):** Ist für **On-Demand** ausgelegt – sie überträgt nur, wenn eine Anwendung sie explizit anspricht und Frames anfordert. Dauerstream ist nicht das typische Nutzungsprofil; die LED bleibt oft aus, wenn kein Programm die Kamera hält.
 
-Für ATLAS reicht in der Regel **ein Snapshot bei Bedarf** (z.B. ein Bild pro Anfrage). Dafür muss die Kamera nicht dauerhaft laufen. Zwei Wege:
+Für MTHO reicht in der Regel **ein Snapshot bei Bedarf** (z.B. ein Bild pro Anfrage). Dafür muss die Kamera nicht dauerhaft laufen. Zwei Wege:
 
 1. **go2rtc (PC oder Scout):** Wenn ein Stream konfiguriert ist, liefert die Snapshot-API (`/api/frame.jpeg?src=...`) bei jedem Aufruf ein aktuelles Bild – go2rtc hält dabei ggf. den Stream kurz an. Beim Scout ist der Stream oft dauerhaft aktiv (Kamera am Pi); am PC mit Brio kann der Stream bei reiner On-Demand-Nutzung zwischen den Abrufen ruhen oder über einen **On-Demand-Snapshot-Server** (siehe unten) abgedeckt werden.
 2. **On-Demand-Snapshot-Server (nur Brio/PC):** Ein kleiner Dienst, der **nur bei einem HTTP-Aufruf** (z.B. GET /snapshot.jpg) die Webcam kurz öffnet, ein Einzelbild liefert und wieder schließt – LED nur während des Abrufs. Siehe Abschnitt „On-Demand-Snapshot für die Brio (PC)“.
 
 ### MX (Brio) als Überwachungskamera: Dauerstream
 
-Wenn du die Brio **wie eine Überwachungskamera** nutzen willst (ständig Bild für Erkennung/Brio-Szenario), ist es **kein Problem**, den Stream **dauerhaft laufen zu lassen**. Du kannst go2rtc mit dem Brio-Stream einfach durchlaufen lassen – die Kamera bleibt dann aktiv (LED an), und ATLAS (z.B. `brio_scenario_periodic.py` oder Snapshot-Abfragen) bekommt jederzeit ein aktuelles Bild. Ein gezieltes An- und Abschalten ist nicht nötig; wenn du den Dauerbetrieb möchtest, starte go2rtc mit der Brio-Konfiguration und lasse ihn laufen. Siehe Abschnitt „Logitech Brio (MX) unter Windows einbinden“ für die go2rtc-Einrichtung.
+Wenn du die Brio **wie eine Überwachungskamera** nutzen willst (ständig Bild für Erkennung/Brio-Szenario), ist es **kein Problem**, den Stream **dauerhaft laufen zu lassen**. Du kannst go2rtc mit dem Brio-Stream einfach durchlaufen lassen – die Kamera bleibt dann aktiv (LED an), und MTHO (z.B. `brio_scenario_periodic.py` oder Snapshot-Abfragen) bekommt jederzeit ein aktuelles Bild. Ein gezieltes An- und Abschalten ist nicht nötig; wenn du den Dauerbetrieb möchtest, starte go2rtc mit der Brio-Konfiguration und lasse ihn laufen. Siehe Abschnitt „Logitech Brio (MX) unter Windows einbinden“ für die go2rtc-Einrichtung.
 
 ---
 
@@ -32,12 +32,12 @@ Wenn du die Brio **wie eine Überwachungskamera** nutzen willst (ständig Bild f
 Auf dem **Scout (Raspberry Pi)** läuft go2rtc bereits und funktioniert ohne Probleme. Statt die Brio am PC zu nutzen, kannst du den Kamera-Stream **über den Scout** abgreifen:
 
 1. **Scout-IP oder Hostname** ermitteln (z.B. `192.168.2.x` oder `scout.local`).
-2. In der **ATLAS_CORE .env** setzen:
+2. In der **MTHO_CORE .env** setzen:
    - `GO2RTC_BASE_URL=http://<scout-ip>:1984` (z.B. `http://192.168.2.10:1984` oder `http://scout.local:1984`)
    - `GO2RTC_STREAM_NAME=<name>` – genau der Stream-Name, der auf dem Scout in go2rtc angelegt ist (z.B. `pc`, `cam`, `camera`).
 3. Test: `python src/scripts/test_go2rtc_snapshot.py` – sollte ein Snapshot vom Scout-Stream liefern.
 
-Damit nutzt ATLAS den gleichen `go2rtc_client` und dieselbe Snapshot-API, nur gegen die Scout-Instanz. Kein weiterer Code nötig.
+Damit nutzt MTHO den gleichen `go2rtc_client` und dieselbe Snapshot-API, nur gegen die Scout-Instanz. Kein weiterer Code nötig.
 
 ---
 
@@ -130,7 +130,7 @@ Skript: `python src/scripts/tapo_garden_recognize.py` (Frame → `data/tapo_gard
 
 ## Brio-Szenario: periodische Auswertung (Person + Zustand, Protokoll)
 
-Damit ATLAS **zur Laufzeit** erkennen kann, ob etwas nicht stimmt (Anwesenheit, Auffälligkeiten), muss **mindestens einmal pro Minute** ein Bild ausgewertet werden – ein Intervall von 50 Minuten wäre für solche Zwecke wertlos (z.B. Erkennung von Notfällen). Für den ersten Test kannst du das Intervall per .env auf 50 min stellen; für den eigentlichen Betrieb ist **1× pro Minute** der sinnvolle Standard.
+Damit MTHO **zur Laufzeit** erkennen kann, ob etwas nicht stimmt (Anwesenheit, Auffälligkeiten), muss **mindestens einmal pro Minute** ein Bild ausgewertet werden – ein Intervall von 50 Minuten wäre für solche Zwecke wertlos (z.B. Erkennung von Notfällen). Für den ersten Test kannst du das Intervall per .env auf 50 min stellen; für den eigentlichen Betrieb ist **1× pro Minute** der sinnvolle Standard.
 
 - **Skript:** `python src/scripts/brio_scenario_periodic.py`  
   - **Standard:** alle **1 Minute** ein Zyklus, **60 Minuten** lang (also 60 Zyklen).  

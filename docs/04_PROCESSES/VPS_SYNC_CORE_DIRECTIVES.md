@@ -7,7 +7,7 @@
 
 # VPS-Sync: core_directives (Ring-0)
 
-**Zweck:** Alle Ring-0- und Test-Direktiven von Dreadnought (lokal) auf die VPS-ChromaDB synchronisieren, damit OC Brain und andere VPS-Dienste dieselben core_directives nutzen.
+**Zweck:** Alle Ring-0- und Test-Direktiven von 4D_RESONATOR (MTHO_CORE) (lokal) auf die VPS-ChromaDB synchronisieren, damit OMEGA_ATTRACTOR und andere VPS-Dienste dieselben core_directives nutzen.
 
 ## Voraussetzung
 

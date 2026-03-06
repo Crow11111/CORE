@@ -6,7 +6,7 @@
 
 #!/usr/bin/env python3
 """
-Test-Script für ElevenLabs TTS Integration (ATLAS Voice Assistant).
+Test-Script für ElevenLabs TTS Integration (MTHO Voice Assistant).
 
 Prüft:
 1. ElevenLabs API-Key und lokale Wiedergabe (target=elevenlabs)
@@ -33,10 +33,10 @@ from dotenv import load_dotenv
 load_dotenv("c:/MTHO_CORE/.env")
 
 
-TEST_TEXT = "Hallo Marc. Ich bin Atlas. Die ElevenLabs Integration ist bereit."
+TEST_TEXT = "Hallo Marc. Ich bin Mtho. Die ElevenLabs Integration ist bereit."
 
 
-async def run_test(target: str, role: str = "atlas_dialog") -> bool:
+async def run_test(target: str, role: str = "mtho_dialog") -> bool:
     from src.voice.tts_dispatcher import dispatch_tts, _elevenlabs_available, _piper_available
 
     print(f"--- ElevenLabs TTS Test (target={target}, role={role}) ---")
@@ -71,8 +71,8 @@ def main():
     )
     parser.add_argument(
         "--role",
-        default="atlas_dialog",
-        help="Rolle aus voice_config (atlas_dialog, analyst, therapeut, ...)",
+        default="mtho_dialog",
+        help="Rolle aus voice_config (mtho_dialog, analyst, therapeut, ...)",
     )
     args = parser.parse_args()
 

@@ -16,7 +16,7 @@ load_dotenv()
 HOST = "192.168.178.54"
 USER = "dreadnought"
 PASS_PREFIX = "USsxrqqg"
-TARGET_FILE = "docs/05_AUDIT_PLANNING/ATLAS_HASS_OPTIMAL_PLAN.md"
+TARGET_FILE = "docs/05_AUDIT_PLANNING/MTHO_HASS_OPTIMAL_PLAN.md"
 
 def get_password():
     """Findet das Passwort in den Umgebungsvariablen, das mit dem Prefix beginnt."""

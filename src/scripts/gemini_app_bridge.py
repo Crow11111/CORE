@@ -132,7 +132,7 @@ def _takeout_json_to_markdown(json_path: str) -> str:
                 lines.append(f"## Turn {turn_num:02d}: {turn_title}")
                 lines.append("")
             else:
-                speaker_label = "ATLAS"
+                speaker_label = "MTHO"
 
             lines.append(f"**{speaker_label}:**")
             lines.append(content.strip())

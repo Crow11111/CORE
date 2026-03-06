@@ -19,7 +19,7 @@ def generate_anchor(text):
 
 def compile_master(source_dir, output_filename, title, image_path=None):
     output_file = os.path.join(source_dir, output_filename)
-    print(f"[ATLAS] Starte Kompilierung: {title} in {source_dir}...")
+    print(f"[MTHO] Starte Kompilierung: {title} in {source_dir}...")
 
     # Get all markdown files except the output file itself
     all_files = sorted(glob.glob(os.path.join(source_dir, "*.md")))
@@ -34,7 +34,7 @@ def compile_master(source_dir, output_filename, title, image_path=None):
     master_content.append(f"# {title}\n")
     master_content.append(f"**Generiert am:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
     if image_path:
-        master_content.append(f"![ATLAS Visual Context]({image_path})\n\n---\n")
+        master_content.append(f"![MTHO Visual Context]({image_path})\n\n---\n")
     else:
         master_content.append("\n---\n")
 
@@ -42,7 +42,7 @@ def compile_master(source_dir, output_filename, title, image_path=None):
     toc = ["## Inhaltsverzeichnis\n"]
     sections = []
 
-    print(f"[ATLAS] Verarbeite {len(files_to_process)} Dateien in {source_dir}...")
+    print(f"[MTHO] Verarbeite {len(files_to_process)} Dateien in {source_dir}...")
 
     for file_path in files_to_process:
         file_name = os.path.basename(file_path)
@@ -73,11 +73,11 @@ def compile_master(source_dir, output_filename, title, image_path=None):
         print(f"[ERROR] Fehler beim Schreiben des Master-Dokuments: {e}")
 
 if __name__ == "__main__":
-    # Standard targets for ATLAS
+    # Standard targets for MTHO
     targets = [
-        ("docs/02_ARCHITECTURE", "00_ATLAS_ARCHITECTURE_MASTER.md", "ATLAS ARCHITECTURE MASTER PLAN", "../../ATLAS.png"),
-        ("docs/03_INFRASTRUCTURE", "00_ATLAS_INFRASTRUCTURE_MASTER.md", "ATLAS INFRASTRUCTURE MASTER PLAN", "../../ATLAS.png"),
-        ("docs/04_PROCESSES", "00_ATLAS_PROCESSES_MASTER.md", "ATLAS PROCESSES MASTER PLAN", "../../ATLAS.png")
+        ("docs/02_ARCHITECTURE", "00_MTHO_ARCHITECTURE_MASTER.md", "MTHO ARCHITECTURE MASTER PLAN", "../../MTHO.png"),
+        ("docs/03_INFRASTRUCTURE", "00_MTHO_INFRASTRUCTURE_MASTER.md", "MTHO INFRASTRUCTURE MASTER PLAN", "../../MTHO.png"),
+        ("docs/04_PROCESSES", "00_MTHO_PROCESSES_MASTER.md", "MTHO PROCESSES MASTER PLAN", "../../MTHO.png")
     ]
 
     for src, out, title, img in targets:

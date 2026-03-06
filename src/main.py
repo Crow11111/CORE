@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 from src.api.whatsapp_bridge import router as whatsapp_router
 
 app = FastAPI(
-    title="ATLAS AGI Core",
+    title="MTHO AGI Core",
     description="Einstiegspunkt für WhatsApp Bridge und Sensor Bus",
     version="1.0.0"
 )

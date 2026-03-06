@@ -5,15 +5,15 @@
 <!-- ============================================================
 -->
 
-# ATLAS TTS Browser-Integration (Tampermonkey)
+# MTHO TTS Browser-Integration (Tampermonkey)
 
-**Zweck:** Markierten Text im Browser direkt an ATLAS senden und lokal als Sprache abspielen.
+**Zweck:** Markierten Text im Browser direkt an MTHO senden und lokal als Sprache abspielen.
 
 ---
 
 ## Übersicht
 
-Mit `Strg + Shift + S` wird markierter Text an den lokalen ATLAS-Backend-Server gesendet, der ihn via ElevenLabs in Sprache umwandelt und auf dem PC abspielt.
+Mit `Strg + Shift + S` wird markierter Text an den lokalen MTHO-Backend-Server gesendet, der ihn via ElevenLabs in Sprache umwandelt und auf dem PC abspielt.
 
 ```
 Browser (Gemini, ChatGPT, etc.)
@@ -27,7 +27,7 @@ ElevenLabs TTS → MP3 → Lokale Wiedergabe (PC-Lautsprecher)
 
 ---
 
-## 1. Voraussetzung: ATLAS Backend muss laufen
+## 1. Voraussetzung: MTHO Backend muss laufen
 
 ```batch
 START_ATLAS_DIENSTE.bat
@@ -50,10 +50,10 @@ Backend läuft dann auf: `http://localhost:8000`
 
 ```javascript
 // ==UserScript==
-// @name         ATLAS TTS Push
+// @name         MTHO TTS Push
 // @namespace    http://tampermonkey.net/
 // @version      1.1
-// @description  Pusht markierten Text direkt an den lokalen ATLAS TTS-Server
+// @description  Pusht markierten Text direkt an den lokalen MTHO TTS-Server
 // @match        https://gemini.google.com/*
 // @match        https://chat.openai.com/*
 // @match        https://chatgpt.com/*
@@ -67,7 +67,7 @@ Backend läuft dann auf: `http://localhost:8000`
 (function() {
     'use strict';
 
-    // === ATLAS KONFIGURATION ===
+    // === MTHO KONFIGURATION ===
     const LOCAL_PORT = 8000;
     const ENDPOINT_URL = `http://127.0.0.1:${LOCAL_PORT}/api/atlas/speak`;
     
@@ -86,13 +86,13 @@ Backend läuft dann auf: `http://localhost:8000`
                 "Content-Type": "application/json"
             },
             onload: function(response) {
-                console.log("ATLAS-TTS: Wird abgespielt.", response.responseText);
+                console.log("MTHO-TTS: Wird abgespielt.", response.responseText);
                 // Grüner Rahmen = Erfolg
                 document.body.style.boxShadow = "inset 0 0 15px #0f0";
                 setTimeout(() => document.body.style.boxShadow = "none", 800);
             },
             onerror: function(error) {
-                console.error("ATLAS-TTS Error: Backend nicht erreichbar.", error);
+                console.error("MTHO-TTS Error: Backend nicht erreichbar.", error);
                 // Roter Rahmen = Fehler
                 document.body.style.boxShadow = "inset 0 0 15px #f00";
                 setTimeout(() => document.body.style.boxShadow = "none", 800);
@@ -108,10 +108,10 @@ Backend läuft dann auf: `http://localhost:8000`
             let selectedText = window.getSelection().toString().trim();
             
             if (selectedText.length > 0) {
-                console.log("ATLAS-TTS: Sende", selectedText.length, "Zeichen...");
+                console.log("MTHO-TTS: Sende", selectedText.length, "Zeichen...");
                 pushToATLAS(selectedText);
             } else {
-                console.warn("ATLAS-TTS: Kein Text markiert.");
+                console.warn("MTHO-TTS: Kein Text markiert.");
                 // Gelber Rahmen = Warnung
                 document.body.style.boxShadow = "inset 0 0 15px #ff0";
                 setTimeout(() => document.body.style.boxShadow = "none", 500);
@@ -119,7 +119,7 @@ Backend läuft dann auf: `http://localhost:8000`
         }
     });
     
-    console.log("ATLAS TTS Push geladen. Shortcut: Strg+Shift+S");
+    console.log("MTHO TTS Push geladen. Shortcut: Strg+Shift+S");
 })();
 ```
 
@@ -160,7 +160,7 @@ Kurzform - spielt sofort ab.
 {
     "status": "ok",
     "played": true,
-    "path": "c:\\ATLAS_CORE\\media\\tts_abc123.mp3"
+    "path": "c:\\MTHO_CORE\\media\\tts_abc123.mp3"
 }
 ```
 

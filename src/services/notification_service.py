@@ -133,7 +133,7 @@ class WhatsAppNotificationService:
             return False
 
         message = (
-            f"⚠️ *ATLAS SYSTEM REQUEST*\n\n"
+            f"⚠️ *MTHO SYSTEM REQUEST*\n\n"
             f"*Typ:* Hardware Expansion\n"
             f"*Grund:* {reason}\n"
             f"*Erwarteter ROI:* {expected_roi}\n\n"

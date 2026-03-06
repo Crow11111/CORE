@@ -34,7 +34,7 @@
 | `source_collection` | str | Herkunft (Migration): `simulation_evidence`, `core_directives`, `session_logs`, `argos_knowledge_graph`, `marc_li_patterns` |
 | `date_added` | str | ISO-Datum (YYYY-MM-DD) |
 
-### 2.2 LPIS-Encoding (quaternaere Codierung)
+### 2.2 GTAC/MTHO-Encoding (quaternaere Codierung)
 
 | Feld | Typ | Beschreibung |
 |------|-----|--------------|
@@ -88,7 +88,7 @@
 # Nur Evidence
 col.query(where={"type": "evidence"}, ...)
 
-# Evidence + LPIS L oder I
+# Evidence + GTAC/MTHO L oder I
 col.query(where={"$and": [{"type": "evidence"}, {"lpis_base": {"$in": ["L", "I"]}}]}, ...)
 
 # Ring-0 Direktiven

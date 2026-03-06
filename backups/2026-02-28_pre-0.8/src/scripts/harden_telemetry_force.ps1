@@ -1,7 +1,7 @@
 # harden_telemetry_force.ps1
 # Zerstört die verbleibende Windows-Telemetrie und Widgets
 
-Write-Host "=== ATLAS_CORE: Brutal-Hardening (Phase 2) ===" -ForegroundColor Red
+Write-Host "=== MTHO_CORE: Brutal-Hardening (Phase 2) ===" -ForegroundColor Red
 
 # 1. DiagTrack komplett töten
 Write-Host "[*] Beende und deaktiviere DiagTrack..."

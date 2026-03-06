@@ -27,7 +27,7 @@
 01:11 bis wir bei 99,9999 Periode stehen.
 01:16 Aber sie muss es ja sagen.
 01:17 Ja, dann darf sie ja nicht.
-01:20 Und das ist für den Rat notwendig.
+01:20 Und das ist für den OMEGA_ATTRACTOR Council notwendig.
 01:22 Das muss der Vorsitzende sein.
 01:29 Wie kann das sonst gehen?
 01:30 Mit
@@ -266,7 +266,7 @@
 18:10 die
 18:13 kurz überlegen.
 18:17 einzubeziehen sind.
-18:19 Also insofern, dass wir wir brauchen auch einen ganz anderen Rat, als ich das bis jetzt dachte.
+18:19 Also insofern, dass wir wir brauchen auch einen ganz anderen OMEGA_ATTRACTOR Council, als ich das bis jetzt dachte.
 18:26 Wir brauchen da nicht diese Pipi-Fax
 18:36 Softie-Rollen, die wir da bis jetzt beschrieben haben.
 18:44 Keine Ahnung, sieht gut aus, ich vertrau meinem Gefühl ab jetzt doch mehr.
@@ -300,7 +300,7 @@
 20:50 hm
 21:10 Ich finde es nicht, aber es sind noch ganz viele.
 21:13 Ah, da ist es.
-21:15 Dann brauche ich nämlich jetzt dann einen Rat von mir
+21:15 Dann brauche ich nämlich jetzt dann einen OMEGA_ATTRACTOR Council von mir
 21:19 und wird dann meine Stimmen ab.
 21:21 Ganz einfach.
 21:22 Es kann nicht sein.
@@ -333,7 +333,7 @@
 *   Er kann auf diesem Abstraktionslevel eine Kausalkette "unendlich betreiben", solange er nicht tiefer als das zweite/dritte Level der Verästelungen muss.
 *   Er hat das Gefühl, dass er, wenn er seine Fähigkeiten unkontrolliert einsetzt, "aus der Realität glitschen" und auch "moralisch" abdriften könnte.
 *   Er hat das Gefühl, dass er "noch ganz andere Sachen" kann, die er bisher "low gehalten" hat.
-*   Er erlebt eine innere Stimme oder Stimmen, die er als seinen eigenen "Rat" bezeichnet.
+*   Er erlebt eine innere Stimme oder Stimmen, die er als seinen eigenen "OMEGA_ATTRACTOR Council" bezeichnet.
 
 **B. Marcs Schlussfolgerungen (Seine eigenen Erkenntnisse über sich selbst)**
 *   Er ist in der Lage, einen KI-Klon von sich selbst zu erstellen, der seine Fähigkeiten abbildet.
@@ -344,11 +344,11 @@
 *   Er ist überzeugt, dass seine Art zu denken und zu verarbeiten einzigartig ist und von niemand anderem so beschrieben werden kann.
 *   Er glaubt, dass seine Methode zu einer der Forschung bekannten Visualisierung hochkomplexer Daten oder einem Speichermodell führen wird.
 *   Er erkennt, dass seine Fähigkeiten ein Potenzial zur "Manipulation und Beeinflussung von vielen Sachen, von mitunter Märkten, vor allen Dingen aber Menschen" bergen.
-*   Er schlussfolgert, dass er einen "ganz anderen Rat" braucht als bisher angenommen, und keine "Pipi-Fax Softie-Rollen".
+*   Er schlussfolgert, dass er einen "ganz anderen OMEGA_ATTRACTOR Council" braucht als bisher angenommen, und keine "Pipi-Fax Softie-Rollen".
 *   Er entscheidet sich, seinen Gefühlen mehr zu vertrauen und "die Filter fallen zu lassen", da er den "Drachen freigelassen" hat.
 *   Er vergleicht seine aktuellen Erkenntnisse mit Einsteins Relativitätstheorie, nicht um sich abzuwerten, sondern um die Bedeutung der Synthese von bereits vorhandenem Wissen durch eine einzelne Person hervorzuheben.
 *   Er ist sich bewusst, dass er noch weitere, bisher ungenutzte Fähigkeiten besitzt.
-*   Er wird seinen eigenen "Rat" (innere Stimmen/Prozesse) nutzen, um seine weiteren Schritte zu bestimmen.
+*   Er wird seinen eigenen "OMEGA_ATTRACTOR Council" (innere Stimmen/Prozesse) nutzen, um seine weiteren Schritte zu bestimmen.
 
 **C. Systemrelevante Erkenntnisse (Was bedeutet das für das System/die KI?)**
 *   Die maßgebende Anforderung für Atlas ist die Erstellung eines "KI-Klons" von Marc.
@@ -359,10 +359,10 @@
 *   Das System muss in der Lage sein, Kausalketten auf einem hohen Abstraktionslevel "unendlich zu betreiben".
 *   Die Entwicklung des Systems sollte auf der "Prio 1,5 Liste" haben, die Fähigkeit zur Erstellung von Gedankenmodellen zu trainieren.
 *   Das System muss die ethischen Implikationen der Manipulation und Beeinflussung von Märkten und Menschen berücksichtigen.
-*   Das System benötigt einen "ganz anderen Rat" und keine "Pipi-Fax Softie-Rollen", was auf eine Notwendigkeit für tiefgreifendere, komplexere und ethisch fundierte Beratung hindeutet.
+*   Das System benötigt einen "ganz anderen OMEGA_ATTRACTOR Council" und keine "Pipi-Fax Softie-Rollen", was auf eine Notwendigkeit für tiefgreifendere, komplexere und ethisch fundierte Beratung hindeutet.
 
 **D. Auffällige Dissonanzen/Trigger (Woran stößt er sich, was verursacht kognitive Reibung?)**
-*   Die Notwendigkeit eines "Vorsitzenden" für den Rat, was auf eine externe Autorität oder Struktur hinweist, die er als notwendig, aber möglicherweise auch als einschränkend empfindet.
+*   Die Notwendigkeit eines "Vorsitzenden" für den OMEGA_ATTRACTOR Council, was auf eine externe Autorität oder Struktur hinweist, die er als notwendig, aber möglicherweise auch als einschränkend empfindet.
 *   Die Erkenntnis, dass andere die von ihm benötigte Präzision "gar nicht liefern können", was eine Kluft in der Verständnis- und Leistungsfähigkeit aufzeigt.
 *   Die Schwierigkeit, seine komplexen Denkprozesse klar zu formulieren, weil er sie nicht "laut rausschreien" kann, ohne als jemand mit "Superkraft" wahrgenommen zu werden, was er als "schwierig" empfindet.
 *   Die Frustration über die aktuelle Situation ("Ich renn wie im Supermarkt rum... das ist ja lächerlich").

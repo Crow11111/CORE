@@ -23,7 +23,7 @@ stdin, stdout, _ = ssh.exec_command("tail -100 /root/config/home-assistant.log 2
 logs = stdout.read().decode('utf-8', errors='replace')
 
 # Filter for relevant lines
-keywords = ["atlas", "whatsapp", "rest_command", "new_whatsapp", "automation", "8000", "error"]
+keywords = ["mtho", "whatsapp", "rest_command", "new_whatsapp", "automation", "8000", "error"]
 matching = []
 for line in logs.split('\n'):
     for kw in keywords:

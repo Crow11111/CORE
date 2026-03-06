@@ -38,9 +38,9 @@ def run(cmd):
 print("SSH OK zu", host)
 
 run('find / -maxdepth 4 -name "docker-compose*" 2>/dev/null | head -20')
-run('docker inspect atlas_chroma_state --format "{{json .HostConfig.PortBindings}}" 2>/dev/null')
+run('docker inspect mtho_chroma_state --format "{{json .HostConfig.PortBindings}}" 2>/dev/null')
 run('docker inspect chroma-uvmy-chromadb-1 --format "{{json .HostConfig.PortBindings}}" 2>/dev/null')
-run('docker inspect atlas_chroma_state --format "{{json .Config.ExposedPorts}}" 2>/dev/null')
+run('docker inspect mtho_chroma_state --format "{{json .Config.ExposedPorts}}" 2>/dev/null')
 
 # Prüfe ob socat verfügbar ist
 socat_check = run("which socat 2>/dev/null || echo 'NOT_FOUND'")

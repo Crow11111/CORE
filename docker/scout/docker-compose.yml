@@ -5,7 +5,7 @@ services:
     build:
       context: ../../
       dockerfile: docker/scout/Dockerfile
-    container_name: atlas_scout
+    container_name: mtho_scout
     restart: unless-stopped
     network_mode: host  # Wichtig für mDNS/Chromecast Discovery & Sensor Zugriff
     environment:

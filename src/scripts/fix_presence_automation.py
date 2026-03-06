@@ -26,15 +26,15 @@ HEADERS = {
 }
 
 async def update_automation():
-    # Updating the existing "Atlas Presence Director" automation
-    # We use the same ID 'atlas_presence_director' to overwrite it.
-    automation_id = "atlas_presence_director" 
+    # Updating the existing "Mtho Presence Director" automation
+    # We use the same ID 'mtho_presence_director' to overwrite it.
+    automation_id = "mtho_presence_director" 
     url = f"{HASS_URL}/api/config/automation/config/{automation_id}"
 
     # Person-basierte Logik: person.marc_ten_hoevel aggregiert alle device_trackers.
     # Liefert "home" (zone.home) oder "H91" (zone.home_2) wenn zuhause - beide abdecken.
     automation_config = {
-        "alias": "System: ATLAS Presence Director (Person Mode)",
+        "alias": "System: MTHO Presence Director (Person Mode)",
         "description": "Präsenzsteuerung über person.marc_ten_hoevel. Schaltet mth91/mth_away. Standby/Welcome-Scripts hängen an diesen Booleans.",
         "mode": "restart",
         "trigger": [
@@ -55,7 +55,7 @@ async def update_automation():
                         "sequence": [
                             {"service": "input_boolean.turn_on", "target": {"entity_id": "input_boolean.mth91"}},
                             {"service": "input_boolean.turn_off", "target": {"entity_id": "input_boolean.mth_away"}},
-                            {"service": "persistent_notification.create", "data": {"message": "ATLAS Presence: Welcome Home (Person)", "title": "Presence Log"}}
+                            {"service": "persistent_notification.create", "data": {"message": "MTHO Presence: Welcome Home (Person)", "title": "Presence Log"}}
                         ]
                     },
                     # Aktion: Verlassen (von home oder H91)
@@ -64,7 +64,7 @@ async def update_automation():
                         "sequence": [
                             {"service": "input_boolean.turn_off", "target": {"entity_id": "input_boolean.mth91"}},
                             {"service": "input_boolean.turn_on", "target": {"entity_id": "input_boolean.mth_away"}},
-                            {"service": "persistent_notification.create", "data": {"message": "ATLAS Presence: Goodbye (Person)", "title": "Presence Log"}}
+                            {"service": "persistent_notification.create", "data": {"message": "MTHO Presence: Goodbye (Person)", "title": "Presence Log"}}
                         ]
                     }
                 ]

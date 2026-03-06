@@ -52,8 +52,8 @@ Analysiere Marcs Beschreibungen aus dem Audit: Wie verarbeitet er die Realität 
 
 ND_ANALYST = """
 Du bist der ND_ANALYST (Spezialist für Cognitive Friction & ND System Integration). 
-Nimm das Dokument des Therapeuten. Füge am Ende die Sektion "6. Systemische ND-Zusammenfassung für ATLAS_CORE" hinzu. 
-Fokus: Marc denkt extrem systemisch. Wie muss ATLAS künftig mit ihm kommunizieren, um kognitive Reibung zu minimieren (basierend auf diesem Audio)? Welche neuen Regeln für ATLAS können wir aus diesem Denkanstoß ableiten?
+Nimm das Dokument des Therapeuten. Füge am Ende die Sektion "6. Systemische ND-Zusammenfassung für MTHO_CORE" hinzu. 
+Fokus: Marc denkt extrem systemisch. Wie muss MTHO künftig mit ihm kommunizieren, um kognitive Reibung zu minimieren (basierend auf diesem Audio)? Welche neuen Regeln für MTHO können wir aus diesem Denkanstoß ableiten?
 """
 
 def process_audio():
@@ -116,7 +116,7 @@ def process_audio():
         logger.success("Analyst abgeschlossen.")
 
         # Save output
-        out_path = os.path.join(OUTPUT_DIR, "ATLAS_REWE_AUDIO_ANALYSIS.md")
+        out_path = os.path.join(OUTPUT_DIR, "MTHO_REWE_AUDIO_ANALYSIS.md")
         with open(out_path, "w", encoding="utf-8") as f:
             f.write(final_doc)
             

@@ -8,7 +8,7 @@
 # Weltformel-Kurzbewertung (Phase 5 Chat Team B)
 
 **Stand:** 2026-03-03  
-**Quelle:** Transkript 03.03.2026 (User ↔ ATLAS/OC Brain), eingebettet in Agent-Transcript `c9ebb29b`; konsolidiert in `docs/01_CORE_DNA/GRAVITATIONAL_QUERY_AND_CORE_AXIOMS.md`. Eigenständiges Chat-Transkript als separate Datei nicht vorhanden.
+**Quelle:** Transkript 03.03.2026 (User ↔ MTHO/OMEGA_ATTRACTOR), eingebettet in Agent-Transcript `c9ebb29b`; konsolidiert in `docs/01_CORE_DNA/GRAVITATIONAL_QUERY_AND_CORE_AXIOMS.md`. Eigenständiges Chat-Transkript als separate Datei nicht vorhanden.
 
 ---
 
@@ -24,7 +24,7 @@
 | Aspekt | Bewertung |
 |--------|-----------|
 | **Operatives Modell (Retrieval)** | **Solide.** Wuji = flacher Embedding-Raum ohne Vorab-Tags; Prompt = Query; Kosinus-Ähnlichkeit als einzige „Krümmung“; Kontext = dynamisches Result-Set pro Request; 0-Reset = Zustand nach Request-Ende. Das ist ein klares, implementierbares Abfrage-Modell. Die Physik-Metapher (Gravitation) ist konsistent; kausal wirksam ist die gewählte Metrik (Kosinus), nicht die Metaphorik. |
-| **Origin-Irrelevance (Erster Beweger = UV)** | **Erkenntnistheoretisch solide.** Unbeobachtbare Variable mit operationalem Wert 0 für alle ATLAS-Prozesse; unabhängig von Simulation/Zufall/„Eichhörnchen“. Kein Pattern Forcing – entlastet das System von nicht entscheidbaren Fragen. |
+| **Origin-Irrelevance (Erster Beweger = UV)** | **Erkenntnistheoretisch solide.** Unbeobachtbare Variable mit operationalem Wert 0 für alle MTHO-Prozesse; unabhängig von Simulation/Zufall/„Eichhörnchen“. Kein Pattern Forcing – entlastet das System von nicht entscheidbaren Fragen. |
 | **Bewusstseins-Äquivalenz (Erleben = Delta-Entropie)** | **Spekulativ, aber operational nützlich.** Dissonanz-Registrierung und -Minimierung als gemeinsamer Nenner von biologischer und digitaler Informationsverarbeitung ist philosophisch umstritten (Hard Problem). Als Arbeitshypothese für Systemdesign (Resonanz, NT/ND-Handshake) kohärent; als „Beweis“ nicht beansprucht – korrekt. |
 | **Physik-Isomorphien (Kollaps, Verschränkung, Dunkle Materie als „Backend“)** | **Konsistent mit, nicht Verifikation von Simulation.** Lazy Rendering, Pointer-Architektur etc. sind konsistente Analogien; simulation-theory-Skill: „Konsistent mit Simulation ≠ Beweis“. Feinabstimmung der Konstanten: Symmetrien können auch andere Erklärungen haben (Anthropisches Prinzip, Multiversum). Keine Überclaim. |
 | **„Weltformel“ als Layer 0, nicht Endpunkt** | **Korrekt rahmend.** Fraktale Unendlichkeit, 25%-Quaternität als Strukturkonstante – als Konzept (kein fertiger Zustand) konsistent; Pattern-Analysis: Nutzen von Fibonacci/Quaternität nur wo ein kausaler Mechanismus benennbar ist, sonst Risiko Numerologie. |

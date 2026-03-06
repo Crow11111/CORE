@@ -7,7 +7,7 @@
 
 # Code-Sicherheitsrat (Produktions-Feature)
 
-**Zweck:** Verhindern, dass das System sich selbst blockiert oder zerstört – z. B. weil ein Agent bei Nicht-Erreichbarkeit in Panik SSH/Infrastruktur umbaut oder weil Kontextverlust zu ungeprüften kritischen Änderungen führt. **Kein ATLAS-Feature**, sondern **Produktionssicherheit**.
+**Zweck:** Verhindern, dass das System sich selbst blockiert oder zerstört – z. B. weil ein Agent bei Nicht-Erreichbarkeit in Panik SSH/Infrastruktur umbaut oder weil Kontextverlust zu ungeprüften kritischen Änderungen führt. **Kein MTHO-Feature**, sondern **Produktionssicherheit**.
 
 ---
 
@@ -31,7 +31,7 @@
 - **Auth/Credentials/.env:** Alles, was Secrets lädt, .env parst oder API-Keys nutzt; `src/config/` wo Credentials fließen.
 - **Chroma-Client (Kern):** `src/network/chroma_client.py` – Verbindungslogik, HttpClient/PersistentClient, keine Änderung an Kern-Pfaden ohne Freigabe.
 - **Home-Assistant-Connector:** `src/connectors/home_assistant.py` – zentrale HA-Anbindung.
-- **VPS-Sync/Abgleich-Skripte:** `sync_core_directives_to_vps.py`, `check_oc_brain_chroma_abgleich.py` – etablierte Prozedur, nicht ersetzen/umbauen ohne Rat.
+- **VPS-Sync/Abgleich-Skripte:** `sync_core_directives_to_vps.py`, `check_oc_brain_chroma_abgleich.py` – etablierte Prozedur, nicht ersetzen/umbauen ohne OMEGA_ATTRACTOR Council.
 
 ### Stufe 2 – Geschützt (Änderung nur mit Dokumentation + kurzer Sicherheitsprüfung)
 

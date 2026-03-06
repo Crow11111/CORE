@@ -9,7 +9,7 @@
 
 ## Identifiziertes Problem
 
-**Ursache:** Die ATLAS Presence Director Automation triggerte auf `device_tracker.iphone_2` mit States `home`/`not_home`. Der iCloud3/iPhone Device Tracker liefert jedoch **"H91"** (Zone-Name von `zone.home_2`) statt `"home"` wenn Marc zuhause ist.
+**Ursache:** Die MTHO Presence Director Automation triggerte auf `device_tracker.iphone_2` mit States `home`/`not_home`. Der iCloud3/iPhone Device Tracker liefert jedoch **"H91"** (Zone-Name von `zone.home_2`) statt `"home"` wenn Marc zuhause ist.
 
 - `device_tracker.iphone_2`: State = **H91** (in Zone) oder **not_home** (außerhalb)
 - `person.marc_ten_hoevel`: State = **H91** oder **home** (je nach Zone) bzw. **not_home**
@@ -27,7 +27,7 @@ Die Trigger `to: "home"` und `from: "home"` wurden nie erreicht → mth91/mth_aw
 
 ```
 person.marc_ten_hoevel (home/H91/not_home)
-    → ATLAS Presence Director
+    → MTHO Presence Director
         → input_boolean.mth91 / input_boolean.mth_away
             → NEW Welcome Hook, Home > Wlcome on, Zylon Dock > welcome on
                 → script.welcome, script.welcome_a, scene.standby

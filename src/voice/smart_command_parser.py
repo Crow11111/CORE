@@ -5,7 +5,7 @@
 # ============================================================
 
 """
-ATLAS Voice Assistant – Smart Command Parser
+MTHO Voice Assistant – Smart Command Parser
 =============================================
 Übersetzt natürliche Sprache in Home-Assistant-Aktionen.
 Entity Resolution via Fuzzy-Match, hardcodierte Patterns + LLM-Fallback.

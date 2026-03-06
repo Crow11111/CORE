@@ -32,7 +32,7 @@ def deploy_scout():
         return
 
     # 1. Create directory structure
-    remote_dir = "/home/pi/atlas_scout"
+    remote_dir = "/home/pi/mtho_scout"
     c.run(f"mkdir -p {remote_dir}/src/edge")
     c.run(f"mkdir -p {remote_dir}/src/services")
     c.run(f"mkdir -p {remote_dir}/docker")

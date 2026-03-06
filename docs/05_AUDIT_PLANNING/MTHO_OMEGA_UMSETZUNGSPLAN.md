@@ -62,7 +62,7 @@ Die Teams werden gemäß der 4-Strang-Theorie (Tetralogie) neu kalibriert.
 4.  **Evidence-Recheck:** `python src/scripts/operation_omega_simulation.py` laufen lassen, um die statistische Signifikanz von 0.049 zu bestätigen.
 
 ### PHASE 3: OPERATION (Takt 3)
-5.  **Regelbetrieb:** Übergang in den normalen Agos-Zyklus unter neuen Parametern.
+5.  **Regelbetrieb:** Übergang in den normalen Simultanität (2210/2201)-Zyklus unter neuen Parametern.
 
 ---
 

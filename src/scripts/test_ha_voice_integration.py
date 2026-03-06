@@ -5,7 +5,7 @@
 # ============================================================
 
 """
-ATLAS Voice Assistant – Wyoming Integration Verification
+MTHO Voice Assistant – Wyoming Integration Verification
 
 Prüft ob Wyoming-Komponenten (Whisper STT, Piper TTS, openWakeWord) und
 Assist Pipelines in Home Assistant korrekt integriert sind.
@@ -201,7 +201,7 @@ async def run_verification():
 
 def print_report(report: dict):
     print("\n" + "=" * 60)
-    print("ATLAS Voice Assistant – Wyoming Integration Status")
+    print("MTHO Voice Assistant – Wyoming Integration Status")
     print("=" * 60)
 
     print("\n[1] Verbindung zu Home Assistant")

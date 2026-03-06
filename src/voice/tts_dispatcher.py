@@ -37,8 +37,8 @@ load_dotenv()
 
 DEFAULT_ENTITY = "media_player.schreibtisch"
 DEFAULT_STREAM_PORT = 8002
-# ATLAS-Default-Stimme (atlas_dialog aus voice_config)
-DEFAULT_ATLAS_VOICE_ID = "0ISBUrWf7OGBgepl5lu2"
+# MTHO-Default-Stimme (mtho_dialog aus voice_config)
+DEFAULT_MTHO_VOICE_ID = "0ISBUrWf7OGBgepl5lu2"
 
 
 def _elevenlabs_available() -> bool:
@@ -66,7 +66,7 @@ def _piper_available() -> bool:
 
 async def _elevenlabs_speak(
     text: str,
-    role_name: str = "atlas_dialog",
+    role_name: str = "mtho_dialog",
     output_path: Optional[str] = None,
     play: bool = True,
 ) -> Optional[str]:
@@ -197,11 +197,11 @@ async def _ha_piper_tts(text: str) -> bool:
 
 async def _elevenlabs_stream_to_mini(
     text: str,
-    role_name: str = "atlas_dialog",
+    role_name: str = "mtho_dialog",
 ) -> bool:
     """
     ElevenLabs → MP3 → temporärer HTTP-Server → HA media_player.play_media.
-    Der Mini streamt die MP3 von ATLAS_HOST_IP:PORT.
+    Der Mini streamt die MP3 von MTHO_HOST_IP:PORT.
     """
     path = await _elevenlabs_speak(
         text, role_name, output_path=None, play=False
@@ -220,7 +220,7 @@ async def _elevenlabs_stream_to_mini(
         await asyncio.to_thread(os.startfile, path)
         return True
 
-    host_ip = os.getenv("ATLAS_HOST_IP", "192.168.178.20")
+    host_ip = os.getenv("MTHO_HOST_IP", "192.168.178.20")
     port = int(os.getenv("TTS_STREAM_PORT", str(DEFAULT_STREAM_PORT)))
     filename = os.path.basename(path)
     serve_dir = os.path.dirname(os.path.abspath(path))
@@ -274,7 +274,7 @@ async def _elevenlabs_stream_to_mini(
 async def dispatch_tts(
     text: str,
     target: str = "mini",
-    role_name: str = "atlas_dialog",
+    role_name: str = "mtho_dialog",
 ) -> bool:
     """
     Spielt TTS ab.

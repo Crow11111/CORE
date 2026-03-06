@@ -6,12 +6,12 @@
 
 #!/usr/bin/env python3
 """
-ATLAS – Scout Wake Word Setup
+MTHO – Scout Wake Word Setup
 
 Kopiert Wake Word .tflite Dateien nach Scout (/share/openwakeword).
 Unterstützt:
   - Lokales Verzeichnis (z.B. data/openwakeword_models) → Samba-Share
-  - Zwei Wake Words: hey atlas, computer (nach Custom Training)
+  - Zwei Wake Words: hey mtho, computer (nach Custom Training)
 
 Voraussetzung:
   - Samba-Share auf Scout erreichbar (z.B. \\192.168.178.54\share)
@@ -91,7 +91,7 @@ def main() -> int:
     print("\nNächste Schritte:")
     print("  1. Falls Ziel Samba war: openWakeWord Add-on auf Scout neu starten")
     print("  2. Einstellungen → Sprachassistenten → Assistent → Streaming Wake Word hinzufügen")
-    print("  3. Eigenes Modell aus der Liste wählen (hey_atlas, computer, etc.)")
+    print("  3. Eigenes Modell aus der Liste wählen (hey_mtho, computer, etc.)")
     print("  4. Ab HA 2025.10: Bis zu 2 Wake Words pro Satellite möglich")
     return 0 if ok == total else 1
 

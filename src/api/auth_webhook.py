@@ -26,12 +26,12 @@ def _constant_time_compare(a: str | None, b: str | None) -> bool:
     return secmod.compare_digest(a.strip(), b.strip())
 
 
-def verify_whatsapp_auth(x_atlas_webhook_secret: str | None = Header(None, alias="X-ATLAS-WEBHOOK-SECRET")):
+def verify_whatsapp_auth(x_mtho_webhook_secret: str | None = Header(None, alias="X-MTHO-WEBHOOK-SECRET")):
     """Shared-Secret Header-Check für WhatsApp-Webhook."""
-    expected = os.getenv("ATLAS_WEBHOOK_SECRET", "").strip()
+    expected = os.getenv("MTHO_WEBHOOK_SECRET", "").strip()
     if not expected:
-        raise HTTPException(status_code=503, detail="ATLAS_WEBHOOK_SECRET nicht konfiguriert")
-    if not _constant_time_compare(x_atlas_webhook_secret, expected):
+        raise HTTPException(status_code=503, detail="MTHO_WEBHOOK_SECRET nicht konfiguriert")
+    if not _constant_time_compare(x_mtho_webhook_secret, expected):
         raise HTTPException(status_code=401, detail="Ungültiger oder fehlender Webhook-Secret")
 
 

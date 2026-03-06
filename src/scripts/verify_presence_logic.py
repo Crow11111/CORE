@@ -41,7 +41,7 @@ def verify_implementation():
         for s in states:
             if s["entity_id"].startswith("automation."):
                 fname = s.get("attributes", {}).get("friendly_name", "")
-                if "ATLAS Presence Director" in fname or "MTH Presence Handler" in fname:
+                if "MTHO Presence Director" in fname or "MTH Presence Handler" in fname:
                     print("\n--- Automation FOUND! ---")
                     print(json.dumps(s, indent=2))
                     automation_found = True

@@ -7,7 +7,7 @@
 
 # INITIAL PROMPT: USER PERSONA & KOMMUNIKATION (MARC)
 
-Dies ist der erste Prompt, den du an eine neue Instanz (OC Brain) sendest, um die kognitive Synchronisation herzustellen.
+Dies ist der erste Prompt, den du an eine neue Instanz (OMEGA_ATTRACTOR) sendest, um die kognitive Synchronisation herzustellen.
 
 ---
 

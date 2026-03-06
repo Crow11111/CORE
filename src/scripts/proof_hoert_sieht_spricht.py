@@ -5,7 +5,7 @@
 # ============================================================
 
 """
-Beweis: ATLAS hört / sieht / spricht.
+Beweis: MTHO hört / sieht / spricht.
 Führt prüfbare Schritte aus, schreibt Report nach data/proof_hoert_sieht_spricht_report.txt.
 Teamchef: Nur Beweise zählen.
 """
@@ -66,12 +66,12 @@ def run_sprechen(lines: list) -> tuple[bool, str]:
     """TTS erzeugen, in media/ speichern. Optional: an WhatsApp senden."""
     try:
         from src.voice.elevenlabs_tts import speak_text
-        text = "ATLAS Proof. Hoeren, Sehen, Sprechen – Test."
+        text = "MTHO Proof. Hoeren, Sehen, Sprechen – Test."
         out_path = MEDIA_DIR / "proof_tts.mp3"
         MEDIA_DIR.mkdir(parents=True, exist_ok=True)
         path = speak_text(
             text=text,
-            role_name="atlas_dialog",
+            role_name="mtho_dialog",
             output_path=str(out_path),
             play=False,
         )
@@ -114,7 +114,7 @@ def run_hoeren(lines: list) -> tuple[bool, str]:
 
 def main() -> int:
     lines = [f"Report {datetime.now(timezone.utc).isoformat()}"]
-    log("--- Proof: ATLAS hört / sieht / spricht ---", lines)
+    log("--- Proof: MTHO hört / sieht / spricht ---", lines)
 
     # Sehen
     log("\n[Sehen]", lines)

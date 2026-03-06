@@ -13,7 +13,7 @@
 
 ## 1. Mission Statement
 
-ATLAS soll die passive Rolle verlassen. Statt auf "Was siehst du?" zu warten, soll das System **proaktiv** sehen.
+MTHO soll die passive Rolle verlassen. Statt auf "Was siehst du?" zu warten, soll das System **proaktiv** sehen.
 Der `atlas_vision_daemon` ist ein autonomer Hintergrundprozess, der den visuellen Kortex des Systems darstellt. Er beobachtet kontinuierlich, filtert Irrelevantes (Stille) und eskaliert Relevantes (Bewegung) an das Bewusstsein (Gemini/Wuji).
 
 *Grundsatz: Das System beobachtet, um zu verstehen, nicht um zu speichern (Überwachung vs. Wahrnehmung).*
@@ -22,7 +22,7 @@ Der `atlas_vision_daemon` ist ein autonomer Hintergrundprozess, der den visuelle
 
 ## 2. Architektur
 
-Der Prozess läuft lokal auf dem Core-Server (Dreadnought) oder einem dedizierten Vision-Node (Scout/Jetson).
+Der Prozess läuft lokal auf dem Core-Server (4D_RESONATOR (MTHO_CORE)) oder einem dedizierten Vision-Node (Scout/Jetson).
 
 ```mermaid
 graph TD

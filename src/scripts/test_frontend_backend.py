@@ -5,7 +5,7 @@
 # ============================================================
 
 """
-Prüft, ob das ATLAS-CORE-Backend für das Dev-Agent-Frontend erreichbar ist.
+Prüft, ob das MTHO-CORE-Backend für das Dev-Agent-Frontend erreichbar ist.
 
 - GET / (API-Root)
 - GET /api/chat/history
@@ -24,7 +24,7 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 import requests
 
-DEFAULT_BASE = os.getenv("ATLAS_API_URL", "http://localhost:8000")
+DEFAULT_BASE = os.getenv("MTHO_API_URL", "http://localhost:8000")
 
 
 def main() -> int:

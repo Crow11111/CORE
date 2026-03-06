@@ -89,7 +89,7 @@ def get_db_connection():
     conn.commit()
     return conn
 
-# --- Pydantic Models (ATLAS Data Atoms) ---
+# --- Pydantic Models (MTHO Data Atoms) ---
 class CoreBrainRegistr(BaseModel):
     system_status: str
     content: str

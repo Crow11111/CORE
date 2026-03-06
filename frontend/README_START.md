@@ -2,7 +2,7 @@
 
 ## Ein-Klick-Start (empfohlen)
 
-Im **Projekt-Root** (ATLAS_CORE) die Datei **`START_DEV_AGENT.bat`** doppelklicken.
+Im **Projekt-Root** (MTHO_CORE) die Datei **`START_DEV_AGENT.bat`** doppelklicken.
 
 Die Batch-Datei:
 - führt **npm install** im Ordner frontend aus (über CMD, nicht PowerShell – umgeht die Ausführungsrichtlinie)

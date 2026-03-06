@@ -5,7 +5,7 @@
 # ============================================================
 
 """
-ATLAS Ghost Agents - Kurzlebige Sub-Instanzen fuer Signal-Vektor 2 (INTENT).
+MTHO Ghost Agents - Kurzlebige Sub-Instanzen fuer Signal-Vektor 2 (INTENT).
 """
 from .ghost_agent import GhostAgent, GhostAgentPool
 

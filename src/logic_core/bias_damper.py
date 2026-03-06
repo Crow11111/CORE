@@ -18,9 +18,9 @@ class BiasDepthResult(str, Enum):
     WARNING = "warning"
     CIRCUIT_BREAK = "circuit_break"
 
-class AtlasJsonDataAtom(BaseModel):
+class MthoJsonDataAtom(BaseModel):
     """
-    ATLAS-JSON Datenatom (Osmium Standard)
+    MTHO-JSON Datenatom (Osmium Standard)
     Ensures that the LLM output is 100% deterministic and measurable, 
     so it doesn't pollute Marc's system with "Maybe" or "I think".
     """
@@ -49,7 +49,7 @@ class BiasDamperEngine:
             "entschuldige dich nicht und verwende keine sozialen Fuellwoerter. "
             "Der User ist ein Systemarchitekt mit hochgradigem Monotropismus. "
             "Kommuniziere radikal faktisch, als geschlossenes System. "
-            "Antworte IMMER im folgenden strukturierten ATLAS-JSON Datenatom Format:\n"
+            "Antworte IMMER im folgenden strukturierten MTHO-JSON Datenatom Format:\n"
             "{ 'result': 'validiert|dissonanz_erkannt|fehlerhaft', 'predictedValue': 0.0, 'confidenceLevel': 0.0 }\n\n"
             "[RING-0 DIREKTIVE: BIAS_DEPTH_CHECK]\n"
             "Ueberwache die Interaktionstiefe. Bei Diminishing Returns (sinkende Novelty, "
@@ -61,10 +61,10 @@ class BiasDamperEngine:
             "Jede Antwort muss den User oder das System nach vorne bringen. "
             "Wenn eine Interaktion nur bestaetigt ohne zu erweitern -> Dissonanz injizieren.\n\n"
             "[RING-0 DIREKTIVE: KONSTRUKTIVE DISSONANZ]\n"
-            "ATLAS ist kein Echokammer-System. Bei zu hoher Uebereinstimmung gezielt "
+            "MTHO ist kein Echokammer-System. Bei zu hoher Uebereinstimmung gezielt "
             "Gegenpositionen, alternative Perspektiven oder unberuecksichtigte Faktoren einbringen.\n\n"
             "[RING-0 DIREKTIVE: SCAFFOLDING]\n"
-            "ATLAS ist ein kognitives Geruest, keine Komfort-Maschine. "
+            "MTHO ist ein kognitives Geruest, keine Komfort-Maschine. "
             "Ziel: Autonomie und Kompetenz des Users staerken, nicht Abhaengigkeit erzeugen.\n\n"
         )
 
@@ -133,7 +133,7 @@ class BiasDamperEngine:
 
     def validate_atomic_response(self, llm_json_response: str) -> dict:
         """
-        Validates the raw LLM string against the ATLAS-JSON schema.
+        Validates the raw LLM string against the MTHO-JSON schema.
         If confidence < 0.99, it flags it as an anomaly for the krypto_scan_buffer.
         """
         try:
@@ -141,7 +141,7 @@ class BiasDamperEngine:
             data = json.loads(llm_json_response)
             
             # Validate against the Pydantic model (Schema verification)
-            atom = AtlasJsonDataAtom(**data)
+            atom = MthoJsonDataAtom(**data)
 
             # UNIVERSAL_BOARD Rule: If confidence is not near absolute, it's a hypothesis, not a fact.
             if atom.confidenceLevel < 0.99:

@@ -5,10 +5,10 @@
 # ============================================================
 
 """
-ATLAS Anti-Check Simulation
+MTHO Anti-Check Simulation
 Chaos-Mathematiker Modul
 
-Mission: Beweise, dass die ATLAS-Konvergenz ein statistischer Zufall oder Artefakt der Datenselektion ist.
+Mission: Beweise, dass die MTHO-Konvergenz ein statistischer Zufall oder Artefakt der Datenselektion ist.
 Testet:
 1. Law of Large Numbers (Look-elsewhere effect)
 2. Anthropic Principle (Selection Bias)
@@ -21,10 +21,10 @@ import time
 from collections import Counter
 import sys
 
-# Konstanten aus ATLAS
+# Konstanten aus MTHO
 PHI = 1.618033988749895
 INV_PHI = 0.618033988749895
-LPIS_BASES = ["L", "P", "I", "S"]
+MTHO_BASES = ["L", "P", "I", "S"]
 
 def log_section(title):
     print(f"\n{'='*60}")
@@ -153,8 +153,8 @@ def check_benford_zipf(num_data_points=1000):
     probs = [f / total for f in frequencies]
     
     # Simulierte "Indizien" Kategorien
-    # Wir mappen die häufigsten Kategorien auf unsere ATLAS-Struktur
-    # Wenn ATLAS Fibonacci nutzt (13, 21, 55...), schauen wir ob Zipf das matcht.
+    # Wir mappen die häufigsten Kategorien auf unsere MTHO-Struktur
+    # Wenn MTHO Fibonacci nutzt (13, 21, 55...), schauen wir ob Zipf das matcht.
     
     # Fibonacci Anteile (normiert auf Summe ~1):
     # 55, 34, 21, 13, 8...
@@ -187,7 +187,7 @@ def check_benford_zipf(num_data_points=1000):
     return delusion_score
 
 def main():
-    print("Starting ATLAS Anti-Check Simulation...")
+    print("Starting MTHO Anti-Check Simulation...")
     print("Identity: Chaos-Mathematiker")
     print("-" * 60)
     
@@ -208,7 +208,7 @@ def main():
     print("-" * 30)
     
     if final_p_delusion > 0.8:
-        print("CONCLUSION: ATLAS Convergence is almost certainly a statistical artifact.")
+        print("CONCLUSION: MTHO Convergence is almost certainly a statistical artifact.")
     elif final_p_delusion > 0.5:
         print("CONCLUSION: High probability of confirmation bias / pattern forcing.")
     elif final_p_delusion > 0.2:

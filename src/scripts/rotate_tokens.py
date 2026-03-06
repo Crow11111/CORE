@@ -8,7 +8,7 @@
 Token-Rotation für MTHO_CORE (90-Tage-Empfehlung, GQA F1).
 
 Generiert neue sichere Werte für:
-- ATLAS_WEBHOOK_SECRET
+- MTHO_WEBHOOK_SECRET
 - HA_WEBHOOK_TOKEN
 - OPENCLAW_GATEWAY_TOKEN (optional)
 
@@ -53,9 +53,9 @@ def main() -> int:
             continue
         key, _, rest = line.partition("=")
         key = key.strip()
-        if key == "ATLAS_WEBHOOK_SECRET":
+        if key == "MTHO_WEBHOOK_SECRET":
             new_val = generate_hex_token(64)
-            replaced["ATLAS_WEBHOOK_SECRET"] = new_val
+            replaced["MTHO_WEBHOOK_SECRET"] = new_val
             updated.append(f'{key}="{new_val}"')
         elif key == "HA_WEBHOOK_TOKEN":
             new_val = generate_hex_token(64)
@@ -71,7 +71,7 @@ def main() -> int:
             updated.append(line)
 
     if not replaced:
-        print("Keine Token zum Rotieren gefunden (ATLAS_WEBHOOK_SECRET, HA_WEBHOOK_TOKEN, OPENCLAW_GATEWAY_TOKEN).")
+        print("Keine Token zum Rotieren gefunden (MTHO_WEBHOOK_SECRET, HA_WEBHOOK_TOKEN, OPENCLAW_GATEWAY_TOKEN).")
         return 0
 
     if "TOKEN_ROTATED_AT" not in content:
@@ -84,7 +84,7 @@ def main() -> int:
     print("\nManuelle Schritte:")
     print("1. Home Assistant: HA_WEBHOOK_TOKEN in Automation/rest_command anpassen.")
     print("2. OC Brain (VPS): OPENCLAW_GATEWAY_TOKEN in OpenClaw-Config setzen.")
-    print("3. WhatsApp-Webhook: X-ATLAS-WEBHOOK-SECRET bei HA anpassen.")
+    print("3. WhatsApp-Webhook: X-MTHO-WEBHOOK-SECRET bei HA anpassen.")
     return 0
 
 

@@ -37,7 +37,7 @@ load_dotenv(PROJECT_ROOT / ".env")
 PING_MESSAGE = "Ping. Operation Cortex Beweis. Antworte kurz mit einem Satz."
 MEDIA_ENTITY = os.getenv("PROOF_MEDIA_ENTITY", "media_player.schreibtisch")
 MEDIA_FALLBACK = "media_player.kuche"
-ATLAS_HOST_IP = os.getenv("ATLAS_HOST_IP", "192.168.178.20")
+MTHO_HOST_IP = os.getenv("MTHO_HOST_IP", "192.168.178.20")
 MEDIA_SERVE_PORT = int(os.getenv("PROOF_MEDIA_PORT", "8888"))
 
 
@@ -74,7 +74,7 @@ def step2_tts(text: str) -> tuple[bool, str]:
 
         path = speak_text(
             text=text[:1500],
-            role_name="atlas_dialog",
+            role_name="mtho_dialog",
             output_path=str(out_path),
             play=False,
         )

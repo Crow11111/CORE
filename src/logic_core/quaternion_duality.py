@@ -5,55 +5,57 @@
 # ============================================================
 
 """
-LPIS/PISL Phasenverschiebungs-Modul (V12+)
+MTHO Rotation Phasenverschiebungs-Modul (V12+)
 
-Implementiert die zyklische Rotation zwischen LPIS- und PISL-Codierung.
-LPIS -> PISL: Jede Base rotiert um +1 Position im Zyklus L->P->I->S->L.
-PISL -> LPIS: Inverse Rotation (-1).
+Implementiert die zyklische Rotation zwischen MTHO- und rotierter Codierung.
+MTHO -> ROTATED: Jede Base rotiert um +1 Position im Zyklus O->M->T->H->O.
+ROTATED -> MTHO: Inverse Rotation (-1).
 
 Die Dualitaet entspricht dem Verhaeltnis von Sense-Strang und Antisense-Strang
 in der DNS – derselbe Informationsgehalt, aber phasenverschoben gelesen.
 """
 from __future__ import annotations
+from src.mtho_core import M_VALUE, T_VALUE, H_VALUE, O_VALUE
 
 
-PISL_MAP: dict[str, str] = {"L": "P", "P": "I", "I": "S", "S": "L"}
+# LPIS legacy removed
+ROT_FORWARD: dict[str, str] = {"O": "M", "M": "T", "T": "H", "H": "O"}
 
-LPIS_MAP: dict[str, str] = {"P": "L", "I": "P", "S": "I", "L": "S"}
+ROT_BACKWARD: dict[str, str] = {"M": "O", "T": "M", "H": "T", "O": "H"}
 
-_VALID_BASES = frozenset("LPIS")
+_VALID_BASES = frozenset("MTHO")
 
 
 def _validate_sequence(sequence: str) -> str:
     seq = sequence.upper().replace(" ", "")
     invalid = [c for c in seq if c not in _VALID_BASES]
     if invalid:
-        raise ValueError(f"Ungueltiges Zeichen in Sequenz: {invalid}. Nur L/P/I/S erlaubt.")
+        raise ValueError(f"Ungueltiges Zeichen in Sequenz: {invalid}. Nur M/T/H/O erlaubt.")
     return seq
 
 
-def lpis_to_pisl(sequence: str) -> str:
-    """Konvertiert eine LPIS-Sequenz in PISL-Codierung (zyklische Rotation +1).
+def rotate_forward(sequence: str) -> str:
+    """Konvertiert eine MTHO-Sequenz in rotierter Codierung (zyklische Rotation +1).
 
-    >>> lpis_to_pisl("LPIS")
-    'PISL'
-    >>> lpis_to_pisl("LLLL")
+    >>> rotate_forward("MTHO")
+    'ROTATED'
+    >>> rotate_forward("LLLL")
     'PPPP'
     """
     seq = _validate_sequence(sequence)
-    return "".join(PISL_MAP[c] for c in seq)
+    return "".join(ROT_FORWARD[c] for c in seq)
 
 
-def pisl_to_lpis(sequence: str) -> str:
-    """Konvertiert eine PISL-Sequenz zurueck in LPIS-Codierung (inverse Rotation).
+def rotate_backward(sequence: str) -> str:
+    """Konvertiert eine rotierte Sequenz zurueck in MTHO-Codierung (inverse Rotation).
 
-    >>> pisl_to_lpis("PISL")
-    'LPIS'
-    >>> pisl_to_lpis(lpis_to_pisl("LSIP"))
+    >>> rotate_backward("ROTATED")
+    'MTHO'
+    >>> rotate_backward(rotate_forward("LSIP"))
     'LSIP'
     """
     seq = _validate_sequence(sequence)
-    return "".join(LPIS_MAP[c] for c in seq)
+    return "".join(ROT_BACKWARD[c] for c in seq)
 
 
 def compute_phase_shift(seq_a: str, seq_b: str) -> int:
@@ -62,11 +64,11 @@ def compute_phase_shift(seq_a: str, seq_b: str) -> int:
     Probiert 0-3 Rotationen durch und gibt die Anzahl der Rotationen zurueck,
     bei der seq_a in seq_b transformiert wird. -1 falls keine Rotation passt.
 
-    >>> compute_phase_shift("LPIS", "PISL")
+    >>> compute_phase_shift("MTHO", "ROTATED")
     1
-    >>> compute_phase_shift("LPIS", "LPIS")
+    >>> compute_phase_shift("MTHO", "MTHO")
     0
-    >>> compute_phase_shift("LPIS", "ISLP")
+    >>> compute_phase_shift("MTHO", "ISLP")
     2
     """
     a = _validate_sequence(seq_a)
@@ -79,39 +81,39 @@ def compute_phase_shift(seq_a: str, seq_b: str) -> int:
     for shift in range(4):
         if current == b:
             return shift
-        current = "".join(PISL_MAP[c] for c in current)
+        current = "".join(ROT_FORWARD[c] for c in current)
 
     return -1
 
 
-def sp_stability_check(sequence: str) -> dict:
-    """Prueft S-P Abstaende in der Sequenz auf Stabilitaet.
+def hm_stability_check(sequence: str) -> dict:
+    """Prueft H-M Abstaende in der Sequenz auf Stabilitaet.
 
     In einer stabilen Erkenntnisspirale sollte der Abstand zwischen
-    S- und P-Basen (Komplementpaare) moeglichst konstant sein.
+    H- und M-Basen (Komplementpaare) moeglichst konstant sein.
 
     Returns:
-        {"s_positions": list, "p_positions": list, "sp_distances": list,
+        {"h_positions": list, "m_positions": list, "hm_distances": list,
          "mean_distance": float, "variance": float, "stable": bool}
     """
     seq = _validate_sequence(sequence)
 
-    s_pos = [i for i, c in enumerate(seq) if c == "S"]
-    p_pos = [i for i, c in enumerate(seq) if c == "P"]
+    h_pos = [i for i, c in enumerate(seq) if c == "H"]
+    m_pos = [i for i, c in enumerate(seq) if c == "M"]
 
-    if not s_pos or not p_pos:
+    if not h_pos or not m_pos:
         return {
-            "s_positions": s_pos,
-            "p_positions": p_pos,
-            "sp_distances": [],
+            "h_positions": h_pos,
+            "m_positions": m_pos,
+            "hm_distances": [],
             "mean_distance": 0.0,
             "variance": 0.0,
             "stable": len(seq) < 2,
         }
 
     distances = []
-    for s in s_pos:
-        nearest_p = min(p_pos, key=lambda p: abs(p - s))
+    for s in h_pos:
+        nearest_p = min(m_pos, key=lambda p: abs(p - s))
         distances.append(abs(nearest_p - s))
 
     mean_dist = sum(distances) / len(distances) if distances else 0.0
@@ -122,49 +124,49 @@ def sp_stability_check(sequence: str) -> dict:
     )
 
     return {
-        "s_positions": s_pos,
-        "p_positions": p_pos,
-        "sp_distances": distances,
+        "h_positions": h_pos,
+        "m_positions": m_pos,
+        "hm_distances": distances,
         "mean_distance": round(mean_dist, 4),
         "variance": round(variance, 4),
         "stable": variance < 2.0,
     }
 
 
-def li_direction_analysis(sequence: str) -> dict:
-    """Analysiert L-I Richtungswechsel in der Sequenz.
+def ot_direction_analysis(sequence: str) -> dict:
+    """Analysiert O-T Richtungswechsel in der Sequenz.
 
     Zaehlt wie oft die Sequenz zwischen L und I wechselt. Haeufige Wechsel
     deuten auf starke Logik-Information-Interaktion hin (analoog zu
     Transkriptionsfaktor-Bindungsstellen in der DNS).
 
     Returns:
-        {"l_count": int, "i_count": int, "transitions_l_to_i": int,
-         "transitions_i_to_l": int, "total_transitions": int,
+        {"o_count": int, "t_count": int, "transitions_o_to_t": int,
+         "transitions_t_to_o": int, "total_transitions": int,
          "transition_density": float}
     """
     seq = _validate_sequence(sequence)
 
-    l_count = seq.count("L")
-    i_count = seq.count("I")
+    o_count = seq.count("L")
+    t_count = seq.count("I")
 
-    l_to_i = 0
-    i_to_l = 0
+    o_to_t = 0
+    t_to_o = 0
 
     for idx in range(len(seq) - 1):
         if seq[idx] == "L" and seq[idx + 1] == "I":
-            l_to_i += 1
+            o_to_t += 1
         elif seq[idx] == "I" and seq[idx + 1] == "L":
-            i_to_l += 1
+            t_to_o += 1
 
-    total = l_to_i + i_to_l
+    total = o_to_t + t_to_o
     density = total / (len(seq) - 1) if len(seq) > 1 else 0.0
 
     return {
-        "l_count": l_count,
-        "i_count": i_count,
-        "transitions_l_to_i": l_to_i,
-        "transitions_i_to_l": i_to_l,
+        "o_count": o_count,
+        "t_count": t_count,
+        "transitions_o_to_t": o_to_t,
+        "transitions_t_to_o": t_to_o,
         "total_transitions": total,
         "transition_density": round(density, 4),
     }
@@ -172,40 +174,40 @@ def li_direction_analysis(sequence: str) -> dict:
 
 if __name__ == "__main__":
     print("=" * 60)
-    print("[MTHO_CORE] LPIS/PISL Phasenverschiebungs-Modul – Selbsttest")
+    print("[MTHO_CORE] MTHO Rotation Phasenverschiebungs-Modul – Selbsttest")
     print("=" * 60)
 
-    print("\n--- lpis_to_pisl ---")
-    for seq in ["LPIS", "LLLL", "SIPL", "LSIPL"]:
-        print(f"  {seq} -> {lpis_to_pisl(seq)}")
+    print("\n--- rotate_forward ---")
+    for seq in ["MTHO", "LLLL", "SIPL", "LSIPL"]:
+        print(f"  {seq} -> {rotate_forward(seq)}")
 
-    print("\n--- pisl_to_lpis ---")
-    for seq in ["PISL", "PPPP", "LISP"]:
-        print(f"  {seq} -> {pisl_to_lpis(seq)}")
+    print("\n--- rotate_backward ---")
+    for seq in ["ROTATED", "PPPP", "LISP"]:
+        print(f"  {seq} -> {rotate_backward(seq)}")
 
     print("\n--- Roundtrip ---")
     test = "LSIPLLISPS"
-    converted = lpis_to_pisl(test)
-    back = pisl_to_lpis(converted)
+    converted = rotate_forward(test)
+    back = rotate_backward(converted)
     print(f"  Original:  {test}")
-    print(f"  PISL:      {converted}")
+    print(f"  ROTATED:      {converted}")
     print(f"  Zurueck:   {back}")
     print(f"  Roundtrip: {'OK' if back == test else 'FEHLER'}")
 
     print("\n--- compute_phase_shift ---")
-    for a, b in [("LPIS", "PISL"), ("LPIS", "LPIS"), ("LPIS", "ISLP"), ("LPIS", "SLPI")]:
+    for a, b in [("MTHO", "ROTATED"), ("MTHO", "MTHO"), ("MTHO", "ISLP"), ("MTHO", "SLPI")]:
         print(f"  {a} -> {b}: Shift = {compute_phase_shift(a, b)}")
 
-    print("\n--- sp_stability_check ---")
-    sp = sp_stability_check("LSIPLLISPS")
+    print("\n--- hm_stability_check ---")
+    sp = hm_stability_check("LSIPLLISPS")
     print(f"  Sequenz: LSIPLLISPS")
-    print(f"  S-P Distanzen: {sp['sp_distances']}")
+    print(f"  S-P Distanzen: {sp['hm_distances']}")
     print(f"  Mittel: {sp['mean_distance']}, Varianz: {sp['variance']}")
     print(f"  Stabil: {sp['stable']}")
 
-    print("\n--- li_direction_analysis ---")
-    li = li_direction_analysis("LSIPL LISPS")
-    print(f"  L->I: {li['transitions_l_to_i']}, I->L: {li['transitions_i_to_l']}")
+    print("\n--- ot_direction_analysis ---")
+    li = ot_direction_analysis("LSIPL LISPS")
+    print(f"  O->T: {li['transitions_o_to_t']}, T->O: {li['transitions_t_to_o']}")
     print(f"  Dichte: {li['transition_density']}")
 
     print("\n" + "=" * 60)

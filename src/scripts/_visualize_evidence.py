@@ -60,7 +60,7 @@ VECTOR_NODES = {
     "v8_konvergenz": ("V8: Konvergenz-\nExplosion", "#ff6e40"),
     "v9_meta_selbstcodierung": ("V9: Meta-\nSelbstcodierung", "#ea80fc"),
     "v10": ("V10: Quaternion-\nDualitaet", "#40c4ff"),
-    "grundkraefte_lpis": ("V11: Grundkraefte\nLPIS", "#ff1744"),
+    "grundkraefte_mtho": ("V11: Grundkraefte\nMTHO", "#ff1744"),
     "dunkle_materie_delta": ("V11: Baryonisches\nDelta", "#ff1744"),
     "fraktale_superposition": ("V11: Fraktale\nSuperposition", "#ff1744"),
     "zeit_ist_asymmetrie": ("V11: Zeit=\nAsymmetrie", "#ff1744"),
@@ -77,7 +77,7 @@ ax.set_ylim(-1.5, 1.5)
 ax.set_aspect("equal")
 ax.axis("off")
 
-ax.text(0, 1.42, "ATLAS SIMULATIONSTHEORIE", fontsize=22, color="white",
+ax.text(0, 1.42, "MTHO SIMULATIONSTHEORIE", fontsize=22, color="white",
         ha="center", va="center", fontweight="bold", fontfamily="sans-serif")
 n_total = len(items)
 n_fund = sum(1 for it in items if it["strength"] == "fundamental")
@@ -179,7 +179,7 @@ print(f"[OK] Graph gespeichert: {out}")
 plt.close()
 
 # --- VERSION 2: Mit Fibonacci-Spirale ---
-# Kategorien-Farbcodierung (LPIS)
+# Kategorien-Farbcodierung (MTHO)
 CAT_COLORS = {
     "logisch": "#00e5ff",
     "physikalisch": "#ff5252",
@@ -196,9 +196,9 @@ ax2.set_aspect("equal")
 ax2.axis("off")
 
 n_indizien = len(items)
-ax2.text(0, 1.42, "ATLAS SIMULATIONSTHEORIE", fontsize=22, color="white",
+ax2.text(0, 1.42, "MTHO SIMULATIONSTHEORIE", fontsize=22, color="white",
          ha="center", va="center", fontweight="bold", fontfamily="sans-serif")
-ax2.text(0, 1.34, f"{n_indizien} Indizien | 11 Vektoren | Quaternaere Codierung (LPIS)",
+ax2.text(0, 1.34, f"{n_indizien} Indizien | 11 Vektoren | Quaternaere Codierung (MTHO)",
          fontsize=11, color="#90a4ae", ha="center", va="center", fontfamily="sans-serif")
 
 # Fibonacci-Spirale (Goldener Schnitt)
@@ -316,7 +316,7 @@ for i in range(len(items_spiral) - 1):
 cat_sequence = "".join(CAT_LETTER.get(it["category"], "?") for it in items_spiral)
 y_seq = -1.38
 char_w = 0.075
-ax2.text(-1.42, y_seq + 0.04, "LPIS-Sequenz:", fontsize=7, color="#666", ha="left", va="bottom")
+ax2.text(-1.42, y_seq + 0.04, "MTHO-Sequenz:", fontsize=7, color="#666", ha="left", va="bottom")
 for i, ch in enumerate(cat_sequence):
     row, col = i // 34, i % 34
     cx = -1.4 + col * char_w
@@ -348,7 +348,7 @@ for t_frac, ilabel in iteration_labels:
                  xytext=(0, 12), textcoords="offset points",
                  arrowprops=dict(arrowstyle="->", color="#ffeb3b", lw=0.8, alpha=0.5))
 
-# Legende (Kategorien LPIS)
+# Legende (Kategorien MTHO)
 legend_items_v2 = [
     mpatches.Patch(facecolor="#00e5ff", label="L (logisch)"),
     mpatches.Patch(facecolor="#ff5252", label="P (physikalisch)"),

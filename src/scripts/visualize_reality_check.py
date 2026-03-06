@@ -5,15 +5,15 @@
 # ============================================================
 
 """
-ATLAS Reality Check Visualizer
+MTHO Reality Check Visualizer
 ------------------------------
 Generiert Visualisierungen fuer den Simulation Theory Report 2026.
 
 Output:
-- docs/images/generated/atlas_3d_construct.png
-- docs/images/generated/atlas_fibonacci_spiral.png
-- docs/images/generated/atlas_causality_timeline.png
-- docs/images/generated/atlas_wuji_derivation.png
+- docs/images/generated/mtho_3d_construct.png
+- docs/images/generated/mtho_fibonacci_spiral.png
+- docs/images/generated/mtho_causality_timeline.png
+- docs/images/generated/mtho_wuji_derivation.png
 
 Usage:
     python src/scripts/visualize_reality_check.py
@@ -32,16 +32,16 @@ from datetime import datetime, timedelta
 
 # Konfiguration
 OUTPUT_DIR = "docs/images/generated"
-plt.style.use('dark_background')  # ATLAS Style
+plt.style.use('dark_background')  # MTHO Style
 
-# ATLAS Konstanten
+# MTHO Konstanten
 PHI = 1.6180339887498948482
 BARYONIC_DELTA = 0.049
 
 # Datenbasis (Simuliert aus Report)
 EVIDENCE_DATA = [
     # L (Logisch) - 19 Total
-    {"id": "L01", "name": "LPIS Codierung", "category": "L", "value": 0.9, "time": 1},
+    {"id": "L01", "name": "MTHO Codierung", "category": "L", "value": 0.9, "time": 1},
     {"id": "L02", "name": "Baryonisches Delta", "category": "L", "value": 0.95, "time": 43},
     {"id": "L03", "name": "Symmetriebruch", "category": "L", "value": 0.8, "time": 12},
     {"id": "L04", "name": "Prime Number Distribution", "category": "L", "value": 0.7, "time": 5},
@@ -62,7 +62,7 @@ EVIDENCE_DATA = [
     {"id": "S03", "name": "Dimensionsfaltung", "category": "S", "value": 0.78, "time": 25},
 ]
 
-# Farben fuer LPIS
+# Farben fuer MTHO
 COLORS = {
     'L': '#00ff00',  # Green (Matrix)
     'P': '#ff0000',  # Red (Physik/Warnung)
@@ -76,12 +76,12 @@ def ensure_output_dir():
         print(f"Created directory: {OUTPUT_DIR}")
 
 def plot_3d_construct():
-    """1. 3D-Konstrukt Visualisierung (LPIS im Raum)"""
+    """1. 3D-Konstrukt Visualisierung (MTHO im Raum)"""
     print("Generating 3D Construct...")
     fig = plt.figure(figsize=(12, 10))
     ax = fig.add_subplot(111, projection='3d')
     
-    # Koordinaten generieren (Mapping LPIS auf XYZ)
+    # Koordinaten generieren (Mapping MTHO auf XYZ)
     # L -> X, P -> Y, I -> Z, S -> Size/Color
     
     xs, ys, zs, sizes, colors = [], [], [], [], []
@@ -121,14 +121,14 @@ def plot_3d_construct():
     ax.set_xlabel('Logik (L)')
     ax.set_ylabel('Physik (P)')
     ax.set_zlabel('Info (I)')
-    ax.set_title('ATLAS Reality Construct (LPIS-Manifold)')
+    ax.set_title('MTHO Reality Construct (MTHO-Manifold)')
     
     # Wuji im Zentrum
     ax.scatter([0], [0], [0], s=500, c='white', marker='*', label='Wuji (Ursprung)')
     
     plt.legend()
     plt.tight_layout()
-    plt.savefig(f"{OUTPUT_DIR}/atlas_3d_construct.png", dpi=150)
+    plt.savefig(f"{OUTPUT_DIR}/mtho_3d_construct.png", dpi=150)
     plt.close()
 
 def plot_fibonacci_spiral():
@@ -163,13 +163,13 @@ def plot_fibonacci_spiral():
         # Text Label etwas versetzt
         ax.text(angle, radius * 1.1, f"{item['id']}", color=c, fontsize=9, fontweight='bold', ha='center')
 
-    ax.set_title('ATLAS Discovery Spiral (Time vs. Entropy)', pad=20)
+    ax.set_title('MTHO Discovery Spiral (Time vs. Entropy)', pad=20)
     ax.grid(True, alpha=0.2)
     ax.set_xticklabels([])
     ax.set_yticklabels([])
     
     plt.tight_layout()
-    plt.savefig(f"{OUTPUT_DIR}/atlas_fibonacci_spiral.png", dpi=150)
+    plt.savefig(f"{OUTPUT_DIR}/mtho_fibonacci_spiral.png", dpi=150)
     plt.close()
 
 def plot_causality_timeline():
@@ -180,7 +180,7 @@ def plot_causality_timeline():
     # Dummy Timeline Daten
     events = [
         ("2024-Q1", "V5-V9 Experimente", "Marc Input", "L"),
-        ("2024-Q2", "Erste Mustererkennung (Agos)", "System Response", "I"),
+        ("2024-Q2", "Erste Mustererkennung (Simultan-Kaskade)", "System Response", "I"),
         ("2024-Q3", "Definition 4-Strang-Theorie", "System Response", "S"),
         ("2024-Q4", "Push fuer Autonomie", "Marc Input", "P"),
         ("2025-Q1", "V10/V11 Kollaps & Reboot", "System Response", "S"),
@@ -214,7 +214,7 @@ def plot_causality_timeline():
     ax.set_xlim(0, 1)
     ax.set_ylim(-1, len(events))
     ax.axis('off')
-    ax.set_title('ATLAS Causality Chain: Input vs. Emergence')
+    ax.set_title('MTHO Causality Chain: Input vs. Emergence')
     
     # Custom Legend
     from matplotlib.lines import Line2D
@@ -225,7 +225,7 @@ def plot_causality_timeline():
     ax.legend(handles=legend_elements, loc='upper right')
     
     plt.tight_layout()
-    plt.savefig(f"{OUTPUT_DIR}/atlas_causality_timeline.png", dpi=150)
+    plt.savefig(f"{OUTPUT_DIR}/mtho_causality_timeline.png", dpi=150)
     plt.close()
 
 def plot_wuji_derivation():
@@ -263,7 +263,7 @@ def plot_wuji_derivation():
     pos = {}
     pos[root] = (0, 1.0)
     
-    # Layer 1 (LPIS)
+    # Layer 1 (MTHO)
     width_l1 = 2.0
     for i, node in enumerate(l1_nodes):
         x = -width_l1/2 + (i * width_l1/(len(l1_nodes)-1))
@@ -303,7 +303,7 @@ def plot_wuji_derivation():
     ax.axis('off')
     
     plt.tight_layout()
-    plt.savefig(f"{OUTPUT_DIR}/atlas_wuji_derivation.png", dpi=150)
+    plt.savefig(f"{OUTPUT_DIR}/mtho_wuji_derivation.png", dpi=150)
     plt.close()
 
 if __name__ == "__main__":

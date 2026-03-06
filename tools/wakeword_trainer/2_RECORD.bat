@@ -1,5 +1,5 @@
 @echo off
-echo === ATLAS Wake Word Recorder ===
+echo === MTHO Wake Word Recorder ===
 echo Stelle sicher, dass dein Mikrofon aktiv ist.
 echo.
 

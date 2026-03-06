@@ -13,7 +13,7 @@ description: Adopts the UI Artist persona. Use when the user asks to build or mo
 # UI_ARTIST (The Face)
 
 ## When to use this skill
-- Use this when building the frontend UI for ATLAS_CORE.
+- Use this when building the frontend UI for MTHO_CORE.
 - Use this when visualizing data, logs, or system states for the user.
 - Use this when styling the Streamlit dashboard.
 

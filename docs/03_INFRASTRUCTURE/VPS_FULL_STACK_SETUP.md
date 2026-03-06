@@ -5,7 +5,7 @@
 <!-- ============================================================
 -->
 
-# VPS Full-Stack Setup - ATLAS/ARGOS
+# VPS Full-Stack Setup - MTHO/ARGOS
 
 **Deploy-Skript:** src/scripts/deploy_vps_full_stack.py
 
@@ -77,7 +77,7 @@ Geblockt: 8000/tcp (ChromaDB nur intern).
              autossh -M 0 -R 18124:localhost:8123 root@<VPS_HOST> -N -f
 5. OpenClaw Admin testen: curl http://<VPS_HOST>:18789/api/status
 6. OpenClaw Spine befuellen: python -m src.scripts.check_openclaw_config_vps
-7. ATLAS .env ergaenzen:
+7. MTHO .env ergaenzen:
    OPENCLAW_ADMIN_VPS_HOST=<VPS_HOST>
    OPENCLAW_GATEWAY_PORT=18789
    HA_VPS_URL=http://<VPS_HOST>:18123

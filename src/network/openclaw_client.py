@@ -7,8 +7,8 @@
 """
 OpenClaw Gateway Client (Hostinger).
 Liest VPS_HOST und OPENCLAW_GATEWAY_TOKEN aus .env.
-- ATLAS → OC: send_message_to_agent() (POST /v1/responses)
-- OC → ATLAS: GQA F2 Webhook-Push (POST /api/oc/webhook) oder Fallback fetch_oc_submissions (SFTP).
+- MTHO → OC: send_message_to_agent() (POST /v1/responses)
+- OC → MTHO: GQA F2 Webhook-Push (POST /api/oc/webhook) oder Fallback fetch_oc_submissions (SFTP).
 """
 import os
 from dotenv import load_dotenv
@@ -20,7 +20,7 @@ OPENCLAW_GATEWAY_TOKEN = os.getenv("OPENCLAW_GATEWAY_TOKEN", "")
 # OpenClaw Gateway: bei Hostinger oft Container-PORT (z. B. 58105), sonst 18789
 OPENCLAW_GATEWAY_PORT = int(os.getenv("OPENCLAW_GATEWAY_PORT", "18789"))
 
-# Pfad auf dem VPS, in dem OC Einreichungen für den Rat ablegt (OC → ATLAS)
+# Pfad auf dem VPS, in dem OC Einreichungen für den Rat ablegt (OC → MTHO)
 OC_RAT_SUBMISSIONS_DIR = "/var/lib/openclaw/workspace/rat_submissions"
 
 
@@ -102,7 +102,7 @@ def send_message_to_agent(
     timeout: float = 30.0,
 ) -> tuple[bool, str]:
     """
-    Sendet eine Nachricht an einen OC-Agenten (ATLAS → OC).
+    Sendet eine Nachricht an einen OC-Agenten (MTHO → OC).
     Nutzt OpenClaw Gateway POST /v1/responses (muss in Gateway-Config enabled sein).
 
     Returns: (success, response_text oder Fehlermeldung)
@@ -151,7 +151,7 @@ def send_event_to_oc_brain(
     timeout: float = 15.0,
 ) -> tuple[bool, str]:
     """
-    Sendet ein ATLAS-Event an OC Brain (strukturiert).
+    Sendet ein MTHO-Event an OC Brain (strukturiert).
     Nutzt intern send_message_to_agent() mit Prefix-Formatierung.
 
     Args:
@@ -163,10 +163,10 @@ def send_event_to_oc_brain(
     """
     import json as _json
 
-    formatted_msg = f"[ATLAS_EVENT] type={event_type}\n{_json.dumps(data, ensure_ascii=False, indent=2)}"
+    formatted_msg = f"[MTHO_EVENT] type={event_type}\n{_json.dumps(data, ensure_ascii=False, indent=2)}"
     return send_message_to_agent(
         text=formatted_msg,
         agent_id="main",
-        user="atlas_event_bus",
+        user="mtho_event_bus",
         timeout=timeout,
     )

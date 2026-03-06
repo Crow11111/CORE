@@ -25,7 +25,7 @@ from starlette.responses import JSONResponse, Response
 
 # Veto-Schwellwert: z_widerstand >= INV_PHI → Veto-Modus (Confirmation erforderlich)
 try:
-    from src.config.atlas_state_vector import INV_PHI
+    from src.config.mtho_state_vector import INV_PHI
     VETO_THRESHOLD = INV_PHI
 except ImportError:
     VETO_THRESHOLD = 0.618
@@ -40,10 +40,10 @@ CRITICAL_PATH_PATTERNS = [
     re.compile(r"^/api/backup", re.I),
     re.compile(r"^/backup", re.I),
     # Ring-0 Write: core_directives, simulation_evidence
-    re.compile(r"^/api/atlas/knowledge/evidence/add", re.I),
-    re.compile(r"^/api/atlas/knowledge/directive/add", re.I),
-    re.compile(r"^/api/atlas/knowledge/evidence/delete", re.I),
-    re.compile(r"^/api/atlas/knowledge/directive/delete", re.I),
+    re.compile(r"^/api/mtho/knowledge/evidence/add", re.I),
+    re.compile(r"^/api/mtho/knowledge/directive/add", re.I),
+    re.compile(r"^/api/mtho/knowledge/evidence/delete", re.I),
+    re.compile(r"^/api/mtho/knowledge/directive/delete", re.I),
 ]
 
 # HTTP-Methoden die als kritisch gelten (alle Pfade)
@@ -66,7 +66,7 @@ def _is_critical_request(method: str, path: str) -> bool:
 def _get_z_widerstand() -> float:
     """Liest z_widerstand aus dem aktuellen State Vector."""
     try:
-        from src.config.atlas_state_vector import get_current_state
+        from src.config.mtho_state_vector import get_current_state
 
         state = get_current_state()
         return state.z_widerstand

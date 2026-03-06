@@ -47,7 +47,7 @@ def main():
     metas = r.get("metadatas", [[]])[0]
     print(f"Treffer: {len(ids)}")
     for i, (uid, doc, meta) in enumerate(zip(ids[:3], docs[:3], metas[:3])):
-        print(f"  [{i+1}] {uid} type={meta.get('type')} lpis={meta.get('lpis_base')}")
+        print(f"  [{i+1}] {uid} type={meta.get('type')} mtho={meta.get('mtho_base')}")
         print(f"      {str(doc)[:80]}...")
     print()
 

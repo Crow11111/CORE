@@ -6,7 +6,7 @@
 
 #!/usr/bin/env python3
 """
-ATLAS – openWakeWord Modelle herunterladen
+MTHO – openWakeWord Modelle herunterladen
 
 Lädt vordefinierte openWakeWord .tflite Modelle von GitHub Releases herunter.
 Nützlich für: hey_jarvis (computer-ähnlich), hey_mycroft, alexa, etc.

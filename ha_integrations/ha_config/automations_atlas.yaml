@@ -1,0 +1,71 @@
+# ATLAS Event-Automationen
+# Include in configuration.yaml: automation: !include_dir_merge_named automations/
+# oder: automation: !include automations_atlas.yaml
+
+- id: atlas_door_event_dispatcher
+  alias: "ATLAS Door Event Dispatcher"
+  description: "Lumi Motion (Tuer/Bewegung) -> ATLAS Event API"
+  trigger:
+    - platform: state
+      entity_id:
+        - binary_sensor.lumi_motion_ac02
+      to:
+        - "on"
+        - "off"
+  action:
+    - service: rest_command.atlas_event
+      data:
+        event_type: "door_motion"
+        priority: "medium"
+        data:
+          entity_id: "{{ trigger.entity_id }}"
+          state: "{{ trigger.to_state.state }}"
+          friendly_name: "{{ state_attr(trigger.entity_id, 'friendly_name') | default('') }}"
+  mode: single
+
+- id: atlas_temperature_anomaly_alert
+  alias: "ATLAS Temperature Anomaly Alert"
+  description: "H5075 Temperatur ausserhalb 16-28C -> ATLAS Event"
+  trigger:
+    - platform: numeric_state
+      entity_id:
+        - sensor.h5075_4e2e_temperature
+      above: 28
+    - platform: numeric_state
+      entity_id:
+        - sensor.h5075_4e2e_temperature
+      below: 16
+  action:
+    - service: rest_command.atlas_event
+      data:
+        event_type: "temperature_anomaly"
+        priority: "high"
+        data:
+          entity_id: "{{ trigger.entity_id }}"
+          temperature: "{{ states(trigger.entity_id) | float }}"
+          anomaly: "{{ 'high' if states(trigger.entity_id) | float > 28 else 'low' }}"
+  mode: single
+
+- id: atlas_presence_change_notifier
+  alias: "ATLAS Presence Change Notifier"
+  description: "Bayesian Presence State Change -> ATLAS Event"
+  trigger:
+    - platform: state
+      entity_id:
+        - binary_sensor.mth_real_presence_bayesian
+      from:
+        - "on"
+        - "off"
+      to:
+        - "on"
+        - "off"
+  action:
+    - service: rest_command.atlas_event
+      data:
+        event_type: "presence_change"
+        priority: "medium"
+        data:
+          entity_id: "{{ trigger.entity_id }}"
+          from_state: "{{ trigger.from_state.state }}"
+          to_state: "{{ trigger.to_state.state }}"
+  mode: single

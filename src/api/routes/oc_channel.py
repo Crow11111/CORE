@@ -1,0 +1,188 @@
+# ============================================================
+# MTHO-GENESIS: Marc Tobias ten Hoevel
+# VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
+# LOGIC: 2-2-1-0 (NON-BINARY)
+# ============================================================
+
+"""
+Schnittstelle ATLAS ↔ OC (OpenClaw) im laufenden Backend.
+
+Wird mit dem Backend angeboten; Cursor-Orchestrator oder andere Komponenten können
+damit testweise Nachrichten austauschen und Einreichungen abholen, ohne
+Skripte von Hand zu starten.
+
+GQA F2 - oc-webhook-push: OC Brain pusht Einreichungen per POST statt SFTP-Polling.
+"""
+from __future__ import annotations
+
+import json
+import uuid
+from datetime import datetime, timezone
+from pathlib import Path
+
+from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel, Field
+
+from src.api.auth_webhook import verify_oc_auth
+
+router = APIRouter(prefix="/api/oc", tags=["oc-channel"])
+
+
+class SendBody(BaseModel):
+    text: str
+    agent_id: str = "main"
+    user: str | None = None
+
+
+class OCSubmissionPayload(BaseModel):
+    """Schema für OC → ATLAS Webhook-Push (rat_submission)."""
+    from_: str = Field(default="oc", alias="from")
+    type: str = Field(default="rat_submission")  # rat_submission | info | question
+    created: str | None = None
+    payload: dict = Field(default_factory=dict)
+
+    model_config = {"populate_by_name": True}
+
+
+def _get_rat_submissions_dir() -> Path:
+    root = Path(__file__).resolve().parents[3]  # ATLAS_CORE project root
+    return root / "data" / "rat_submissions"
+
+
+@router.post("/webhook")
+def oc_webhook_push(body: OCSubmissionPayload, _auth: None = Depends(verify_oc_auth)):
+    """
+    GQA F2 - oc-webhook-push: OC Brain pusht Einreichungen direkt an ATLAS.
+    Ersetzt SFTP-Polling durch sofortige Verarbeitung.
+    Auth: X-API-Key oder Bearer (OPENCLAW_GATEWAY_TOKEN).
+    """
+    local_dir = _get_rat_submissions_dir()
+    local_dir.mkdir(parents=True, exist_ok=True)
+    ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
+    short_id = uuid.uuid4().hex[:8]
+    filename = f"oc_webhook_{ts}_{short_id}.json"
+    local_path = local_dir / filename
+    data = body.model_dump(by_alias=True)
+    if not data.get("created"):
+        data["created"] = datetime.now(timezone.utc).isoformat()
+    with open(local_path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    topic = (body.payload or {}).get("topic", body.type)
+    return {"ok": True, "file": filename, "topic": str(topic)[:200]}
+
+
+@router.get("/status")
+def oc_status(_auth: None = Depends(verify_oc_auth)):
+    """Prüft, ob das OpenClaw-Gateway erreichbar und konfiguriert ist."""
+    from src.network.openclaw_client import check_gateway, is_configured
+
+    if not is_configured():
+        return {"ok": False, "message": "Nicht konfiguriert (VPS_HOST, OPENCLAW_GATEWAY_TOKEN in .env)"}
+    ok, msg = check_gateway()
+    return {"ok": ok, "message": msg}
+
+
+@router.post("/send")
+def oc_send(body: SendBody, _auth: None = Depends(verify_oc_auth)):
+    """Sendet eine Nachricht an einen OC-Agenten (ATLAS → OC)."""
+    from src.network.openclaw_client import send_message_to_agent, is_configured
+
+    if not is_configured():
+        raise HTTPException(status_code=503, detail="OC-Kanal nicht konfiguriert (VPS_HOST, OPENCLAW_GATEWAY_TOKEN)")
+    ok, response_text = send_message_to_agent(
+        body.text, agent_id=body.agent_id, user=body.user, timeout=60.0
+    )
+    if not ok:
+        raise HTTPException(status_code=502, detail=response_text)
+    return {"ok": True, "response": response_text}
+
+
+@router.post("/fetch")
+def oc_fetch(_auth: None = Depends(verify_oc_auth)):
+    """Holt Einreichungen von OC (OC → ATLAS): SFTP-Polling-Fallback, wenn Webhook-Push nicht genutzt wird."""
+    from src.scripts.fetch_oc_submissions import run_fetch
+
+    ok, count, items = run_fetch(dry_run=False)
+    if not ok:
+        raise HTTPException(status_code=502, detail="Fetch fehlgeschlagen (SSH oder Konfiguration)")
+    return {"ok": True, "count": count, "items": items}
+
+
+@router.get("/fetch")
+def oc_fetch_get(_auth: None = Depends(verify_oc_auth)):
+    """Wie POST /fetch – SFTP-Polling-Fallback, GET für einfachen Aufruf."""
+    from src.scripts.fetch_oc_submissions import run_fetch
+
+    ok, count, items = run_fetch(dry_run=False)
+    if not ok:
+        raise HTTPException(status_code=502, detail="Fetch fehlgeschlagen (SSH oder Konfiguration)")
+    return {"ok": True, "count": count, "items": items}
+
+
+# Kurzfassung der WhatsApp-Plan-Aufgabe für OC (für trigger_whatsapp_plan)
+_OC_WHATSAPP_PLAN_TASK = """Abstimmung WhatsApp-Plan: Bitte fülle Abschnitt 6 aus (Procedere allowFrom/getrennte Nummer, was du siehst). Antwort in rat_submissions mit topic "WhatsApp-Plan Abschnitt 6"."""
+
+
+@router.post("/trigger_whatsapp_plan")
+def oc_trigger_whatsapp_plan(_auth: None = Depends(verify_oc_auth)):
+    """
+    Löst die OC-Abstimmung zum WhatsApp-Plan aus (Logikketten-Workaround).
+
+    Logik: Zuerst Versuch per API (send_message_to_agent). Bei Fehler (z. B. 405)
+    Fallback: Task-Datei per SSH in OCs Workspace legen. Geeignet für HA-Logikschalter:
+    Automation bei input_boolean oder Event → rest_command → dieses Endpoint.
+    """
+    import subprocess
+    from src.network.openclaw_client import send_message_to_agent, is_configured
+
+    # 1. Versuch: API
+    if is_configured():
+        ok, response_text = send_message_to_agent(
+            _OC_WHATSAPP_PLAN_TASK,
+            agent_id="main",
+            timeout=30.0,
+        )
+        if ok:
+            return {
+                "ok": True,
+                "method": "api",
+                "message": "OC per API benachrichtigt.",
+                "response_preview": (response_text[:200] + "...") if len(response_text or "") > 200 else response_text,
+            }
+        # 405 oder anderer Fehler → Fallback
+        if "405" in response_text or "Method Not Allowed" in response_text:
+            pass  # Fallback unten
+        else:
+            return {"ok": False, "method": "api", "message": response_text}
+
+    # 2. Fallback: Task-Datei in Workspace legen (SSH)
+    import os as _os
+    _root = _os.path.abspath(_os.path.join(_os.path.dirname(__file__), "..", "..", ".."))
+    try:
+        result = subprocess.run(
+            [__import__("sys").executable, "-m", "src.scripts.deploy_whatsapp_plan_task_to_oc"],
+            cwd=_root,
+            capture_output=True,
+            text=True,
+            timeout=25,
+        )
+        if result.returncode == 0:
+            # Optional: Eine WhatsApp an deine Nummer senden (Handy klingelt, OC sieht sie wenn gleicher Account)
+            _wa_msg = "@OC Lies workspace/whatsapp_plan_task.md und fülle Abschnitt 6 aus; Antwort in rat_submissions (topic: WhatsApp-Plan Abschnitt 6)."
+            _target = _os.environ.get("WHATSAPP_TARGET_ID", "").strip().strip('"')
+            _sent = False
+            if _target and _os.environ.get("HASS_URL") and _os.environ.get("HASS_TOKEN"):
+                try:
+                    from src.network.ha_client import HAClient
+                    _sent = HAClient().send_whatsapp(to_number=_target, text=_wa_msg)
+                except Exception:
+                    pass
+            return {
+                "ok": True,
+                "method": "fallback_deploy",
+                "message": "Task in Workspace gelegt. Eine WhatsApp mit @OC wurde" + (" an deine Nummer gesendet (Handy sollte klingeln; OC sieht sie)." if _sent else " nicht automatisch gesendet (HA/WHATSAPP_TARGET_ID prüfen). Du kannst sie manuell schicken: " + _wa_msg[:60] + "..."),
+                "whatsapp_sent": _sent,
+            }
+    except Exception as e:
+        return {"ok": False, "method": "fallback_deploy", "message": str(e)}
+    return {"ok": False, "method": "fallback_deploy", "message": "Deploy-Skript fehlgeschlagen (SSH/VPS)."}

@@ -1,0 +1,10 @@
+FROM python:3.10-slim
+WORKDIR /app
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential && rm -rf /var/lib/apt/lists/*
+COPY src/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY src /app/src
+ENV PYTHONPATH=/app
+ENV VPS_SLIM_PORT=8001
+EXPOSE 8001
+CMD ["uvicorn", "src.api.vps_slim:app", "--host", "0.0.0.0", "--port", "8001"]

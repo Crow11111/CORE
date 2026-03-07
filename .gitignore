@@ -3,6 +3,7 @@
 
 # Environments & Secrets
 .env
+openclaw_admin_config.json
 .venv/
 venv/
 __pycache__/

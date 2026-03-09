@@ -29,7 +29,7 @@
 | Cloud Agents bekommen Updates mit dem nächsten `git pull`. | Git-Credentials nötig (Token, SSH-Key, oder System-Git-Config). |
 | Kein manueller Schritt mehr für die Propagation. | Bei Fehlern (z.B. Push fehlgeschlagen) braucht es Logging/Retry. |
 
-**Umsetzung:** Optionaler Schritt in `handle_inject()`: nach dem Schreiben der Datei `subprocess.run`/`asyncio.create_subprocess_exec` für `git add .cursor/rules/MTHO_LIVE_INJECT.mdc`, `git commit -m "…"`, `git push origin master` (oder konfigurierbarer Branch). Env oder `.env`: `GIT_PUSH_AFTER_INJECT=true`, `GIT_REMOTE=origin`, `GIT_BRANCH=master`.
+**Umsetzung:** Optionaler Schritt in `handle_inject()`: nach dem Schreiben der Datei `subprocess.run`/`asyncio.create_subprocess_exec` für `git add .cursor/rules/MTHO_LIVE_INJECT.mdc`, `git commit -m "…"`, `git push origin main` (oder konfigurierbarer Branch). Env oder `.env`: `GIT_PUSH_AFTER_INJECT=true`, `GIT_REMOTE=origin`, `GIT_BRANCH=main`.
 
 ---
 

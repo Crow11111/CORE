@@ -23,7 +23,7 @@ router = APIRouter(prefix="/webhook", tags=["webhooks"])
 
 GITHUB_WEBHOOK_SECRET = (os.getenv("GITHUB_WEBHOOK_SECRET") or "").strip()
 GIT_PULL_DIR = (os.getenv("GIT_PULL_DIR") or "").strip()
-GIT_PULL_BRANCH_FILTER = (os.getenv("GIT_PULL_BRANCH_FILTER") or "").strip()  # optional, e.g. "refs/heads/master"
+GIT_PULL_BRANCH_FILTER = (os.getenv("GIT_PULL_BRANCH_FILTER") or "").strip()  # optional, e.g. "refs/heads/main"
 
 
 def _verify_github_signature(payload: bytes, signature_header: Optional[str]) -> bool:

@@ -60,7 +60,7 @@
 ## 4. Konkretisierungen für Teamleads
 
 - **Sync Relay – Git:** Nur wenn `GIT_PUSH_AFTER_INJECT=true` (oder gleichwertig); Repo-Root = aktuelles Arbeitsverzeichnis des Relay oder explizit konfiguriert. Bei Push-Fehler: Logging, kein Abbruch des `/inject`-Requests (Response bereits „success“ nach Schreiben).
-- **Webhook:** Payload URL = die Adresse, die GitHub erreichen kann (VPS-URL oder z.B. NGROK bei 4D_RESONATOR). Secret in GitHub eintragen und im Endpoint für HMAC nutzen. Branch-Filter optional (z.B. nur `master`/`main`).
+- **Webhook:** Payload URL = die Adresse, die GitHub erreichen kann (VPS-URL oder z.B. NGROK bei 4D_RESONATOR). Secret in GitHub eintragen und im Endpoint für HMAC nutzen. Branch-Filter optional (z.B. nur `main`).
 - **Credentials:** Kein Token/Key im Repo. Env oder bestehende Secrets-Infrastruktur; Security-Lead bestätigt Vorgehen.
 
 ---

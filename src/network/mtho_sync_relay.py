@@ -30,7 +30,7 @@ SECRET = os.getenv("MTHO_WEBHOOK_SECRET")
 TARGET_FILE = ".cursor/rules/MTHO_LIVE_INJECT.mdc"
 GIT_PUSH_AFTER_INJECT = os.getenv("GIT_PUSH_AFTER_INJECT", "").strip().lower() in ("1", "true", "yes")
 GIT_REMOTE = os.getenv("GIT_REMOTE", "origin").strip() or "origin"
-GIT_BRANCH = os.getenv("GIT_BRANCH", "master").strip() or "master"
+GIT_BRANCH = os.getenv("GIT_BRANCH", "main").strip() or "main"
 
 if not SECRET:
     logging.warning("MTHO_WEBHOOK_SECRET not found in .env! Relay is insecure/broken.")

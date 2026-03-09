@@ -275,10 +275,10 @@ Push den aktuellen Branch:
 git push -u origin 2026-02-25-cjle
 ```
 
-Optional auch den master-Branch pushen:
+Optional auch den main-Branch pushen:
 
 ```powershell
-git push -u origin master
+git push -u origin main
 ```
 
 Bei Authentifizierungsprompt:
@@ -1102,10 +1102,10 @@ Push den aktuellen Branch:
 git push -u origin 2026-02-25-cjle
 ```
 
-Optional auch den master-Branch pushen:
+Optional auch den main-Branch pushen:
 
 ```powershell
-git push -u origin master
+git push -u origin main
 ```
 
 Bei Authentifizierungsprompt:

@@ -184,7 +184,7 @@ Ein Python-Skript (`scripts/daily_backup.py`) wird erstellt, das folgende Schrit
 - Mindestens einmal pro Monat vollständiger Wiederherstellungstest auf Staging.
 
 ---
-*Quelle: Projekt-Plan. Anbindung an MTHO_CORE siehe docs/DEV_AGENT_UND_SCHNITTSTELLEN.md.*
+*Quelle: Projekt-Plan.*
 
 
 ---

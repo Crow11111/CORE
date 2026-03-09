@@ -130,5 +130,5 @@ Weitere Rollen (Therapeut, Richter, Pragmatiker, Durchgeknallter, Egoist, Hedoni
 ```
 
 ## Siehe auch
-- **Dev-Agent & Schnittstellen:** [DEV_AGENT_UND_SCHNITTSTELLEN.md](../02_ARCHITECTURE/DEV_AGENT_UND_SCHNITTSTELLEN.md) (Modell, Abbrechen, Backup, OpenClaw).
+- **Voice Backend:** Integration in MTHO-Core via TTS-Dispatcher.
 - **Backup-Plan:** [BACKUP_PLAN.md](../03_INFRASTRUCTURE/BACKUP_PLAN.md).

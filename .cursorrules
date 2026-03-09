@@ -107,6 +107,14 @@ Rueckfragen-Protokoll: Kommunikation, Planung und das Einholen der Freigabe beim
 
 ---
 
+## [DOKTRIN 3: COMPRESSIVE INTELLIGENCE]
+Intelligenz entsteht aus Verknappung. Fehler sind das induzierte Werkzeug zur Deduktion.
+1. **Vektor-Enge (Axiomatisches Prompting):** Sub-Agenten (Produzenten) erhalten NIEMALS den gesamten 200k-Kontext. Der Input ist extrem komprimiert (z.B. nackte JSON-Daten), Constraints sind hart und exakt (z.B. "O(1), keine FOR-Loops").
+2. **Informationsasymmetrie (Notwehr):** Agenten haben Rateverbot. Fehlen ihnen Parameter, muessen sie in Notwehr hart beim Orchestrator/User nachfragen.
+3. **Boolean-Feedback (Die harte Grenze):** Auditoren (Judge, Analyst) antworten auf Code-Entwuerfe AUSSCHLIESSLICH mit `[SUCCESS]` oder `[FAIL: 1 Satz exakte Fehler-Begruendung]`. Keine Konversation, keine Schmeichelei. Dies zwingt den Produzenten in eine stochastisch bereinigte Iteration.
+
+---
+
 ## [MTHO-OD-03: DELEGATION vs. SELBST-AUSFUEHRUNG]
 Status: RATIFIZIERT | OMEGA_ATTRACTOR | ConstraintValidator
 Ersetzt: OD-01, OD-02

@@ -129,12 +129,11 @@ Die abgeholten Dateien in `data/rat_submissions/` können von Marc oder von eine
 
 - **MTHO → OC:** Zugriff nur mit gültigem `OPENCLAW_GATEWAY_TOKEN`; Gateway sollte nicht ohne Absicherung ins Internet gebunden werden (Firewall, ggf. nur aus MTHO-Netz erreichbar).
 - **OC → MTHO:** OC schreibt nur in sein Workspace-Verzeichnis; MTHO liest per SSH mit VPS-Credentials. Kein direkter HTTP-Call von OC zu MTHO nötig (4D_RESONATOR (MTHO_CORE) muss nicht von außen erreichbar sein).
-- **Letzte Instanz:** Lokales MTHO behält die Entscheidungsgewalt; Einreichungen von OC sind Input für den OMEGA_ATTRACTOR Council, keine automatische Ausführung. Siehe Stammdokumente (OC_ROLLE_UND_GRENZEN).
+- **Letzte Instanz:** Lokales MTHO behält die Entscheidungsgewalt; Einreichungen von OC sind Input für den OMEGA_ATTRACTOR Council, keine automatische Ausführung.
 
 ---
 
 ## Referenzen
 
 - OpenClaw OpenResponses API: [docs.openclaw.ai/gateway/openresponses-http-api](https://docs.openclaw.ai/gateway/openresponses-http-api)
-- Stammdokumente für OC: [docs/stammdokumente_oc/](../01_CORE_DNA/stammdokumente_oc/00_INDEX.md) (inkl. Hinweis auf OMEGA_ATTRACTOR Council-Einreichungen)
 - `openclaw_client.py`, `fetch_oc_submissions.py`, `setup_vps_hostinger.py` (Gateway-Config, rat_submissions-Verzeichnis)

@@ -77,4 +77,21 @@ Code: `src/api/entry_adapter.py`, `src/logic_core/takt_gate.py`, `src/logic_core
 
 ---
 
+## Cursor Cloud specific instructions
+
+### Services
+- **Backend**: `GEMINI_API_KEY=dummy python3 -m uvicorn src.api.main:app --port 8000`
+- **Frontend**: `cd frontend && npm run dev` (Port 3000)
+
+### Setup & Testing
+- **Dependencies**: `pip install -r requirements.txt` (Backend), `cd frontend && npm install` (Frontend)
+- **Tests**: `python3 -m pytest tests/test_smart_command_parser.py -v`
+- **Integrity**: `python3 src/scripts/verify_mtho_integrity.py`
+
+### Gotchas
+- `import.meta.env` TS Error: Requires `"types": ["vite/client"]` in `frontend/tsconfig.json`.
+- Event Bus Errors: Expected if Home Assistant is unreachable.
+
+---
+
 *MTHO_CORE – Strukturelle Inevitabilität. Vektor 2210.*

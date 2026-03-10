@@ -17,8 +17,9 @@ import os
 import uuid
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException
 from pydantic import BaseModel
+from loguru import logger
 
 router = APIRouter(prefix="/api/mtho", tags=["mtho-events"])
 
@@ -36,7 +37,7 @@ class EventIn(BaseModel):
 
 
 @router.post("/event")
-def ingest_event(body: EventIn):
+async def ingest_event(body: EventIn, background_tasks: BackgroundTasks):
     """Event speichern (data/events + optional ChromaDB)."""
     event_id = str(uuid.uuid4())
     ts = body.timestamp or datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
@@ -51,8 +52,12 @@ def ingest_event(body: EventIn):
     }
     os.makedirs(EVENTS_DIR, exist_ok=True)
     path = os.path.join(EVENTS_DIR, f"{event_id}.json")
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(event, f, ensure_ascii=False, indent=2)
+    try:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(event, f, ensure_ascii=False, indent=2)
+    except Exception as e:
+        logger.error(f"Event-Write fehlgeschlagen: {e}")
+        raise HTTPException(status_code=500, detail="event_write_failed")
     meta = {
         "source": event["source"],
         "node_id": event["node_id"],
@@ -63,10 +68,20 @@ def ingest_event(body: EventIn):
     try:
         from src.network.chroma_client import add_event_to_chroma, is_configured
         if is_configured():
-            add_event_to_chroma(event_id, event, meta)
-    except Exception:
-        pass
-    return {"ok": True, "id": event_id, "path": path}
+            background_tasks.add_task(_persist_chroma, event_id, event, meta)
+    except Exception as e:
+        logger.warning(f"ChromaDB-Persist konnte nicht geplant werden: {e}")
+    return {"ok": True, "id": event_id}
+
+
+def _persist_chroma(event_id: str, event: dict, meta: dict):
+    """Background-Task: Event in ChromaDB schreiben."""
+    import asyncio
+    try:
+        from src.network.chroma_client import add_event_to_chroma
+        asyncio.run(add_event_to_chroma(event_id, event, meta))
+    except Exception as e:
+        logger.warning(f"ChromaDB-Write fehlgeschlagen: {e}")
 
 
 @router.get("/events")

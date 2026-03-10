@@ -7,6 +7,6 @@
 """
 MTHO Ghost Agents - Kurzlebige Sub-Instanzen fuer Signal-Vektor 2 (INTENT).
 """
-from .ghost_agent import GhostAgent, GhostAgentPool
+from .mtho_agent import GhostAgent, GhostAgentPool
 
 __all__ = ["GhostAgent", "GhostAgentPool"]

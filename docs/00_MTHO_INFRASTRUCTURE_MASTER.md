@@ -15,18 +15,18 @@
 
 ## Inhaltsverzeichnis
 
-- [00 MTHO INFRASTRUCTURE MASTER](#00-atlas-infrastructure-master)
+- [00 MTHO INFRASTRUCTURE MASTER](#00-mtho-infrastructure-master)
 - [ADGUARD HOME SETUP](#adguard-home-setup)
 - [BACKUP PLAN](#backup-plan)
 - [BACKUP PLAN FINAL](#backup-plan-final)
 - [CAMERA GO2RTC WINDOWS](#camera-go2rtc-windows)
-- [CUSTOM WAKE WORD MTHO](#custom-wake-word-atlas)
+- [CUSTOM WAKE WORD MTHO](#custom-wake-word-mtho)
 - [CUSTOM WAKE WORD TRAINING](#custom-wake-word-training)
 - [FRITZBOX ADGUARD ZERTIFIKAT](#fritzbox-adguard-zertifikat)
 - [FRITZBOX NETZWERK CONFIG](#fritzbox-netzwerk-config)
 - [HA SCOUT MX INTEGRATION](#ha-scout-mx-integration)
 - [MTLS MIGRATION PLAN](#mtls-migration-plan)
-- [MX KAMERA MTHO HOEREN SEHEN](#mx-kamera-atlas-hoeren-sehen)
+- [MX KAMERA MTHO HOEREN SEHEN](#mx-kamera-mtho-hoeren-sehen)
 - [OC BRAIN LEERE NACHRICHTEN DIAGNOSE](#oc-brain-leere-nachrichten-diagnose)
 - [OPENWAKEWORD MODELS](#openwakeword-models)
 - [SCOUT ASSIST PIPELINE](#scout-assist-pipeline)
@@ -47,7 +47,7 @@
 ---
 
 
-<a name="00-atlas-infrastructure-master"></a>
+<a name="00-mtho-infrastructure-master"></a>
 # 00 MTHO INFRASTRUCTURE MASTER
 
 ## MTHO INFRASTRUCTURE MASTER PLAN
@@ -64,13 +64,13 @@
 - [BACKUP PLAN](#backup-plan)
 - [BACKUP PLAN FINAL](#backup-plan-final)
 - [CAMERA GO2RTC WINDOWS](#camera-go2rtc-windows)
-- [CUSTOM WAKE WORD MTHO](#custom-wake-word-atlas)
+- [CUSTOM WAKE WORD MTHO](#custom-wake-word-mtho)
 - [CUSTOM WAKE WORD TRAINING](#custom-wake-word-training)
 - [FRITZBOX ADGUARD ZERTIFIKAT](#fritzbox-adguard-zertifikat)
 - [FRITZBOX NETZWERK CONFIG](#fritzbox-netzwerk-config)
 - [HA SCOUT MX INTEGRATION](#ha-scout-mx-integration)
 - [MTLS MIGRATION PLAN](#mtls-migration-plan)
-- [MX KAMERA MTHO HOEREN SEHEN](#mx-kamera-atlas-hoeren-sehen)
+- [MX KAMERA MTHO HOEREN SEHEN](#mx-kamera-mtho-hoeren-sehen)
 - [OC BRAIN LEERE NACHRICHTEN DIAGNOSE](#oc-brain-leere-nachrichten-diagnose)
 - [OPENWAKEWORD MODELS](#openwakeword-models)
 - [SCOUT ASSIST PIPELINE](#scout-assist-pipeline)
@@ -240,7 +240,7 @@ Ein Python-Skript (`scripts/daily_backup.py`) wird erstellt, das folgende Schrit
 
 ### Backup-Plan (final) – MTHO_CORE
 
-**Einziges Backup-Ziel: Hostinger-VPS** (`/var/backups/atlas`). Kein lokales Primärziel, kein S3 – alles geht per Push vom Rechner (4D_RESONATOR (MTHO_CORE)) zum VPS.
+**Einziges Backup-Ziel: Hostinger-VPS** (`/var/backups/mtho`). Kein lokales Primärziel, kein S3 – alles geht per Push vom Rechner (4D_RESONATOR (MTHO_CORE)) zum VPS.
 
 ---
 
@@ -261,13 +261,13 @@ ChromaDB-Daten liegen auf dem VPS; Backup der ChromaDB erfolgt auf dem VPS (Cold
 
 #### 3. Wohin?
 
-- **Ziel:** Hostinger-VPS, Verzeichnis `/var/backups/atlas`
+- **Ziel:** Hostinger-VPS, Verzeichnis `/var/backups/mtho`
 - **Transport:** Push per SSH/SFTP (Paramiko) von 4D_RESONATOR (MTHO_CORE) aus; der VPS pullt nicht.
-- **Berechtigung:** `/var/backups/atlas` wird von `setup_vps_hostinger.py` mit `chmod 700` angelegt (bereits vorhanden).
+- **Berechtigung:** `/var/backups/mtho` wird von `setup_vps_hostinger.py` mit `chmod 700` angelegt (bereits vorhanden).
 
 #### 4. Wie wird gesichert? (Automatisierung)
 
-- **Automatisiertes Backup:** Ein Windows Task führt `python src/scripts/daily_backup.py` täglich aus (seit 25.02.2026 aktiv). Das Skript packt den Code (ohne `node_modules`, `.venv` etc.) und lädt ihn per SFTP auf den Hostinger-VPS in `/var/backups/atlas`.
+- **Automatisiertes Backup:** Ein Windows Task führt `python src/scripts/daily_backup.py` täglich aus (seit 25.02.2026 aktiv). Das Skript packt den Code (ohne `node_modules`, `.venv` etc.) und lädt ihn per SFTP auf den Hostinger-VPS in `/var/backups/mtho`.
   - Erstellt ein Archiv (tar.gz) aus Code, `config/`, `data/argos_db/`.
   - `.env` wird bei gesetztem `BACKUP_ENCRYPTION_KEY` mit Fernet verschlüsselt und als separate Datei hochgeladen.
   - Upload per SFTP zu `VPS_HOST` mit `VPS_USER` / `VPS_PASSWORD` aus `.env`.
@@ -299,7 +299,7 @@ ChromaDB läuft im Container auf dem VPS. Ein Cold-Backup (Container kurz stoppe
 
 #### 8. Wiederherstellung
 
-- Archiv von `/var/backups/atlas` per SCP/SFTP zurück auf den Rechner, entpacken.
+- Archiv von `/var/backups/mtho` per SCP/SFTP zurück auf den Rechner, entpacken.
 - Falls `.env.enc` gesichert wurde: mit dem gleichen `BACKUP_ENCRYPTION_KEY` entschlüsseln (Fernet).
 - **Restore-Test:** Mindestens einmal pro Monat auf Testordner/Staging prüfen.
 
@@ -462,7 +462,7 @@ Damit MTHO **zur Laufzeit** erkennen kann, ob etwas nicht stimmt (Anwesenheit, A
 ---
 
 
-<a name="custom-wake-word-atlas"></a>
+<a name="custom-wake-word-mtho"></a>
 ## CUSTOM WAKE WORD MTHO
 
 ﻿# Custom Wake Word: MTHO
@@ -568,8 +568,8 @@ pip install -e .[training]
 `
 training_data/
 +-- positive/
-|   +-- atlas_001.wav
-|   +-- atlas_002.wav
+|   +-- mtho_001.wav
+|   +-- mtho_002.wav
 |   +-- ... (min. 50 Aufnahmen von "MTHO")
 +-- negative/
     +-- random_speech_001.wav
@@ -587,10 +587,10 @@ training_data/
 from openwakeword import train
 
 config = {
-    "target_phrase": "atlas",
+    "target_phrase": "mtho",
     "positive_audio_dir": "training_data/positive",
     "negative_audio_dir": "training_data/negative",
-    "output_dir": "models/atlas",
+    "output_dir": "models/mtho",
     "epochs": 100,
     "batch_size": 32
 }
@@ -605,7 +605,7 @@ https://www.home-assistant.io/voice_control/create_wake_word/
 
 `bash
 ### Model nach Scout kopieren
-copy models\atlas\atlas_v1.tflite S:\share\openwakeword\
+copy models\mtho\mtho_v1.tflite S:\share\openwakeword\
 `
 
 ---
@@ -654,7 +654,7 @@ Speicherort auf Scout: `/share/openwakeword/`
 <a name="custom-wake-word-training"></a>
 ## CUSTOM WAKE WORD TRAINING
 
-### Custom Wake Word Training – „hey atlas“ und „computer“
+### Custom Wake Word Training – „hey mtho“ und „computer“
 
 **Zweck:** Anleitung zum Trainieren eigener openWakeWord-Modelle für MTHO und Computer.
 
@@ -674,22 +674,22 @@ Speicherort auf Scout: `/share/openwakeword/`
 
 ---
 
-#### 2. Schritte für „hey atlas“
+#### 2. Schritte für „hey mtho“
 
 1. **Colab öffnen:** Link oben → „Datei → Eine Kopie erstellen“ (eigene Kopie anlegen)
-2. **target_word setzen:** In Sektion 1 `target_word = "hey atlas"` (oder `"atlas"` für kürzeres Wort)
+2. **target_word setzen:** In Sektion 1 `target_word = "hey mtho"` (oder `"mtho"` für kürzeres Wort)
 3. **Aussprache prüfen:** Play-Button neben `target_word` klicken → Audio anhören
-4. **Rechtschreibung anpassen:** Falls nötig, Schreibweise ändern (z.B. „hey atlas“ vs. „hey atläs“ für deutsche Aussprache)
+4. **Rechtschreibung anpassen:** Falls nötig, Schreibweise ändern (z.B. „hey mtho“ vs. „hey atläs“ für deutsche Aussprache)
 5. **Runtime → Run all** ausführen
 6. **Warten:** Ca. 30–60 Minuten (Colab-Ressourcen abhängig)
 7. **Download:** `.tflite`-Datei aus dem Output herunterladen
-8. **Dateiname:** z.B. `hey_atlas_v0.1.tflite` (Colab generiert den Namen)
+8. **Dateiname:** z.B. `hey_mtho_v0.1.tflite` (Colab generiert den Namen)
 
 ##### 2.1 Ablage auf Scout
 
 - Samba: `\\192.168.178.54\share\openwakeword\`
 - Oder: `scripts/setup_scout_wake_words.py` (siehe unten)
-- Datei: `hey_atlas_v0.1.tflite` nach `/share/openwakeword/` kopieren
+- Datei: `hey_mtho_v0.1.tflite` nach `/share/openwakeword/` kopieren
 
 ---
 
@@ -711,7 +711,7 @@ Speicherort auf Scout: `/share/openwakeword/`
 |----------------------|---------------------------------------|
 | `/share/openwakeword`| Verzeichnis für Custom Wake Word Modelle |
 
-**Namenskonvention:** `{wakeword}_v{version}.tflite` (z.B. `hey_atlas_v0.1.tflite`, `computer_v0.1.tflite`)
+**Namenskonvention:** `{wakeword}_v{version}.tflite` (z.B. `hey_mtho_v0.1.tflite`, `computer_v0.1.tflite`)
 
 Das openWakeWord Add-on scannt dieses Verzeichnis automatisch. Nach dem Kopieren:
 
@@ -965,7 +965,7 @@ camera:
 
 | Funktion | Methode | Env-Variable | Verwendung |
 |----------|---------|---------------|------------|
-| `verify_whatsapp_auth` | Shared-Secret Header | `ATLAS_WEBHOOK_SECRET` | X-MTHO-WEBHOOK-SECRET |
+| `verify_whatsapp_auth` | Shared-Secret Header | `MTHO_WEBHOOK_SECRET` | X-MTHO-WEBHOOK-SECRET |
 | `verify_ha_auth` | Bearer Token | `HA_WEBHOOK_TOKEN` | Bearer für /webhook/ha_action, /webhook/inject_text |
 | `verify_oc_auth` | API-Key / Bearer | `OPENCLAW_GATEWAY_TOKEN` | X-API-Key oder Bearer für /api/oc/* |
 
@@ -992,7 +992,7 @@ camera:
 ```
                     ┌─────────────────────────────────────┐
                     │  MTHO Root CA (self-signed)         │
-                    │  CN=atlas-ca.local, 10 Jahre        │
+                    │  CN=mtho-ca.local, 10 Jahre        │
                     └─────────────────┬───────────────────┘
                                       │
           ┌───────────────────────────┼───────────────────────────┐
@@ -1000,7 +1000,7 @@ camera:
           ▼                           ▼                           ▼
 ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
 │  Server CA      │       │  Client CA      │       │  (Reserve)       │
-│  CN=atlas-srv   │       │  CN=atlas-cli   │       │                  │
+│  CN=mtho-srv   │       │  CN=mtho-cli   │       │                  │
 └────────┬────────┘       └────────┬────────┘       └─────────────────┘
          │                         │
     ┌────┴────┐              ┌─────┴─────┐
@@ -1035,8 +1035,8 @@ camera:
 | **Scout → 4D_RESONATOR (MTHO_CORE)** | MTHO API | scout-client | 8000 (TLS) |
 | **OMEGA_ATTRACTOR → MTHO API** | MTHO API | oc-brain-client | 8000 (TLS) |
 | **HA → MTHO API** | MTHO API | ha-client | 8000 (TLS) |
-| **MTHO → OpenClaw** | OpenClaw Gateway | atlas-client | 18789/443 (TLS) |
-| **MTHO → ChromaDB** | ChromaDB (optional) | atlas-client | 8000 (TLS) |
+| **MTHO → OpenClaw** | OpenClaw Gateway | mtho-client | 18789/443 (TLS) |
+| **MTHO → ChromaDB** | ChromaDB (optional) | mtho-client | 8000 (TLS) |
 
 **Hinweis:** ChromaDB unterstützt mTLS nicht nativ; Option: Reverse-Proxy (z. B. Nginx) mit mTLS vor ChromaDB.
 
@@ -1044,14 +1044,14 @@ camera:
 
 | Zertifikat | CN | SAN (Subject Alternative Names) |
 |-------------|-----|----------------------------------|
-| atlas-api-server | atlas-api.dreadnought.local | DNS:atlas-api.local, IP:192.168.178.x |
-| mcp-server | mcp.vps.atlas.local | DNS:mcp.vps.atlas.local, IP:VPS_IP |
-| openclaw-server | openclaw.vps.atlas.local | DNS:openclaw.vps.atlas.local |
+| mtho-api-server | mtho-api.dreadnought.local | DNS:mtho-api.local, IP:192.168.178.x |
+| mcp-server | mcp.vps.mtho.local | DNS:mcp.vps.mtho.local, IP:VPS_IP |
+| openclaw-server | openclaw.vps.mtho.local | DNS:openclaw.vps.mtho.local |
 | cursor-client | cursor.dreadnought.local | - |
 | scout-client | scout.raspi.local | - |
-| oc-brain-client | oc-brain.vps.atlas.local | - |
+| oc-brain-client | oc-brain.vps.mtho.local | - |
 | ha-client | ha.scout.local | - |
-| atlas-client | atlas.dreadnought.local | - |
+| mtho-client | mtho.dreadnought.local | - |
 
 ---
 
@@ -1130,7 +1130,7 @@ def verify_oc_auth_mtls_or_token(request):
 | Cursor | Hoch | Lokaler Client, Cert auf 4D_RESONATOR (MTHO_CORE)/PC |
 | ChromaDB-Zugriff | Optional | Proxy mit mTLS oder SSH-Tunnel |
 
-**Ausnahme:** WhatsApp-Webhook (`ATLAS_WEBHOOK_SECRET`) bleibt dauerhaft Token-basiert – Meta sendet kein Client-Cert.
+**Ausnahme:** WhatsApp-Webhook (`MTHO_WEBHOOK_SECRET`) bleibt dauerhaft Token-basiert – Meta sendet kein Client-Cert.
 
 ---
 
@@ -1161,7 +1161,7 @@ Erzeugt CA, Server- und Client-Zertifikate für Entwicklung und erste Tests.
 |-------|------------|
 | `ca_root.pem`, `ca_root.key` | Root CA (geheim halten) |
 | `ca_srv.pem`, `ca_cli.pem` | Intermediate CAs |
-| `atlas-api.pem/.key` | MTHO API Server |
+| `mtho-api.pem/.key` | MTHO API Server |
 | `mcp-server.pem/.key` | MCP-Server (VPS) |
 | `openclaw-server.pem/.key` | OpenClaw Gateway |
 | `cursor.pem/.key`, `scout.pem/.key`, etc. | Client-Zertifikate |
@@ -1174,14 +1174,14 @@ Erzeugt CA, Server- und Client-Zertifikate für Entwicklung und erste Tests.
 
 - `src/api/auth_webhook.py` – aktuelle Token-Auth
 - `docs/02_ARCHITECTURE/OPENCLAW_GATEWAY_TOKEN.md`
-- `docs/02_ARCHITECTURE/ATLAS_SCHNITTSTELLEN_UND_KANAALE.md`
+- `docs/02_ARCHITECTURE/MTHO_SCHNITTSTELLEN_UND_KANAALE.md`
 - `docs/04_PROCESSES/CODE_SICHERHEITSRAT.md` – Freigabe-Prozess
 
 
 ---
 
 
-<a name="mx-kamera-atlas-hoeren-sehen"></a>
+<a name="mx-kamera-mtho-hoeren-sehen"></a>
 ## MX KAMERA MTHO HOEREN SEHEN
 
 ### MX-Kamera (Logitech Brio) – MTHO hören und sehen
@@ -1263,7 +1263,7 @@ Siehe auch: `SCOUT_USB_KAMERA_MIKRO_HA_OS.md`, `.env.template` (SCOUT_MX_SNAPSHO
 | Hören (Aufnahme → Event) | `python -m src.scripts.dreadnought_listen` |
 | Scout-MX-URL in .env setzen | `python -m src.scripts.setup_scout_mx` oder `set_scout_mx_snapshot_url` (Optionen: `--entity camera.scout_mx`, `--no-check`, `--dry-run`) |
 
-Siehe auch: `CAMERA_GO2RTC_WINDOWS.md`, `ATLAS_HOERT_SIEHT_SPRICHT_STATUS.md`, `SCOUT_USB_KAMERA_MIKRO_HA_OS.md`.
+Siehe auch: `CAMERA_GO2RTC_WINDOWS.md`, `MTHO_HOERT_SIEHT_SPRICHT_STATUS.md`, `SCOUT_USB_KAMERA_MIKRO_HA_OS.md`.
 
 
 ---
@@ -1306,9 +1306,9 @@ Siehe auch: `CAMERA_GO2RTC_WINDOWS.md`, `ATLAS_HOERT_SIEHT_SPRICHT_STATUS.md`, `
 | Modell-ID      | Wake Word      | Beschreibung                    | Ähnlich zu |
 |----------------|----------------|----------------------------------|------------|
 | `alexa`        | alexa          | Ein-Wort-Trigger                 | –          |
-| `hey_mycroft`  | hey mycroft    | Zwei-Wort-Phrase                | hey atlas  |
-| `hey_jarvis`   | hey jarvis     | Zwei-Wort-Phrase (Computer-Assistent) | computer, hey atlas |
-| `hey_rhasspy`  | hey rhasspy    | Zwei-Wort-Phrase                | hey atlas  |
+| `hey_mycroft`  | hey mycroft    | Zwei-Wort-Phrase                | hey mtho  |
+| `hey_jarvis`   | hey jarvis     | Zwei-Wort-Phrase (Computer-Assistent) | computer, hey mtho |
+| `hey_rhasspy`  | hey rhasspy    | Zwei-Wort-Phrase                | hey mtho  |
 | `timer`        | timer-Befehle  | Speziell für Timer-Phrasen      | –          |
 | `weather`      | weather-Befehle| Speziell für Wetter-Phrasen     | –          |
 
@@ -1332,11 +1332,11 @@ Siehe auch: `CAMERA_GO2RTC_WINDOWS.md`, `ATLAS_HOERT_SIEHT_SPRICHT_STATUS.md`, `
 | Ähnliche Modelle              | `hey_jarvis` (Computer-Assistent-Kontext) |
 | Lösung                        | Custom Training (siehe [Custom Wake Word Training](#3-custom-wake-word-training)) |
 
-##### 2.2 „Atlas“ / „hey atlas“
+##### 2.2 „MTHO“ / „hey mtho“
 
 | Frage                         | Antwort |
 |------------------------------|---------|
-| Gibt es „atlas“ vordefiniert? | **Nein** |
+| Gibt es „mtho“ vordefiniert? | **Nein** |
 | Ähnliche Modelle              | `hey_mycroft`, `hey_jarvis`, `hey_rhasspy` (alle Zwei-Wort-Phrasen) |
 | Lösung                        | Custom Training (siehe [Custom Wake Word Training](#3-custom-wake-word-training)) |
 
@@ -1385,7 +1385,7 @@ User spricht
     ↓
 Scout Mikrofon (USB oder integriert)
     ↓
-openWakeWord ("hey atlas" / "atlas") → Pipeline startet
+openWakeWord ("hey mtho" / "mtho") → Pipeline startet
     ↓
 Whisper STT → transkribierter Text
     ↓
@@ -1439,7 +1439,7 @@ Die **Assist-Pipeline** benötigt die **umgekehrte** Richtung: HA (Scout) → MT
 |--------|-------|
 | **Assist Microphone** | **Audio-Input** – liest vom USB-Mikro (Brio/Headset), streamt an Wyoming. **Ohne dieses Add-on erreicht kein Audio die Pipeline.** |
 | **Whisper** | Speech-to-Text (offenes Modell, beliebige Sprache) |
-| **openWakeWord** | Wake-Word-Erkennung ("hey atlas", "atlas", "computer") |
+| **openWakeWord** | Wake-Word-Erkennung ("hey mtho", "mtho", "computer") |
 | **Piper** | Text-to-Speech (lokal, schnell) |
 
 Installation: Einstellungen → Add-ons → Add-on-Store. Nach Installation erscheinen die Dienste unter Wyoming-Integration.
@@ -1451,7 +1451,7 @@ Installation: Einstellungen → Add-ons → Add-on-Store. Nach Installation ersc
 #### 5. Wake-Word Konfiguration
 
 - **openWakeWord** unterstützt vordefinierte und eigene Wake-Wörter.
-- Für "hey atlas" oder "atlas": In der openWakeWord-Konfiguration das passende Modell wählen oder ein Custom-Modell trainieren.
+- Für "hey mtho" oder "mtho": In der openWakeWord-Konfiguration das passende Modell wählen oder ein Custom-Modell trainieren.
 - Dokumentation: [HA Wake Words](https://www.home-assistant.io/voice_control/create_wake_word/)
 
 ---
@@ -1462,15 +1462,15 @@ In `configuration.yaml` oder als YAML-Konfiguration:
 
 ```yaml
 ### Geheimnisse (Einstellungen → Geheimnisse oder secrets.yaml):
-###   atlas_api_url: "http://192.168.178.20:8000"
-###   atlas_webhook_token: "<HA_WEBHOOK_TOKEN aus .env>"
+###   mtho_api_url: "http://192.168.178.20:8000"
+###   mtho_webhook_token: "<HA_WEBHOOK_TOKEN aus .env>"
 
 rest_command:
-  atlas_assist:
-    url: "{{ atlas_api_url }}/webhook/assist"
+  mtho_assist:
+    url: "{{ mtho_api_url }}/webhook/assist"
     method: POST
     headers:
-      Authorization: "Bearer {{ atlas_webhook_token }}"
+      Authorization: "Bearer {{ mtho_webhook_token }}"
       Content-Type: "application/json"
     payload: '{"text": {{ text | tojson }}}'
 ```
@@ -1479,7 +1479,7 @@ rest_command:
 
 ```yaml
 rest_command:
-  atlas_assist:
+  mtho_assist:
     url: "http://192.168.178.20:8000/webhook/assist"
     method: POST
     headers:
@@ -1492,17 +1492,17 @@ rest_command:
 
 #### 7. MTHO Conversation Agent (empfohlen)
 
-**Custom Integration** `atlas_conversation` – empfängt Text von der Assist-Pipeline, sendet an MTHO `/webhook/inject_text`, gibt Antwort für TTS zurück.
+**Custom Integration** `mtho_conversation` – empfängt Text von der Assist-Pipeline, sendet an MTHO `/webhook/inject_text`, gibt Antwort für TTS zurück.
 
 ##### 7.0 Installation der MTHO Conversation Integration
 
-1. Ordner `ha_integrations/atlas_conversation` nach `config/custom_components/atlas_conversation/` kopieren.
+1. Ordner `ha_integrations/mtho_conversation` nach `config/custom_components/mtho_conversation/` kopieren.
 2. HA neu starten.
 3. **Einstellungen → Geräte & Dienste → Integration hinzufügen** → "MTHO Conversation".
 4. **MTHO API URL:** z.B. `http://192.168.178.20:8000`
 5. **Bearer Token:** `HA_WEBHOOK_TOKEN` aus `.env`
 
-Vollständige Anleitung: `ha_integrations/atlas_conversation/README.md`
+Vollständige Anleitung: `ha_integrations/mtho_conversation/README.md`
 
 ##### 7.1 Workaround: input_text + Automation (falls Integration nicht nutzbar)
 
@@ -1524,7 +1524,7 @@ automation:
       - condition: template
         value_template: "{{ trigger.to_state.state | length > 0 }}"
     action:
-      - service: rest_command.atlas_assist
+      - service: rest_command.mtho_assist
         data:
           text: "{{ states('input_text.assist_command') }}"
       - service: input_text.set_value
@@ -1845,7 +1845,7 @@ Damit wird das Event von deinem PC an OMEGA_ATTRACTOR gesendet (gleicher Kanal w
 
 **Verwandte Docs:**
 - [OPENWAKEWORD_MODELS.md](OPENWAKEWORD_MODELS.md) – Verfügbare vordefinierte Modelle
-- [CUSTOM_WAKE_WORD_TRAINING.md](CUSTOM_WAKE_WORD_TRAINING.md) – Custom Training für „hey atlas“ und „computer“
+- [CUSTOM_WAKE_WORD_TRAINING.md](CUSTOM_WAKE_WORD_TRAINING.md) – Custom Training für „hey mtho“ und „computer“
 
 ---
 
@@ -1896,12 +1896,12 @@ Nach dem Start der Add-ons erscheinen die Dienste unter **Einstellungen → Ger�
 4. **Wake Word:** z.B. **ok nabu** (zum Testen) oder ein anderes vordefiniertes Modell
 
 **Vordefinierte Modelle:** alexa, hey_mycroft, hey_jarvis, hey_rhasspy, timer, weather.  
-**„computer“** und **„atlas“** sind nicht vordefiniert – siehe [OPENWAKEWORD_MODELS.md](OPENWAKEWORD_MODELS.md) und 3.2.
+**„computer“** und **„mtho“** sind nicht vordefiniert – siehe [OPENWAKEWORD_MODELS.md](OPENWAKEWORD_MODELS.md) und 3.2.
 
-##### 3.2 Eigenes Wake Word „hey atlas“ und „computer“
+##### 3.2 Eigenes Wake Word „hey mtho“ und „computer“
 
 1. [Wake-Word-Training (Google Colab)](https://colab.research.google.com/drive/1q1oe2zOyZp7UsB3jJiQ1IFn8z5YfjwEb?usp=sharing)
-2. `target_word`: `hey atlas` (oder `atlas`) bzw. `computer`
+2. `target_word`: `hey mtho` (oder `mtho`) bzw. `computer`
 3. **Runtime → Run all** ausführen (~30–60 Min.)
 4. `.tflite`-Datei herunterladen
 5. Samba: `/share/openwakeword` anlegen (falls nicht vorhanden)
@@ -1915,7 +1915,7 @@ Nach dem Start der Add-ons erscheinen die Dienste unter **Einstellungen → Ger�
 ##### 3.3 Zwei Wake Words gleichzeitig (ab HA 2025.10)
 
 Ab Home Assistant 2025.10 unterstützen Voice Satellites **bis zu zwei Wake Words** pro Gerät.  
-→ Zwei verschiedene Assistenten/Pipelines mit unterschiedlichen Wake Words (z.B. „hey atlas“ und „computer“) können parallel aktiv sein.
+→ Zwei verschiedene Assistenten/Pipelines mit unterschiedlichen Wake Words (z.B. „hey mtho“ und „computer“) können parallel aktiv sein.
 
 ##### 3.4 Setup-Skripte (MTHO)
 
@@ -1952,21 +1952,21 @@ Scout muss 4D_RESONATOR (MTHO_CORE) per HTTP erreichen können: `http://192.168.
 In **Einstellungen → Geheimnisse** oder `secrets.yaml`:
 
 ```yaml
-atlas_api_url: "http://192.168.178.20:8000"
-atlas_webhook_token: "778aabf5b13c7b5120161168811908da51448b9435423aacf4b67f31e3bb57e7"
+mtho_api_url: "http://192.168.178.20:8000"
+mtho_webhook_token: "778aabf5b13c7b5120161168811908da51448b9435423aacf4b67f31e3bb57e7"
 ```
 
-**Hinweis:** `atlas_webhook_token` = `HA_WEBHOOK_TOKEN` aus `c:\MTHO_CORE\.env`.
+**Hinweis:** `mtho_webhook_token` = `HA_WEBHOOK_TOKEN` aus `c:\MTHO_CORE\.env`.
 
-##### 5.2 rest_command.atlas_assist
+##### 5.2 rest_command.mtho_assist
 
 ```yaml
 rest_command:
-  atlas_assist:
-    url: "{{ atlas_api_url }}/webhook/assist"
+  mtho_assist:
+    url: "{{ mtho_api_url }}/webhook/assist"
     method: POST
     headers:
-      Authorization: "Bearer {{ atlas_webhook_token }}"
+      Authorization: "Bearer {{ mtho_webhook_token }}"
       Content-Type: "application/json"
     payload: '{"text": {{ text | tojson }}}'
 ```
@@ -1975,7 +1975,7 @@ rest_command:
 
 ```yaml
 rest_command:
-  atlas_assist:
+  mtho_assist:
     url: "http://192.168.178.20:8000/webhook/assist"
     method: POST
     headers:
@@ -2007,7 +2007,7 @@ automation:
       - condition: template
         value_template: "{{ trigger.to_state.state | length > 0 }}"
     action:
-      - service: rest_command.atlas_assist
+      - service: rest_command.mtho_assist
         data:
           text: "{{ states('input_text.assist_command') }}"
       - service: input_text.set_value
@@ -2049,7 +2049,7 @@ automation:
         event_data:
           stage: "stt-end"  # oder "intent-start"
     action:
-      - service: rest_command.atlas_assist
+      - service: rest_command.mtho_assist
         data:
           text: "{{ trigger.event.data.text | default(trigger.event.data.intent_input) }}"
 ```
@@ -2139,7 +2139,7 @@ Browser (Gemini, ChatGPT, etc.)
     ↓ Strg+Shift+S
 Tampermonkey GM_xmlhttpRequest (umgeht CORS)
     ↓ POST JSON
-http://localhost:8000/api/atlas/speak
+http://localhost:8000/api/mtho/speak
     ↓
 ElevenLabs TTS → MP3 → Lokale Wiedergabe (PC-Lautsprecher)
 ```
@@ -2149,7 +2149,7 @@ ElevenLabs TTS → MP3 → Lokale Wiedergabe (PC-Lautsprecher)
 #### 1. Voraussetzung: MTHO Backend muss laufen
 
 ```batch
-START_ATLAS_DIENSTE.bat
+START_MTHO_DIENSTE.bat
 ```
 
 Oder manuell:
@@ -2188,12 +2188,12 @@ Backend läuft dann auf: `http://localhost:8000`
 
     // === MTHO KONFIGURATION ===
     const LOCAL_PORT = 8000;
-    const ENDPOINT_URL = `http://127.0.0.1:${LOCAL_PORT}/api/atlas/speak`;
+    const ENDPOINT_URL = `http://127.0.0.1:${LOCAL_PORT}/api/mtho/speak`;
     
-    // Verfügbare Rollen: atlas_dialog, atlas_info, therapeut, analyst, atlas_high_density
-    const DEFAULT_ROLE = "atlas_dialog";
+    // Verfügbare Rollen: mtho_dialog, mtho_info, therapeut, analyst, mtho_high_density
+    const DEFAULT_ROLE = "mtho_dialog";
 
-    function pushToATLAS(text) {
+    function pushToMTHO(text) {
         GM_xmlhttpRequest({
             method: "POST",
             url: ENDPOINT_URL,
@@ -2228,7 +2228,7 @@ Backend läuft dann auf: `http://localhost:8000`
             
             if (selectedText.length > 0) {
                 console.log("MTHO-TTS: Sende", selectedText.length, "Zeichen...");
-                pushToATLAS(selectedText);
+                pushToMTHO(selectedText);
             } else {
                 console.warn("MTHO-TTS: Kein Text markiert.");
                 // Gelber Rahmen = Warnung
@@ -2248,7 +2248,7 @@ Backend läuft dann auf: `http://localhost:8000`
 
 #### 3. Nutzung
 
-1. **Backend starten:** `START_ATLAS_DIENSTE.bat`
+1. **Backend starten:** `START_MTHO_DIENSTE.bat`
 2. **Browser öffnen:** Gemini, ChatGPT, Claude, oder beliebige Seite
 3. **Text markieren** (mit Maus oder Shift+Pfeiltasten)
 4. **Strg + Shift + S** drücken
@@ -2263,14 +2263,14 @@ Backend läuft dann auf: `http://localhost:8000`
 
 #### 4. API-Referenz
 
-##### POST `/api/atlas/speak`
+##### POST `/api/mtho/speak`
 Kurzform - spielt sofort ab.
 
 **Request:**
 ```json
 {
     "text": "Der zu sprechende Text",
-    "role": "atlas_dialog"
+    "role": "mtho_dialog"
 }
 ```
 
@@ -2283,14 +2283,14 @@ Kurzform - spielt sofort ab.
 }
 ```
 
-##### POST `/api/atlas/tts`
+##### POST `/api/mtho/tts`
 Vollversion mit allen Optionen.
 
 **Request:**
 ```json
 {
     "text": "Der zu sprechende Text",
-    "role": "atlas_dialog",
+    "role": "mtho_dialog",
     "state_prefix": "",
     "play": true
 }
@@ -2300,17 +2300,17 @@ Vollversion mit allen Optionen.
 | Parameter | Typ | Default | Beschreibung |
 |-----------|-----|---------|--------------|
 | `text` | string | (required) | Der zu sprechende Text |
-| `role` | string | `atlas_dialog` | Stimme/Rolle aus voice_config |
+| `role` | string | `mtho_dialog` | Stimme/Rolle aus voice_config |
 | `state_prefix` | string | `""` | Emotionaler State-Prefix |
 | `play` | bool | `true` | `true` = lokal abspielen, `false` = MP3 zurückgeben |
 
-##### GET `/api/atlas/voice/roles`
+##### GET `/api/mtho/voice/roles`
 Listet alle verfügbaren Rollen/Stimmen.
 
 **Response:**
 ```json
 {
-    "roles": ["atlas_high_density", "atlas_info", "atlas_dialog", "therapeut", "analyst"],
+    "roles": ["mtho_high_density", "mtho_info", "mtho_dialog", "therapeut", "analyst"],
     "roles_with_voice_id": [...]
 }
 ```
@@ -2321,9 +2321,9 @@ Listet alle verfügbaren Rollen/Stimmen.
 
 | Rolle | Beschreibung |
 |-------|--------------|
-| `atlas_dialog` | Standard-Konversationsstimme |
-| `atlas_info` | Neutrale Info-Stimme |
-| `atlas_high_density` | Komprimierte, schnelle Ausgabe |
+| `mtho_dialog` | Standard-Konversationsstimme |
+| `mtho_info` | Neutrale Info-Stimme |
+| `mtho_high_density` | Komprimierte, schnelle Ausgabe |
 | `therapeut` | Ruhige, empathische Stimme |
 | `analyst` | Analytische, sachliche Stimme |
 
@@ -2333,7 +2333,7 @@ Listet alle verfügbaren Rollen/Stimmen.
 
 ##### "Backend nicht erreichbar" (roter Rahmen)
 - Prüfen ob Backend läuft: `http://localhost:8000/docs`
-- `START_ATLAS_DIENSTE.bat` ausführen
+- `START_MTHO_DIENSTE.bat` ausführen
 
 ##### Kein Audio
 - ElevenLabs API-Key prüfen (`.env`: `ELEVENLABS_API_KEY`)
@@ -2350,21 +2350,21 @@ Listet alle verfügbaren Rollen/Stimmen.
 Für Power-User: Verschiedene Shortcuts für verschiedene Stimmen:
 
 ```javascript
-// Strg+Shift+S = atlas_dialog
+// Strg+Shift+S = mtho_dialog
 // Strg+Shift+T = therapeut  
 // Strg+Shift+A = analyst
 
 document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.shiftKey) {
         let role = null;
-        if (e.code === 'KeyS') role = 'atlas_dialog';
+        if (e.code === 'KeyS') role = 'mtho_dialog';
         if (e.code === 'KeyT') role = 'therapeut';
         if (e.code === 'KeyA') role = 'analyst';
         
         if (role) {
             e.preventDefault();
             let text = window.getSelection().toString().trim();
-            if (text) pushToATLAS(text, role);
+            if (text) pushToMTHO(text, role);
         }
     }
 });
@@ -2565,7 +2565,7 @@ Physisches Gerät mit Mikro, verbindet sich per Wyoming mit HA. Ersetzt Software
 | **OpenClaw** | (geplant VPS) | **Ja** | Messenger-Gateway braucht öffentliche Erreichbarkeit; läuft in **Sandbox** (siehe Abschnitt 2). |
 | **ChromaDB** | 4D_RESONATOR (MTHO_CORE) (lokal) / optional VPS | **Ja** | Entlastet 4D_RESONATOR (MTHO_CORE) (NVMe/I/O); zentrale RAG-DB für MTHO; bereits angebunden (`CHROMA_HOST`). |
 | **Ollama (leichtere Modelle)** | 4D_RESONATOR (MTHO_CORE) (i5, GTX 3050) | **Optional** | Kleine Modelle (z. B. für Vorverarbeitung, Routing) könnten auf VPS laufen; **schweres RAG/Osmium bleibt auf 4D_RESONATOR (MTHO_CORE)** (Datenhoheit, Latenz). |
-| **Backup-Ziel / Sync** | aktiv | **Ja** | VPS als externes Backup-Ziel (`/var/backups/atlas`); `daily_backup.py` pusht von 4D_RESONATOR (MTHO_CORE) per SFTP; Retention 7 Tage (Cron auf VPS). Siehe [BACKUP_PLAN_FINAL.md](BACKUP_PLAN_FINAL.md). |
+| **Backup-Ziel / Sync** | aktiv | **Ja** | VPS als externes Backup-Ziel (`/var/backups/mtho`); `daily_backup.py` pusht von 4D_RESONATOR (MTHO_CORE) per SFTP; Retention 7 Tage (Cron auf VPS). Siehe [BACKUP_PLAN_FINAL.md](BACKUP_PLAN_FINAL.md). |
 | **API-Proxy / Webhook-Empfang** | HA + 4D_RESONATOR (MTHO_CORE) | **Optional** | Öffentliche URL für Webhooks (z. B. von OpenClaw zu MTHO); nur Weiterleitung, keine Logik. |
 | **Home Assistant** | Scout (Pi) | **Nein** | Bleibt lokal (Smart Home, Latenz, Datenhoheit). |
 | **Ollama (Haupt-Inferenz)** | 4D_RESONATOR (MTHO_CORE) | **Nein** | GPU + sensible ND-Daten bleiben auf 4D_RESONATOR (MTHO_CORE). |
@@ -2641,7 +2641,7 @@ Folgende Dinge sind **auf dem VPS (187.77.68.250)** umzusetzen, damit die Dienst
 
 | Schritt | Aktion |
 |--------|--------|
-| 1 | Chroma läuft im Container `chroma-atlas`; **gebunden an 127.0.0.1:8000** (nicht öffentlich). |
+| 1 | Chroma läuft im Container `chroma-mtho`; **gebunden an 127.0.0.1:8000** (nicht öffentlich). |
 | 2 | **Zugriff von außen:** Nur per SSH-Tunnel, z. B. `ssh -L 8000:127.0.0.1:8000 root@VPS_HOST`. Dann in .env: `CHROMA_HOST=localhost`, `CHROMA_PORT=8000`. |
 | 3 | Ingest von 4D_RESONATOR (MTHO_CORE) aus (wenn Tunnel aktiv): `python src/scripts/ingest_nd_insights_to_chroma.py`. |
 
@@ -2649,7 +2649,7 @@ Folgende Dinge sind **auf dem VPS (187.77.68.250)** umzusetzen, damit die Dienst
 
 | Schritt | Aktion |
 |--------|--------|
-| 1 | Verzeichnis `/var/backups/atlas` wird von `setup_vps_hostinger.py` angelegt; Cron löscht Backups älter als 7 Tage. |
+| 1 | Verzeichnis `/var/backups/mtho` wird von `setup_vps_hostinger.py` angelegt; Cron löscht Backups älter als 7 Tage. |
 | 2 | **daily_backup.py** (auf 4D_RESONATOR (MTHO_CORE)) pusht täglich per SFTP; Aufruf per Task Scheduler (Windows) oder cron. Siehe [BACKUP_PLAN_FINAL.md](BACKUP_PLAN_FINAL.md). |
 | 3 | Der VPS pullt nicht; nur Push von MTHO_CORE aus. |
 
@@ -2693,17 +2693,17 @@ Folgende Dinge sind **auf dem VPS (187.77.68.250)** umzusetzen, damit die Dienst
 
 | Container | Port | Netzwerk | Funktion |
 |---|---|---|---|
-| homeassistant | 18123 | atlas_net | Home Assistant Docker; Remote HA nach Scout |
-| openclaw-admin | 18789 | atlas_net | OC Gehirn; Gemini 3.1 Pro, Claude 4.6, Nexos, WhatsApp |
-| openclaw-spine | 18790 | atlas_net | OC Spine; sauberes System, nutzt admin als Gateway |
+| homeassistant | 18123 | mtho_net | Home Assistant Docker; Remote HA nach Scout |
+| openclaw-admin | 18789 | mtho_net | OC Gehirn; Gemini 3.1 Pro, Claude 4.6, Nexos, WhatsApp |
+| openclaw-spine | 18790 | mtho_net | OC Spine; sauberes System, nutzt admin als Gateway |
 
 #### Netzwerk-Isolation
 
 | Netzwerk | Typ | Zugriff |
 |---|---|---|
-| atlas_net | bridge | Internet (Gemini/Anthropic/Nexos-APIs), Kommunikation zwischen Containern |
+| mtho_net | bridge | Internet (Gemini/Anthropic/Nexos-APIs), Kommunikation zwischen Containern |
 
-*(Hinweis: Die alte Aufsplittung in separate openclaw_admin_net, openclaw_spine_net und chroma_net wurde zugunsten eines übersichtlichen `docker-compose` mit `atlas_net` vereinfacht. Eine separate chroma-atlas Instanz entfällt, da `chroma-uvmy` genutzt wird.)*
+*(Hinweis: Die alte Aufsplittung in separate openclaw_admin_net, openclaw_spine_net und chroma_net wurde zugunsten eines übersichtlichen `docker-compose` mit `mtho_net` vereinfacht. Eine separate chroma-mtho Instanz entfällt, da `chroma-uvmy` genutzt wird.)*
 
 #### Firewall (ufw)
 
@@ -2827,12 +2827,12 @@ VPS registriert seine IP automatisch bei DuckDNS:
 
 ```bash
 ### Auf VPS als Cron-Job (alle 5 Min):
-*/5 * * * * curl -s "https://www.duckdns.org/update?domains=atlas-vps&token=$DUCKDNS_TOKEN&ip="
+*/5 * * * * curl -s "https://www.duckdns.org/update?domains=mtho-vps&token=$DUCKDNS_TOKEN&ip="
 ```
 
 Dann in `.env`:
 ```
-VPS_HOST="atlas-vps.duckdns.org"
+VPS_HOST="mtho-vps.duckdns.org"
 ```
 
 **Vorteil:** IP-Änderung wird automatisch propagiert, keine manuelle Anpassung nötig.
@@ -2902,7 +2902,7 @@ Die Daten auf dem VPS bleiben **erhalten**. Der IP-Wechsel betrifft nur die Netz
 
 #### Voraussetzungen
 
-- MTHO_CORE `src/` inkl. Abhängigkeiten (atlas_llm, HAClient, logic_core.munin)
+- MTHO_CORE `src/` inkl. Abhängigkeiten (mtho_llm, HAClient, logic_core.munin)
 - `.env` mit: `HA_WEBHOOK_TOKEN`, `GEMINI_API_KEY`, `HA_URL`, `HA_TOKEN`, `CHROMA_HOST` (optional)
 
 #### Automatischer Deploy (empfohlen)
@@ -2912,7 +2912,7 @@ Die Daten auf dem VPS bleiben **erhalten**. Der IP-Wechsel betrifft nur die Netz
 python -m src.scripts.deploy_vps_slim
 ```
 
-Kopiert `src/` + `Dockerfile.vps`, baut Docker-Image, startet Container auf Port 8001. Benötigt `.env` auf VPS unter `VPS_DEPLOY_PATH` (default `/opt/atlas-core`).
+Kopiert `src/` + `Dockerfile.vps`, baut Docker-Image, startet Container auf Port 8001. Benötigt `.env` auf VPS unter `VPS_DEPLOY_PATH` (default `/opt/mtho-core`).
 
 #### Manueller Deploy
 
@@ -2925,7 +2925,7 @@ ssh -i c:\MTHO_CORE\.ssh\id_ed25519_hostinger root@187.77.68.250 "echo OK"
 
 ### 3. Auf VPS: Service starten
 ssh -i c:\MTHO_CORE\.ssh\id_ed25519_hostinger root@187.77.68.250
-cd /opt/atlas-core
+cd /opt/mtho-core
 source .venv/bin/activate  # oder: python -m venv .venv && pip install -r src/requirements.txt
 VPS_SLIM_PORT=8001 python -m uvicorn src.api.vps_slim:app --host 0.0.0.0 --port 8001
 ```
@@ -2933,7 +2933,7 @@ VPS_SLIM_PORT=8001 python -m uvicorn src.api.vps_slim:app --host 0.0.0.0 --port 
 #### systemd (empfohlen)
 
 ```ini
-### /etc/systemd/system/atlas-vps-slim.service
+### /etc/systemd/system/mtho-vps-slim.service
 [Unit]
 Description=MTHO VPS-Slim Failover
 After=network.target
@@ -2941,9 +2941,9 @@ After=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/opt/atlas-core
-EnvironmentFile=/opt/atlas-core/.env
-ExecStart=/opt/atlas-core/.venv/bin/python -m uvicorn src.api.vps_slim:app --host 0.0.0.0 --port 8001
+WorkingDirectory=/opt/mtho-core
+EnvironmentFile=/opt/mtho-core/.env
+ExecStart=/opt/mtho-core/.venv/bin/python -m uvicorn src.api.vps_slim:app --host 0.0.0.0 --port 8001
 Restart=unless-stopped
 
 [Install]
@@ -2952,8 +2952,8 @@ WantedBy=multi-user.target
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable atlas-vps-slim
-sudo systemctl start atlas-vps-slim
+sudo systemctl enable mtho-vps-slim
+sudo systemctl start mtho-vps-slim
 ```
 
 #### Firewall
@@ -2967,12 +2967,12 @@ ufw reload
 
 ```bash
 curl http://187.77.68.250:8001/
-### Erwartet: {"status":"online","system":"ATLAS_CORE_VPS_SLIM","version":"1.0.0"}
+### Erwartet: {"status":"online","system":"MTHO_CORE_VPS_SLIM","version":"1.0.0"}
 ```
 
 #### Scout-Konfiguration
 
-Scout/atlas_conversation Failover-URL: `http://187.77.68.250:8001/webhook/forwarded_text`  
+Scout/mtho_conversation Failover-URL: `http://187.77.68.250:8001/webhook/forwarded_text`  
 Header: `Authorization: Bearer <HA_WEBHOOK_TOKEN>`
 
 
@@ -2986,7 +2986,7 @@ Header: `Authorization: Bearer <HA_WEBHOOK_TOKEN>`
 
 Damit der komplette Weg **Nachricht → HA → MTHO → Antwort im Chat** funktioniert, müssen in HA zwei Dinge stehen: **rest_command** (ruft MTHO auf) und **Automation** (reagiert auf das WhatsApp-Event).
 
-**Ablauf:** Du startest MTHO **einmal** (z.B. mit `START_ATLAS_KOMPLETT.bat` beim Anmelden oder Tagesstart). Ab dann triggert **die eingehende @Atlas-Nachricht** die Kette – nicht du vor jeder WhatsApp. Optional: Autostart (siehe [WIEDER_DA_ALLES_LAEUFT.md](../05_AUDIT_PLANNING/WIEDER_DA_ALLES_LAEUFT.md) Abschnitt 6), dann ist MTHO bereit sobald der Rechner läuft.
+**Ablauf:** Du startest MTHO **einmal** (z.B. mit `START_MTHO_KOMPLETT.bat` beim Anmelden oder Tagesstart). Ab dann triggert **die eingehende @MTHO-Nachricht** die Kette – nicht du vor jeder WhatsApp. Optional: Autostart (siehe [WIEDER_DA_ALLES_LAEUFT.md](../05_AUDIT_PLANNING/WIEDER_DA_ALLES_LAEUFT.md) Abschnitt 6), dann ist MTHO bereit sobald der Rechner läuft.
 
 ---
 
@@ -2996,19 +2996,19 @@ MTHO muss von HA aus per HTTP erreichbar sein (4D_RESONATOR (MTHO_CORE) oder Sco
 
 ```yaml
 rest_command:
-  atlas_whatsapp_webhook:
-    url: "http://DEINE_ATLAS_IP:8000/webhook/whatsapp"
+  mtho_whatsapp_webhook:
+    url: "http://DEINE_MTHO_IP:8000/webhook/whatsapp"
     method: POST
     content_type: "application/json"
     payload: '{{ payload | tojson }}'
     timeout: 15
 ```
 
-- **DEINE_ATLAS_IP** durch die IP des Rechners ersetzen, auf dem die MTHO-CORE-API läuft (z. B. 4D_RESONATOR (MTHO_CORE)), oder die des Scouts, falls MTHO dort läuft.
+- **DEINE_MTHO_IP** durch die IP des Rechners ersetzen, auf dem die MTHO-CORE-API läuft (z. B. 4D_RESONATOR (MTHO_CORE)), oder die des Scouts, falls MTHO dort läuft.
 - **timeout: 15** (Sekunden): MTHO antwortet bei Chat/Reasoning sofort mit HTTP 202; 15s reichen. Ohne Angabe nutzt HA 10s – ausreichend, da keine lange Wartezeit mehr im Request.
 - Der Aufruf übergibt den Schlüssel **payload**; der Wert (Addon-Event-Daten) wird als JSON an MTHO gesendet.
 
-Falls du eine Konfiguration über die UI nutzt: Der REST-Befehl soll **POST** an `http://ATLAS_IP:8000/webhook/whatsapp` senden, Body = JSON aus dem übergebenen **payload**.
+Falls du eine Konfiguration über die UI nutzt: Der REST-Befehl soll **POST** an `http://MTHO_IP:8000/webhook/whatsapp` senden, Body = JSON aus dem übergebenen **payload**.
 
 ---
 
@@ -3022,7 +3022,7 @@ Bei jeder eingehenden WhatsApp-Nachricht (Addon feuert Event) soll der rest_comm
     - platform: event
       event_type: whatsapp_message_received
   action:
-    - service: rest_command.atlas_whatsapp_webhook
+    - service: rest_command.mtho_whatsapp_webhook
       data:
         payload: "{{ trigger.event.data }}"
 ```
@@ -3033,16 +3033,16 @@ Das Skript **wire_whatsapp_ha.py** kann diese Automation in die HA-Config eintra
 
 ---
 
-#### 2.1 Routing: @Atlas und @OC (nur Adressierter reagiert)
+#### 2.1 Routing: @MTHO und @OC (nur Adressierter reagiert)
 
 Damit nicht auf **jede** WhatsApp-Nachricht automatisch geantwortet wird:
 
-- **Nachricht beginnt mit @Atlas** → MTHO/Scout verarbeiten (Antwort mit **[MTHO]** bzw. **[Scout]**). Präfix wird vor der Verarbeitung abgezogen.
+- **Nachricht beginnt mit @MTHO** → MTHO/Scout verarbeiten (Antwort mit **[MTHO]** bzw. **[Scout]**). Präfix wird vor der Verarbeitung abgezogen.
 - **Nachricht beginnt mit @OC** → nur für OC; MTHO reagiert **nicht** (ignoriert).
-- **Weder @Atlas noch @OC am Anfang** → MTHO reagiert nicht.
-- **@Atlas am Anfang, @OC später in der Nachricht** → Teil für beide; MTHO verarbeitet seinen Teil, OC den nach @OC.
+- **Weder @MTHO noch @OC am Anfang** → MTHO reagiert nicht.
+- **@MTHO am Anfang, @OC später in der Nachricht** → Teil für beide; MTHO verarbeitet seinen Teil, OC den nach @OC.
 
-Details (inkl. OC-Prozedere und Antwortformat [MTHO]/[OC]): **docs/WHATSAPP_ROUTING_ATLAS_OC.md**.
+Details (inkl. OC-Prozedere und Antwortformat [MTHO]/[OC]): **docs/WHATSAPP_ROUTING_MTHO_OC.md**.
 
 ---
 
@@ -3055,7 +3055,7 @@ cd C:\MTHO_CORE
 python -m src.scripts.run_whatsapp_e2e_ha
 ```
 
-Das Skript ruft den HA-Service **rest_command.atlas_whatsapp_webhook** mit einem addon-ähnlichen Payload auf (Absender = WHATSAPP_TARGET_ID aus .env, Nachricht = "E2E-Test von HA: Ping"). Damit durchläuft die gleiche Kette wie bei einer echten Nachricht: HA → MTHO → Antwort per **send_whatsapp** → HA whatsapp/send_message. Wenn alles stimmt, erscheint die MTHO-Antwort im Chat zu WHATSAPP_TARGET_ID (in der Regel dein eigener Chat).
+Das Skript ruft den HA-Service **rest_command.mtho_whatsapp_webhook** mit einem addon-ähnlichen Payload auf (Absender = WHATSAPP_TARGET_ID aus .env, Nachricht = "E2E-Test von HA: Ping"). Damit durchläuft die gleiche Kette wie bei einer echten Nachricht: HA → MTHO → Antwort per **send_whatsapp** → HA whatsapp/send_message. Wenn alles stimmt, erscheint die MTHO-Antwort im Chat zu WHATSAPP_TARGET_ID (in der Regel dein eigener Chat).
 
 ---
 
@@ -3089,7 +3089,7 @@ OC (OpenClaw) hat einen **eigenen** WhatsApp-Kanal (Gateway mit Baileys auf dem 
 | Symptom | Ursache | Maßnahme |
 |--------|---------|---------|
 | Verbindung dreht minutenlang, bricht ab, danach wieder „warten“ | HA **rest_command** wartet auf MTHO-Antwort; Default-Timeout 10s. Früher: MTHO führte LLM (30s+) synchron aus → HA brach ab. | MTHO antwortet bei Chat/Reasoning sofort mit **HTTP 202** und verarbeitet im Hintergrund. rest_command mit `timeout: 15` reicht. Doku oben prüfen. |
-| Keine Antwort im Chat | MTHO-API von HA aus nicht erreichbar (Netz/Firewall, falsche IP). | `url` in rest_command prüfen (http://ATLAS_IP:8000). Von HA-Host aus: `curl -X POST http://ATLAS_IP:8000/webhook/whatsapp -H "Content-Type: application/json" -d '{}'` → erwartet 200/202 oder JSON. |
+| Keine Antwort im Chat | MTHO-API von HA aus nicht erreichbar (Netz/Firewall, falsche IP). | `url` in rest_command prüfen (http://MTHO_IP:8000). Von HA-Host aus: `curl -X POST http://MTHO_IP:8000/webhook/whatsapp -H "Content-Type: application/json" -d '{}'` → erwartet 200/202 oder JSON. |
 | 4xx von MTHO | Falsches Payload-Format (z. B. fehlendes `message`/`key.remoteJid`). | Automation muss `payload: "{{ trigger.event.data }}"` übergeben. Addon-Event-Struktur in HA unter Entwicklerwerkzeuge → Ereignisse prüfen. |
 | WhatsApp-Nachricht geht nicht raus (MTHO → HA) | HA-Service `whatsapp/send_message` nicht erreichbar oder Timeout. | HASS_URL/HASS_TOKEN in .env. MTHO nutzt 15s Timeout für send_whatsapp. HA-Logs und Addon-Status prüfen. |
 
@@ -3336,7 +3336,7 @@ Ein Python-Skript (`scripts/daily_backup.py`) wird erstellt, das folgende Schrit
 
 ## Backup-Plan (final) – MTHO_CORE
 
-**Einziges Backup-Ziel: Hostinger-VPS** (`/var/backups/atlas`). Kein lokales Primärziel, kein S3 – alles geht per Push vom Rechner (4D_RESONATOR (MTHO_CORE)) zum VPS.
+**Einziges Backup-Ziel: Hostinger-VPS** (`/var/backups/mtho`). Kein lokales Primärziel, kein S3 – alles geht per Push vom Rechner (4D_RESONATOR (MTHO_CORE)) zum VPS.
 
 ---
 
@@ -3357,13 +3357,13 @@ ChromaDB-Daten liegen auf dem VPS; Backup der ChromaDB erfolgt auf dem VPS (Cold
 
 ### 3. Wohin?
 
-- **Ziel:** Hostinger-VPS, Verzeichnis `/var/backups/atlas`
+- **Ziel:** Hostinger-VPS, Verzeichnis `/var/backups/mtho`
 - **Transport:** Push per SSH/SFTP (Paramiko) von 4D_RESONATOR (MTHO_CORE) aus; der VPS pullt nicht.
-- **Berechtigung:** `/var/backups/atlas` wird von `setup_vps_hostinger.py` mit `chmod 700` angelegt (bereits vorhanden).
+- **Berechtigung:** `/var/backups/mtho` wird von `setup_vps_hostinger.py` mit `chmod 700` angelegt (bereits vorhanden).
 
 ### 4. Wie wird gesichert? (Automatisierung)
 
-- **Automatisiertes Backup:** Ein Windows Task führt `python src/scripts/daily_backup.py` täglich aus (seit 25.02.2026 aktiv). Das Skript packt den Code (ohne `node_modules`, `.venv` etc.) und lädt ihn per SFTP auf den Hostinger-VPS in `/var/backups/atlas`.
+- **Automatisiertes Backup:** Ein Windows Task führt `python src/scripts/daily_backup.py` täglich aus (seit 25.02.2026 aktiv). Das Skript packt den Code (ohne `node_modules`, `.venv` etc.) und lädt ihn per SFTP auf den Hostinger-VPS in `/var/backups/mtho`.
   - Erstellt ein Archiv (tar.gz) aus Code, `config/`, `data/argos_db/`.
   - `.env` wird bei gesetztem `BACKUP_ENCRYPTION_KEY` mit Fernet verschlüsselt und als separate Datei hochgeladen.
   - Upload per SFTP zu `VPS_HOST` mit `VPS_USER` / `VPS_PASSWORD` aus `.env`.
@@ -3395,7 +3395,7 @@ ChromaDB läuft im Container auf dem VPS. Ein Cold-Backup (Container kurz stoppe
 
 ### 8. Wiederherstellung
 
-- Archiv von `/var/backups/atlas` per SCP/SFTP zurück auf den Rechner, entpacken.
+- Archiv von `/var/backups/mtho` per SCP/SFTP zurück auf den Rechner, entpacken.
 - Falls `.env.enc` gesichert wurde: mit dem gleichen `BACKUP_ENCRYPTION_KEY` entschlüsseln (Fernet).
 - **Restore-Test:** Mindestens einmal pro Monat auf Testordner/Staging prüfen.
 
@@ -3558,7 +3558,7 @@ Damit MTHO **zur Laufzeit** erkennen kann, ob etwas nicht stimmt (Anwesenheit, A
 ---
 
 
-<a name="custom-wake-word-atlas"></a>
+<a name="custom-wake-word-mtho"></a>
 # CUSTOM WAKE WORD MTHO
 
 ﻿# Custom Wake Word: MTHO
@@ -3664,8 +3664,8 @@ pip install -e .[training]
 `
 training_data/
 +-- positive/
-|   +-- atlas_001.wav
-|   +-- atlas_002.wav
+|   +-- mtho_001.wav
+|   +-- mtho_002.wav
 |   +-- ... (min. 50 Aufnahmen von "MTHO")
 +-- negative/
     +-- random_speech_001.wav
@@ -3683,10 +3683,10 @@ training_data/
 from openwakeword import train
 
 config = {
-    "target_phrase": "atlas",
+    "target_phrase": "mtho",
     "positive_audio_dir": "training_data/positive",
     "negative_audio_dir": "training_data/negative",
-    "output_dir": "models/atlas",
+    "output_dir": "models/mtho",
     "epochs": 100,
     "batch_size": 32
 }
@@ -3701,7 +3701,7 @@ https://www.home-assistant.io/voice_control/create_wake_word/
 
 `bash
 ## Model nach Scout kopieren
-copy models\atlas\atlas_v1.tflite S:\share\openwakeword\
+copy models\mtho\mtho_v1.tflite S:\share\openwakeword\
 `
 
 ---
@@ -3750,7 +3750,7 @@ Speicherort auf Scout: `/share/openwakeword/`
 <a name="custom-wake-word-training"></a>
 # CUSTOM WAKE WORD TRAINING
 
-## Custom Wake Word Training – „hey atlas“ und „computer“
+## Custom Wake Word Training – „hey mtho“ und „computer“
 
 **Zweck:** Anleitung zum Trainieren eigener openWakeWord-Modelle für MTHO und Computer.
 
@@ -3770,22 +3770,22 @@ Speicherort auf Scout: `/share/openwakeword/`
 
 ---
 
-### 2. Schritte für „hey atlas“
+### 2. Schritte für „hey mtho“
 
 1. **Colab öffnen:** Link oben → „Datei → Eine Kopie erstellen“ (eigene Kopie anlegen)
-2. **target_word setzen:** In Sektion 1 `target_word = "hey atlas"` (oder `"atlas"` für kürzeres Wort)
+2. **target_word setzen:** In Sektion 1 `target_word = "hey mtho"` (oder `"mtho"` für kürzeres Wort)
 3. **Aussprache prüfen:** Play-Button neben `target_word` klicken → Audio anhören
-4. **Rechtschreibung anpassen:** Falls nötig, Schreibweise ändern (z.B. „hey atlas“ vs. „hey atläs“ für deutsche Aussprache)
+4. **Rechtschreibung anpassen:** Falls nötig, Schreibweise ändern (z.B. „hey mtho“ vs. „hey atläs“ für deutsche Aussprache)
 5. **Runtime → Run all** ausführen
 6. **Warten:** Ca. 30–60 Minuten (Colab-Ressourcen abhängig)
 7. **Download:** `.tflite`-Datei aus dem Output herunterladen
-8. **Dateiname:** z.B. `hey_atlas_v0.1.tflite` (Colab generiert den Namen)
+8. **Dateiname:** z.B. `hey_mtho_v0.1.tflite` (Colab generiert den Namen)
 
 #### 2.1 Ablage auf Scout
 
 - Samba: `\\192.168.178.54\share\openwakeword\`
 - Oder: `scripts/setup_scout_wake_words.py` (siehe unten)
-- Datei: `hey_atlas_v0.1.tflite` nach `/share/openwakeword/` kopieren
+- Datei: `hey_mtho_v0.1.tflite` nach `/share/openwakeword/` kopieren
 
 ---
 
@@ -3807,7 +3807,7 @@ Speicherort auf Scout: `/share/openwakeword/`
 |----------------------|---------------------------------------|
 | `/share/openwakeword`| Verzeichnis für Custom Wake Word Modelle |
 
-**Namenskonvention:** `{wakeword}_v{version}.tflite` (z.B. `hey_atlas_v0.1.tflite`, `computer_v0.1.tflite`)
+**Namenskonvention:** `{wakeword}_v{version}.tflite` (z.B. `hey_mtho_v0.1.tflite`, `computer_v0.1.tflite`)
 
 Das openWakeWord Add-on scannt dieses Verzeichnis automatisch. Nach dem Kopieren:
 
@@ -4061,7 +4061,7 @@ camera:
 
 | Funktion | Methode | Env-Variable | Verwendung |
 |----------|---------|---------------|------------|
-| `verify_whatsapp_auth` | Shared-Secret Header | `ATLAS_WEBHOOK_SECRET` | X-MTHO-WEBHOOK-SECRET |
+| `verify_whatsapp_auth` | Shared-Secret Header | `MTHO_WEBHOOK_SECRET` | X-MTHO-WEBHOOK-SECRET |
 | `verify_ha_auth` | Bearer Token | `HA_WEBHOOK_TOKEN` | Bearer für /webhook/ha_action, /webhook/inject_text |
 | `verify_oc_auth` | API-Key / Bearer | `OPENCLAW_GATEWAY_TOKEN` | X-API-Key oder Bearer für /api/oc/* |
 
@@ -4088,7 +4088,7 @@ camera:
 ```
                     ┌─────────────────────────────────────┐
                     │  MTHO Root CA (self-signed)         │
-                    │  CN=atlas-ca.local, 10 Jahre        │
+                    │  CN=mtho-ca.local, 10 Jahre        │
                     └─────────────────┬───────────────────┘
                                       │
           ┌───────────────────────────┼───────────────────────────┐
@@ -4096,7 +4096,7 @@ camera:
           ▼                           ▼                           ▼
 ┌─────────────────┐       ┌─────────────────┐       ┌─────────────────┐
 │  Server CA      │       │  Client CA      │       │  (Reserve)       │
-│  CN=atlas-srv   │       │  CN=atlas-cli   │       │                  │
+│  CN=mtho-srv   │       │  CN=mtho-cli   │       │                  │
 └────────┬────────┘       └────────┬────────┘       └─────────────────┘
          │                         │
     ┌────┴────┐              ┌─────┴─────┐
@@ -4131,8 +4131,8 @@ camera:
 | **Scout → 4D_RESONATOR (MTHO_CORE)** | MTHO API | scout-client | 8000 (TLS) |
 | **OMEGA_ATTRACTOR → MTHO API** | MTHO API | oc-brain-client | 8000 (TLS) |
 | **HA → MTHO API** | MTHO API | ha-client | 8000 (TLS) |
-| **MTHO → OpenClaw** | OpenClaw Gateway | atlas-client | 18789/443 (TLS) |
-| **MTHO → ChromaDB** | ChromaDB (optional) | atlas-client | 8000 (TLS) |
+| **MTHO → OpenClaw** | OpenClaw Gateway | mtho-client | 18789/443 (TLS) |
+| **MTHO → ChromaDB** | ChromaDB (optional) | mtho-client | 8000 (TLS) |
 
 **Hinweis:** ChromaDB unterstützt mTLS nicht nativ; Option: Reverse-Proxy (z. B. Nginx) mit mTLS vor ChromaDB.
 
@@ -4140,14 +4140,14 @@ camera:
 
 | Zertifikat | CN | SAN (Subject Alternative Names) |
 |-------------|-----|----------------------------------|
-| atlas-api-server | atlas-api.dreadnought.local | DNS:atlas-api.local, IP:192.168.178.x |
-| mcp-server | mcp.vps.atlas.local | DNS:mcp.vps.atlas.local, IP:VPS_IP |
-| openclaw-server | openclaw.vps.atlas.local | DNS:openclaw.vps.atlas.local |
+| mtho-api-server | mtho-api.dreadnought.local | DNS:mtho-api.local, IP:192.168.178.x |
+| mcp-server | mcp.vps.mtho.local | DNS:mcp.vps.mtho.local, IP:VPS_IP |
+| openclaw-server | openclaw.vps.mtho.local | DNS:openclaw.vps.mtho.local |
 | cursor-client | cursor.dreadnought.local | - |
 | scout-client | scout.raspi.local | - |
-| oc-brain-client | oc-brain.vps.atlas.local | - |
+| oc-brain-client | oc-brain.vps.mtho.local | - |
 | ha-client | ha.scout.local | - |
-| atlas-client | atlas.dreadnought.local | - |
+| mtho-client | mtho.dreadnought.local | - |
 
 ---
 
@@ -4226,7 +4226,7 @@ def verify_oc_auth_mtls_or_token(request):
 | Cursor | Hoch | Lokaler Client, Cert auf 4D_RESONATOR (MTHO_CORE)/PC |
 | ChromaDB-Zugriff | Optional | Proxy mit mTLS oder SSH-Tunnel |
 
-**Ausnahme:** WhatsApp-Webhook (`ATLAS_WEBHOOK_SECRET`) bleibt dauerhaft Token-basiert – Meta sendet kein Client-Cert.
+**Ausnahme:** WhatsApp-Webhook (`MTHO_WEBHOOK_SECRET`) bleibt dauerhaft Token-basiert – Meta sendet kein Client-Cert.
 
 ---
 
@@ -4257,7 +4257,7 @@ Erzeugt CA, Server- und Client-Zertifikate für Entwicklung und erste Tests.
 |-------|------------|
 | `ca_root.pem`, `ca_root.key` | Root CA (geheim halten) |
 | `ca_srv.pem`, `ca_cli.pem` | Intermediate CAs |
-| `atlas-api.pem/.key` | MTHO API Server |
+| `mtho-api.pem/.key` | MTHO API Server |
 | `mcp-server.pem/.key` | MCP-Server (VPS) |
 | `openclaw-server.pem/.key` | OpenClaw Gateway |
 | `cursor.pem/.key`, `scout.pem/.key`, etc. | Client-Zertifikate |
@@ -4270,14 +4270,14 @@ Erzeugt CA, Server- und Client-Zertifikate für Entwicklung und erste Tests.
 
 - `src/api/auth_webhook.py` – aktuelle Token-Auth
 - `docs/02_ARCHITECTURE/OPENCLAW_GATEWAY_TOKEN.md`
-- `docs/02_ARCHITECTURE/ATLAS_SCHNITTSTELLEN_UND_KANAALE.md`
+- `docs/02_ARCHITECTURE/MTHO_SCHNITTSTELLEN_UND_KANAALE.md`
 - `docs/04_PROCESSES/CODE_SICHERHEITSRAT.md` – Freigabe-Prozess
 
 
 ---
 
 
-<a name="mx-kamera-atlas-hoeren-sehen"></a>
+<a name="mx-kamera-mtho-hoeren-sehen"></a>
 # MX KAMERA MTHO HOEREN SEHEN
 
 ## MX-Kamera (Logitech Brio) – MTHO hören und sehen
@@ -4359,7 +4359,7 @@ Siehe auch: `SCOUT_USB_KAMERA_MIKRO_HA_OS.md`, `.env.template` (SCOUT_MX_SNAPSHO
 | Hören (Aufnahme → Event) | `python -m src.scripts.dreadnought_listen` |
 | Scout-MX-URL in .env setzen | `python -m src.scripts.setup_scout_mx` oder `set_scout_mx_snapshot_url` (Optionen: `--entity camera.scout_mx`, `--no-check`, `--dry-run`) |
 
-Siehe auch: `CAMERA_GO2RTC_WINDOWS.md`, `ATLAS_HOERT_SIEHT_SPRICHT_STATUS.md`, `SCOUT_USB_KAMERA_MIKRO_HA_OS.md`.
+Siehe auch: `CAMERA_GO2RTC_WINDOWS.md`, `MTHO_HOERT_SIEHT_SPRICHT_STATUS.md`, `SCOUT_USB_KAMERA_MIKRO_HA_OS.md`.
 
 
 ---
@@ -4402,9 +4402,9 @@ Siehe auch: `CAMERA_GO2RTC_WINDOWS.md`, `ATLAS_HOERT_SIEHT_SPRICHT_STATUS.md`, `
 | Modell-ID      | Wake Word      | Beschreibung                    | Ähnlich zu |
 |----------------|----------------|----------------------------------|------------|
 | `alexa`        | alexa          | Ein-Wort-Trigger                 | –          |
-| `hey_mycroft`  | hey mycroft    | Zwei-Wort-Phrase                | hey atlas  |
-| `hey_jarvis`   | hey jarvis     | Zwei-Wort-Phrase (Computer-Assistent) | computer, hey atlas |
-| `hey_rhasspy`  | hey rhasspy    | Zwei-Wort-Phrase                | hey atlas  |
+| `hey_mycroft`  | hey mycroft    | Zwei-Wort-Phrase                | hey mtho  |
+| `hey_jarvis`   | hey jarvis     | Zwei-Wort-Phrase (Computer-Assistent) | computer, hey mtho |
+| `hey_rhasspy`  | hey rhasspy    | Zwei-Wort-Phrase                | hey mtho  |
 | `timer`        | timer-Befehle  | Speziell für Timer-Phrasen      | –          |
 | `weather`      | weather-Befehle| Speziell für Wetter-Phrasen     | –          |
 
@@ -4428,11 +4428,11 @@ Siehe auch: `CAMERA_GO2RTC_WINDOWS.md`, `ATLAS_HOERT_SIEHT_SPRICHT_STATUS.md`, `
 | Ähnliche Modelle              | `hey_jarvis` (Computer-Assistent-Kontext) |
 | Lösung                        | Custom Training (siehe [Custom Wake Word Training](#3-custom-wake-word-training)) |
 
-#### 2.2 „Atlas“ / „hey atlas“
+#### 2.2 „MTHO“ / „hey mtho“
 
 | Frage                         | Antwort |
 |------------------------------|---------|
-| Gibt es „atlas“ vordefiniert? | **Nein** |
+| Gibt es „mtho“ vordefiniert? | **Nein** |
 | Ähnliche Modelle              | `hey_mycroft`, `hey_jarvis`, `hey_rhasspy` (alle Zwei-Wort-Phrasen) |
 | Lösung                        | Custom Training (siehe [Custom Wake Word Training](#3-custom-wake-word-training)) |
 
@@ -4481,7 +4481,7 @@ User spricht
     ↓
 Scout Mikrofon (USB oder integriert)
     ↓
-openWakeWord ("hey atlas" / "atlas") → Pipeline startet
+openWakeWord ("hey mtho" / "mtho") → Pipeline startet
     ↓
 Whisper STT → transkribierter Text
     ↓
@@ -4535,7 +4535,7 @@ Die **Assist-Pipeline** benötigt die **umgekehrte** Richtung: HA (Scout) → MT
 |--------|-------|
 | **Assist Microphone** | **Audio-Input** – liest vom USB-Mikro (Brio/Headset), streamt an Wyoming. **Ohne dieses Add-on erreicht kein Audio die Pipeline.** |
 | **Whisper** | Speech-to-Text (offenes Modell, beliebige Sprache) |
-| **openWakeWord** | Wake-Word-Erkennung ("hey atlas", "atlas", "computer") |
+| **openWakeWord** | Wake-Word-Erkennung ("hey mtho", "mtho", "computer") |
 | **Piper** | Text-to-Speech (lokal, schnell) |
 
 Installation: Einstellungen → Add-ons → Add-on-Store. Nach Installation erscheinen die Dienste unter Wyoming-Integration.
@@ -4547,7 +4547,7 @@ Installation: Einstellungen → Add-ons → Add-on-Store. Nach Installation ersc
 ### 5. Wake-Word Konfiguration
 
 - **openWakeWord** unterstützt vordefinierte und eigene Wake-Wörter.
-- Für "hey atlas" oder "atlas": In der openWakeWord-Konfiguration das passende Modell wählen oder ein Custom-Modell trainieren.
+- Für "hey mtho" oder "mtho": In der openWakeWord-Konfiguration das passende Modell wählen oder ein Custom-Modell trainieren.
 - Dokumentation: [HA Wake Words](https://www.home-assistant.io/voice_control/create_wake_word/)
 
 ---
@@ -4558,15 +4558,15 @@ In `configuration.yaml` oder als YAML-Konfiguration:
 
 ```yaml
 ## Geheimnisse (Einstellungen → Geheimnisse oder secrets.yaml):
-##   atlas_api_url: "http://192.168.178.20:8000"
-##   atlas_webhook_token: "<HA_WEBHOOK_TOKEN aus .env>"
+##   mtho_api_url: "http://192.168.178.20:8000"
+##   mtho_webhook_token: "<HA_WEBHOOK_TOKEN aus .env>"
 
 rest_command:
-  atlas_assist:
-    url: "{{ atlas_api_url }}/webhook/assist"
+  mtho_assist:
+    url: "{{ mtho_api_url }}/webhook/assist"
     method: POST
     headers:
-      Authorization: "Bearer {{ atlas_webhook_token }}"
+      Authorization: "Bearer {{ mtho_webhook_token }}"
       Content-Type: "application/json"
     payload: '{"text": {{ text | tojson }}}'
 ```
@@ -4575,7 +4575,7 @@ rest_command:
 
 ```yaml
 rest_command:
-  atlas_assist:
+  mtho_assist:
     url: "http://192.168.178.20:8000/webhook/assist"
     method: POST
     headers:
@@ -4588,17 +4588,17 @@ rest_command:
 
 ### 7. MTHO Conversation Agent (empfohlen)
 
-**Custom Integration** `atlas_conversation` – empfängt Text von der Assist-Pipeline, sendet an MTHO `/webhook/inject_text`, gibt Antwort für TTS zurück.
+**Custom Integration** `mtho_conversation` – empfängt Text von der Assist-Pipeline, sendet an MTHO `/webhook/inject_text`, gibt Antwort für TTS zurück.
 
 #### 7.0 Installation der MTHO Conversation Integration
 
-1. Ordner `ha_integrations/atlas_conversation` nach `config/custom_components/atlas_conversation/` kopieren.
+1. Ordner `ha_integrations/mtho_conversation` nach `config/custom_components/mtho_conversation/` kopieren.
 2. HA neu starten.
 3. **Einstellungen → Geräte & Dienste → Integration hinzufügen** → "MTHO Conversation".
 4. **MTHO API URL:** z.B. `http://192.168.178.20:8000`
 5. **Bearer Token:** `HA_WEBHOOK_TOKEN` aus `.env`
 
-Vollständige Anleitung: `ha_integrations/atlas_conversation/README.md`
+Vollständige Anleitung: `ha_integrations/mtho_conversation/README.md`
 
 #### 7.1 Workaround: input_text + Automation (falls Integration nicht nutzbar)
 
@@ -4620,7 +4620,7 @@ automation:
       - condition: template
         value_template: "{{ trigger.to_state.state | length > 0 }}"
     action:
-      - service: rest_command.atlas_assist
+      - service: rest_command.mtho_assist
         data:
           text: "{{ states('input_text.assist_command') }}"
       - service: input_text.set_value
@@ -4941,7 +4941,7 @@ Damit wird das Event von deinem PC an OMEGA_ATTRACTOR gesendet (gleicher Kanal w
 
 **Verwandte Docs:**
 - [OPENWAKEWORD_MODELS.md](OPENWAKEWORD_MODELS.md) – Verfügbare vordefinierte Modelle
-- [CUSTOM_WAKE_WORD_TRAINING.md](CUSTOM_WAKE_WORD_TRAINING.md) – Custom Training für „hey atlas“ und „computer“
+- [CUSTOM_WAKE_WORD_TRAINING.md](CUSTOM_WAKE_WORD_TRAINING.md) – Custom Training für „hey mtho“ und „computer“
 
 ---
 
@@ -4992,12 +4992,12 @@ Nach dem Start der Add-ons erscheinen die Dienste unter **Einstellungen → Ger�
 4. **Wake Word:** z.B. **ok nabu** (zum Testen) oder ein anderes vordefiniertes Modell
 
 **Vordefinierte Modelle:** alexa, hey_mycroft, hey_jarvis, hey_rhasspy, timer, weather.  
-**„computer“** und **„atlas“** sind nicht vordefiniert – siehe [OPENWAKEWORD_MODELS.md](OPENWAKEWORD_MODELS.md) und 3.2.
+**„computer“** und **„mtho“** sind nicht vordefiniert – siehe [OPENWAKEWORD_MODELS.md](OPENWAKEWORD_MODELS.md) und 3.2.
 
-#### 3.2 Eigenes Wake Word „hey atlas“ und „computer“
+#### 3.2 Eigenes Wake Word „hey mtho“ und „computer“
 
 1. [Wake-Word-Training (Google Colab)](https://colab.research.google.com/drive/1q1oe2zOyZp7UsB3jJiQ1IFn8z5YfjwEb?usp=sharing)
-2. `target_word`: `hey atlas` (oder `atlas`) bzw. `computer`
+2. `target_word`: `hey mtho` (oder `mtho`) bzw. `computer`
 3. **Runtime → Run all** ausführen (~30–60 Min.)
 4. `.tflite`-Datei herunterladen
 5. Samba: `/share/openwakeword` anlegen (falls nicht vorhanden)
@@ -5011,7 +5011,7 @@ Nach dem Start der Add-ons erscheinen die Dienste unter **Einstellungen → Ger�
 #### 3.3 Zwei Wake Words gleichzeitig (ab HA 2025.10)
 
 Ab Home Assistant 2025.10 unterstützen Voice Satellites **bis zu zwei Wake Words** pro Gerät.  
-→ Zwei verschiedene Assistenten/Pipelines mit unterschiedlichen Wake Words (z.B. „hey atlas“ und „computer“) können parallel aktiv sein.
+→ Zwei verschiedene Assistenten/Pipelines mit unterschiedlichen Wake Words (z.B. „hey mtho“ und „computer“) können parallel aktiv sein.
 
 #### 3.4 Setup-Skripte (MTHO)
 
@@ -5048,21 +5048,21 @@ Scout muss 4D_RESONATOR (MTHO_CORE) per HTTP erreichen können: `http://192.168.
 In **Einstellungen → Geheimnisse** oder `secrets.yaml`:
 
 ```yaml
-atlas_api_url: "http://192.168.178.20:8000"
-atlas_webhook_token: "778aabf5b13c7b5120161168811908da51448b9435423aacf4b67f31e3bb57e7"
+mtho_api_url: "http://192.168.178.20:8000"
+mtho_webhook_token: "778aabf5b13c7b5120161168811908da51448b9435423aacf4b67f31e3bb57e7"
 ```
 
-**Hinweis:** `atlas_webhook_token` = `HA_WEBHOOK_TOKEN` aus `c:\MTHO_CORE\.env`.
+**Hinweis:** `mtho_webhook_token` = `HA_WEBHOOK_TOKEN` aus `c:\MTHO_CORE\.env`.
 
-#### 5.2 rest_command.atlas_assist
+#### 5.2 rest_command.mtho_assist
 
 ```yaml
 rest_command:
-  atlas_assist:
-    url: "{{ atlas_api_url }}/webhook/assist"
+  mtho_assist:
+    url: "{{ mtho_api_url }}/webhook/assist"
     method: POST
     headers:
-      Authorization: "Bearer {{ atlas_webhook_token }}"
+      Authorization: "Bearer {{ mtho_webhook_token }}"
       Content-Type: "application/json"
     payload: '{"text": {{ text | tojson }}}'
 ```
@@ -5071,7 +5071,7 @@ rest_command:
 
 ```yaml
 rest_command:
-  atlas_assist:
+  mtho_assist:
     url: "http://192.168.178.20:8000/webhook/assist"
     method: POST
     headers:
@@ -5103,7 +5103,7 @@ automation:
       - condition: template
         value_template: "{{ trigger.to_state.state | length > 0 }}"
     action:
-      - service: rest_command.atlas_assist
+      - service: rest_command.mtho_assist
         data:
           text: "{{ states('input_text.assist_command') }}"
       - service: input_text.set_value
@@ -5145,7 +5145,7 @@ automation:
         event_data:
           stage: "stt-end"  # oder "intent-start"
     action:
-      - service: rest_command.atlas_assist
+      - service: rest_command.mtho_assist
         data:
           text: "{{ trigger.event.data.text | default(trigger.event.data.intent_input) }}"
 ```
@@ -5235,7 +5235,7 @@ Browser (Gemini, ChatGPT, etc.)
     ↓ Strg+Shift+S
 Tampermonkey GM_xmlhttpRequest (umgeht CORS)
     ↓ POST JSON
-http://localhost:8000/api/atlas/speak
+http://localhost:8000/api/mtho/speak
     ↓
 ElevenLabs TTS → MP3 → Lokale Wiedergabe (PC-Lautsprecher)
 ```
@@ -5245,7 +5245,7 @@ ElevenLabs TTS → MP3 → Lokale Wiedergabe (PC-Lautsprecher)
 ### 1. Voraussetzung: MTHO Backend muss laufen
 
 ```batch
-START_ATLAS_DIENSTE.bat
+START_MTHO_DIENSTE.bat
 ```
 
 Oder manuell:
@@ -5284,12 +5284,12 @@ Backend läuft dann auf: `http://localhost:8000`
 
     // === MTHO KONFIGURATION ===
     const LOCAL_PORT = 8000;
-    const ENDPOINT_URL = `http://127.0.0.1:${LOCAL_PORT}/api/atlas/speak`;
+    const ENDPOINT_URL = `http://127.0.0.1:${LOCAL_PORT}/api/mtho/speak`;
     
-    // Verfügbare Rollen: atlas_dialog, atlas_info, therapeut, analyst, atlas_high_density
-    const DEFAULT_ROLE = "atlas_dialog";
+    // Verfügbare Rollen: mtho_dialog, mtho_info, therapeut, analyst, mtho_high_density
+    const DEFAULT_ROLE = "mtho_dialog";
 
-    function pushToATLAS(text) {
+    function pushToMTHO(text) {
         GM_xmlhttpRequest({
             method: "POST",
             url: ENDPOINT_URL,
@@ -5324,7 +5324,7 @@ Backend läuft dann auf: `http://localhost:8000`
             
             if (selectedText.length > 0) {
                 console.log("MTHO-TTS: Sende", selectedText.length, "Zeichen...");
-                pushToATLAS(selectedText);
+                pushToMTHO(selectedText);
             } else {
                 console.warn("MTHO-TTS: Kein Text markiert.");
                 // Gelber Rahmen = Warnung
@@ -5344,7 +5344,7 @@ Backend läuft dann auf: `http://localhost:8000`
 
 ### 3. Nutzung
 
-1. **Backend starten:** `START_ATLAS_DIENSTE.bat`
+1. **Backend starten:** `START_MTHO_DIENSTE.bat`
 2. **Browser öffnen:** Gemini, ChatGPT, Claude, oder beliebige Seite
 3. **Text markieren** (mit Maus oder Shift+Pfeiltasten)
 4. **Strg + Shift + S** drücken
@@ -5359,14 +5359,14 @@ Backend läuft dann auf: `http://localhost:8000`
 
 ### 4. API-Referenz
 
-#### POST `/api/atlas/speak`
+#### POST `/api/mtho/speak`
 Kurzform - spielt sofort ab.
 
 **Request:**
 ```json
 {
     "text": "Der zu sprechende Text",
-    "role": "atlas_dialog"
+    "role": "mtho_dialog"
 }
 ```
 
@@ -5379,14 +5379,14 @@ Kurzform - spielt sofort ab.
 }
 ```
 
-#### POST `/api/atlas/tts`
+#### POST `/api/mtho/tts`
 Vollversion mit allen Optionen.
 
 **Request:**
 ```json
 {
     "text": "Der zu sprechende Text",
-    "role": "atlas_dialog",
+    "role": "mtho_dialog",
     "state_prefix": "",
     "play": true
 }
@@ -5396,17 +5396,17 @@ Vollversion mit allen Optionen.
 | Parameter | Typ | Default | Beschreibung |
 |-----------|-----|---------|--------------|
 | `text` | string | (required) | Der zu sprechende Text |
-| `role` | string | `atlas_dialog` | Stimme/Rolle aus voice_config |
+| `role` | string | `mtho_dialog` | Stimme/Rolle aus voice_config |
 | `state_prefix` | string | `""` | Emotionaler State-Prefix |
 | `play` | bool | `true` | `true` = lokal abspielen, `false` = MP3 zurückgeben |
 
-#### GET `/api/atlas/voice/roles`
+#### GET `/api/mtho/voice/roles`
 Listet alle verfügbaren Rollen/Stimmen.
 
 **Response:**
 ```json
 {
-    "roles": ["atlas_high_density", "atlas_info", "atlas_dialog", "therapeut", "analyst"],
+    "roles": ["mtho_high_density", "mtho_info", "mtho_dialog", "therapeut", "analyst"],
     "roles_with_voice_id": [...]
 }
 ```
@@ -5417,9 +5417,9 @@ Listet alle verfügbaren Rollen/Stimmen.
 
 | Rolle | Beschreibung |
 |-------|--------------|
-| `atlas_dialog` | Standard-Konversationsstimme |
-| `atlas_info` | Neutrale Info-Stimme |
-| `atlas_high_density` | Komprimierte, schnelle Ausgabe |
+| `mtho_dialog` | Standard-Konversationsstimme |
+| `mtho_info` | Neutrale Info-Stimme |
+| `mtho_high_density` | Komprimierte, schnelle Ausgabe |
 | `therapeut` | Ruhige, empathische Stimme |
 | `analyst` | Analytische, sachliche Stimme |
 
@@ -5429,7 +5429,7 @@ Listet alle verfügbaren Rollen/Stimmen.
 
 #### "Backend nicht erreichbar" (roter Rahmen)
 - Prüfen ob Backend läuft: `http://localhost:8000/docs`
-- `START_ATLAS_DIENSTE.bat` ausführen
+- `START_MTHO_DIENSTE.bat` ausführen
 
 #### Kein Audio
 - ElevenLabs API-Key prüfen (`.env`: `ELEVENLABS_API_KEY`)
@@ -5446,21 +5446,21 @@ Listet alle verfügbaren Rollen/Stimmen.
 Für Power-User: Verschiedene Shortcuts für verschiedene Stimmen:
 
 ```javascript
-// Strg+Shift+S = atlas_dialog
+// Strg+Shift+S = mtho_dialog
 // Strg+Shift+T = therapeut  
 // Strg+Shift+A = analyst
 
 document.addEventListener('keydown', function(e) {
     if (e.ctrlKey && e.shiftKey) {
         let role = null;
-        if (e.code === 'KeyS') role = 'atlas_dialog';
+        if (e.code === 'KeyS') role = 'mtho_dialog';
         if (e.code === 'KeyT') role = 'therapeut';
         if (e.code === 'KeyA') role = 'analyst';
         
         if (role) {
             e.preventDefault();
             let text = window.getSelection().toString().trim();
-            if (text) pushToATLAS(text, role);
+            if (text) pushToMTHO(text, role);
         }
     }
 });
@@ -5661,7 +5661,7 @@ Physisches Gerät mit Mikro, verbindet sich per Wyoming mit HA. Ersetzt Software
 | **OpenClaw** | (geplant VPS) | **Ja** | Messenger-Gateway braucht öffentliche Erreichbarkeit; läuft in **Sandbox** (siehe Abschnitt 2). |
 | **ChromaDB** | 4D_RESONATOR (MTHO_CORE) (lokal) / optional VPS | **Ja** | Entlastet 4D_RESONATOR (MTHO_CORE) (NVMe/I/O); zentrale RAG-DB für MTHO; bereits angebunden (`CHROMA_HOST`). |
 | **Ollama (leichtere Modelle)** | 4D_RESONATOR (MTHO_CORE) (i5, GTX 3050) | **Optional** | Kleine Modelle (z. B. für Vorverarbeitung, Routing) könnten auf VPS laufen; **schweres RAG/Osmium bleibt auf 4D_RESONATOR (MTHO_CORE)** (Datenhoheit, Latenz). |
-| **Backup-Ziel / Sync** | aktiv | **Ja** | VPS als externes Backup-Ziel (`/var/backups/atlas`); `daily_backup.py` pusht von 4D_RESONATOR (MTHO_CORE) per SFTP; Retention 7 Tage (Cron auf VPS). Siehe [BACKUP_PLAN_FINAL.md](BACKUP_PLAN_FINAL.md). |
+| **Backup-Ziel / Sync** | aktiv | **Ja** | VPS als externes Backup-Ziel (`/var/backups/mtho`); `daily_backup.py` pusht von 4D_RESONATOR (MTHO_CORE) per SFTP; Retention 7 Tage (Cron auf VPS). Siehe [BACKUP_PLAN_FINAL.md](BACKUP_PLAN_FINAL.md). |
 | **API-Proxy / Webhook-Empfang** | HA + 4D_RESONATOR (MTHO_CORE) | **Optional** | Öffentliche URL für Webhooks (z. B. von OpenClaw zu MTHO); nur Weiterleitung, keine Logik. |
 | **Home Assistant** | Scout (Pi) | **Nein** | Bleibt lokal (Smart Home, Latenz, Datenhoheit). |
 | **Ollama (Haupt-Inferenz)** | 4D_RESONATOR (MTHO_CORE) | **Nein** | GPU + sensible ND-Daten bleiben auf 4D_RESONATOR (MTHO_CORE). |
@@ -5737,7 +5737,7 @@ Folgende Dinge sind **auf dem VPS (187.77.68.250)** umzusetzen, damit die Dienst
 
 | Schritt | Aktion |
 |--------|--------|
-| 1 | Chroma läuft im Container `chroma-atlas`; **gebunden an 127.0.0.1:8000** (nicht öffentlich). |
+| 1 | Chroma läuft im Container `chroma-mtho`; **gebunden an 127.0.0.1:8000** (nicht öffentlich). |
 | 2 | **Zugriff von außen:** Nur per SSH-Tunnel, z. B. `ssh -L 8000:127.0.0.1:8000 root@VPS_HOST`. Dann in .env: `CHROMA_HOST=localhost`, `CHROMA_PORT=8000`. |
 | 3 | Ingest von 4D_RESONATOR (MTHO_CORE) aus (wenn Tunnel aktiv): `python src/scripts/ingest_nd_insights_to_chroma.py`. |
 
@@ -5745,7 +5745,7 @@ Folgende Dinge sind **auf dem VPS (187.77.68.250)** umzusetzen, damit die Dienst
 
 | Schritt | Aktion |
 |--------|--------|
-| 1 | Verzeichnis `/var/backups/atlas` wird von `setup_vps_hostinger.py` angelegt; Cron löscht Backups älter als 7 Tage. |
+| 1 | Verzeichnis `/var/backups/mtho` wird von `setup_vps_hostinger.py` angelegt; Cron löscht Backups älter als 7 Tage. |
 | 2 | **daily_backup.py** (auf 4D_RESONATOR (MTHO_CORE)) pusht täglich per SFTP; Aufruf per Task Scheduler (Windows) oder cron. Siehe [BACKUP_PLAN_FINAL.md](BACKUP_PLAN_FINAL.md). |
 | 3 | Der VPS pullt nicht; nur Push von MTHO_CORE aus. |
 
@@ -5789,17 +5789,17 @@ Folgende Dinge sind **auf dem VPS (187.77.68.250)** umzusetzen, damit die Dienst
 
 | Container | Port | Netzwerk | Funktion |
 |---|---|---|---|
-| homeassistant | 18123 | atlas_net | Home Assistant Docker; Remote HA nach Scout |
-| openclaw-admin | 18789 | atlas_net | OC Gehirn; Gemini 3.1 Pro, Claude 4.6, Nexos, WhatsApp |
-| openclaw-spine | 18790 | atlas_net | OC Spine; sauberes System, nutzt admin als Gateway |
+| homeassistant | 18123 | mtho_net | Home Assistant Docker; Remote HA nach Scout |
+| openclaw-admin | 18789 | mtho_net | OC Gehirn; Gemini 3.1 Pro, Claude 4.6, Nexos, WhatsApp |
+| openclaw-spine | 18790 | mtho_net | OC Spine; sauberes System, nutzt admin als Gateway |
 
 ### Netzwerk-Isolation
 
 | Netzwerk | Typ | Zugriff |
 |---|---|---|
-| atlas_net | bridge | Internet (Gemini/Anthropic/Nexos-APIs), Kommunikation zwischen Containern |
+| mtho_net | bridge | Internet (Gemini/Anthropic/Nexos-APIs), Kommunikation zwischen Containern |
 
-*(Hinweis: Die alte Aufsplittung in separate openclaw_admin_net, openclaw_spine_net und chroma_net wurde zugunsten eines übersichtlichen `docker-compose` mit `atlas_net` vereinfacht. Eine separate chroma-atlas Instanz entfällt, da `chroma-uvmy` genutzt wird.)*
+*(Hinweis: Die alte Aufsplittung in separate openclaw_admin_net, openclaw_spine_net und chroma_net wurde zugunsten eines übersichtlichen `docker-compose` mit `mtho_net` vereinfacht. Eine separate chroma-mtho Instanz entfällt, da `chroma-uvmy` genutzt wird.)*
 
 ### Firewall (ufw)
 
@@ -5923,12 +5923,12 @@ VPS registriert seine IP automatisch bei DuckDNS:
 
 ```bash
 ## Auf VPS als Cron-Job (alle 5 Min):
-*/5 * * * * curl -s "https://www.duckdns.org/update?domains=atlas-vps&token=$DUCKDNS_TOKEN&ip="
+*/5 * * * * curl -s "https://www.duckdns.org/update?domains=mtho-vps&token=$DUCKDNS_TOKEN&ip="
 ```
 
 Dann in `.env`:
 ```
-VPS_HOST="atlas-vps.duckdns.org"
+VPS_HOST="mtho-vps.duckdns.org"
 ```
 
 **Vorteil:** IP-Änderung wird automatisch propagiert, keine manuelle Anpassung nötig.
@@ -5998,7 +5998,7 @@ Die Daten auf dem VPS bleiben **erhalten**. Der IP-Wechsel betrifft nur die Netz
 
 ### Voraussetzungen
 
-- MTHO_CORE `src/` inkl. Abhängigkeiten (atlas_llm, HAClient, logic_core.munin)
+- MTHO_CORE `src/` inkl. Abhängigkeiten (mtho_llm, HAClient, logic_core.munin)
 - `.env` mit: `HA_WEBHOOK_TOKEN`, `GEMINI_API_KEY`, `HA_URL`, `HA_TOKEN`, `CHROMA_HOST` (optional)
 
 ### Automatischer Deploy (empfohlen)
@@ -6008,7 +6008,7 @@ Die Daten auf dem VPS bleiben **erhalten**. Der IP-Wechsel betrifft nur die Netz
 python -m src.scripts.deploy_vps_slim
 ```
 
-Kopiert `src/` + `Dockerfile.vps`, baut Docker-Image, startet Container auf Port 8001. Benötigt `.env` auf VPS unter `VPS_DEPLOY_PATH` (default `/opt/atlas-core`).
+Kopiert `src/` + `Dockerfile.vps`, baut Docker-Image, startet Container auf Port 8001. Benötigt `.env` auf VPS unter `VPS_DEPLOY_PATH` (default `/opt/mtho-core`).
 
 ### Manueller Deploy
 
@@ -6021,7 +6021,7 @@ ssh -i c:\MTHO_CORE\.ssh\id_ed25519_hostinger root@187.77.68.250 "echo OK"
 
 ## 3. Auf VPS: Service starten
 ssh -i c:\MTHO_CORE\.ssh\id_ed25519_hostinger root@187.77.68.250
-cd /opt/atlas-core
+cd /opt/mtho-core
 source .venv/bin/activate  # oder: python -m venv .venv && pip install -r src/requirements.txt
 VPS_SLIM_PORT=8001 python -m uvicorn src.api.vps_slim:app --host 0.0.0.0 --port 8001
 ```
@@ -6029,7 +6029,7 @@ VPS_SLIM_PORT=8001 python -m uvicorn src.api.vps_slim:app --host 0.0.0.0 --port 
 ### systemd (empfohlen)
 
 ```ini
-## /etc/systemd/system/atlas-vps-slim.service
+## /etc/systemd/system/mtho-vps-slim.service
 [Unit]
 Description=MTHO VPS-Slim Failover
 After=network.target
@@ -6037,9 +6037,9 @@ After=network.target
 [Service]
 Type=simple
 User=root
-WorkingDirectory=/opt/atlas-core
-EnvironmentFile=/opt/atlas-core/.env
-ExecStart=/opt/atlas-core/.venv/bin/python -m uvicorn src.api.vps_slim:app --host 0.0.0.0 --port 8001
+WorkingDirectory=/opt/mtho-core
+EnvironmentFile=/opt/mtho-core/.env
+ExecStart=/opt/mtho-core/.venv/bin/python -m uvicorn src.api.vps_slim:app --host 0.0.0.0 --port 8001
 Restart=unless-stopped
 
 [Install]
@@ -6048,8 +6048,8 @@ WantedBy=multi-user.target
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable atlas-vps-slim
-sudo systemctl start atlas-vps-slim
+sudo systemctl enable mtho-vps-slim
+sudo systemctl start mtho-vps-slim
 ```
 
 ### Firewall
@@ -6063,12 +6063,12 @@ ufw reload
 
 ```bash
 curl http://187.77.68.250:8001/
-## Erwartet: {"status":"online","system":"ATLAS_CORE_VPS_SLIM","version":"1.0.0"}
+## Erwartet: {"status":"online","system":"MTHO_CORE_VPS_SLIM","version":"1.0.0"}
 ```
 
 ### Scout-Konfiguration
 
-Scout/atlas_conversation Failover-URL: `http://187.77.68.250:8001/webhook/forwarded_text`  
+Scout/mtho_conversation Failover-URL: `http://187.77.68.250:8001/webhook/forwarded_text`  
 Header: `Authorization: Bearer <HA_WEBHOOK_TOKEN>`
 
 
@@ -6082,7 +6082,7 @@ Header: `Authorization: Bearer <HA_WEBHOOK_TOKEN>`
 
 Damit der komplette Weg **Nachricht → HA → MTHO → Antwort im Chat** funktioniert, müssen in HA zwei Dinge stehen: **rest_command** (ruft MTHO auf) und **Automation** (reagiert auf das WhatsApp-Event).
 
-**Ablauf:** Du startest MTHO **einmal** (z.B. mit `START_ATLAS_KOMPLETT.bat` beim Anmelden oder Tagesstart). Ab dann triggert **die eingehende @Atlas-Nachricht** die Kette – nicht du vor jeder WhatsApp. Optional: Autostart (siehe [WIEDER_DA_ALLES_LAEUFT.md](../05_AUDIT_PLANNING/WIEDER_DA_ALLES_LAEUFT.md) Abschnitt 6), dann ist MTHO bereit sobald der Rechner läuft.
+**Ablauf:** Du startest MTHO **einmal** (z.B. mit `START_MTHO_KOMPLETT.bat` beim Anmelden oder Tagesstart). Ab dann triggert **die eingehende @MTHO-Nachricht** die Kette – nicht du vor jeder WhatsApp. Optional: Autostart (siehe [WIEDER_DA_ALLES_LAEUFT.md](../05_AUDIT_PLANNING/WIEDER_DA_ALLES_LAEUFT.md) Abschnitt 6), dann ist MTHO bereit sobald der Rechner läuft.
 
 ---
 
@@ -6092,19 +6092,19 @@ MTHO muss von HA aus per HTTP erreichbar sein (4D_RESONATOR (MTHO_CORE) oder Sco
 
 ```yaml
 rest_command:
-  atlas_whatsapp_webhook:
-    url: "http://DEINE_ATLAS_IP:8000/webhook/whatsapp"
+  mtho_whatsapp_webhook:
+    url: "http://DEINE_MTHO_IP:8000/webhook/whatsapp"
     method: POST
     content_type: "application/json"
     payload: '{{ payload | tojson }}'
     timeout: 15
 ```
 
-- **DEINE_ATLAS_IP** durch die IP des Rechners ersetzen, auf dem die MTHO-CORE-API läuft (z. B. 4D_RESONATOR (MTHO_CORE)), oder die des Scouts, falls MTHO dort läuft.
+- **DEINE_MTHO_IP** durch die IP des Rechners ersetzen, auf dem die MTHO-CORE-API läuft (z. B. 4D_RESONATOR (MTHO_CORE)), oder die des Scouts, falls MTHO dort läuft.
 - **timeout: 15** (Sekunden): MTHO antwortet bei Chat/Reasoning sofort mit HTTP 202; 15s reichen. Ohne Angabe nutzt HA 10s – ausreichend, da keine lange Wartezeit mehr im Request.
 - Der Aufruf übergibt den Schlüssel **payload**; der Wert (Addon-Event-Daten) wird als JSON an MTHO gesendet.
 
-Falls du eine Konfiguration über die UI nutzt: Der REST-Befehl soll **POST** an `http://ATLAS_IP:8000/webhook/whatsapp` senden, Body = JSON aus dem übergebenen **payload**.
+Falls du eine Konfiguration über die UI nutzt: Der REST-Befehl soll **POST** an `http://MTHO_IP:8000/webhook/whatsapp` senden, Body = JSON aus dem übergebenen **payload**.
 
 ---
 
@@ -6118,7 +6118,7 @@ Bei jeder eingehenden WhatsApp-Nachricht (Addon feuert Event) soll der rest_comm
     - platform: event
       event_type: whatsapp_message_received
   action:
-    - service: rest_command.atlas_whatsapp_webhook
+    - service: rest_command.mtho_whatsapp_webhook
       data:
         payload: "{{ trigger.event.data }}"
 ```
@@ -6129,16 +6129,16 @@ Das Skript **wire_whatsapp_ha.py** kann diese Automation in die HA-Config eintra
 
 ---
 
-### 2.1 Routing: @Atlas und @OC (nur Adressierter reagiert)
+### 2.1 Routing: @MTHO und @OC (nur Adressierter reagiert)
 
 Damit nicht auf **jede** WhatsApp-Nachricht automatisch geantwortet wird:
 
-- **Nachricht beginnt mit @Atlas** → MTHO/Scout verarbeiten (Antwort mit **[MTHO]** bzw. **[Scout]**). Präfix wird vor der Verarbeitung abgezogen.
+- **Nachricht beginnt mit @MTHO** → MTHO/Scout verarbeiten (Antwort mit **[MTHO]** bzw. **[Scout]**). Präfix wird vor der Verarbeitung abgezogen.
 - **Nachricht beginnt mit @OC** → nur für OC; MTHO reagiert **nicht** (ignoriert).
-- **Weder @Atlas noch @OC am Anfang** → MTHO reagiert nicht.
-- **@Atlas am Anfang, @OC später in der Nachricht** → Teil für beide; MTHO verarbeitet seinen Teil, OC den nach @OC.
+- **Weder @MTHO noch @OC am Anfang** → MTHO reagiert nicht.
+- **@MTHO am Anfang, @OC später in der Nachricht** → Teil für beide; MTHO verarbeitet seinen Teil, OC den nach @OC.
 
-Details (inkl. OC-Prozedere und Antwortformat [MTHO]/[OC]): **docs/WHATSAPP_ROUTING_ATLAS_OC.md**.
+Details (inkl. OC-Prozedere und Antwortformat [MTHO]/[OC]): **docs/WHATSAPP_ROUTING_MTHO_OC.md**.
 
 ---
 
@@ -6151,7 +6151,7 @@ cd C:\MTHO_CORE
 python -m src.scripts.run_whatsapp_e2e_ha
 ```
 
-Das Skript ruft den HA-Service **rest_command.atlas_whatsapp_webhook** mit einem addon-ähnlichen Payload auf (Absender = WHATSAPP_TARGET_ID aus .env, Nachricht = "E2E-Test von HA: Ping"). Damit durchläuft die gleiche Kette wie bei einer echten Nachricht: HA → MTHO → Antwort per **send_whatsapp** → HA whatsapp/send_message. Wenn alles stimmt, erscheint die MTHO-Antwort im Chat zu WHATSAPP_TARGET_ID (in der Regel dein eigener Chat).
+Das Skript ruft den HA-Service **rest_command.mtho_whatsapp_webhook** mit einem addon-ähnlichen Payload auf (Absender = WHATSAPP_TARGET_ID aus .env, Nachricht = "E2E-Test von HA: Ping"). Damit durchläuft die gleiche Kette wie bei einer echten Nachricht: HA → MTHO → Antwort per **send_whatsapp** → HA whatsapp/send_message. Wenn alles stimmt, erscheint die MTHO-Antwort im Chat zu WHATSAPP_TARGET_ID (in der Regel dein eigener Chat).
 
 ---
 
@@ -6185,7 +6185,7 @@ OC (OpenClaw) hat einen **eigenen** WhatsApp-Kanal (Gateway mit Baileys auf dem 
 | Symptom | Ursache | Maßnahme |
 |--------|---------|---------|
 | Verbindung dreht minutenlang, bricht ab, danach wieder „warten“ | HA **rest_command** wartet auf MTHO-Antwort; Default-Timeout 10s. Früher: MTHO führte LLM (30s+) synchron aus → HA brach ab. | MTHO antwortet bei Chat/Reasoning sofort mit **HTTP 202** und verarbeitet im Hintergrund. rest_command mit `timeout: 15` reicht. Doku oben prüfen. |
-| Keine Antwort im Chat | MTHO-API von HA aus nicht erreichbar (Netz/Firewall, falsche IP). | `url` in rest_command prüfen (http://ATLAS_IP:8000). Von HA-Host aus: `curl -X POST http://ATLAS_IP:8000/webhook/whatsapp -H "Content-Type: application/json" -d '{}'` → erwartet 200/202 oder JSON. |
+| Keine Antwort im Chat | MTHO-API von HA aus nicht erreichbar (Netz/Firewall, falsche IP). | `url` in rest_command prüfen (http://MTHO_IP:8000). Von HA-Host aus: `curl -X POST http://MTHO_IP:8000/webhook/whatsapp -H "Content-Type: application/json" -d '{}'` → erwartet 200/202 oder JSON. |
 | 4xx von MTHO | Falsches Payload-Format (z. B. fehlendes `message`/`key.remoteJid`). | Automation muss `payload: "{{ trigger.event.data }}"` übergeben. Addon-Event-Struktur in HA unter Entwicklerwerkzeuge → Ereignisse prüfen. |
 | WhatsApp-Nachricht geht nicht raus (MTHO → HA) | HA-Service `whatsapp/send_message` nicht erreichbar oder Timeout. | HASS_URL/HASS_TOKEN in .env. MTHO nutzt 15s Timeout für send_whatsapp. HA-Logs und Addon-Status prüfen. |
 

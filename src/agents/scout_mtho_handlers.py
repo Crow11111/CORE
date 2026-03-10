@@ -20,7 +20,7 @@ import os
 from typing import Any
 from loguru import logger
 
-from .ghost_agent import GhostIntent, GhostAgentPool, get_ghost_pool
+from .mtho_agent import GhostIntent, GhostAgentPool, get_ghost_pool
 
 
 async def handle_command(payload: dict) -> dict:

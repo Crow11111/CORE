@@ -20,7 +20,7 @@ Zentrale Übersicht der Projekt-Struktur.
 ## 1. CORE DNA (`docs/01_CORE_DNA/`)
 **Die Verfassung des Projekts.**
 - `CREW_MANIFEST.md` – Rollen & Aufgaben (Architect Zero, Backend Forge, etc.)
-- `ATLAS_VOICE_ARCHITECTURE_V1.3.md` – Voice-Design & Persona-Definitionen
+- `MTHO_VOICE_ARCHITECTURE_V1.3.md` – Voice-Design & Persona-Definitionen
 - `stammdokumente_oc/` – Spezifische Dokumente für den Austausch mit OpenClaw (OC)
 
 ---
@@ -28,8 +28,8 @@ Zentrale Übersicht der Projekt-Struktur.
 ## 2. ARCHITECTURE (`docs/02_ARCHITECTURE/`)
 **System-Design & Logik.**
 - `OPENCLAW_ADMIN_ARCHITEKTUR.md` – Admin vs. Spine Architektur
-- `WHATSAPP_ROUTING_ATLAS_OC.md` – Routing-Logik (Wer antwortet wann)
-- `KANAL_ATLAS_OC.md` – Direkter Kanal zwischen MTHO und OC
+- `WHATSAPP_ROUTING_MTHO_OC.md` – Routing-Logik (Wer antwortet wann)
+- `KANAL_MTHO_OC.md` – Direkter Kanal zwischen MTHO und OC
 - `WHATSAPP_OPENCLAW_VS_HA.md` – Vergleich der Pfade
 
 ---

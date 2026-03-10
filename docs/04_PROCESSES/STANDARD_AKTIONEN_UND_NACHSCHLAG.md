@@ -52,8 +52,8 @@
 
 | Aktion | Wo nachschauen | Skript / Hinweis |
 |--------|----------------|------------------|
-| MTHO-Dienste starten | Projektroot: `START_ATLAS_DIENSTE.bat` | Backend 8000, Dashboard 8501, Voice-Info 8502; bei Fehler: Fenster bleibt mit Pause offen (Fehlermeldung lesen) |
-| Komplett (inkl. MX-Snapshot) | `START_ATLAS_KOMPLETT.bat` | Ruft START_ATLAS_DIENSTE.bat auf |
+| MTHO-Dienste starten | Projektroot: `START_MTHO_DIENSTE.bat` | Backend 8000, Dashboard 8501, Voice-Info 8502; bei Fehler: Fenster bleibt mit Pause offen (Fehlermeldung lesen) |
+| Komplett (inkl. MX-Snapshot) | `START_MTHO_KOMPLETT.bat` | Ruft START_MTHO_DIENSTE.bat auf |
 
 ---
 

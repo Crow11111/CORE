@@ -15,8 +15,8 @@
 
 ## Inhaltsverzeichnis
 
-- [00 MTHO PROCESSES MASTER](#00-atlas-processes-master)
-- [CEO STATUS VPS SYNC UND MTHO](#ceo-status-vps-sync-und-atlas)
+- [00 MTHO PROCESSES MASTER](#00-mtho-processes-master)
+- [CEO STATUS VPS SYNC UND MTHO](#ceo-status-vps-sync-und-mtho)
 - [CODE SICHERHEITSRAT](#code-sicherheitsrat)
 - [GITHUB SETUP](#github-setup)
 - [RING1 PERFORMANCE MATRIX](#ring1-performance-matrix)
@@ -31,7 +31,7 @@
 ---
 
 
-<a name="00-atlas-processes-master"></a>
+<a name="00-mtho-processes-master"></a>
 # 00 MTHO PROCESSES MASTER
 
 ## MTHO PROCESSES MASTER PLAN
@@ -44,7 +44,7 @@
 
 ### Inhaltsverzeichnis
 
-- [CEO STATUS VPS SYNC UND MTHO](#ceo-status-vps-sync-und-atlas)
+- [CEO STATUS VPS SYNC UND MTHO](#ceo-status-vps-sync-und-mtho)
 - [CODE SICHERHEITSRAT](#code-sicherheitsrat)
 - [GITHUB SETUP](#github-setup)
 - [RING1 PERFORMANCE MATRIX](#ring1-performance-matrix)
@@ -59,7 +59,7 @@
 ---
 
 
-<a name="ceo-status-vps-sync-und-atlas"></a>
+<a name="ceo-status-vps-sync-und-mtho"></a>
 ## CEO STATUS VPS SYNC UND MTHO
 
 ### CEO-Status: VPS-Sync & MTHO-Aufbau
@@ -102,7 +102,7 @@ python -m src.scripts.run_vps_sync_with_tunnel
 #### 3. MTHO-Aufbau – nächste Meilensteine (CEO)
 
 1. **Ring-0/VPS-Sync:** Sobald VPS-Chroma auf 8000 antwortet → Sync + Abgleich ausführen, Vergleichsdokument Abschnitt 2 ausfüllen.
-2. **Cursor/Regeln:** Reduktion und fraktale Verteilung (laut CURSOR_ATLAS_SPEC) – bereits angestoßen; bei Bedarf Team A (Cursor/DB/API) nachziehen.
+2. **Cursor/Regeln:** Reduktion und fraktale Verteilung (laut CURSOR_MTHO_SPEC) – bereits angestoßen; bei Bedarf Team A (Cursor/DB/API) nachziehen.
 3. **DB-Migration:** Gravitations-Logik (Migrationsreihenfolge Judge-bestätigt) – Ring-0-Sync zuerst, dann Cursor-Reduktion, dann Query-Code.
 4. **Dissonanz-Schwellwerte:** Spec mit bewerteter Fassung (User Vorschlag C) steht; Implementierung in Shadow-Mode mit Auswertung „morgen nach 12 Uhr“.
 5. **Tool-Audit, Chat Team B, Zusammenfassung, OMEGA_ATTRACTOR-Fix:** Gemäß CEO-Plan nacheinander abarbeiten; Budget und Token-Druck je Phase anpassen.
@@ -122,7 +122,7 @@ python -m src.scripts.run_vps_sync_with_tunnel
 - **VPS-Sync:** `docs/04_PROCESSES/VPS_SYNC_CORE_DIRECTIVES.md`
 - **Vergleichsdokument:** `docs/05_AUDIT_PLANNING/VERGLEICHSDOKUMENT_OC_BRAIN_VS_DREADNOUGHT.md`
 - **CEO-Plan (Phasen/Budget):** `docs/05_AUDIT_PLANNING/CEO_PLAN_OC_BRAIN_ABGLEICH_UND_ROLLOUT.md`
-- **Kern-Kontext:** `docs/05_AUDIT_PLANNING/ATLAS_KERN_CONTEXT.md`
+- **Kern-Kontext:** `docs/05_AUDIT_PLANNING/MTHO_KERN_CONTEXT.md`
 - **Bibliothek Kerndokumente:** `docs/BIBLIOTHEK_KERN_DOKUMENTE.md`
 
 
@@ -359,7 +359,7 @@ Die `.gitignore` schützt bereits:
 | Triage → HA / Heavy | | | |
 | **OC → oc_channel/send** | 2 | ~5000–60000 ms | Sync |
 | send_message_to_agent (requests) | | | |
-| **atlas_knowledge/search (collection=all)** | 4 | ~300–900 ms | Sequentiell |
+| **mtho_knowledge/search (collection=all)** | 4 | ~300–900 ms | Sequentiell |
 
 ---
 
@@ -372,17 +372,17 @@ Die `.gitignore` schützt bereits:
 - whatsapp_webhook: 4 Hops
 - scout_direct_handler (via ha_webhook): 3–5 Hops
 - ha_webhook/forwarded_text: 4 Hops
-- atlas_knowledge/search: 4 Hops (3× ChromaDB sequentiell)
+- mtho_knowledge/search: 4 Hops (3× ChromaDB sequentiell)
 
 ##### Synchrone Blockaden
 | Komponente | Aufrufer | Problem |
 |------------|----------|---------|
 | `process_text()` | ha_webhook | Blockiert Event-Loop (Triage + HA/OC) |
-| `atlas_llm.run_triage()` | ha_webhook, whatsapp_webhook | Sync Ollama-Call |
+| `mtho_llm.run_triage()` | ha_webhook, whatsapp_webhook | Sync Ollama-Call |
 | `HAClient.call_service()` | Alle Webhooks | Sync requests.post |
 | `send_message_to_agent()` | scout_direct_handler, oc_channel | Sync, 60s Timeout |
 | `_forward_to_vps()` | scout_direct_handler | Sync, 30s Timeout |
-| ChromaDB query_* | atlas_knowledge | Sync, 3× sequentiell |
+| ChromaDB query_* | mtho_knowledge | Sync, 3× sequentiell |
 
 ##### Langsame API-Calls
 | Call | Timeout | Typische Latenz |
@@ -403,7 +403,7 @@ Die `.gitignore` schützt bereits:
 | ha_webhook/ha_action (SCOUT_DIRECT_MODE) | 500–8000 ms | `asyncio.to_thread(process_text)` | Event-Loop frei, andere Requests nicht blockiert |
 | ha_webhook/inject_text (SCOUT_DIRECT_MODE) | 500–8000 ms | `asyncio.to_thread(process_text)` | Wie oben |
 | ha_webhook/assist | 3000–15000 ms | process_text in Thread + dispatch_tts bereits async | Event-Loop frei |
-| atlas_knowledge/search (collection=all) | 300–900 ms | 3 ChromaDB-Queries parallel | ~60–70 % (900→300 ms) |
+| mtho_knowledge/search (collection=all) | 300–900 ms | 3 ChromaDB-Queries parallel | ~60–70 % (900→300 ms) |
 | whatsapp_webhook (command) | 500–2000 ms | Triage bereits Fast-Path (lexical) | Bereits optimiert |
 | scout_direct_handler (deep_reasoning) | 5000–65000 ms | OMEGA_ATTRACTOR extern, kein lokaler Fix | - |
 | oc_channel/send | 5000–60000 ms | Async-Client (httpx) – geschützt | Empfehlung: später |
@@ -413,7 +413,7 @@ Die `.gitignore` schützt bereits:
 #### 4. Implementierte Änderungen (Kritische Pfade)
 
 1. **ha_webhook**: `process_text` und Legacy-Triage in `asyncio.to_thread` → Event-Loop blockiert nicht
-2. **atlas_knowledge/search**: ChromaDB-Queries parallel via `asyncio.gather` + `run_in_executor`
+2. **mtho_knowledge/search**: ChromaDB-Queries parallel via `asyncio.gather` + `run_in_executor`
 
 ---
 
@@ -441,7 +441,7 @@ Die `.gitignore` schützt bereits:
 
 #### Ablauf
 
-1. **Stammdokumente** liegen im Repo unter [docs/stammdokumente_oc/](../01_CORE_DNA/stammdokumente_oc/00_INDEX.md) (00_INDEX, 01_PROJEKT_ATLAS, 02_MARC_UND_TEAM, 03_OC_ROLLE_UND_GRENZEN).
+1. **Stammdokumente** liegen im Repo unter [docs/stammdokumente_oc/](../01_CORE_DNA/stammdokumente_oc/00_INDEX.md) (00_INDEX, 01_PROJEKT_MTHO, 02_MARC_UND_TEAM, 03_OC_ROLLE_UND_GRENZEN).
 2. **Freigabe durch den OMEGA_ATTRACTOR Council:** Der OMEGA_ATTRACTOR Council (Osmium Council) prüft die Stammdokumente. Wenn alle eine Stimme abgegeben haben und die Mehrheit dafür ist, gilt die Freigabe.
 3. **Deployment:** Die Stammdokumente werden auf dem Hostinger-VPS an einer Stelle abgelegt, die **OC einsehen kann** (z. B. `/var/lib/openclaw/workspace/stammdokumente/`).
 4. **Information:** Marc informiert **per WhatsApp** (über den OC-Kanal oder den HA-Pfad, je nachdem wo OC erreicht wird), dass die Stammdokumente dort liegen und einsehbar sind.
@@ -466,7 +466,7 @@ python -m src.scripts.deploy_stammdokumente_vps
 **Vorlage für die Information an OC** (per WhatsApp senden, so dass OC es lesen kann):
 
 ```
-[MTHO] Die Stammdokumente für dich liegen bereit. Sie befinden sich auf dem Server im OC-Workspace unter stammdokumente/ (00_INDEX.md, PROJEKT_ATLAS, MARC_UND_TEAM, OC_ROLLE_UND_GRENZEN). Dort steht, was wir hier machen, warum, wer Marc ist, wer das Team ist und wie deine Rolle und Grenzen definiert sind.
+[MTHO] Die Stammdokumente für dich liegen bereit. Sie befinden sich auf dem Server im OC-Workspace unter stammdokumente/ (00_INDEX.md, PROJEKT_MTHO, MARC_UND_TEAM, OC_ROLLE_UND_GRENZEN). Dort steht, was wir hier machen, warum, wer Marc ist, wer das Team ist und wie deine Rolle und Grenzen definiert sind.
 ```
 
 (Der Präfix [MTHO] kennzeichnet Nachrichten vom vollen MTHO/4D_RESONATOR (MTHO_CORE); siehe WHATSAPP_E2E_HA_SETUP.md / DEV_AGENT_UND_SCHNITTSTELLEN – Abschnitt WhatsApp-Präfix.)
@@ -529,8 +529,8 @@ python -m src.scripts.deploy_stammdokumente_vps
 
 | Aktion | Wo nachschauen | Skript / Hinweis |
 |--------|----------------|------------------|
-| MTHO-Dienste starten | Projektroot: `START_ATLAS_DIENSTE.bat` | Backend 8000, Dashboard 8501, Voice-Info 8502; bei Fehler: Fenster bleibt mit Pause offen (Fehlermeldung lesen) |
-| Komplett (inkl. MX-Snapshot) | `START_ATLAS_KOMPLETT.bat` | Ruft START_ATLAS_DIENSTE.bat auf |
+| MTHO-Dienste starten | Projektroot: `START_MTHO_DIENSTE.bat` | Backend 8000, Dashboard 8501, Voice-Info 8502; bei Fehler: Fenster bleibt mit Pause offen (Fehlermeldung lesen) |
+| Komplett (inkl. MX-Snapshot) | `START_MTHO_KOMPLETT.bat` | Ruft START_MTHO_DIENSTE.bat auf |
 
 ---
 
@@ -787,7 +787,7 @@ Structured Output: `{domain, service, entity_id, data}`
 | Keine Sprachausgabe auf Mini | TTS_CONFIRMATION_ENTITY falsch | media_player Entity prüfen (z.B. media_player.schreibtisch) |
 | ElevenLabs nicht genutzt | TTS_TARGET=mini (Default) | TTS_TARGET=elevenlabs_stream für ElevenLabs auf Mini |
 | Piper Fallback fehlgeschlagen | PIPER_VOICE_PATH nicht gesetzt | `python -m piper.download_voices de_DE-lessac-medium` |
-| Stream zu Mini fehlgeschlagen | Mini erreicht ATLAS_HOST_IP nicht | ATLAS_HOST_IP auf erreichbare IP setzen, Firewall prüfen |
+| Stream zu Mini fehlgeschlagen | Mini erreicht MTHO_HOST_IP nicht | MTHO_HOST_IP auf erreichbare IP setzen, Firewall prüfen |
 
 ---
 
@@ -797,7 +797,7 @@ Structured Output: `{domain, service, entity_id, data}`
 |---------|---------|--------|
 | Datei nicht gefunden | nasa_mission_complete.mp3 fehlt | `python -m src.scripts.download_nasa_sound` |
 | play_media fehlgeschlagen | HASS_URL/TOKEN fehlt | `.env` prüfen |
-| Mini streamt nicht | Port 8002 blockiert / falsche IP | ATLAS_HOST_IP, TTS_STREAM_PORT prüfen |
+| Mini streamt nicht | Port 8002 blockiert / falsche IP | MTHO_HOST_IP, TTS_STREAM_PORT prüfen |
 
 ---
 
@@ -886,7 +886,7 @@ Nutzt zuerst Paramiko (`.env`: `VPS_HOST`, `VPS_USER`, `VPS_PASSWORD` oder `VPS_
 ---
 
 
-<a name="ceo-status-vps-sync-und-atlas"></a>
+<a name="ceo-status-vps-sync-und-mtho"></a>
 # CEO STATUS VPS SYNC UND MTHO
 
 ## CEO-Status: VPS-Sync & MTHO-Aufbau
@@ -929,7 +929,7 @@ python -m src.scripts.run_vps_sync_with_tunnel
 ### 3. MTHO-Aufbau – nächste Meilensteine (CEO)
 
 1. **Ring-0/VPS-Sync:** Sobald VPS-Chroma auf 8000 antwortet → Sync + Abgleich ausführen, Vergleichsdokument Abschnitt 2 ausfüllen.
-2. **Cursor/Regeln:** Reduktion und fraktale Verteilung (laut CURSOR_ATLAS_SPEC) – bereits angestoßen; bei Bedarf Team A (Cursor/DB/API) nachziehen.
+2. **Cursor/Regeln:** Reduktion und fraktale Verteilung (laut CURSOR_MTHO_SPEC) – bereits angestoßen; bei Bedarf Team A (Cursor/DB/API) nachziehen.
 3. **DB-Migration:** Gravitations-Logik (Migrationsreihenfolge Judge-bestätigt) – Ring-0-Sync zuerst, dann Cursor-Reduktion, dann Query-Code.
 4. **Dissonanz-Schwellwerte:** Spec mit bewerteter Fassung (User Vorschlag C) steht; Implementierung in Shadow-Mode mit Auswertung „morgen nach 12 Uhr“.
 5. **Tool-Audit, Chat Team B, Zusammenfassung, OMEGA_ATTRACTOR-Fix:** Gemäß CEO-Plan nacheinander abarbeiten; Budget und Token-Druck je Phase anpassen.
@@ -949,7 +949,7 @@ python -m src.scripts.run_vps_sync_with_tunnel
 - **VPS-Sync:** `docs/04_PROCESSES/VPS_SYNC_CORE_DIRECTIVES.md`
 - **Vergleichsdokument:** `docs/05_AUDIT_PLANNING/VERGLEICHSDOKUMENT_OC_BRAIN_VS_DREADNOUGHT.md`
 - **CEO-Plan (Phasen/Budget):** `docs/05_AUDIT_PLANNING/CEO_PLAN_OC_BRAIN_ABGLEICH_UND_ROLLOUT.md`
-- **Kern-Kontext:** `docs/05_AUDIT_PLANNING/ATLAS_KERN_CONTEXT.md`
+- **Kern-Kontext:** `docs/05_AUDIT_PLANNING/MTHO_KERN_CONTEXT.md`
 - **Bibliothek Kerndokumente:** `docs/BIBLIOTHEK_KERN_DOKUMENTE.md`
 
 
@@ -1186,7 +1186,7 @@ Die `.gitignore` schützt bereits:
 | Triage → HA / Heavy | | | |
 | **OC → oc_channel/send** | 2 | ~5000–60000 ms | Sync |
 | send_message_to_agent (requests) | | | |
-| **atlas_knowledge/search (collection=all)** | 4 | ~300–900 ms | Sequentiell |
+| **mtho_knowledge/search (collection=all)** | 4 | ~300–900 ms | Sequentiell |
 
 ---
 
@@ -1199,17 +1199,17 @@ Die `.gitignore` schützt bereits:
 - whatsapp_webhook: 4 Hops
 - scout_direct_handler (via ha_webhook): 3–5 Hops
 - ha_webhook/forwarded_text: 4 Hops
-- atlas_knowledge/search: 4 Hops (3× ChromaDB sequentiell)
+- mtho_knowledge/search: 4 Hops (3× ChromaDB sequentiell)
 
 #### Synchrone Blockaden
 | Komponente | Aufrufer | Problem |
 |------------|----------|---------|
 | `process_text()` | ha_webhook | Blockiert Event-Loop (Triage + HA/OC) |
-| `atlas_llm.run_triage()` | ha_webhook, whatsapp_webhook | Sync Ollama-Call |
+| `mtho_llm.run_triage()` | ha_webhook, whatsapp_webhook | Sync Ollama-Call |
 | `HAClient.call_service()` | Alle Webhooks | Sync requests.post |
 | `send_message_to_agent()` | scout_direct_handler, oc_channel | Sync, 60s Timeout |
 | `_forward_to_vps()` | scout_direct_handler | Sync, 30s Timeout |
-| ChromaDB query_* | atlas_knowledge | Sync, 3× sequentiell |
+| ChromaDB query_* | mtho_knowledge | Sync, 3× sequentiell |
 
 #### Langsame API-Calls
 | Call | Timeout | Typische Latenz |
@@ -1230,7 +1230,7 @@ Die `.gitignore` schützt bereits:
 | ha_webhook/ha_action (SCOUT_DIRECT_MODE) | 500–8000 ms | `asyncio.to_thread(process_text)` | Event-Loop frei, andere Requests nicht blockiert |
 | ha_webhook/inject_text (SCOUT_DIRECT_MODE) | 500–8000 ms | `asyncio.to_thread(process_text)` | Wie oben |
 | ha_webhook/assist | 3000–15000 ms | process_text in Thread + dispatch_tts bereits async | Event-Loop frei |
-| atlas_knowledge/search (collection=all) | 300–900 ms | 3 ChromaDB-Queries parallel | ~60–70 % (900→300 ms) |
+| mtho_knowledge/search (collection=all) | 300–900 ms | 3 ChromaDB-Queries parallel | ~60–70 % (900→300 ms) |
 | whatsapp_webhook (command) | 500–2000 ms | Triage bereits Fast-Path (lexical) | Bereits optimiert |
 | scout_direct_handler (deep_reasoning) | 5000–65000 ms | OMEGA_ATTRACTOR extern, kein lokaler Fix | - |
 | oc_channel/send | 5000–60000 ms | Async-Client (httpx) – geschützt | Empfehlung: später |
@@ -1240,7 +1240,7 @@ Die `.gitignore` schützt bereits:
 ### 4. Implementierte Änderungen (Kritische Pfade)
 
 1. **ha_webhook**: `process_text` und Legacy-Triage in `asyncio.to_thread` → Event-Loop blockiert nicht
-2. **atlas_knowledge/search**: ChromaDB-Queries parallel via `asyncio.gather` + `run_in_executor`
+2. **mtho_knowledge/search**: ChromaDB-Queries parallel via `asyncio.gather` + `run_in_executor`
 
 ---
 
@@ -1268,7 +1268,7 @@ Die `.gitignore` schützt bereits:
 
 ### Ablauf
 
-1. **Stammdokumente** liegen im Repo unter [docs/stammdokumente_oc/](../01_CORE_DNA/stammdokumente_oc/00_INDEX.md) (00_INDEX, 01_PROJEKT_ATLAS, 02_MARC_UND_TEAM, 03_OC_ROLLE_UND_GRENZEN).
+1. **Stammdokumente** liegen im Repo unter [docs/stammdokumente_oc/](../01_CORE_DNA/stammdokumente_oc/00_INDEX.md) (00_INDEX, 01_PROJEKT_MTHO, 02_MARC_UND_TEAM, 03_OC_ROLLE_UND_GRENZEN).
 2. **Freigabe durch den OMEGA_ATTRACTOR Council:** Der OMEGA_ATTRACTOR Council (Osmium Council) prüft die Stammdokumente. Wenn alle eine Stimme abgegeben haben und die Mehrheit dafür ist, gilt die Freigabe.
 3. **Deployment:** Die Stammdokumente werden auf dem Hostinger-VPS an einer Stelle abgelegt, die **OC einsehen kann** (z. B. `/var/lib/openclaw/workspace/stammdokumente/`).
 4. **Information:** Marc informiert **per WhatsApp** (über den OC-Kanal oder den HA-Pfad, je nachdem wo OC erreicht wird), dass die Stammdokumente dort liegen und einsehbar sind.
@@ -1293,7 +1293,7 @@ python -m src.scripts.deploy_stammdokumente_vps
 **Vorlage für die Information an OC** (per WhatsApp senden, so dass OC es lesen kann):
 
 ```
-[MTHO] Die Stammdokumente für dich liegen bereit. Sie befinden sich auf dem Server im OC-Workspace unter stammdokumente/ (00_INDEX.md, PROJEKT_ATLAS, MARC_UND_TEAM, OC_ROLLE_UND_GRENZEN). Dort steht, was wir hier machen, warum, wer Marc ist, wer das Team ist und wie deine Rolle und Grenzen definiert sind.
+[MTHO] Die Stammdokumente für dich liegen bereit. Sie befinden sich auf dem Server im OC-Workspace unter stammdokumente/ (00_INDEX.md, PROJEKT_MTHO, MARC_UND_TEAM, OC_ROLLE_UND_GRENZEN). Dort steht, was wir hier machen, warum, wer Marc ist, wer das Team ist und wie deine Rolle und Grenzen definiert sind.
 ```
 
 (Der Präfix [MTHO] kennzeichnet Nachrichten vom vollen MTHO/4D_RESONATOR (MTHO_CORE); siehe WHATSAPP_E2E_HA_SETUP.md / DEV_AGENT_UND_SCHNITTSTELLEN – Abschnitt WhatsApp-Präfix.)
@@ -1356,8 +1356,8 @@ python -m src.scripts.deploy_stammdokumente_vps
 
 | Aktion | Wo nachschauen | Skript / Hinweis |
 |--------|----------------|------------------|
-| MTHO-Dienste starten | Projektroot: `START_ATLAS_DIENSTE.bat` | Backend 8000, Dashboard 8501, Voice-Info 8502; bei Fehler: Fenster bleibt mit Pause offen (Fehlermeldung lesen) |
-| Komplett (inkl. MX-Snapshot) | `START_ATLAS_KOMPLETT.bat` | Ruft START_ATLAS_DIENSTE.bat auf |
+| MTHO-Dienste starten | Projektroot: `START_MTHO_DIENSTE.bat` | Backend 8000, Dashboard 8501, Voice-Info 8502; bei Fehler: Fenster bleibt mit Pause offen (Fehlermeldung lesen) |
+| Komplett (inkl. MX-Snapshot) | `START_MTHO_KOMPLETT.bat` | Ruft START_MTHO_DIENSTE.bat auf |
 
 ---
 
@@ -1614,7 +1614,7 @@ Structured Output: `{domain, service, entity_id, data}`
 | Keine Sprachausgabe auf Mini | TTS_CONFIRMATION_ENTITY falsch | media_player Entity prüfen (z.B. media_player.schreibtisch) |
 | ElevenLabs nicht genutzt | TTS_TARGET=mini (Default) | TTS_TARGET=elevenlabs_stream für ElevenLabs auf Mini |
 | Piper Fallback fehlgeschlagen | PIPER_VOICE_PATH nicht gesetzt | `python -m piper.download_voices de_DE-lessac-medium` |
-| Stream zu Mini fehlgeschlagen | Mini erreicht ATLAS_HOST_IP nicht | ATLAS_HOST_IP auf erreichbare IP setzen, Firewall prüfen |
+| Stream zu Mini fehlgeschlagen | Mini erreicht MTHO_HOST_IP nicht | MTHO_HOST_IP auf erreichbare IP setzen, Firewall prüfen |
 
 ---
 
@@ -1624,7 +1624,7 @@ Structured Output: `{domain, service, entity_id, data}`
 |---------|---------|--------|
 | Datei nicht gefunden | nasa_mission_complete.mp3 fehlt | `python -m src.scripts.download_nasa_sound` |
 | play_media fehlgeschlagen | HASS_URL/TOKEN fehlt | `.env` prüfen |
-| Mini streamt nicht | Port 8002 blockiert / falsche IP | ATLAS_HOST_IP, TTS_STREAM_PORT prüfen |
+| Mini streamt nicht | Port 8002 blockiert / falsche IP | MTHO_HOST_IP, TTS_STREAM_PORT prüfen |
 
 ---
 

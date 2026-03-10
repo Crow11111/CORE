@@ -1,5 +1,5 @@
 """
-Unit-Tests für Smart Command Parser (ATLAS Voice Assistant).
+Unit-Tests für Smart Command Parser (MTHO Voice Assistant).
 """
 from __future__ import annotations
 

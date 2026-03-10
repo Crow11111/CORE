@@ -1,133 +1,265 @@
 # ============================================================
-# MTHO-GENESIS: Marc Tobias ten Hoevel
+# MTHO-GENESIS: AGOS-0 WATCHDOG (HEPHAISTOS HARDENED)
 # VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
 # LOGIC: 2-2-1-0 (NON-BINARY)
 # ============================================================
 
 """
 AGOS-0 WATCHDOG (Der intrinsische Beobachter).
-Ersetzt den manuellen Trigger des Users durch systemische Selbst-Diagnose.
+Ersetzt den manuellen Trigger durch physikalische Realitaets-Checks.
 
-Funktion:
-1. Überwacht den System-Puls (Heartbeat).
-2. Misst die Entropie (Friction-Level). Zu ruhig -> Provokation.
-3. Verwaltet den Traum-Transfer (Kristalle -> Wach-Logik).
-4. Löst Lazarus-Protokoll aus, wenn Takt 4 (Remote) schweigt.
+PROTOCOL: HEPHAISTOS_ANCHOR_V1
+1. Entropy Check: Ping (Latenz > 0ms beweist Existenz)
+2. Forge Rotation: Git Remote vs Local (Drift beweist Zeitfluss)
+3. Friction Injection: Sendet keine Mocks, sondern echte Messdaten.
 """
 
 import asyncio
+import json
 import os
 import sys
+import tempfile
 import time
 import httpx
-from datetime import datetime, timedelta
+import subprocess
+import re
+from typing import Dict, Any, Optional
 from loguru import logger
+from dotenv import dotenv_values
 
 # Import Core Constants
 sys.path.append(os.getcwd())
-from src.config.omega_72_constants import ANCHOR_MAP
+# Versuche Konstanten zu laden, Fallback auf Hardcoded wenn Module fehlen
+try:
+    from src.config.mtho_state_vector import BARYONIC_DELTA, SYMMETRY_BREAK
+except ImportError:
+    BARYONIC_DELTA = 0.049
+    SYMMETRY_BREAK = 0.49
 
 # Konfiguration
 WATCHDOG_INTERVAL = 60.0  # Sekunden (Herzschlag)
-MAX_WUJI_SILENCE = 3600.0 # 1 Stunde ohne Friction -> Trigger Provokation
-REMOTE_TIMEOUT = 120.0    # Takt 4 Timeout -> Lazarus
+REMOTE_CHECK_INTERVAL = 300.0 # Alle 5 Min Git Check (teuer)
+TELEMETRY_PATH = os.path.join(os.getenv("MTHO_DATA_DIR", "c:/MTHO_CORE/data"), "telemetry.json")
 
-# Status-Speicher (Flüchtig im RAM, da Watchdog immer läuft)
-SYSTEM_STATE = {
-    "last_friction_time": time.time(),
-    "last_pulse": time.time(),
-    "pending_crystals": 0,
-    "mode": "BOOT" # BOOT, WATCH, DREAM, LAZARUS
-}
-
+# Environment
+env_vars = dotenv_values(".env")
 API_URL = os.getenv("MTHO_VPS_URL", "http://localhost:8000")
 WEBHOOK_URL = f"{API_URL}/webhook/omega_thought"
-
-# Fake Token für Loopback
-from dotenv import dotenv_values
-env_vars = dotenv_values(".env")
 HEADERS = {"Authorization": f"Bearer {env_vars.get('HA_WEBHOOK_TOKEN', '')}"}
 
+# Status-Speicher
+SYSTEM_STATE = {
+    "last_friction_time": 0.0,
+    "last_git_check": 0.0,
+    "last_latency_ms": 0.0,
+    "git_drift": "UNKNOWN", # SYNCED, AHEAD, BEHIND, DETACHED
+    "mode": "BOOT"
+}
+
+async def check_connectivity() -> float:
+    """
+    Misst die Netzwerk-Latenz zu einem externen Anker (Google DNS).
+    Liefert RTT in ms. -1.0 bei Fehler (kein Netz).
+    """
+    host = "8.8.8.8"
+    param = "-n" if sys.platform.lower() == "win32" else "-c"
+    command = ["ping", param, "1", host]
+    
+    try:
+        # Führe Ping aus
+        start = time.perf_counter()
+        proc = await asyncio.create_subprocess_exec(
+            *command,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
+        stdout, stderr = await proc.communicate()
+        end = time.perf_counter()
+        
+        if proc.returncode == 0:
+            # Versuche echte Zeit aus Output zu parsen (Genauer)
+            # Windows: "Zeit=14ms", Linux: "time=14.2 ms"
+            output = stdout.decode('utf-8', errors='ignore')
+            match = re.search(r"(?:Zeit|time)[=<]([\d\.]+)\s?ms", output)
+            if match:
+                return float(match.group(1))
+            else:
+                # Fallback: Wall Clock Time (ungenau, aber > 0)
+                return (end - start) * 1000.0
+        else:
+            logger.warning(f"[WATCHDOG] Entropy-Check failed (No Internet?): {stderr.decode().strip()}")
+            return -1.0 # Void State
+            
+    except Exception as e:
+        logger.error(f"[WATCHDOG] Ping Error: {e}")
+        return -1.0
+
+async def check_forge_alignment() -> str:
+    """
+    Prüft die Synchronisation mit dem Git-Remote.
+    Drift = Friction.
+    """
+    try:
+        # 1. Local Hash
+        local_proc = await asyncio.create_subprocess_exec(
+            "git", "rev-parse", "HEAD",
+            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+        )
+        out_local, _ = await local_proc.communicate()
+        local_hash = out_local.decode().strip()
+
+        # 2. Remote Hash (Teuer, Netzwerk)
+        # Wir nutzen ls-remote um keinen lokalen State zu ändern
+        remote_proc = await asyncio.create_subprocess_exec(
+            "git", "ls-remote", "origin", "HEAD",
+            stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+        )
+        out_remote, _ = await remote_proc.communicate()
+        # Output format: "<hash>\tHEAD"
+        remote_parts = out_remote.decode().strip().split()
+        if not remote_parts:
+            return "OFFLINE"
+        
+        remote_hash = remote_parts[0]
+
+        if local_hash == remote_hash:
+            return "SYNCED"
+        else:
+            return "DESYNC"
+
+    except Exception as e:
+        logger.error(f"[WATCHDOG] Git Check Failed: {e}")
+        return "ERROR"
+
 async def check_vital_signs():
-    """Prüft, ob die API (der Körper) überhaupt lebt."""
+    """Prüft, ob der API-Body (localhost) antwortet."""
     try:
         async with httpx.AsyncClient() as client:
             resp = await client.get(f"{API_URL}/status", timeout=5.0)
-            if resp.status_code == 200:
-                return True
+            return resp.status_code == 200
     except Exception:
         return False
-    return False
 
-async def inject_stimulus(thought: str, context_type: str):
-    """Feuert einen Gedanken in den eigenen Cortex (Selbstgespräch)."""
+async def inject_reality_anchor(friction_data: Dict[str, Any]):
+    """
+    Injiziert den gemessenen Reibungs-Vektor in den Cortex.
+    Keine 'Gedanken' mehr, sondern rohe Telemetrie.
+    """
+    latency = friction_data.get('latency_ms', -1)
+    git_status = friction_data.get('git_status', 'UNKNOWN')
+    
+    # Nachricht basierend auf Fakten konstruieren
+    if latency < 0:
+        thought = "WARNUNG: System isoliert (Kein Netz). Realitätsverlust droht."
+        context = "VOID_WARNING"
+    elif git_status == "DESYNC":
+        thought = f"Git-Synchronisations-Divergenz erkannt. Status: {git_status}. Push/Pull empfohlen."
+        context = "FORGE_DESYNC"
+    else:
+        # Alles normal -> Heartbeat, aber nur selten (um Log nicht zu fluten)
+        # Wir senden hier nur, wenn wir explizit Friction erzeugen wollen (z.B. lange Stille)
+        thought = f"Reality Check: {latency:.1f}ms Latenz. Anker stabil. Wuji-Feld aktiv."
+        context = "ANCHOR_HEARTBEAT"
+
     payload = {
         "thought": thought,
-        "context": {"type": context_type, "source": "AGOS_0_WATCHDOG"},
-        "sender": "SYSTEM_INTERNAL",
-        "require_response": True
+        "context": {
+            "type": context,
+            "source": "AGOS_0_HEPHAISTOS",
+            "telemetry": friction_data
+        },
+        "sender": "SYSTEM_WATCHDOG",
+        "require_response": False # Nur Info, keine zwingende Antwort
     }
-    try:
-        async with httpx.AsyncClient(verify=False) as client:
-            await client.post(WEBHOOK_URL, json=payload, headers=HEADERS, timeout=30.0)
-            logger.info(f"[WATCHDOG] Stimulus injiziert: {context_type}")
-            SYSTEM_STATE["last_friction_time"] = time.time() # Reset Wuji-Timer
-    except Exception as e:
-        logger.error(f"[WATCHDOG] Stimulus fehlgeschlagen: {e}")
-
-async def process_dream_residue():
-    """
-    Liest Traum-Kristalle beim Booten und füttert sie dosiert ein.
-    Verhindert Hyper-Arousal durch Pufferung.
-    """
-    # TODO: Hier müsste der Chroma-Client gelesen werden.
-    # Für V1 simulieren wir das Prüfen der DB.
-    logger.info("[WATCHDOG] Prüfe Traum-Kristalle in Wuji-Feld...")
-    # Mock: Wir nehmen an, es gibt Kristalle (aus der Nacht)
-    crystals_found = True 
     
-    if crystals_found and SYSTEM_STATE["mode"] == "BOOT":
-        logger.info("[WATCHDOG] Kristalle gefunden. Initiiere kontrolliertes Erwachen.")
-        await inject_stimulus(
-            "System Boot. Traum-Kristalle erkannt. Starte Integration der Dissonanzen von gestern.",
-            "WAKE_UP_PROTOCOL"
-        )
-        SYSTEM_STATE["mode"] = "WATCH"
+    is_localhost = "localhost" in WEBHOOK_URL or "127.0.0.1" in WEBHOOK_URL
+    try:
+        async with httpx.AsyncClient(verify=not is_localhost) as client:
+            await client.post(WEBHOOK_URL, json=payload, headers=HEADERS, timeout=10.0)
+            logger.info(f"[WATCHDOG] Reality Injected: {context} | {latency:.1f}ms")
+            SYSTEM_STATE["last_friction_time"] = time.time()
+    except Exception as e:
+        logger.error(f"[WATCHDOG] Injection failed: {e}")
 
 async def watchdog_loop():
-    logger.info("AGOS-0 WATCHDOG gestartet. Ich beobachte.")
-    
-    # Initial: Warten auf API
+    logger.info("AGOS-0 WATCHDOG (HEPHAISTOS EDITION) gestartet.")
+    logger.info(f"Target: {API_URL} | Threshold: {FRICTION_THRESHOLD}")
+
+    # Initial Wait for Body
     while not await check_vital_signs():
-        logger.warning("[WATCHDOG] API nicht erreichbar. Warte auf Körper...")
-        await asyncio.sleep(10)
-    
-    # Boot-Phase: Träume integrieren
-    await process_dream_residue()
-    
+        logger.warning("[WATCHDOG] Warte auf Körper (API)...")
+        await asyncio.sleep(5)
+
+    SYSTEM_STATE["mode"] = "WATCH"
+
     while True:
         current_time = time.time()
         
-        # 1. Wuji-Check (Langeweile)
-        silence_duration = current_time - SYSTEM_STATE["last_friction_time"]
-        if silence_duration > MAX_WUJI_SILENCE:
-            logger.warning(f"[WATCHDOG] Wuji-Warnung! {silence_duration}s Stille. Erzeuge Reibung.")
-            await inject_stimulus(
-                "System-Status zu stabil (Wuji). Axiom-Check erforderlich. Ist die Realität noch 72-Anker-konform?",
-                "ENTROPY_INJECTION"
-            )
+        # 1. Physics Check (Ping)
+        latency = await check_connectivity()
+        SYSTEM_STATE["last_latency_ms"] = latency
         
-        # 2. Heartbeat Log
-        if current_time - SYSTEM_STATE["last_pulse"] > 300: # Alle 5 Min Log
-            logger.info(f"[WATCHDOG] Puls stabil. Modus: {SYSTEM_STATE['mode']}. Silence: {int(silence_duration)}s")
-            SYSTEM_STATE["last_pulse"] = current_time
+        # 2. Forge Check (Git) - seltener
+        if current_time - SYSTEM_STATE["last_git_check"] > REMOTE_CHECK_INTERVAL:
+            git_status = await check_forge_alignment()
+            SYSTEM_STATE["git_drift"] = git_status
+            SYSTEM_STATE["last_git_check"] = current_time
+            logger.info(f"[WATCHDOG] Forge Status: {git_status}")
+        else:
+            git_status = SYSTEM_STATE["git_drift"]
+
+        # 3. Logik: Brauchen wir Friction?
+        # Wenn Drift da ist -> SOFORT melden
+        # Wenn Latenz weg ist -> SOFORT melden
+        # Sonst -> Herzschlag alle X Minuten
+        
+        urgent = False
+        if git_status == "DESYNC":
+            urgent = True
+        if latency < 0:
+            urgent = True
             
+        # Wenn urgent oder Zeit abgelaufen (Heartbeat alle 5 Min)
+        time_since_friction = current_time - SYSTEM_STATE["last_friction_time"]
+        if urgent or (time_since_friction > 300):
+            friction_data = {
+                "latency_ms": latency,
+                "git_status": git_status,
+                "timestamp": current_time
+            }
+            await inject_reality_anchor(friction_data)
+
+        _write_telemetry(latency, git_status)
+
+        logger.debug(f"[WATCHDOG] Tick. Latency: {latency:.1f}ms | Git: {git_status}")
+        
         await asyncio.sleep(WATCHDOG_INTERVAL)
+
+
+def _write_telemetry(latency_ms: float, git_status: str):
+    """Schreibt Telemetrie atomar via os.replace (kein partial read)."""
+    data = {
+        "latency_ms": round(latency_ms, 1),
+        "git_status": git_status,
+        "mode": SYSTEM_STATE.get("mode", "UNKNOWN"),
+        "timestamp": time.time(),
+    }
+    os.makedirs(os.path.dirname(TELEMETRY_PATH), exist_ok=True)
+    tmp_path = TELEMETRY_PATH + ".tmp"
+    try:
+        with open(tmp_path, "w", encoding="utf-8") as f:
+            json.dump(data, f)
+        os.replace(tmp_path, TELEMETRY_PATH)
+    except Exception as e:
+        logger.warning(f"[WATCHDOG] Telemetry-Write fehlgeschlagen: {e}")
 
 if __name__ == "__main__":
     if sys.platform == "win32":
         os.environ["PYTHONIOENCODING"] = "utf-8"
+        # Windows Proactor Loop Fix für Subprozesse
+        asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+        
     try:
         asyncio.run(watchdog_loop())
     except KeyboardInterrupt:
-        logger.info("[WATCHDOG] Beendet.")
+        logger.info("[WATCHDOG] Beendet durch User (SIGINT).")

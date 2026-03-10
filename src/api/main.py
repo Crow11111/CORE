@@ -12,25 +12,25 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
-from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, mtho_knowledge, mtho_voice, mtho_events, github_webhook, omega_matrix, omega_thought
+from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, mtho_knowledge, mtho_voice, mtho_events, github_webhook, omega_matrix, omega_thought, telemetry
 from src.api.middleware.council_gate import CouncilGateMiddleware
 from src.api.middleware.friction_guard import FrictionGuardMiddleware
 
 _event_bus = None
-_ghost_pool = None
+_agent_pool = None
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """MTHO API Lifecycle: Ghost Pool + Event-Bus Startup/Shutdown."""
-    global _event_bus, _ghost_pool
+    global _event_bus, _agent_pool
 
     try:
-        from src.agents.scout_ghost_handlers import scout_fusion_init
-        _ghost_pool = await scout_fusion_init()
-        logger.info("[API] Ghost Agent Pool initialisiert")
+        from src.agents.scout_mtho_handlers import scout_fusion_init
+        _agent_pool = await scout_fusion_init()
+        logger.info("[API] MTHO Agent Pool initialisiert")
     except Exception as exc:
-        logger.error("[API] Ghost Pool Init fehlgeschlagen: {} – API laeuft weiter", exc)
+        logger.error("[API] Agent Pool Init fehlgeschlagen: {} – API laeuft weiter", exc)
 
     hass_url = (os.getenv("HASS_URL") or "").strip()
     hass_token = (os.getenv("HASS_TOKEN") or "").strip()
@@ -75,12 +75,12 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
         except Exception as exc:
             logger.warning("[API] Event-Bus Stop Fehler: {}", exc)
 
-    if _ghost_pool is not None:
+    if _agent_pool is not None:
         try:
-            await _ghost_pool.stop()
-            logger.info("[API] Ghost Pool GC gestoppt")
+            await _agent_pool.stop()
+            logger.info("[API] Agent Pool GC gestoppt")
         except Exception as exc:
-            logger.warning("[API] Ghost Pool Stop Fehler: {}", exc)
+            logger.warning("[API] Agent Pool Stop Fehler: {}", exc)
 
 
 app = FastAPI(
@@ -99,8 +99,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(","),
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type", "X-Council-Confirm", "X-API-Key", "X-Mtho-Secret"],
 )
 
 # Registrierung der Routen (Webhooks + OpenClaw Channel)
@@ -113,6 +113,7 @@ app.include_router(mtho_events.router)
 app.include_router(github_webhook.router)
 app.include_router(omega_matrix.router)
 app.include_router(omega_thought.router)
+app.include_router(telemetry.router)
 
 @app.get("/")
 def read_root():
@@ -135,8 +136,8 @@ def system_status() -> dict:
             "running": _event_bus is not None,
             "stats": bus_stats,
         },
-        "ghost_pool": {
-            "active": _ghost_pool is not None,
+        "agent_pool": {
+            "active": _agent_pool is not None,
         },
         "cradle": {
             "enabled": bool((os.getenv("MTHO_WEBHOOK_SECRET") or "").strip()),

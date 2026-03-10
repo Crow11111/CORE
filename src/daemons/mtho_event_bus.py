@@ -251,8 +251,8 @@ class MthoEventBus:
 
     async def _ensure_pool(self):
         if self._pool is None:
-            from src.agents.ghost_agent import get_ghost_pool
-            from src.agents.scout_ghost_handlers import register_all_handlers
+            from src.agents.mtho_agent import get_ghost_pool
+            from src.agents.scout_mtho_handlers import register_all_handlers
             self._pool = get_ghost_pool()
             if not self._pool._handlers:
                 register_all_handlers(self._pool)
@@ -425,7 +425,7 @@ class MthoEventBus:
         await self._ensure_pool()
 
         try:
-            from src.agents.ghost_agent import GhostIntent
+            from src.agents.mtho_agent import GhostIntent
 
             device_class = (new_state or {}).get("attributes", {}).get("device_class", "")
             context = {

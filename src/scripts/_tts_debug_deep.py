@@ -4,12 +4,18 @@
 # LOGIC: 2-2-1-0 (NON-BINARY)
 # ============================================================
 
+import os
 import requests
 import json
 import urllib3
+from dotenv import load_dotenv
+
+load_dotenv("c:/MTHO_CORE/.env")
 urllib3.disable_warnings()
 
-TOKEN = "***REVOKED_TOKEN***"
+TOKEN = os.getenv("HASS_TOKEN", "")
+if not TOKEN:
+    raise SystemExit("HASS_TOKEN nicht gesetzt. Bitte in .env konfigurieren.")
 H = {"Authorization": f"Bearer {TOKEN}", "Content-Type": "application/json"}
 BASE = "https://192.168.178.54:8123"
 

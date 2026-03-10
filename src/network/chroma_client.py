@@ -39,18 +39,35 @@ COLLECTION_SIMULATION_EVIDENCE = "simulation_evidence"
 COLLECTION_WUJI = "wuji_field"
 
 
-def _get_chroma_client_sync():
-    """Interne synchrone Factory."""
-    try:
-        import chromadb
-    except ImportError:
-        raise ImportError("chromadb nicht installiert: pip install chromadb")
+import threading
 
-    if CHROMA_HOST:
-        return chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
-    if not os.path.exists(CHROMA_LOCAL_PATH):
-        os.makedirs(CHROMA_LOCAL_PATH)
-    return chromadb.PersistentClient(path=CHROMA_LOCAL_PATH)
+_chroma_singleton = None
+_chroma_lock = threading.Lock()
+
+
+def _get_chroma_client_sync():
+    """Thread-safe Singleton: liefert immer dieselbe ChromaDB-Instanz."""
+    global _chroma_singleton
+    if _chroma_singleton is not None:
+        return _chroma_singleton
+
+    with _chroma_lock:
+        if _chroma_singleton is not None:
+            return _chroma_singleton
+
+        try:
+            import chromadb
+        except ImportError:
+            raise ImportError("chromadb nicht installiert: pip install chromadb")
+
+        if CHROMA_HOST:
+            _chroma_singleton = chromadb.HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)
+        else:
+            if not os.path.exists(CHROMA_LOCAL_PATH):
+                os.makedirs(CHROMA_LOCAL_PATH)
+            _chroma_singleton = chromadb.PersistentClient(path=CHROMA_LOCAL_PATH)
+
+    return _chroma_singleton
 
 async def get_chroma_client():
     """Liefert ChromaDB-Client (Async Wrapper)."""

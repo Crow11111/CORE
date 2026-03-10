@@ -581,7 +581,7 @@ class EvidenceInput(BaseModel):
 
 
 @router.post("/evidence/add", dependencies=[Depends(verify_ring0_write)])
-def add_evidence(body: EvidenceInput):
+async def add_evidence(body: EvidenceInput):
     """Fuegt ein neues Simulationstheorie-Indiz validiert hinzu.
     Ring-0 Write Gate: X-Ring0-Token oder Bearer (RING0_WRITE_TOKEN) erforderlich.
     Council Gate: Bei z_widerstand >= 0.618 zusaetzlich X-Council-Confirm.
@@ -593,6 +593,7 @@ def add_evidence(body: EvidenceInput):
         from src.network.chroma_client import (
             add_simulation_evidence,
             query_simulation_evidence,
+            get_simulation_evidence_collection,
         )
         from src.logic_core.quaternary_codec import (
             classify_evidence,
@@ -603,12 +604,12 @@ def add_evidence(body: EvidenceInput):
 
         category = body.category or classification.base.value
 
-        sim_results = query_simulation_evidence(body.document, n_results=3)
+        sim_results = await query_simulation_evidence(body.document, n_results=3)
         dists = sim_results.get("distances", [[]])[0] if sim_results.get("distances") else []
         avg_dist = sum(dists) / len(dists) if dists else 1.0
         temporal_consistency = round(max(0.0, 1.0 - avg_dist), 4) if avg_dist < 2.0 else 0.0
 
-        success = add_simulation_evidence(
+        success = await add_simulation_evidence(
             evidence_id=body.evidence_id,
             document=body.document,
             category=category,
@@ -620,8 +621,7 @@ def add_evidence(body: EvidenceInput):
         if not success:
             return {"ok": False, "error": "ChromaDB ingest fehlgeschlagen"}
 
-        from src.network.chroma_client import get_simulation_evidence_collection
-        col = get_simulation_evidence_collection()
+        col = await get_simulation_evidence_collection()
         all_data = col.get(include=["documents"])
         all_docs = all_data.get("documents", [])
         dist_counts = {"L": 0, "P": 0, "I": 0, "S": 0}

@@ -8,7 +8,7 @@ cd /d C:\MTHO_CORE
 
 echo [1/1] Starte Streamlit Dashboard...
 set PYTHONIOENCODING=utf-8
-start "MTHO DASHBOARD" cmd /k "streamlit run src/ui/dashboard.py"
+start "MTHO DASHBOARD" cmd /k "python -m streamlit run src/ui/dashboard.py"
 
 echo [OK] Streamlit wird gestartet...
 exit

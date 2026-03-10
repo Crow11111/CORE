@@ -223,8 +223,8 @@ async def process_text_async(text: str, context: dict | None = None) -> dict:
         return {"reply": "Kein Text eingegeben.", "success": False, "routed": "local"}
 
     try:
-        from src.agents.ghost_agent import GhostIntent, get_ghost_pool
-        from src.agents.scout_ghost_handlers import register_all_handlers
+        from src.agents.mtho_agent import GhostIntent, get_ghost_pool
+        from src.agents.scout_mtho_handlers import register_all_handlers
         
         pool = get_ghost_pool()
         if pool.active_count == 0 and not pool._handlers:

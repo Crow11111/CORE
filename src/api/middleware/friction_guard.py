@@ -92,8 +92,7 @@ class FrictionGuardMiddleware(BaseHTTPMiddleware):
             rebound_prompt = (
                 "SYSTEM_ERROR [406]: EXECUTION_HERESY_DETECTED. "
                 "You attempted to simulate an action in text (Markdown/Bash) instead of using a physical Tool-Call. "
-                "Text is not reality. Use the JSON tool schema immediately. "
-                f"Friction-Level: {FRICTION_STATE['system_temperature']:.2f}"
+                "Text is not reality. Use the JSON tool schema immediately."
             )
 
             return JSONResponse(

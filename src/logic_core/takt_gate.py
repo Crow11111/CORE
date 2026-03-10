@@ -22,11 +22,9 @@ async def check_takt_zero() -> bool:
         if not is_resonant:
             return False
 
-        # Basic BARYONIC DELTA check (could be expanded)
-        is_stable = await asyncio.to_thread(core.check_baryonic_limit, 0.049)
-
-        if not is_stable:
-            return False
+        # NOTE: check_baryonic_limit requires a *measured* delta value
+        # from a real data source. Passing the constant itself is a tautology.
+        # Activated once telemetry provides a real drift metric (V6).
 
         # Takt 0 is Wuji (Silence/Potential).
         # We ensure we are not in a 'COLLAPSED' state (y=1 without purpose).

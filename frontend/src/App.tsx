@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Terminal, Code2, Settings, Sparkles, Cpu, Menu, Headphones, Mic, Volume2, RefreshCw, Link } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import TelemetryHUD from './components/TelemetryHUD';
+import { useTelemetryPolling } from './hooks/useTelemetryPolling';
 
 type Message = {
   id: string;
@@ -31,6 +33,7 @@ export default function App() {
 
   const apiBase = (import.meta.env.VITE_MTHO_API_URL || 'http://localhost:8000').replace(/\/$/, '');
   const wsUrl = apiBase.replace(/^http/, 'ws') + '/ws';
+  const { data: telemetry, connected: telemetryConnected } = useTelemetryPolling({ apiBase });
 
   // Status Indicators State
   const [services, setServices] = useState<Record<string, ServiceStatus>>({
@@ -279,34 +282,13 @@ export default function App() {
             </div>
           </div>
           
-          {/* Status Indicators */}
+          {/* Telemetry HUD */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-[#252525] border border-[#333] rounded-full mr-2">
-              <Mic className="w-3.5 h-3.5 text-[#888]" />
-              <span className="text-[11px] text-[#A0A0A0] font-mono">{activeProfile}</span>
-            </div>
+            <TelemetryHUD data={telemetry} connected={telemetryConnected} />
             <div className="flex items-center gap-2 bg-[#222] px-2.5 py-1.5 rounded-md border border-[#2A2A2A]">
               <span className={`flex h-2 w-2 rounded-full ${wsConnected ? 'bg-[#4CAF50] shadow-[0_0_8px_rgba(76,175,80,0.4)]' : 'bg-[#F44336]'}`}></span>
-              <span className="text-[11px] text-[#888] font-mono uppercase tracking-wide">Backend</span>
+              <span className="text-[11px] text-[#888] font-mono uppercase tracking-wide">WS</span>
             </div>
-            {Object.entries(services).map(([name, status]) => (
-              <div key={name} className="flex items-center gap-2 bg-[#222] px-2.5 py-1.5 rounded-md border border-[#2A2A2A]">
-                <span className={`flex h-2 w-2 rounded-full ${getStatusColor(status as ServiceStatus)}`}></span>
-                <span className="text-[11px] text-[#888] font-mono uppercase tracking-wide">{name}</span>
-                {status === 'offline' && (
-                  <button 
-                    onClick={() => handleRestartService(name)}
-                    className="ml-1 p-1 hover:bg-[#333] rounded text-[#F44336] hover:text-[#ff7961] transition-colors"
-                    title={`Restart ${name}`}
-                  >
-                    <RefreshCw className="w-3 h-3" />
-                  </button>
-                )}
-                {status === 'restarting' && (
-                  <RefreshCw className="w-3 h-3 ml-1 text-[#FFC107] animate-spin" />
-                )}
-              </div>
-            ))}
           </div>
         </header>
 

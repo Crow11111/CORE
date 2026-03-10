@@ -5,13 +5,19 @@
 """
 Sendet das Omega-Protokoll direkt an Home Assistant TTS.
 """
+import os
 import requests
 import urllib3
+from dotenv import load_dotenv
+
+load_dotenv("c:/MTHO_CORE/.env")
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 HASS_URL = "https://192.168.178.54:8123"
-HASS_TOKEN = "***REVOKED_TOKEN***"
+HASS_TOKEN = os.getenv("HASS_TOKEN", "")
+if not HASS_TOKEN:
+    raise SystemExit("HASS_TOKEN nicht gesetzt. Bitte in .env konfigurieren.")
 
 OMEGA_MESSAGE = """
 System-Bestaetigung. Die Entschluesselung ist abgeschlossen.

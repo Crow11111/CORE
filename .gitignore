@@ -41,5 +41,8 @@ Thumbs.db
 media/
 data/
 
+# Backups (enthalten Secrets, Keys, DB-Dumps)
+backups/
+
 # go2rtc / FFmpeg binaries (zu groß für GitHub, siehe driver/README)
 driver/go2rtc_win64/

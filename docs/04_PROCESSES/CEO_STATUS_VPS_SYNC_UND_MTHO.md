@@ -45,7 +45,7 @@ python -m src.scripts.run_vps_sync_with_tunnel
 ## 3. MTHO-Aufbau – nächste Meilensteine (CEO)
 
 1. **Ring-0/VPS-Sync:** Sobald VPS-Chroma auf 8000 antwortet → Sync + Abgleich ausführen, Vergleichsdokument Abschnitt 2 ausfüllen.
-2. **Cursor/Regeln:** Reduktion und fraktale Verteilung (laut CURSOR_ATLAS_SPEC) – bereits angestoßen; bei Bedarf Team A (Cursor/DB/API) nachziehen.
+2. **Cursor/Regeln:** Reduktion und fraktale Verteilung (laut CURSOR_MTHO_SPEC) – bereits angestoßen; bei Bedarf Team A (Cursor/DB/API) nachziehen.
 3. **DB-Migration:** Gravitations-Logik (Migrationsreihenfolge Judge-bestätigt) – Ring-0-Sync zuerst, dann Cursor-Reduktion, dann Query-Code.
 4. **Dissonanz-Schwellwerte:** Spec mit bewerteter Fassung (User Vorschlag C) steht; Implementierung in Shadow-Mode mit Auswertung „morgen nach 12 Uhr“.
 5. **Tool-Audit, Chat Team B, Zusammenfassung, OMEGA_ATTRACTOR-Fix:** Gemäß CEO-Plan nacheinander abarbeiten; Budget und Token-Druck je Phase anpassen.
@@ -65,5 +65,5 @@ python -m src.scripts.run_vps_sync_with_tunnel
 - **VPS-Sync:** `docs/04_PROCESSES/VPS_SYNC_CORE_DIRECTIVES.md`
 - **Vergleichsdokument:** `docs/05_AUDIT_PLANNING/VERGLEICHSDOKUMENT_OC_BRAIN_VS_DREADNOUGHT.md`
 - **CEO-Plan (Phasen/Budget):** `docs/05_AUDIT_PLANNING/CEO_PLAN_OC_BRAIN_ABGLEICH_UND_ROLLOUT.md`
-- **Kern-Kontext:** `docs/05_AUDIT_PLANNING/ATLAS_KERN_CONTEXT.md`
+- **Kern-Kontext:** `docs/05_AUDIT_PLANNING/MTHO_KERN_CONTEXT.md`
 - **Bibliothek Kerndokumente:** `docs/BIBLIOTHEK_KERN_DOKUMENTE.md`

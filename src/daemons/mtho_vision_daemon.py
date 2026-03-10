@@ -84,8 +84,11 @@ class MthoVisionDaemon:
             print(f"[VISION] Gemini Output ({duration:.2f}s): {text}")
 
             if "No significant entropy" not in text:
-                add_wuji_observation(text, metadata={"duration_sec": duration, "model": MODEL_NAME})
-                print("[WUJI] Beobachtung gespeichert.")
+                try:
+                    asyncio.run(add_wuji_observation(text, metadata={"duration_sec": duration, "model": MODEL_NAME}))
+                    print("[WUJI] Beobachtung gespeichert.")
+                except Exception as wuji_err:
+                    print(f"[WUJI] Persist fehlgeschlagen: {wuji_err}")
                 self._notify_ghost_analyst(text, duration)
                 self._forward_to_oc_brain(text, duration)
 
@@ -143,8 +146,8 @@ class MthoVisionDaemon:
     async def _spawn_tts_ghost(self, analysis: str):
         """Spawnt Ghost Agent fuer TTS-Ausgabe bei kritischem Vision Event."""
         try:
-            from src.agents.ghost_agent import GhostIntent, get_ghost_pool
-            from src.agents.scout_ghost_handlers import register_all_handlers
+            from src.agents.mtho_agent import GhostIntent, get_ghost_pool
+            from src.agents.scout_mtho_handlers import register_all_handlers
 
             pool = get_ghost_pool()
             if not pool._handlers:

@@ -328,7 +328,7 @@ class MthoEventBus:
 
         logger.info("[EVENT-BUS] [{}] {}", severity.value.upper(), summary)
 
-        self._persist_event(entity_id, old_state, new_state, summary, severity)
+        await self._persist_event(entity_id, old_state, new_state, summary, severity)
 
         if severity in (EventSeverity.WARNING, EventSeverity.CRITICAL):
             asyncio.create_task(self._forward_to_oc_brain(entity_id, new_state, summary, severity))
@@ -341,7 +341,7 @@ class MthoEventBus:
     # Persistenz
     # ------------------------------------------------------------------
 
-    def _persist_event(
+    async def _persist_event(
         self,
         entity_id: str,
         old_state: dict | None,
@@ -369,7 +369,7 @@ class MthoEventBus:
                 "severity": severity.value,
                 "timestamp": new_state.get("last_changed", ""),
             }
-            add_event_to_chroma(event_id, event_doc, metadata)
+            await add_event_to_chroma(event_id, event_doc, metadata)
         except Exception as e:
             logger.warning("[EVENT-BUS] ChromaDB persist fehlgeschlagen: {}", e)
 

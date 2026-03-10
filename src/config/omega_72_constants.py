@@ -52,7 +52,7 @@ ROTATING_ANCHORS = 4
 # Platzhalter fuer spaetere semantische Belegung.
 ANCHOR_MAP: Dict[int, str] = {
     # 0-15: Vertices (Die Eckpfeiler) - P_PHYSICS & S_STRUCTURE
-    0: "AGOS_0_TRIGGER", # Der H-Vektor Impuls
+    0: "AGOS_0_WATCHDOG", # Der autonome Beobachter (ehemals User-Trigger)
     1: "HARDWARE_CLOCK",
     2: "VPS_HEARTBEAT",
     3: "GIT_SHA_LOCKED",

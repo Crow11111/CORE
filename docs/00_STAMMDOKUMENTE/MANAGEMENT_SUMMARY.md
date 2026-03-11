@@ -64,6 +64,7 @@ Codex: `docs/01_CORE_DNA/MTHO_GENESIS_CODEX.md`
 | Code-Sicherheitsrat | `docs/04_PROCESSES/CODE_SICHERHEITSRAT.md` |
 | Operative Regeln | `.cursorrules` |
 | Cursor Rules | `.cursor/rules/` |
+| World Knowledge | `docs/06_WORLD_KNOWLEDGE/` |
 | State Vector | `src/config/mtho_state_vector.py` |
 | Visueller Masterplan | `MTHO_WUJI_MASTER_PLAN.png` |
 

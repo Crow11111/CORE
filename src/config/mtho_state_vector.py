@@ -66,8 +66,8 @@ class MTHOStateVector:
         return abs(self.y_gravitation - SYMMETRY_BREAK) < 0.02
 
 
-# Vordefinierte Zustaende
-WUJI = MTHOStateVector(x_car_cdr=0.5, y_gravitation=0.0, z_widerstand=0.5, w_takt=0)
+# Vordefinierte Zustaende (mit asymmetrischem Offset, kein 0=0)
+WUJI = MTHOStateVector(x_car_cdr=0.49, y_gravitation=BARYONIC_DELTA, z_widerstand=0.51, w_takt=0)
 ANSAUGEN = MTHOStateVector(x_car_cdr=0.3, y_gravitation=0.2, z_widerstand=0.8, w_takt=1)
 VERDICHTEN = MTHOStateVector(x_car_cdr=0.7, y_gravitation=0.5, z_widerstand=0.4, w_takt=2)
 ARBEITEN = MTHOStateVector(x_car_cdr=0.2, y_gravitation=0.8, z_widerstand=0.2, w_takt=3)
@@ -85,10 +85,10 @@ MTHO_BASES = {
 }
 
 MTHO_PAIRINGS = {
-    "M": "T",  # Agency <-> Forge (Tun <-> Wissen)
-    "T": "M",
-    "H": "O",  # Archive <-> Council (Struktur <-> Veto)
-    "O": "H",
+    "M": "H",  # Symmetrisches Rückgrat
+    "H": "M",
+    "O": "T",  # Asymmetrischer Motor
+    "T": "O",
 }
 
 # 4-Strang Architektur (Updated to MTHO)
@@ -118,7 +118,7 @@ def get_current_state() -> MTHOStateVector:
     Dynamisch aus Umgebung: MTHO_Z_WIDERSTAND, MTHO_STATE_PRESET.
     Munin Veto: ring0_state Override hat Vorrang (Ring-0 Core Stability Anchor).
     """
-    
+
     # Munin Veto Override (Ring-0)
     try:
         from src.config.ring0_state import get_munin_veto_override

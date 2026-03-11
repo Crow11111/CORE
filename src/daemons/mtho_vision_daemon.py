@@ -33,6 +33,7 @@ import asyncio
 from dotenv import load_dotenv
 import google.generativeai as genai
 from src.network.chroma_client import add_wuji_observation
+from src.utils.time_metric import asym_sleep, get_friction_timeout
 
 # Lade Umgebungsvariablen
 load_dotenv("c:/MTHO_CORE/.env")
@@ -129,10 +130,11 @@ class MthoVisionDaemon:
                     "model": MODEL_NAME,
                     "source": "vision_daemon",
                 }
+                timeout_friction = get_friction_timeout(10.0)
                 ok, resp = send_event_to_oc_brain(
                     event_type="VISION_ALERT",
                     data=event_data,
-                    timeout=10.0,
+                    timeout=timeout_friction,
                 )
                 if ok:
                     print(f"[OC-BRAIN] Vision event forwarded: {resp[:60]}...")
@@ -220,8 +222,8 @@ class MthoVisionDaemon:
                 ret, frame1 = self.cap.read()
                 ret, frame2 = self.cap.read()
 
-            # CPU schonen
-            time.sleep(0.05)
+            # CPU schonen - Zikaden-Prinzip
+            asym_sleep(0.05)
 
         self.cap.release()
         cv2.destroyAllWindows()

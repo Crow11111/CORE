@@ -31,17 +31,14 @@ class LLMInterface:
             temperature=0.1,  # Low temp for deterministic routing
         ).with_structured_output(TriageResult)
 
-        # Tier 5 Heavy Reasoning Layer (Google Gemini)
-        gemini_api_key = os.getenv("GEMINI_API_KEY")
-        if gemini_api_key:
-            self.heavy_llm = ChatGoogleGenerativeAI(
-                model=os.getenv("GEMINI_HEAVY_MODEL", "gemini-3.1-pro-preview"),
-                google_api_key=gemini_api_key,
-                temperature=0.7
-            )
-        else:
-            self.heavy_llm = None
-            logger.warning("GEMINI_API_KEY missing. Tier 5 (Heavy Layer) is degraded/disabled.")
+        # Tier 5 Heavy Reasoning Layer (jetzt EXKLUSIV Ollama)
+        logger.info("Nutze Ollama für Heavy Layer (Gemini temporär deaktiviert)")
+        self.heavy_llm = ChatOllama(
+            model=os.getenv("OLLAMA_HEAVY_MODEL", ollama_model),
+            base_url=ollama_base_url,
+            temperature=0.7
+        )
+
 
     def run_triage(self, user_input: str) -> TriageResult:
         """

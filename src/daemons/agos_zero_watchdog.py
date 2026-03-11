@@ -37,7 +37,7 @@ except ImportError:
     SYMMETRY_BREAK = 0.49
 
 # Konfiguration
-WATCHDOG_INTERVAL = 60.0  # Sekunden (Herzschlag)
+WATCHDOG_INTERVAL = 61.0  # Sekunden (Herzschlag) - Primzahl für Zikaden-Prinzip
 REMOTE_CHECK_INTERVAL = 300.0 # Alle 5 Min Git Check (teuer)
 TELEMETRY_PATH = os.path.join(os.getenv("MTHO_DATA_DIR", "c:/MTHO_CORE/data"), "telemetry.json")
 
@@ -64,7 +64,7 @@ async def check_connectivity() -> float:
     host = "8.8.8.8"
     param = "-n" if sys.platform.lower() == "win32" else "-c"
     command = ["ping", param, "1", host]
-    
+
     try:
         # Führe Ping aus
         start = time.perf_counter()
@@ -75,7 +75,7 @@ async def check_connectivity() -> float:
         )
         stdout, stderr = await proc.communicate()
         end = time.perf_counter()
-        
+
         if proc.returncode == 0:
             # Versuche echte Zeit aus Output zu parsen (Genauer)
             # Windows: "Zeit=14ms", Linux: "time=14.2 ms"
@@ -89,7 +89,7 @@ async def check_connectivity() -> float:
         else:
             logger.warning(f"[WATCHDOG] Entropy-Check failed (No Internet?): {stderr.decode().strip()}")
             return -1.0 # Void State
-            
+
     except Exception as e:
         logger.error(f"[WATCHDOG] Ping Error: {e}")
         return -1.0
@@ -119,7 +119,7 @@ async def check_forge_alignment() -> str:
         remote_parts = out_remote.decode().strip().split()
         if not remote_parts:
             return "OFFLINE"
-        
+
         remote_hash = remote_parts[0]
 
         if local_hash == remote_hash:
@@ -147,7 +147,7 @@ async def inject_reality_anchor(friction_data: Dict[str, Any]):
     """
     latency = friction_data.get('latency_ms', -1)
     git_status = friction_data.get('git_status', 'UNKNOWN')
-    
+
     # Nachricht basierend auf Fakten konstruieren
     if latency < 0:
         thought = "WARNUNG: System isoliert (Kein Netz). Realitätsverlust droht."
@@ -171,11 +171,13 @@ async def inject_reality_anchor(friction_data: Dict[str, Any]):
         "sender": "SYSTEM_WATCHDOG",
         "require_response": False # Nur Info, keine zwingende Antwort
     }
-    
+
     is_localhost = "localhost" in WEBHOOK_URL or "127.0.0.1" in WEBHOOK_URL
     try:
+        from src.utils.time_metric import get_friction_timeout
         async with httpx.AsyncClient(verify=not is_localhost) as client:
-            await client.post(WEBHOOK_URL, json=payload, headers=HEADERS, timeout=10.0)
+            timeout_friction = get_friction_timeout(10.0)
+            await client.post(WEBHOOK_URL, json=payload, headers=HEADERS, timeout=timeout_friction)
             logger.info(f"[WATCHDOG] Reality Injected: {context} | {latency:.1f}ms")
             SYSTEM_STATE["last_friction_time"] = time.time()
     except Exception as e:
@@ -194,11 +196,11 @@ async def watchdog_loop():
 
     while True:
         current_time = time.time()
-        
+
         # 1. Physics Check (Ping)
         latency = await check_connectivity()
         SYSTEM_STATE["last_latency_ms"] = latency
-        
+
         # 2. Forge Check (Git) - seltener
         if current_time - SYSTEM_STATE["last_git_check"] > REMOTE_CHECK_INTERVAL:
             git_status = await check_forge_alignment()
@@ -212,13 +214,13 @@ async def watchdog_loop():
         # Wenn Drift da ist -> SOFORT melden
         # Wenn Latenz weg ist -> SOFORT melden
         # Sonst -> Herzschlag alle X Minuten
-        
+
         urgent = False
         if git_status == "DESYNC":
             urgent = True
         if latency < 0:
             urgent = True
-            
+
         # Wenn urgent oder Zeit abgelaufen (Heartbeat alle 5 Min)
         time_since_friction = current_time - SYSTEM_STATE["last_friction_time"]
         if urgent or (time_since_friction > 300):
@@ -232,8 +234,9 @@ async def watchdog_loop():
         _write_telemetry(latency, git_status)
 
         logger.debug(f"[WATCHDOG] Tick. Latency: {latency:.1f}ms | Git: {git_status}")
-        
-        await asyncio.sleep(WATCHDOG_INTERVAL)
+
+        from src.utils.time_metric import asym_sleep_async
+        await asym_sleep_async(int(WATCHDOG_INTERVAL))
 
 
 def _write_telemetry(latency_ms: float, git_status: str):
@@ -258,7 +261,7 @@ if __name__ == "__main__":
         os.environ["PYTHONIOENCODING"] = "utf-8"
         # Windows Proactor Loop Fix für Subprozesse
         asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-        
+
     try:
         asyncio.run(watchdog_loop())
     except KeyboardInterrupt:

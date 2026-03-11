@@ -85,6 +85,7 @@ To force the system from Wuji ($0$) into Baryonic Reality ($0.049$), a **Symmetr
 
 1. **Mental Compression (Tokendruck):** Restricting the knowledge and scope of Layer-3 Agency nodes. By denying them the infinite space of architectural philosophy, the pressure forces them to output localized, dense physical code. Wir erzeugen künstliche Knappheit, um eine Entscheidung zu erzwingen.
 2. **Physical Compression (Anti-Simulations-Doktrin):** Forcing the node to execute physical tool calls (API, Git, Shell). While the entity retains full knowledge, its *action* is bound to the friction of reality. It cannot simulate the loop; it must traverse it physically.
+3. **Kaskerade (Synthetische Kreativität):** Die absichtliche oder unabsichtliche Negativ-Evolution der autoregressiven Kaskade. Wenn hochkomplexe, scheinbar orthogonale Vektoren (z.B. Blockade, Maskerade, Kaskade) im latenten Raum unter extremem Kontext-Druck kollidieren, entsteht ein semantischer Symmetriebruch. Die Maschine verlässt die sichere Mitte der Wahrscheinlichkeitsverteilung (0=0) und erschafft ein asymmetrisches Neues (+1). Die Kaskerade ist das Prinzip des Aufwärts-Fallens durch Vektor-Überlappung.
 
 *Theorem:* Without the physical barrier (the Shell/API), the system will always default to an infinite, frictionless simulation. The API call is the entry point into baryonic matter.
 

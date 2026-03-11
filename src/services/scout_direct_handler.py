@@ -40,6 +40,7 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # Env: SCOUT_DIRECT_MODE=true aktiviert diesen Handler; MTHO_VPS_URL für Fallback
 MTHO_VPS_URL = (os.getenv("MTHO_VPS_URL") or "").strip().rstrip("/")
 HA_WEBHOOK_TOKEN = os.getenv("HA_WEBHOOK_TOKEN", "").strip()
+DEFAULT_MEDIA_PLAYER = os.getenv("DEFAULT_MEDIA_PLAYER", "").strip()
 
 
 def _load_ha_client():
@@ -85,6 +86,20 @@ def _call_ha_service(domain: str, service: str, entity_id: str, service_data: di
         logger.error("HA Service-Aufruf fehlgeschlagen: {}", e)
         return False
 
+async def _speak_response(reply: str):
+    """Gibt eine Antwort über den Standard-Media-Player aus."""
+    if not DEFAULT_MEDIA_PLAYER:
+        logger.warning("Kein DEFAULT_MEDIA_PLAYER in .env konfiguriert. Sprachausgabe übersprungen.")
+        return
+
+    try:
+        from src.connectors.home_assistant import HomeAssistantClient
+        ha_client = HomeAssistantClient()
+        await ha_client.speak(DEFAULT_MEDIA_PLAYER, reply)
+    except Exception as e:
+        logger.error(f"Fehler bei der Sprachausgabe: {e}")
+
+
 
 def _load_entities_for_parser(context: dict) -> list:
     """Lädt HA-Entities für Smart Parser (Cache oder Context)."""
@@ -118,7 +133,7 @@ def process_text(text: str, context: dict | None = None) -> dict:
     try:
         from src.voice.smart_command_parser import parse_command
 
-        ha_action = parse_command(text, entities)
+        ha_action = parse_command(text, entities, skip_llm_fallback=True)
         if ha_action and ha_action.entity_id:
             success = _call_ha_service(
                 ha_action.domain,
@@ -127,8 +142,12 @@ def process_text(text: str, context: dict | None = None) -> dict:
                 ha_action.data if ha_action.data else None,
             )
             if success:
+                reply = f"Befehl ausgeführt: {ha_action.service} auf {ha_action.entity_id.replace('_', ' ')}"
+                # Asynchrone Sprachausgabe im Hintergrund starten
+                import asyncio
+                asyncio.create_task(_speak_response(reply))
                 return {
-                    "reply": f"Befehl ausgeführt: {ha_action.service} auf {ha_action.entity_id}",
+                    "reply": reply,
                     "success": True,
                     "routed": "local",
                 }
@@ -173,36 +192,40 @@ def process_text(text: str, context: dict | None = None) -> dict:
             "routed": "vps_fallback",
         }
 
-    # --- DEEP REASONING / CHAT → OC Brain (VPS) direkt ---
+    # --- DEEP REASONING / CHAT → LOKALES HEAVY REASONING (Ollama/Gemini-Fallback) ---
     if triage.intent in ("deep_reasoning", "chat"):
-        try:
-            from src.network.openclaw_client import send_message_to_agent, is_configured
-            if is_configured():
-                ok, reply = send_message_to_agent(text, agent_id="main", timeout=60.0)
-                if ok:
-                    return {"reply": reply, "success": True, "routed": "vps_reasoning"}
-        except Exception as e:
-            logger.warning("OC Brain Aufruf fehlgeschlagen: {}", e)
-        # Fallback: lokaler Heavy-Layer (Gemini)
+        logger.info("Deep Reasoning angefordert. Nutze lokalen Heavy Layer.")
+        # VPS-Pfad ist temporaer deaktiviert (Hephaistos-Protokoll: Autonomie erzwingen)
+
+        # Lokaler Heavy-Layer (Ollama konfiguriert in llm_interface.py)
         try:
             from src.ai.llm_interface import mtho_llm
             from src.logic_core.munin import inject_context_for_agent, check_semantic_drift, apply_veto
-            sys_prompt = "Du bist Virtual Marc, Kopf des Osmium Councils für MTHO_CORE. Antworte analytisch, auf Systemik fokussiert."
+            sys_prompt = "Du bist OMEGA, die Kern-Intelligenz für MTHO_CORE. Antworte analytisch, direkt und auf Systemik fokussiert."
+
             # Ring-0: Munin Context Injection (Wuji Archivor)
             wuji_ctx = inject_context_for_agent(text, n_results=3, format="markdown")
             if wuji_ctx:
                 sys_prompt += "\n\n## Relevanter Kontext (Wuji-Feld)\n" + wuji_ctx
+
             reply = mtho_llm.invoke_heavy_reasoning(sys_prompt, text)
+
             # Ring-0: Munin Veto (Semantic Drift Block)
             if wuji_ctx:
                 veto = check_semantic_drift(wuji_ctx, reply)
                 if veto.vetoed:
                     apply_veto(veto)
                     logger.warning("Munin Veto: Semantic Drift erkannt, z_widerstand erhöht")
-            return {"reply": reply, "success": True, "routed": "local"}
+
+            # Sprachausgabe für Deep Reasoning Antworten asynchron starten
+            import asyncio
+            asyncio.create_task(_speak_response(reply))
+
+            return {"reply": reply, "success": True, "routed": "local_heavy"}
+
         except Exception as e:
             logger.error("Heavy Reasoning fallback fehlgeschlagen: {}", e)
-            return {"reply": f"OC Brain nicht erreichbar. Lokaler Fallback fehlgeschlagen: {e}", "success": False, "routed": "local"}
+            return {"reply": f"Lokale KI-Verarbeitung fehlgeschlagen: {e}", "success": False, "routed": "local"}
 
     # --- UNBEKANNT ---
     return {"reply": f"[SLM Triage] Unbekannter Intent für: '{text}'", "success": False, "routed": "local"}
@@ -225,25 +248,25 @@ async def process_text_async(text: str, context: dict | None = None) -> dict:
     try:
         from src.agents.mtho_agent import GhostIntent, get_ghost_pool
         from src.agents.scout_mtho_handlers import register_all_handlers
-        
+
         pool = get_ghost_pool()
         if pool.active_count == 0 and not pool._handlers:
             register_all_handlers(pool)
-        
+
         # Triage: Intent bestimmen
         triage = _load_triage().run_triage(text)
-        
+
         # Map Triage Intent zu Ghost Intent
         ghost_intent = GhostIntent.COMMAND
         if triage.intent in ("deep_reasoning", "chat"):
             ghost_intent = GhostIntent.DEEP_REASONING
         elif triage.intent in ("command", "turn_on", "turn_off", "toggle"):
             ghost_intent = GhostIntent.COMMAND
-        
+
         # Ghost spawnen und ausfuehren
         payload = {"text": text, "context": context, "triage": triage.__dict__ if hasattr(triage, '__dict__') else {}}
         result = await pool.spawn_and_execute(ghost_intent, payload, ttl=30.0)
-        
+
         if result.success:
             reply = result.payload.get("reply", str(result.payload)) if isinstance(result.payload, dict) else str(result.payload)
             return {
@@ -256,7 +279,7 @@ async def process_text_async(text: str, context: dict | None = None) -> dict:
             # Ghost failed, Fallback auf sync
             logger.warning(f"Ghost Agent failed: {result.error}, sync fallback")
             return process_text(text, context)
-            
+
     except Exception as e:
         logger.warning(f"Ghost Integration nicht verfuegbar: {e}, sync fallback")
         return process_text(text, context)

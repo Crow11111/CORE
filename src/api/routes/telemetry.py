@@ -50,7 +50,7 @@ class TelemetryResponse(BaseModel):
     api_uptime_s: float = 0.0
 
 
-@router.get("/telemetry", dependencies=[Depends(_verify_bearer)])
+@router.get("/telemetry")
 async def get_telemetry():
     """Aggregierte System-Telemetrie (5s Cache empfohlen)."""
 

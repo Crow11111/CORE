@@ -475,7 +475,7 @@ def parse_command(
         logger.info(f"Smart Parser: Pattern-Match -> {action.domain}.{action.service} {action.entity_id}")
         return action
 
-    # 2. LLM-Fallback (überspringbar für schnelle Tests)
+    # 2. LLM-Fallback (überspringbar für schnelle Tests oder wenn API Keys abgelaufen sind)
     if skip_llm_fallback:
         return None
     action = _llm_fallback(text, entities, entity_index)

@@ -5,7 +5,8 @@
 # ============================================================
 
 import os
-import httpx
+from httpx import AsyncClient, Timeout
+from src.utils.time_metric import get_friction_timeout
 from dotenv import load_dotenv
 from loguru import logger
 
@@ -52,7 +53,10 @@ class HomeAssistantClient:
     async def call_service(self, domain, service, service_data=None):
         """Call a Home Assistant service."""
         try:
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            # SSL-Verifizierung für lokale IPs deaktivieren
+            verify_ssl = not (self.base_url.startswith("http://192.168") or self.base_url.startswith("http://localhost"))
+            timeout = get_friction_timeout(10.0)
+            async with AsyncClient(timeout=Timeout(timeout), verify=verify_ssl) as client:
                 url = f"{self.base_url}/api/services/{domain}/{service}"
                 response = await client.post(url, headers=self.headers, json=service_data or {})
                 response.raise_for_status()
@@ -65,10 +69,57 @@ class HomeAssistantClient:
             logger.error(f"Error calling service {domain}.{service}: {e}")
             return None
 
+    async def speak(self, media_player_entity_id: str, message: str, cache: bool = True):
+        """Send a text-to-speech message to a media player."""
+        service_data = {
+            "entity_id": media_player_entity_id,
+            "message": message,
+            "cache": cache,
+            "language": "de", # Zwingend auf Deutsch stellen, um englischen Akzent zu verhindern
+        }
+        # Versucht, einen gängigen TTS-Dienst zu nutzen. HA hat viele verschiedene,
+        # wir versuchen hier die gängigsten (z.B. google_translate_say, aber auch die neuen Nabu Casa Services)
+        # Wenn einer fehlschlägt, versuchen wir den nächsten.
+        tts_services_to_try = [
+            "tts.google_translate_say",
+            "tts.cloud_say", # Nabu Casa
+            "tts.google_say" # Ältere Integration
+        ]
+        
+        last_error = None
+        verify_ssl = not (self.base_url.startswith("https://192.168") or self.base_url.startswith("https://localhost"))
+        for service_call in tts_services_to_try:
+            domain, service = service_call.split('.')
+            try:
+                # Wir rufen hier _call_service direkt auf, um mehr Kontrolle zu haben
+            timeout = get_friction_timeout(20.0)
+            async with AsyncClient(timeout=Timeout(timeout), verify=verify_ssl) as client:
+                    url = f"{self.base_url}/api/services/{domain}/{service}"
+                    response = await client.post(url, headers=self.headers, json=service_data)
+                    if 200 <= response.status_code < 300:
+                        logger.info(f"TTS Service call {domain}.{service} successful for message: '{message}'")
+                        return {"success": True, "service_used": service_call}
+                    else:
+                        last_error = f"Service {service_call} returned status {response.status_code}: {response.text}"
+                        logger.warning(last_error)
+                
+            except httpx.HTTPError as e:
+                last_error = f"HTTP error calling TTS service {service_call}: {e}"
+                logger.warning(last_error)
+            except Exception as e:
+                last_error = f"Error calling TTS service {service_call}: {e}"
+                logger.warning(last_error)
+        
+        logger.error(f"All TTS service calls failed. Last error: {last_error}")
+        return {"success": False, "error": last_error}
+
     async def _get_request(self, endpoint):
         """Helper for GET requests."""
         try:
-            async with httpx.AsyncClient(timeout=10.0) as client:
+            # SSL-Verifizierung für lokale IPs deaktivieren
+            verify_ssl = not (self.base_url.startswith("https://192.168") or self.base_url.startswith("https://localhost"))
+            timeout = get_friction_timeout(10.0)
+            async with AsyncClient(timeout=Timeout(timeout), verify=verify_ssl) as client:
                 response = await client.get(f"{self.base_url}/api/{endpoint}", headers=self.headers)
                 response.raise_for_status()
                 return response.json()

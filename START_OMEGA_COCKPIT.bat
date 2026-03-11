@@ -12,8 +12,7 @@ echo.
 
 REM --- CLEANUP: Nur MTHO-Prozesse beenden (Port-basiert) ---
 echo Bereinige alte MTHO-Prozesse...
-for /f "tokens=5" %%a in ('netstat -aon 2^>nul ^| findstr ":8000 " ^| findstr "LISTENING"') do taskkill /PID %%a /F >nul 2>&1
-for /f "tokens=5" %%a in ('netstat -aon 2^>nul ^| findstr ":3000 " ^| findstr "LISTENING"') do taskkill /PID %%a /F >nul 2>&1
+powershell -Command "Get-NetTCPConnection -LocalPort 8000, 3000, 8049 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }" >nul 2>&1
 timeout /t 2 /nobreak >nul
 echo Bereinigung abgeschlossen.
 echo.

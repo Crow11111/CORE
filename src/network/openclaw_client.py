@@ -12,6 +12,7 @@ Liest VPS_HOST und OPENCLAW_GATEWAY_TOKEN aus .env.
 """
 import os
 from dotenv import load_dotenv
+from src.utils.time_metric import get_friction_timeout
 
 load_dotenv()
 
@@ -52,7 +53,8 @@ def check_gateway(timeout: float = 5.0) -> tuple[bool, str]:
     try:
         import requests
         url = gateway_url("/")
-        r = requests.get(url, headers=auth_headers(), timeout=timeout)
+        timeout_friction = get_friction_timeout(timeout)
+        r = requests.get(url, headers=auth_headers(), timeout=timeout_friction)
         r.raise_for_status()
         return True, f"OK {r.status_code} – Gateway erreichbar"
     except requests.exceptions.Timeout:
@@ -87,7 +89,8 @@ async def send_message_to_agent_async(
         body: dict = {"model": "openclaw", "input": text}
         if user:
             body["user"] = user
-        async with httpx.AsyncClient(timeout=timeout) as client:
+        timeout_friction = get_friction_timeout(timeout)
+        async with httpx.AsyncClient(timeout=timeout_friction) as client:
             r = await client.post(url, headers=headers, json=body)
             r.raise_for_status()
             return True, r.text[:200]
@@ -120,7 +123,8 @@ def send_message_to_agent(
         body: dict = {"model": "openclaw", "input": text}
         if user:
             body["user"] = user
-        r = requests.post(url, headers=headers, json=body, timeout=timeout)
+        timeout_friction = get_friction_timeout(timeout)
+        r = requests.post(url, headers=headers, json=body, timeout=timeout_friction)
         r.raise_for_status()
         data = r.json()
         # Antworttext aus OpenResponses-Format extrahieren

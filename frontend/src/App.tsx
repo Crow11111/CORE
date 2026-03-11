@@ -1,388 +1,285 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Terminal, Code2, Settings, Sparkles, Cpu, Menu, Headphones, Mic, Volume2, RefreshCw, Link } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import TelemetryHUD from './components/TelemetryHUD';
-import { useTelemetryPolling } from './hooks/useTelemetryPolling';
+import React, { useState, useRef, useEffect } from "react";
+import {
+  Terminal,
+  Box,
+  Settings,
+  Cpu,
+  ShieldAlert,
+  GitBranch,
+} from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import TelemetryHUD from "./components/TelemetryHUD";
+import CommandConsole from "./components/CommandConsole";
+import ValidationForge from "./components/ValidationForge";
+import { useTelemetryPolling } from "./hooks/useTelemetryPolling";
 
 type Message = {
   id: string;
-  role: 'user' | 'agent' | 'external';
-  sender?: string;
+  role: "user" | "system";
   content: string;
   timestamp: Date | string;
 };
 
-type ServiceStatus = 'online' | 'offline' | 'restarting';
-
 export default function App() {
   const [messages, setMessages] = useState<Message[]>([
     {
-      id: '1',
-      role: 'agent',
-      sender: 'Mtho',
-      content: 'Hello. I am the MTHO Dev Agent. How can we build today?',
+      id: "system-init",
+      role: "system",
+      content: "CORE ENGINE INITIALIZED. WAITING FOR DIRECTIVES.",
       timestamp: new Date(),
-    }
+    },
   ]);
-  const [input, setInput] = useState('');
-  const [isTyping, setIsTyping] = useState(false);
-  const [showAudioProfiles, setShowAudioProfiles] = useState(false);
-  const [activeProfile, setActiveProfile] = useState('Zen Voice');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isForgeOpen, setIsForgeOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
 
-  const apiBase = (import.meta.env.VITE_MTHO_API_URL || 'http://localhost:8000').replace(/\/$/, '');
-  const wsUrl = apiBase.replace(/^http/, 'ws') + '/ws';
-  const { data: telemetry, connected: telemetryConnected } = useTelemetryPolling({ apiBase });
+  const apiBase = (
+    import.meta.env.VITE_MTHO_API_URL || "http://localhost:8000"
+  ).replace(/\/$/, "");
+  const wsUrl = apiBase.replace(/^http/, "ws") + "/ws";
+  const { data: telemetry, connected: telemetryConnected } =
+    useTelemetryPolling({ apiBase });
 
-  // Status Indicators State
-  const [services, setServices] = useState<Record<string, ServiceStatus>>({
-    'System': 'online',
-    'Comm Chain': 'offline',
-    'Database': 'online',
-    'Worker': 'online'
-  });
-  const [wsConnected, setWsConnected] = useState(false);
-
-  // Beim Start: Chat-Historie vom Backend laden (falls vorhanden)
+  // Initialisiere Websocket (fuer Event-Streaming)
   useEffect(() => {
-    fetch(`${apiBase}/api/chat/history`)
-      .then((res) => res.ok ? res.json() : [])
-      .then((list: Message[]) => {
-        if (Array.isArray(list) && list.length > 0) {
-          const normalized = list.map((m) => ({
-            ...m,
-            timestamp: typeof m.timestamp === 'string' ? new Date(m.timestamp) : m.timestamp,
-          }));
-          setMessages(normalized);
-        }
-      })
-      .catch(() => {});
-  }, [apiBase]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, isTyping]);
-
-  // WebSocket: connect, reconnect when disconnected, handle chat:reply, system:event, status:update
-  useEffect(() => {
-    let ws: WebSocket | null = null;
-    let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
-    const reconnectDelayMs = 5000;
+    let ws: WebSocket;
+    let reconnectTimer: any;
 
     const connect = () => {
       ws = new WebSocket(wsUrl);
       wsRef.current = ws;
-      ws.onopen = () => setWsConnected(true);
-      ws.onclose = () => {
-        setWsConnected(false);
-        wsRef.current = null;
-        reconnectTimer = setTimeout(connect, reconnectDelayMs);
+
+      ws.onopen = () => {
+        console.log("[WS] Connected to Core");
       };
-      ws.onerror = () => setWsConnected(false);
+
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          const { type, payload } = data;
-          if (type === 'chat:reply' && payload) {
-            const msg: Message = {
-              id: payload.id || Date.now().toString(),
-              role: payload.role || 'agent',
-              sender: payload.sender || 'Mtho',
-              content: payload.content ?? '',
-              timestamp: payload.timestamp ? new Date(payload.timestamp) : new Date(),
-            };
-            setMessages((prev) => [...prev, msg]);
-            setIsTyping(false);
-          } else if (type === 'system:event' && payload) {
-            const msg: Message = {
-              id: payload.id || Date.now().toString(),
-              role: payload.role || 'external',
-              sender: payload.sender || 'System',
-              content: payload.content ?? '',
-              timestamp: payload.timestamp ? new Date(payload.timestamp) : new Date(),
-            };
-            setMessages((prev) => [...prev, msg]);
-          } else if (type === 'status:update' && payload) {
-            const { service, status } = payload;
-            if (service && status) setServices((prev) => ({ ...prev, [service]: status }));
+          if (data.type === "chat_chunk" && data.content) {
+            setMessages((prev) => {
+              const last = prev[prev.length - 1];
+              if (last && last.role === "system" && last.id === data.msg_id) {
+                return [
+                  ...prev.slice(0, -1),
+                  { ...last, content: last.content + data.content },
+                ];
+              } else {
+                return [
+                  ...prev,
+                  {
+                    id: data.msg_id || Date.now().toString(),
+                    role: "system",
+                    content: data.content,
+                    timestamp: new Date(),
+                  },
+                ];
+              }
+            });
           }
-        } catch (_) {}
+        } catch (e) {
+          console.error("[WS] Parse error", e);
+        }
+      };
+
+      ws.onclose = () => {
+        console.log("[WS] Disconnected. Reconnecting in 5s...");
+        reconnectTimer = setTimeout(connect, 5000);
       };
     };
 
     connect();
+
     return () => {
-      if (reconnectTimer) clearTimeout(reconnectTimer);
-      if (ws) ws.close();
-      wsRef.current = null;
+      clearTimeout(reconnectTimer);
+      if (wsRef.current) wsRef.current.close();
     };
   }, [wsUrl]);
 
-  const simulateExternalMessage = (sender: string = 'Service-B (Auth)', content: string = 'User token validation failed for session #891. Requesting re-authentication.') => {
-    const extMsg: Message = {
+  // Auto-scroll
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleCommand = async (cmd: string) => {
+    if (!cmd.trim()) return;
+
+    const newMsg: Message = {
       id: Date.now().toString(),
-      role: 'external',
-      sender,
-      content,
+      role: "user",
+      content: cmd,
       timestamp: new Date(),
     };
-    setMessages((prev) => [...prev, extMsg]);
-  };
+    setMessages((prev) => [...prev, newMsg]);
+    setIsProcessing(true);
 
-  const handleSend = (e?: React.FormEvent) => {
-    e?.preventDefault();
-    if (!input.trim()) return;
-
-    const newUserMsg: Message = {
-      id: Date.now().toString(),
-      role: 'user',
-      sender: 'You',
-      content: input,
-      timestamp: new Date(),
-    };
-    setMessages((prev) => [...prev, newUserMsg]);
-    setInput('');
-    setIsTyping(true);
-
-    const ws = wsRef.current;
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({ type: 'chat:send', content: newUserMsg.content }));
-    } else {
-      setMessages((prev) => [...prev, {
-        id: (Date.now() + 1).toString(),
-        role: 'agent',
-        sender: 'Mtho',
-        content: 'Nicht verbunden. Bitte MTHO-CORE-API starten (z. B. uvicorn) und Seite neu laden.',
-        timestamp: new Date(),
-      }]);
-      setIsTyping(false);
+    // Wenn der Befehl "audit" oder "forge" enthaelt, oeffne die Forge testweise
+    if (
+      cmd.toLowerCase().includes("forge") ||
+      cmd.toLowerCase().includes("audit")
+    ) {
+      setIsForgeOpen(true);
     }
-  };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
 
-  const handleRestartService = async (name: string) => {
-    setServices(prev => ({ ...prev, [name]: 'restarting' }));
     try {
-      const res = await fetch(`${apiBase}/api/services/${encodeURIComponent(name)}/restart`, { method: 'POST' });
-      const data = await res.json().catch(() => ({}));
-      if (data.success) {
-        setTimeout(() => setServices(prev => ({ ...prev, [name]: 'online' })), 2500);
-      } else {
-        setServices(prev => ({ ...prev, [name]: 'offline' }));
-      }
-    } catch {
-      setServices(prev => ({ ...prev, [name]: 'offline' }));
+      const res = await fetch(`${apiBase}/api/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: cmd, mode: "fast" }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeoutId);
+
+      if (!res.ok) throw new Error(`System error: ${res.status}`);
+
+      const data = await res.json();
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString() + "-sys",
+          role: "system",
+          content: data.response || "No response generated.",
+          timestamp: new Date(),
+        },
+      ]);
+    } catch (err) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString() + "-err",
+          role: "system",
+          content: "[ERROR] Core API nicht erreichbar oder Timeout.",
+          timestamp: new Date(),
+        },
+      ]);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
-  const audioProfiles = ['Zen Voice', 'Director', 'Analyst', 'Mute'];
-
-  const getStatusColor = (status: ServiceStatus) => {
-    switch(status) {
-      case 'online': return 'bg-[#4CAF50] shadow-[0_0_8px_rgba(76,175,80,0.4)]';
-      case 'offline': return 'bg-[#F44336] shadow-[0_0_8px_rgba(244,67,54,0.4)]';
-      case 'restarting': return 'bg-[#FFC107] shadow-[0_0_8px_rgba(255,193,7,0.4)]';
-    }
+  const handleForgeRotate = () => {
+    // Dummy-Action fuer die UI Demonstration
+    console.log("Rotating Forge...");
   };
 
   return (
-    <div className="flex h-screen w-full bg-[#1C1C1C] text-[#E0E0E0] font-sans selection:bg-[#444]">
-      {/* Sidebar - Dark Minimalist */}
-      <aside className="hidden md:flex flex-col w-20 items-center py-8 border-r border-[#2A2A2A] bg-[#222222]">
-        <div className="p-3 bg-[#333] rounded-2xl mb-8 shadow-inner">
-          <Cpu className="w-6 h-6 text-[#A0A0A0]" />
+    <div className="flex flex-col h-screen bg-[#121212] text-[#E0E0E0] font-sans overflow-hidden">
+      {/* Top Bar: Telemetry HUD */}
+      <header className="flex-none bg-[#0A0A0A] border-b border-[#333] px-6 py-2.5 flex items-center justify-between z-20 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+        <div className="flex items-center gap-3">
+          <Box size={20} className="text-[#FFB300]" />
+          <h1 className="text-sm font-mono tracking-[0.2em] uppercase font-bold text-[#E0E0E0]">
+            CORE COCKPIT
+          </h1>
         </div>
-        <nav className="flex flex-col gap-6 flex-1 relative">
-          <button className="p-3 text-[#777] hover:text-[#E0E0E0] hover:bg-[#333] rounded-xl transition-colors" title="Terminal">
-            <Terminal className="w-5 h-5" />
-          </button>
-          <button className="p-3 text-[#777] hover:text-[#E0E0E0] hover:bg-[#333] rounded-xl transition-colors" title="Code">
-            <Code2 className="w-5 h-5" />
-          </button>
-          
-          {/* Audio Profile Button */}
-          <div className="relative">
-            <button 
-              onClick={() => setShowAudioProfiles(!showAudioProfiles)}
-              className={`p-3 rounded-xl transition-colors ${showAudioProfiles ? 'bg-[#333] text-[#E0E0E0]' : 'text-[#777] hover:text-[#E0E0E0] hover:bg-[#333]'}`}
-              title="Audio Profiles"
-            >
-              <Headphones className="w-5 h-5" />
-            </button>
-            
-            {/* Audio Profiles Mock Menu */}
-            <AnimatePresence>
-              {showAudioProfiles && (
-                <motion.div 
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -10 }}
-                  className="absolute left-16 top-0 w-48 bg-[#2A2A2A] border border-[#3A3A3A] rounded-xl shadow-xl overflow-hidden z-50"
-                >
-                  <div className="px-4 py-3 border-b border-[#3A3A3A] text-xs font-mono text-[#888] uppercase tracking-wider">
-                    Audio Profiles
-                  </div>
-                  <div className="p-2 flex flex-col gap-1">
-                    {audioProfiles.map(profile => (
-                      <button 
-                        key={profile}
-                        onClick={() => { setActiveProfile(profile); setShowAudioProfiles(false); }}
-                        className={`text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center justify-between ${activeProfile === profile ? 'bg-[#3A3A3A] text-[#E0E0E0]' : 'text-[#999] hover:bg-[#333] hover:text-[#E0E0E0]'}`}
-                      >
-                        {profile}
-                        {activeProfile === profile && <Volume2 className="w-3.5 h-3.5 text-[#888]" />}
-                      </button>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
 
-          <button className="p-3 text-[#777] hover:text-[#E0E0E0] hover:bg-[#333] rounded-xl transition-colors" title="AI Features">
-            <Sparkles className="w-5 h-5" />
-          </button>
+        <TelemetryHUD data={telemetry} connected={telemetryConnected} />
 
-          {/* Trigger External Message (Debug/Demo) */}
-          <button 
-            onClick={() => simulateExternalMessage()}
-            className="p-3 text-[#777] hover:text-[#D0D6F5] hover:bg-[#2A2D3D] rounded-xl transition-colors mt-auto" 
-            title="Simulate External Intercept"
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setIsForgeOpen(!isForgeOpen)}
+            className={`p-1.5 rounded-lg border transition-all flex items-center gap-2
+              ${isForgeOpen ? "bg-[#FFB300] text-[#121212] border-[#FFB300]" : "bg-[#1A1A1A] text-[#A0A0A0] border-[#333] hover:text-[#E0E0E0] hover:border-[#666]"}`}
+            title="Validation Forge"
           >
-            <Link className="w-5 h-5" />
+            <GitBranch size={16} />
+            <span className="text-[10px] uppercase font-mono tracking-wider px-1">
+              Forge
+            </span>
           </button>
-        </nav>
-        <button className="p-3 text-[#777] hover:text-[#E0E0E0] hover:bg-[#333] rounded-xl transition-colors mt-6" title="Settings">
-          <Settings className="w-5 h-5" />
-        </button>
-      </aside>
+          <div className="w-px h-6 bg-[#333] mx-1"></div>
+          <button
+            className="text-[#666] hover:text-[#E0E0E0] transition-colors p-1"
+            title="Settings"
+          >
+            <Settings size={18} />
+          </button>
+        </div>
+      </header>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col h-full mx-auto w-full relative">
-        {/* Header */}
-        <header className="flex flex-col lg:flex-row lg:items-center justify-between px-6 py-4 bg-[#1C1C1C]/90 backdrop-blur-md sticky top-0 z-10 border-b border-[#2A2A2A]/50 gap-4">
-          <div className="flex items-center gap-3">
-            <button className="md:hidden p-2 -ml-2 text-[#777]">
-              <Menu className="w-5 h-5" />
-            </button>
-            <div>
-              <h1 className="text-lg font-medium tracking-tight text-[#E0E0E0]">MTHO</h1>
-              <p className="text-xs text-[#777] font-mono tracking-wider uppercase">Dev Agent</p>
-            </div>
-          </div>
-          
-          {/* Telemetry HUD */}
-          <div className="flex flex-wrap items-center gap-3">
-            <TelemetryHUD data={telemetry} connected={telemetryConnected} />
-            <div className="flex items-center gap-2 bg-[#222] px-2.5 py-1.5 rounded-md border border-[#2A2A2A]">
-              <span className={`flex h-2 w-2 rounded-full ${wsConnected ? 'bg-[#4CAF50] shadow-[0_0_8px_rgba(76,175,80,0.4)]' : 'bg-[#F44336]'}`}></span>
-              <span className="text-[11px] text-[#888] font-mono uppercase tracking-wide">WS</span>
-            </div>
-          </div>
-        </header>
-
-        {/* Chat Area */}
-        <div className="flex-1 overflow-y-auto px-4 md:px-8 py-6 space-y-8 scroll-smooth pb-32 max-w-5xl mx-auto w-full">
-          <AnimatePresence initial={false}>
+      {/* Main Content Area */}
+      <main className="flex-1 flex relative overflow-hidden">
+        {/* Output Area (Chat / Logs) */}
+        <div className="flex-1 overflow-y-auto px-6 py-8 pb-32">
+          <div className="max-w-5xl mx-auto space-y-6">
             {messages.map((msg) => (
               <motion.div
                 key={msg.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, ease: 'easeOut' }}
-                className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'ml-auto items-end' : 'mr-auto items-start'}`}
+                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
-                <div className="flex items-center gap-2 mb-1.5 px-1">
-                  <span className={`text-[10px] font-mono uppercase tracking-widest ${msg.role === 'external' ? 'text-[#8A94C9]' : 'text-[#666]'}`}>
-                    {msg.sender || (msg.role === 'user' ? 'You' : 'Mtho')}
-                  </span>
-                </div>
                 <div
-                  className={`px-5 py-3.5 rounded-2xl text-[15px] leading-relaxed ${
-                    msg.role === 'user'
-                      ? 'bg-[#333] text-[#E0E0E0] rounded-tr-sm'
-                      : msg.role === 'external'
-                      ? 'bg-[#2A2D3D] border border-[#3A3F58] text-[#D0D6F5] rounded-tl-sm shadow-sm'
-                      : 'bg-[#252525] border border-[#333] text-[#CCCCCC] rounded-tl-sm shadow-sm'
-                  }`}
+                  className={`max-w-[85%] rounded-lg p-4 font-mono text-sm leading-relaxed whitespace-pre-wrap
+                    ${
+                      msg.role === "user"
+                        ? "bg-[#1A1A1A] border border-[#333] text-[#E0E0E0]"
+                        : "bg-transparent border-l-2 border-[#FFB300] pl-6 text-[#A0A0A0]"
+                    }`}
                 >
+                  {msg.role === "user" && (
+                    <div className="text-[10px] text-[#666] uppercase tracking-wider mb-2 flex items-center gap-2">
+                      <Terminal size={10} /> DIRECTIVE
+                    </div>
+                  )}
                   {msg.content}
                 </div>
               </motion.div>
             ))}
-          </AnimatePresence>
-
-          {isTyping && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col max-w-[85%] mr-auto items-start"
-            >
-              <div className="flex items-center gap-2 mb-1.5 px-1">
-               <span className="text-[10px] font-mono text-[#666] uppercase tracking-widest">Mtho</span>
+            {isProcessing && (
+              <div className="flex justify-start">
+                <div className="bg-transparent border-l-2 border-[#333] pl-6 text-[#666] font-mono text-sm uppercase flex items-center gap-3">
+                  <div className="w-2 h-2 bg-[#FFB300] rounded-full animate-pulse"></div>
+                  Processing...
+                </div>
               </div>
-              <div className="px-5 py-4 rounded-2xl bg-[#252525] border border-[#333] rounded-tl-sm shadow-sm flex items-center gap-1.5">
-                <motion.div
-                  className="w-1.5 h-1.5 bg-[#666] rounded-full"
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
-                />
-                <motion.div
-                  className="w-1.5 h-1.5 bg-[#666] rounded-full"
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
-                />
-                <motion.div
-                  className="w-1.5 h-1.5 bg-[#666] rounded-full"
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
-                />
-              </div>
-            </motion.div>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-
-        {/* Input Area */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 bg-gradient-to-t from-[#1C1C1C] via-[#1C1C1C] to-transparent">
-          <div className="max-w-4xl mx-auto">
-            <form
-              onSubmit={handleSend}
-              className="relative flex items-end gap-2 bg-[#252525] border border-[#333] rounded-2xl shadow-sm p-2 focus-within:ring-1 focus-within:ring-[#555] focus-within:border-[#555] transition-all"
-            >
-              <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder="Describe what you want to build..."
-                className="w-full max-h-32 min-h-[44px] bg-transparent resize-none outline-none py-2.5 px-3 text-[15px] text-[#E0E0E0] placeholder:text-[#666]"
-                rows={1}
-              />
-              <button
-                type="submit"
-                disabled={!input.trim() || isTyping}
-                className="p-2.5 bg-[#3A3A3A] text-[#E0E0E0] rounded-xl hover:bg-[#4A4A4A] disabled:opacity-50 disabled:hover:bg-[#3A3A3A] transition-colors flex-shrink-0"
-              >
-                <Send className="w-4 h-4" />
-              </button>
-            </form>
-            <div className="text-center mt-3">
-               <p className="text-[10px] text-[#555] font-mono tracking-wide">MTHO DEV AGENT • V1.0.0</p>
-            </div>
+            )}
+            <div ref={messagesEndRef} />
           </div>
         </div>
+
+        {/* Sliding Validation Forge Panel */}
+        <ValidationForge
+          isOpen={isForgeOpen}
+          onClose={() => setIsForgeOpen(false)}
+          isRotating={false}
+          onRotate={handleForgeRotate}
+          logs={[
+            {
+              id: "1",
+              source: "Architect",
+              severity: "info",
+              message:
+                "Keine strukturellen Verletzungen in der API-Route gefunden.",
+            },
+            {
+              id: "2",
+              source: "Security",
+              severity: "warning",
+              message:
+                'CORS-Headers koennten in der Produktion zu offen sein. (allow_origins=["*"])',
+            },
+            {
+              id: "3",
+              source: "Performance",
+              severity: "error",
+              message:
+                "Thread-Locking in ChromaDB koennte bei >10 req/s zu Timeouts fuehren.",
+            },
+          ]}
+        />
       </main>
+
+      {/* Bottom Command Interface */}
+      <div className="absolute bottom-0 left-0 right-0">
+        <CommandConsole onExecute={handleCommand} isProcessing={isProcessing} />
+      </div>
     </div>
   );
 }

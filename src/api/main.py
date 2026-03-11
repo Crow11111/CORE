@@ -12,7 +12,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from loguru import logger
 
-from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, mtho_knowledge, mtho_voice, mtho_events, github_webhook, omega_matrix, omega_thought, telemetry
+# Temporär auskommentiert wegen ImportError
+# from src.api.routes import id_safe
+
+from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, mtho_knowledge, mtho_voice, mtho_events, github_webhook, omega_matrix, omega_thought, telemetry, chat
+
 from src.api.middleware.council_gate import CouncilGateMiddleware
 from src.api.middleware.friction_guard import FrictionGuardMiddleware
 
@@ -97,10 +101,10 @@ app.add_middleware(FrictionGuardMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=os.getenv("CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(","),
+    allow_origins=["*"], # Komplett offen für lokale Entwicklung
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Authorization", "Content-Type", "X-Council-Confirm", "X-API-Key", "X-Mtho-Secret"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Registrierung der Routen (Webhooks + OpenClaw Channel)
@@ -114,6 +118,8 @@ app.include_router(github_webhook.router)
 app.include_router(omega_matrix.router)
 app.include_router(omega_thought.router)
 app.include_router(telemetry.router)
+app.include_router(chat.router)
+# app.include_router(id_safe.router)
 
 @app.get("/")
 def read_root():

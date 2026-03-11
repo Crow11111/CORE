@@ -32,13 +32,12 @@ async def handle_command(payload: dict) -> dict:
     text = payload.get("text", "")
     context = payload.get("context", {})
     try:
-        from src.services.scout_direct_handler import process_text_async
-        return await process_text_async(text, context)
-    except ImportError:
-        pass
-    import asyncio
-    from src.services.scout_direct_handler import process_text
-    return await asyncio.to_thread(process_text, text, context)
+        from src.services.scout_direct_handler import process_text
+        import asyncio
+        return await asyncio.to_thread(process_text, text, context)
+    except Exception as e:
+        logger.error(f"Fehler in handle_command (sync fallback): {e}")
+        return {"error": str(e), "success": False}
 
 
 async def handle_deep_reasoning(payload: dict) -> dict:
@@ -48,9 +47,9 @@ async def handle_deep_reasoning(payload: dict) -> dict:
     """
     text = payload.get("text", "")
     try:
-        from src.network.openclaw_client import send_message_to_agent, is_configured
+        from src.network.openclaw_client import send_message_to_agent_async, is_configured
         if is_configured():
-            ok, reply = send_message_to_agent(text, agent_id="main", timeout=60.0)
+            ok, reply = await send_message_to_agent_async(text, agent_id="main", timeout=60.0)
             if ok:
                 return {"reply": reply, "source": "oc_brain", "success": True}
     except Exception as e:

@@ -13,7 +13,7 @@ Output:
 - docs/images/generated/mtho_3d_construct.png
 - docs/images/generated/mtho_fibonacci_spiral.png
 - docs/images/generated/mtho_causality_timeline.png
-- docs/images/generated/mtho_wuji_derivation.png
+- docs/images/generated/mtho_idle_derivation.png
 
 Usage:
     python src/scripts/visualize_reality_check.py
@@ -114,7 +114,7 @@ def plot_3d_construct():
 
     ax.scatter(xs, ys, zs, s=sizes, c=colors, alpha=0.8, edgecolors='w')
 
-    # Verbindungen zum Ursprung (Wuji)
+    # Verbindungen zum Ursprung
     for i in range(len(xs)):
         ax.plot([0, xs[i]], [0, ys[i]], [0, zs[i]], color=colors[i], alpha=0.2)
 
@@ -123,8 +123,8 @@ def plot_3d_construct():
     ax.set_zlabel('Info (I)')
     ax.set_title('MTHO Reality Construct (MTHO-Manifold)')
 
-    # Wuji im Zentrum
-    ax.scatter([0], [0], [0], s=500, c='white', marker='*', label='Wuji (Ursprung)')
+    # Origin im Zentrum
+    ax.scatter([0], [0], [0], s=500, c='white', marker='*', label='Origin (idle state)')
 
     plt.legend()
     plt.tight_layout()
@@ -228,13 +228,13 @@ def plot_causality_timeline():
     plt.savefig(f"{OUTPUT_DIR}/mtho_causality_timeline.png", dpi=150)
     plt.close()
 
-def plot_wuji_derivation():
-    """4. Wuji-Ableitung (Baumdiagramm)"""
-    print("Generating Wuji Derivation...")
+def plot_idle_derivation():
+    """4. Idle Derivation (Baumdiagramm)"""
+    print("Generating Idle Derivation...")
     G = nx.DiGraph()
 
     # Knoten
-    root = "WUJI (0)"
+    root = "BASE_STATE (0)"
     l1_nodes = ["L (Logik)", "P (Physik)", "I (Info)", "S (Struktur)"]
 
     G.add_node(root, layer=0)
@@ -290,7 +290,7 @@ def plot_wuji_derivation():
 
     # L2
     for node in G.nodes():
-        if node not in l1_nodes and node != "WUJI (0)":
+        if node not in l1_nodes and node != "BASE_STATE (0)":
             # Check if node has category attribute
             if 'category' in G.nodes[node]:
                 cat = G.nodes[node]['category']
@@ -299,11 +299,11 @@ def plot_wuji_derivation():
     # Labels
     nx.draw_networkx_labels(G, pos, font_size=8, font_color='black', font_weight='bold', ax=ax)
 
-    ax.set_title("Wuji Derivation: From Void to Structure")
+    ax.set_title("Idle Derivation: From Void to Structure")
     ax.axis('off')
 
     plt.tight_layout()
-    plt.savefig(f"{OUTPUT_DIR}/mtho_wuji_derivation.png", dpi=150)
+    plt.savefig(f"{OUTPUT_DIR}/mtho_idle_derivation.png", dpi=150)
     plt.close()
 
 if __name__ == "__main__":
@@ -311,5 +311,5 @@ if __name__ == "__main__":
     plot_3d_construct()
     plot_fibonacci_spiral()
     plot_causality_timeline()
-    plot_wuji_derivation()
+    plot_idle_derivation()
     print("All visualizations generated successfully.")

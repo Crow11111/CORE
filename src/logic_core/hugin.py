@@ -8,9 +8,9 @@
 Hugin – Logik & Scout (Ring-0).
 
 Input-Triage: Klassifiziert eingehende Requests (NormalizedEntry).
-Validation Sync: Bereitet Daten für Valuation Sync / Munin vor.
+Validation Sync: Bereitet Daten für Valuation Sync / context_injector vor.
 
-Integration: src/api/entry_adapter.py → Hugin.triage() → Valuation Sync → Munin
+Integration: src/api/entry_adapter.py → Hugin.triage() → Valuation Sync → context_injector
 """
 from __future__ import annotations
 
@@ -87,7 +87,7 @@ def _derive_priority(source: str, intent: str, mtho_base: str) -> int:
     if intent == "command" and source in ("ha", "whatsapp"):
         return 1
     if mtho_base == "O" and intent in ("command", "status"):
-        return 1  # Council-relevant
+        return 1  # veto_relevant
     if intent == "query":
         return 2
     return 3

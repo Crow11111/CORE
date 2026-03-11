@@ -19,9 +19,9 @@ def init_db():
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
     
-    # Create the argos_knowledge_graph table based on the specifications
+    # Create the knowledge_graph table based on the specifications
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS argos_knowledge_graph (
+        CREATE TABLE IF NOT EXISTS knowledge_graph (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             component1 TEXT NOT NULL,
             component2 TEXT NOT NULL,
@@ -52,7 +52,7 @@ def ingest_document(conn, file_name, relation_type):
         # component1: The subject / persona
         # component2: The actual insight payload
         cursor.execute("""
-            INSERT INTO argos_knowledge_graph (component1, component2, relation_type, source_file)
+            INSERT INTO knowledge_graph (component1, component2, relation_type, source_file)
             VALUES (?, ?, ?, ?)
         """, ("Marc_ND_Profile", chunk, relation_type, file_name))
         count += 1
@@ -64,13 +64,13 @@ def main():
     try:
         conn = init_db()
         # Wipe DB before inserting full dataset to avoid duplicates from previous run
-        conn.cursor().execute("DELETE FROM argos_knowledge_graph")
+        conn.cursor().execute("DELETE FROM knowledge_graph")
         conn.commit()
         
         ingest_document(conn, "01_ND_FAKTEN_VOLLSTAENDIG.md", "FACTUAL_INSIGHT")
         ingest_document(conn, "02_ND_ANNAHMEN_VOLLSTAENDIG.md", "ASSUMED_INSIGHT")
         conn.close()
-        logger.success("Alle Daten erfolgreich in die relationale ARGOS-Wissensdatenbank überführt.")
+        logger.success("Alle Daten erfolgreich in die relationale Knowledge-Graph-Datenbank überführt.")
     except Exception as e:
         logger.error(f"Fehler bei DB Ingestion: {e}")
 

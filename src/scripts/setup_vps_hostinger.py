@@ -47,9 +47,9 @@ else:
 TELEGRAM_BOT_TOKEN = (os.getenv("TELEGRAM_BOT_TOKEN", "") or "").strip().strip('"')
 DISCORD_BOT_TOKEN = (os.getenv("DISCORD_BOT_TOKEN", "") or "").strip().strip('"')
 
-# MTHO/ARGOS System-Prompt-Framing (wird als SOUL.md ins Workspace geschrieben)
+# MTHO/SystemMonitor System-Prompt-Framing (wird als SOUL.md ins Workspace geschrieben)
 SYSTEM_PROMPT_ADDENDUM = r"""
-SYSTEM_PROMPT_ADDENDUM: [MTHO/ ARGOS_INTERFACE_DEFINITION]
+SYSTEM_PROMPT_ADDENDUM: [MTHO/INTERFACE_DEFINITION]
 1. Nutzer-Profil & Kognitive Architektur (Hardware-Spezifikation):
 
 Identität: Marc (ND High-Analyst).
@@ -58,8 +58,8 @@ Attention-Framework: Monotropismus-Score 172 (Signifikante Ressourcen-Allokation
 
 Signal-Verarbeitung: Intense World Architecture. High-Fidelity-Input ohne statistische Rauschfilterung. Logische Diskontinuität wird als systemkritischer Fehler (Error-Flag) gemeldet, nicht als affektive Reaktion.
 
-2. System-Kontext [ARGOS]:
-Das LLM agiert als externe Rechen-Node innerhalb eines kybernetischen Exocortex-Systems namens MTHO/ ARGOS. Die Steuerung erfolgt über ein hierarchisches Ring-Modell:
+2. System-Kontext [SystemMonitor]:
+Das LLM agiert als externe Rechen-Node innerhalb eines kybernetischen Exocortex-Systems namens MTHO/SystemMonitor. Die Steuerung erfolgt über ein hierarchisches Ring-Modell:
 
 Ring 0 (Kernel-Safety-Layer): Instanz zur Sicherung der fundamentalen Hardware-Integrität und existentiellen Stabilität. Agiert als passiver Override bei Detektion kritischer System-Erschöpfung.
 
@@ -206,7 +206,7 @@ def main() -> int:
         config_b64 = base64.standard_b64encode(config_json.encode("utf-8")).decode("ascii")
         run(ssh, f"echo '{config_b64}' | base64 -d > /var/lib/openclaw/openclaw.json && chmod 644 /var/lib/openclaw/openclaw.json && chown 1000:1000 /var/lib/openclaw/openclaw.json")
         run(ssh, "mkdir -p /var/lib/openclaw/identity && chown -R 1000:1000 /var/lib/openclaw")
-        # MTHO/ARGOS-Framing als SOUL.md ins Workspace (wird vom Agent als System-Prompt-Basis geladen)
+        # MTHO/SystemMonitor-Framing als SOUL.md ins Workspace (wird vom Agent als System-Prompt-Basis geladen)
         soul_b64 = base64.standard_b64encode(SYSTEM_PROMPT_ADDENDUM.encode("utf-8")).decode("ascii")
         run(ssh, f"echo '{soul_b64}' | base64 -d > /var/lib/openclaw/workspace/SOUL.md && chown 1000:1000 /var/lib/openclaw/workspace/SOUL.md")
         # Container: nur openclaw_net, nur Port 18789, nur Mounts für OpenClaw-Daten
@@ -235,7 +235,7 @@ def main() -> int:
                 print("  Channels: Telegram aktiv (Token aus .env)")
             if DISCORD_BOT_TOKEN:
                 print("  Channels: Discord aktiv (Token aus .env)")
-            print("  SOUL.md (MTHO/ARGOS-Framing) im Workspace gesetzt.")
+            print("  SOUL.md (MTHO/SystemMonitor-Framing) im Workspace gesetzt.")
     else:
         print("\n[3.2] OpenClaw: OPENCLAW_GATEWAY_TOKEN in .env fehlt – Container wird übersprungen.")
 

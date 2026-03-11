@@ -9,10 +9,10 @@ MTHO Event-Bus Daemon – HA WebSocket Listener.
 
 Verbindet sich per WebSocket mit Home Assistant (Scout),
 subscribed auf state_changed Events und routet relevante
-Aenderungen an Ghost Agents zur Verarbeitung.
+Aenderungen an Ephemeral Agents zur Verarbeitung.
 
 Domains: binary_sensor, sensor, device_tracker
-Integration: GhostAgentPool (spawn_and_execute)
+Integration: EphemeralAgentPool (spawn_and_execute)
 Persistenz: ChromaDB events Collection
 
 Features:
@@ -156,7 +156,7 @@ def _is_night(hour: int, start: int, end: int) -> bool:
 # ---------------------------------------------------------------------------
 
 class MthoEventBus:
-    """WebSocket-basierter HA Event-Bus mit Ghost Agent Integration."""
+    """WebSocket-basierter HA Event-Bus mit Ephemeral Agent Integration."""
 
     def __init__(self, config: SensorConfig | None = None):
         self._msg_id = 0
@@ -251,9 +251,9 @@ class MthoEventBus:
 
     async def _ensure_pool(self):
         if self._pool is None:
-            from src.agents.mtho_agent import get_ghost_pool
+            from src.agents.mtho_agent import get_ephemeral_pool
             from src.agents.scout_mtho_handlers import register_all_handlers
-            self._pool = get_ghost_pool()
+            self._pool = get_ephemeral_pool()
             if not self._pool._handlers:
                 register_all_handlers(self._pool)
             await self._pool.start_gc_loop()
@@ -407,7 +407,7 @@ class MthoEventBus:
             logger.warning("[EVENT-BUS] OC Brain forward error: {}", e)
 
     # ------------------------------------------------------------------
-    # Triage + Ghost Spawn
+    # Triage + Ephemeral Agent Spawn
     # ------------------------------------------------------------------
 
     async def _triage_and_spawn(
@@ -425,7 +425,7 @@ class MthoEventBus:
         await self._ensure_pool()
 
         try:
-            from src.agents.mtho_agent import GhostIntent
+            from src.agents.mtho_agent import IntentType
 
             device_class = (new_state or {}).get("attributes", {}).get("device_class", "")
             context = {
@@ -447,12 +447,12 @@ class MthoEventBus:
                 "context": context,
             }
             result = await self._pool.spawn_and_execute(
-                GhostIntent.DEEP_REASONING, reasoning_payload, ttl=30.0,
+                IntentType.DEEP_REASONING, reasoning_payload, ttl=30.0,
             )
             self._stats_ghosts_spawned += 1
             level = "info" if result.success else "warning"
             getattr(logger, level)(
-                "[EVENT-BUS] Ghost DEEP_REASONING {}: {}ms",
+                "[EVENT-BUS] Ephemeral DEEP_REASONING {}: {}ms",
                 "OK" if result.success else "FAIL",
                 f"{result.duration_ms:.0f}",
             )
@@ -467,18 +467,18 @@ class MthoEventBus:
                     "context": context,
                 }
                 tts_result = await self._pool.spawn_and_execute(
-                    GhostIntent.TTS_DISPATCH, tts_payload, ttl=15.0,
+                    IntentType.TTS_DISPATCH, tts_payload, ttl=15.0,
                 )
                 self._stats_ghosts_spawned += 1
                 tts_level = "info" if tts_result.success else "warning"
                 getattr(logger, tts_level)(
-                    "[EVENT-BUS] Ghost TTS_DISPATCH {}: {}ms",
+                    "[EVENT-BUS] Ephemeral TTS_DISPATCH {}: {}ms",
                     "OK" if tts_result.success else "FAIL",
                     f"{tts_result.duration_ms:.0f}",
                 )
 
         except Exception as e:
-            logger.error("[EVENT-BUS] Ghost spawn fehlgeschlagen: {}", e)
+            logger.error("[EVENT-BUS] Ephemeral spawn fehlgeschlagen: {}", e)
 
     # ------------------------------------------------------------------
     # Lifecycle

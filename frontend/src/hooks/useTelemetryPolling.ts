@@ -12,6 +12,13 @@ export type TelemetryData = {
   friction_violations: number;
   event_bus_connected: boolean;
   api_uptime_s: number;
+  argos?: {
+    z_vector: number;
+    total_tokens: number;
+    call_count: number;
+    max_iterations: number;
+    token_kill_threshold: number;
+  };
 };
 
 type UseTelemetryOptions = {

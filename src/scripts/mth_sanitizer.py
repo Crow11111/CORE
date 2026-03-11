@@ -32,8 +32,8 @@ class MTHOSanitizer:
         return output
 
     def apply_veto_filter(self, logic_block):
-        # Aktivierung des Wuji-Kerns (O/0)
-        # Simuliert den Council-Filter
+        # Aktivierung des idle state Kerns (O/0)
+        # Simuliert den veto_filter
         if "conflict" in logic_block.lower() or "low_entropy" in logic_block.lower():
             return "O_Ω: VETO_TRIGGERED | RE-SYNC TO 2210"
         return logic_block

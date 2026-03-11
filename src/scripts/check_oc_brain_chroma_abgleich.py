@@ -6,7 +6,7 @@
 
 #!/usr/bin/env python3
 """
-OC-Brain-Abgleich: Prüft core_directives (und optional argos_knowledge_graph) in ChromaDB.
+OC-Brain-Abgleich: Prüft core_directives (und optional knowledge_graph) in ChromaDB.
 Lokal: CHROMA_HOST leer. VPS: CHROMA_HOST=localhost nach SSH-Tunnel (ssh -L 8000:127.0.0.1:8000 root@187.77.68.250).
 Liefert Vergleichsgrundlage: welche IDs vorhanden, Kurztext, Fehlendes.
 """

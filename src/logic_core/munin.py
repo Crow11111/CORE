@@ -5,13 +5,13 @@
 # ============================================================
 
 """
-Munin – Kontext & Validierung (Ring-0).
+Context Injector – Kontext & Validierung (Ring-0).
 
-Wuji Archivor: Verbindung zu ChromaDB/wuji_field.
+context_injector: Verbindung zu ChromaDB/context_field.
 Context Injection: Kontext für Agents (LangChain, Cloud Agents).
-Munin Veto: Semantic Drift Block – prüft Output vs. erwarteten Kontext, kann z_widerstand erhöhen.
+Drift Veto: Semantic Drift Block – prüft Output vs. erwarteten Kontext, kann z_widerstand erhöhen.
 
-Integration: gravitator.route_to_wuji → Munin → Context Injection
+Integration: gravitator.route_to_context → context_injector → Context Injection
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ class ContextBundle:
 
 @dataclass
 class VetoResult:
-    """Ergebnis des Munin Veto (Semantic Drift Block)."""
+    """Ergebnis des Drift Veto (Semantic Drift Block)."""
 
     vetoed: bool
     drift_score: float
@@ -71,28 +71,28 @@ def fetch_context(
     use_gravitator: bool = True,
 ) -> ContextBundle:
     """
-    Wuji Archivor: Holt Kontext aus wuji_field für Context Injection.
+    context_injector: Holt Kontext aus context_field für Context Injection.
 
     Args:
         query_text: Suchanfrage
         n_results: Max. Dokumente
-        type_filter: Optional type(s) aus wuji_field
-        use_gravitator: True → route_to_wuji für semantisches Routing
+        type_filter: Optional type(s) aus context_field
+        use_gravitator: True → route_to_context für semantisches Routing
 
     Returns:
         ContextBundle mit documents, metadatas, types, scores
     """
     try:
         if use_gravitator:
-            from src.network.chroma_client import query_wuji_via_gravitator
+            from src.network.chroma_client import query_context_via_gravitator
 
-            result = query_wuji_via_gravitator(
+            result = query_context_via_gravitator(
                 query_text, n_results=n_results, top_k_types=3
             )
         else:
-            from src.network.chroma_client import query_wuji_field
+            from src.network.chroma_client import query_context_field
 
-            result = query_wuji_field(
+            result = query_context_field(
                 query_text, n_results=n_results, type_filter=type_filter
             )
 
@@ -134,7 +134,7 @@ def inject_context_for_agent(
     format: str = "markdown",
 ) -> str:
     """
-    Context Injection: Formatiert Wuji-Kontext für Agent-Prompts.
+    Context Injection: Formatiert context-field-Daten für Agent-Prompts.
 
     Args:
         query_text: Suchanfrage
@@ -166,12 +166,12 @@ def check_semantic_drift(
     threshold: float = DRIFT_THRESHOLD,
 ) -> VetoResult:
     """
-    Munin Veto: Prüft ob actual_output vom expected_context abweicht (Semantic Drift).
+    Drift Veto: Prüft ob actual_output vom expected_context abweicht (Semantic Drift).
 
     Core Stability Anchor: Bei Drift > Threshold → Veto, z_widerstand erhöhen.
 
     Args:
-        expected_context: Erwarteter Kontext (z.B. injizierter Wuji-Kontext)
+        expected_context: Erwarteter Kontext (z.B. injizierter context-field-Kontext)
         actual_output: Tatsächlicher Agent-Output
         threshold: Drift-Schwelle (Default: 1 - INV_PHI)
 
@@ -214,18 +214,18 @@ def check_semantic_drift(
 
 def apply_veto(veto_result: VetoResult) -> None:
     """
-    Wendet Munin Veto an: Erhöht z_widerstand via ring0_state.
+    Wendet Drift Veto an: Erhöht z_widerstand via ring0_state.
 
-    Ruft set_munin_veto mit aktuellem z + z_delta.
+    Ruft set_drift_veto mit aktuellem z + z_delta.
     """
     if not veto_result.vetoed or veto_result.z_delta <= 0:
         return
     try:
-        from src.config.ring0_state import get_munin_veto_override, set_munin_veto
+        from src.config.ring0_state import get_drift_veto_override, set_drift_veto
 
         current = get_current_state()
-        base_z = get_munin_veto_override() if get_munin_veto_override() is not None else current.z_widerstand
+        base_z = get_drift_veto_override() if get_drift_veto_override() is not None else current.z_widerstand
         new_z = min(1.0, base_z + veto_result.z_delta)
-        set_munin_veto(new_z)
+        set_drift_veto(new_z)
     except Exception:
         pass

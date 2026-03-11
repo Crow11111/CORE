@@ -40,7 +40,7 @@ HERESY_PATTERNS = [
 FRICTION_STATE = {
     "hits": 0,
     "last_hit": 0.0,
-    "system_temperature": 0.0 # 0.0 (Wuji) bis 1.0 (Kollaps)
+    "system_temperature": 0.0 # 0.0 (idle) bis 1.0 (Kollaps)
 }
 
 class FrictionGuardMiddleware(BaseHTTPMiddleware):

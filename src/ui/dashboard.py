@@ -12,7 +12,7 @@ import pandas as pd
 # Goal: Minimalist, dark-mode, zero friction dashboard. Only raw logic.
 
 st.set_page_config(
-    page_title="MTHO_CORE | Argos Symbiosis",
+    page_title="MTHO_CORE | System Symbiosis",
     page_icon="👁️",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -74,8 +74,8 @@ with col1:
         st.warning("No immutable facts found or DB offline.")
 
 with col2:
-    st.header("ARGOS_KNOWLEDGE_GRAPH (Relations)")
-    df_graph = load_data("argos_knowledge_graph")
+    st.header("KNOWLEDGE_GRAPH (Relations)")
+    df_graph = load_data("knowledge_graph")
     if not df_graph.empty and "Error" not in df_graph.columns:
         st.dataframe(df_graph, hide_index=True)
     else:

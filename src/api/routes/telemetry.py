@@ -48,6 +48,7 @@ class TelemetryResponse(BaseModel):
     friction_violations: int = 0
     event_bus_connected: bool = False
     api_uptime_s: float = 0.0
+    z_damper: Optional[dict] = None
 
 
 @router.get("/telemetry")
@@ -77,11 +78,31 @@ async def get_telemetry():
     except Exception:
         pass
 
+    z_damper_data = {
+        "z_vector": 0.049,
+        "total_tokens": 0,
+        "call_count": 0,
+        "max_iterations": 13,
+        "token_kill_threshold": 233000
+    }
+    try:
+        from src.logic_core.argos_damper import z_damper, MAX_ITERATIONS, TOKEN_KILL_THRESHOLD
+        z_damper_data = {
+            "z_vector": getattr(z_damper._state, "z_vector_escalation", 0.049),
+            "total_tokens": getattr(z_damper._state, "total_tokens", 0),
+            "call_count": getattr(z_damper._state, "call_count", 0),
+            "max_iterations": MAX_ITERATIONS,
+            "token_kill_threshold": TOKEN_KILL_THRESHOLD
+        }
+    except Exception:
+        pass
+
     result = TelemetryResponse(
         watchdog=watchdog,
         friction_violations=friction_count,
         event_bus_connected=event_bus_ok,
         api_uptime_s=round(time.time() - _api_start_time, 1),
+        z_damper=z_damper_data
     )
 
     response = JSONResponse(content=result.model_dump())

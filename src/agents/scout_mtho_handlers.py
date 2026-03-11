@@ -5,7 +5,7 @@
 # ============================================================
 
 """
-Scout Ghost Handlers: Intent-Handler fuer Ghost Agents.
+Scout Ephemeral Handlers: Intent-Handler fuer Ephemeral Agents.
 
 Registriert Handler fuer:
 - COMMAND: HA-Steuerung via scout_direct_handler
@@ -20,7 +20,7 @@ import os
 from typing import Any
 from loguru import logger
 
-from .mtho_agent import GhostIntent, GhostAgentPool, get_ghost_pool
+from .mtho_agent import IntentType, EphemeralAgentPool, get_ephemeral_pool
 
 
 async def handle_command(payload: dict) -> dict:
@@ -130,25 +130,25 @@ async def handle_failover(payload: dict) -> dict:
         return {"error": str(e), "success": False}
 
 
-def register_all_handlers(pool: GhostAgentPool | None = None):
-    """Registriert alle Scout Ghost Handlers im Pool."""
-    pool = pool or get_ghost_pool()
-    pool.register_handler(GhostIntent.COMMAND, handle_command)
-    pool.register_handler(GhostIntent.DEEP_REASONING, handle_deep_reasoning)
-    pool.register_handler(GhostIntent.VISION_ANALYSIS, handle_vision_analysis)
-    pool.register_handler(GhostIntent.TTS_DISPATCH, handle_tts_dispatch)
-    pool.register_handler(GhostIntent.FAILOVER, handle_failover)
-    logger.info("[SCOUT-GHOST] Alle Handler registriert")
+def register_all_handlers(pool: EphemeralAgentPool | None = None):
+    """Registriert alle Scout Ephemeral Handlers im Pool."""
+    pool = pool or get_ephemeral_pool()
+    pool.register_handler(IntentType.COMMAND, handle_command)
+    pool.register_handler(IntentType.DEEP_REASONING, handle_deep_reasoning)
+    pool.register_handler(IntentType.VISION_ANALYSIS, handle_vision_analysis)
+    pool.register_handler(IntentType.TTS_DISPATCH, handle_tts_dispatch)
+    pool.register_handler(IntentType.FAILOVER, handle_failover)
+    logger.info("[SCOUT-EPHEMERAL] Alle Handler registriert")
 
 
 async def scout_fusion_init():
     """
     Initialisiert das Scout-Fusion-Protokoll:
-    - Registriert Ghost Handlers
+    - Registriert Ephemeral Handlers
     - Startet GC Loop
     """
-    pool = get_ghost_pool()
+    pool = get_ephemeral_pool()
     register_all_handlers(pool)
     await pool.start_gc_loop()
-    logger.info("[SCOUT-FUSION] Ghost Agent Pool aktiv")
+    logger.info("[SCOUT-FUSION] Ephemeral Agent Pool aktiv")
     return pool

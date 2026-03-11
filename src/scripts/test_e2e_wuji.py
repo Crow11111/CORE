@@ -6,14 +6,14 @@
 
 #!/usr/bin/env python3
 """
-MTHO WUJI – End-to-End Integration Test.
+MTHO CONTEXT – End-to-End Integration Test.
 
 Testet die vollständige Kette ohne externe Abhängigkeiten:
 1. Entry-Adapter (WhatsApp, HA, NormalizedEntry)
 2. Hugin (Triage, MTHO, Intent)
 3. Gravitator (Route, Collection-Auswahl, Fallback)
-4. Munin (Context Injection, Semantic Drift)
-5. Council Gate (Veto-Modus, Critical Path)
+4. Context Injector (Context Injection, Semantic Drift)
+5. Veto Gate (Veto-Modus, Critical Path)
 
 Keine echten API-Calls, keine ChromaDB/Embedding-Netzwerkzugriffe.
 """
@@ -193,7 +193,7 @@ def run_tests() -> dict[str, list[tuple[str, bool, str]]]:
 
     try:
         import unittest.mock as mock
-        from src.logic_core.gravitator import route, route_to_wuji, CollectionTarget, _FALLBACK_TARGETS
+        from src.logic_core.gravitator import route, route_to_context, CollectionTarget, _FALLBACK_TARGETS
 
         mock_ef = MockEmbeddingFunction()
 
@@ -215,11 +215,11 @@ def run_tests() -> dict[str, list[tuple[str, bool, str]]]:
                 ("Route: Leere Query -> Fallback", ok, f"got={[t.name for t in fallback]}")
             )
 
-            # route_to_wuji
-            wuji_targets = route_to_wuji("Governance Direktive", top_k=2, threshold=0.0)
-            ok = all(t.name == "wuji_field" for t in wuji_targets)
+            # route_to_context
+            context_targets = route_to_context("Governance Direktive", top_k=2, threshold=0.0)
+            ok = all(t.name == "context_field" for t in context_targets)
             results["Gravitator"].append(
-                ("route_to_wuji -> name=wuji_field", ok, f"names={[t.name for t in wuji_targets]}")
+                ("route_to_context -> name=context_field", ok, f"names={[t.name for t in context_targets]}")
             )
 
             # Collection-Auswahl: unterschiedliche Queries
@@ -233,8 +233,8 @@ def run_tests() -> dict[str, list[tuple[str, bool, str]]]:
     except Exception as e:
         results["Gravitator"].append(("Gravitator Import/Execution", False, str(e)))
 
-    # ── 4. Munin (mit Mock ChromaDB + Embedding) ───────────────────────────
-    results["Munin"] = []
+    # ── 4. Context Injector (mit Mock ChromaDB + Embedding) ────────────────
+    results["Context Injector"] = []
 
     try:
         import unittest.mock as mock
@@ -248,20 +248,20 @@ def run_tests() -> dict[str, list[tuple[str, bool, str]]]:
         )
 
         # Mock chroma_client
-        mock_wuji_result = {
+        mock_context_result = {
             "ids": [["doc1"]],
             "documents": [["Mock-Dokument: Simulationstheorie Indizien"]],
             "metadatas": [[{"type": "evidence", "mtho_base": "P"}]],
             "distances": [[0.2]],
         }
 
-        # Munin importiert chroma_client dynamisch - Patch am Modul
+        # context_injector importiert chroma_client dynamisch - Patch am Modul
         with mock.patch(
-            "src.network.chroma_client.query_wuji_via_gravitator",
-            return_value=mock_wuji_result,
+            "src.network.chroma_client.query_context_via_gravitator",
+            return_value=mock_context_result,
         ), mock.patch(
-            "src.network.chroma_client.query_wuji_field",
-            return_value=mock_wuji_result,
+            "src.network.chroma_client.query_context_field",
+            return_value=mock_context_result,
         ), mock.patch(
             "src.logic_core.munin._get_embedding_function",
             return_value=MockEmbeddingFunction(),
@@ -269,14 +269,14 @@ def run_tests() -> dict[str, list[tuple[str, bool, str]]]:
             # Context Injection: fetch_context
             bundle = fetch_context("Test Query", n_results=3, use_gravitator=True)
             ok = isinstance(bundle, ContextBundle) and len(bundle.documents) >= 1
-            results["Munin"].append(
+            results["Context Injector"].append(
                 ("fetch_context -> ContextBundle", ok, f"docs={len(bundle.documents)}")
             )
 
             # inject_context_for_agent
             ctx_str = inject_context_for_agent("Test", n_results=3, format="markdown")
             ok = "### " in ctx_str or len(ctx_str) >= 1 or (len(bundle.documents) == 0 and ctx_str == "")
-            results["Munin"].append(
+            results["Context Injector"].append(
                 ("inject_context_for_agent -> markdown", ok, f"len={len(ctx_str)}")
             )
 
@@ -290,14 +290,14 @@ def run_tests() -> dict[str, list[tuple[str, bool, str]]]:
             same_out = "Simulationstheorie ist eine Hypothese."
             v_same = check_semantic_drift(same_ctx, same_out, threshold=0.5)
             ok = not v_same.vetoed and v_same.drift_score < 0.5
-            results["Munin"].append(
+            results["Context Injector"].append(
                 ("Semantic Drift: gleicher Text -> kein Veto", ok, f"vetoed={v_same.vetoed} drift={v_same.drift_score:.3f}")
             )
 
             # Leere Inputs → kein Veto
             v_empty = check_semantic_drift("", "irgendwas")
             ok = not v_empty.vetoed and v_empty.reason == "insufficient_input"
-            results["Munin"].append(
+            results["Context Injector"].append(
                 ("Semantic Drift: leere Inputs -> insufficient_input", ok, f"reason={v_empty.reason}")
             )
 
@@ -308,15 +308,15 @@ def run_tests() -> dict[str, list[tuple[str, bool, str]]]:
                 threshold=0.1,
             )
             ok = isinstance(v_drift, VetoResult)
-            results["Munin"].append(
+            results["Context Injector"].append(
                 ("Semantic Drift: VetoResult-Struktur", ok, f"vetoed={v_drift.vetoed}")
             )
 
     except Exception as e:
-        results["Munin"].append(("Munin Import/Execution", False, str(e)))
+        results["Context Injector"].append(("Context Injector Import/Execution", False, str(e)))
 
-    # ── 5. Council Gate ───────────────────────────────────────────────────
-    results["Council Gate"] = []
+    # ── 5. Veto Gate ───────────────────────────────────────────────────
+    results["Veto Gate"] = []
 
     try:
         import unittest.mock as mock
@@ -330,25 +330,25 @@ def run_tests() -> dict[str, list[tuple[str, bool, str]]]:
 
         # Critical Path: /api/config
         ok = _is_critical_request("GET", "/api/config")
-        results["Council Gate"].append(
+        results["Veto Gate"].append(
             ("Critical Path: /api/config", ok, "" if ok else "nicht erkannt")
         )
 
         # Critical Path: DELETE
         ok = _is_critical_request("DELETE", "/api/anything")
-        results["Council Gate"].append(
+        results["Veto Gate"].append(
             ("Critical Path: DELETE-Methode", ok, "" if ok else "nicht erkannt")
         )
 
         # Critical Path: evidence/add
         ok = _is_critical_request("POST", "/api/mtho/knowledge/evidence/add")
-        results["Council Gate"].append(
+        results["Veto Gate"].append(
             ("Critical Path: evidence/add", ok, "" if ok else "nicht erkannt")
         )
 
         # Nicht-kritisch
         ok = not _is_critical_request("GET", "/api/health")
-        results["Council Gate"].append(
+        results["Veto Gate"].append(
             ("Nicht-kritisch: /api/health", ok, "" if ok else "fälschlich kritisch")
         )
 
@@ -359,7 +359,7 @@ def run_tests() -> dict[str, list[tuple[str, bool, str]]]:
         ):
             z = _get_z_widerstand()
             ok = z >= VETO_THRESHOLD
-            results["Council Gate"].append(
+            results["Veto Gate"].append(
                 ("Veto-Modus: z=0.7 >= INV_PHI", ok, f"z={z}")
             )
 
@@ -369,14 +369,14 @@ def run_tests() -> dict[str, list[tuple[str, bool, str]]]:
                 self.headers = headers
 
         req_no = MockRequest({})
-        req_yes = MockRequest({"X-Council-Confirm": "1"})
+        req_yes = MockRequest({"X-Veto-Confirm": "1"})
         ok = not _has_confirmation(req_no) and _has_confirmation(req_yes)
-        results["Council Gate"].append(
-            ("X-Council-Confirm Header-Check", ok, "" if ok else "Header-Logik fehlerhaft")
+        results["Veto Gate"].append(
+            ("X-Veto-Confirm Header-Check", ok, "" if ok else "Header-Logik fehlerhaft")
         )
 
     except Exception as e:
-        results["Council Gate"].append(("Council Gate Import/Execution", False, str(e)))
+        results["Veto Gate"].append(("Veto Gate Import/Execution", False, str(e)))
 
     return results
 
@@ -384,7 +384,7 @@ def run_tests() -> dict[str, list[tuple[str, bool, str]]]:
 def print_report(results: dict[str, list[tuple[str, bool, str]]]) -> None:
     """Gibt Test-Report aus."""
     print("\n" + "=" * 60)
-    print("MTHO WUJI - End-to-End Integration Test Report")
+    print("MTHO CONTEXT - End-to-End Integration Test Report")
     print("=" * 60)
 
     total_pass = 0

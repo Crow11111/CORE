@@ -90,12 +90,12 @@ def _forwarded_text_pipeline(text: str) -> str:
                 inject_context_for_agent,
             )
 
-            wuji_ctx = inject_context_for_agent(text, n_results=3, format="markdown")
-            if wuji_ctx:
-                sys_prompt += "\n\n## Relevanter Kontext (Wuji-Feld)\n" + wuji_ctx
+            context_ctx = inject_context_for_agent(text, n_results=3, format="markdown")
+            if context_ctx:
+                sys_prompt += "\n\n## Relevanter Kontext (context field)\n" + context_ctx
             reply = mtho_llm.invoke_heavy_reasoning(sys_prompt, text)
-            if wuji_ctx:
-                veto = check_semantic_drift(wuji_ctx, reply)
+            if context_ctx:
+                veto = check_semantic_drift(context_ctx, reply)
                 if veto.vetoed:
                     apply_veto(veto)
             return reply

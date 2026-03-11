@@ -9,7 +9,7 @@ import argparse
 # Protokoll: MTTH (2201) - Logik ueberpruefen, nicht voraussetzen.
 
 API_URL_DEFAULT = os.getenv("MTHO_VPS_URL", "http://localhost:8000")
-# Falls ein dedizierter Ghost-Agent oder LLM-Endpunkt existiert:
+# Falls ein dedizierter Ephemeral-Agent oder LLM-Endpunkt existiert:
 ENDPOINT = "/webhook/forwarded_text" # Oder der dedizierte LLM-API-Pfad von MTHO
 
 TEST_SUITE = [

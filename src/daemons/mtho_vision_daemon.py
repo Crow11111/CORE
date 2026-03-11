@@ -7,17 +7,17 @@
 """
 MTHO Vision Daemon (The All-Seeing Eye)
 ----------------------------------------
-Wuji-Logik: "Sehen ist Handeln." (Quantum Observer Effect)
+Observer-Logik: "Sehen ist Handeln." (Quantum Observer Effect)
 
-SCOUT-FUSION Update: Ghost Agent Integration
-- Bei Symmetriebruch: Ghost Agent VISION_ANALYSIS spawnen
-- Output an Ghost Analyst weiterleiten
+SCOUT-FUSION Update: Ephemeral Agent Integration
+- Bei Symmetriebruch: Ephemeral Agent VISION_ANALYSIS spawnen
+- Output an Vision Analyst weiterleiten
 
 Funktion:
 1. Ueberwacht RTSP-Stream (Brio/Go2RTC).
 2. Erkennt Symmetrie-Brueche (Motion Detection).
-3. Spawnt Ghost Agent fuer Gemini Vision Analyse.
-4. Schreibt in ChromaDB Wuji-Feld.
+3. Spawnt Ephemeral Agent fuer Gemini Vision Analyse.
+4. Schreibt in ChromaDB context field.
 
 Konstanten:
 - PHI (1.618): Taktgeber für Cooldowns.
@@ -32,7 +32,7 @@ import threading
 import asyncio
 from dotenv import load_dotenv
 import google.generativeai as genai
-from src.network.chroma_client import add_wuji_observation
+from src.network.chroma_client import add_context_observation
 from src.utils.time_metric import asym_sleep_float, asym_sleep_prime, get_friction_timeout
 
 # Lade Umgebungsvariablen
@@ -43,7 +43,7 @@ RTSP_URL = os.getenv("MTHO_RTSP_URL", "rtsp://192.168.178.54:8554/mx_brio")
 GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
 MODEL_NAME = "gemini-2.0-flash-exp"  # Schnellstes Modell für Vision
 
-# Physik-Konstanten (Wuji)
+# Physik-Konstanten
 PHI = 1.6180339887
 SYMMETRY_BREAK_THRESHOLD = 5000  # Pixel-Differenz-Area (angepasst an Brio 4K/1080p)
 COOLDOWN_SECONDS = 5 * PHI  # ca. 8 Sekunden
@@ -86,37 +86,37 @@ class MthoVisionDaemon:
 
             if "No significant entropy" not in text:
                 try:
-                    asyncio.run(add_wuji_observation(text, metadata={"duration_sec": duration, "model": MODEL_NAME}))
-                    print("[WUJI] Beobachtung gespeichert.")
-                except Exception as wuji_err:
-                    print(f"[WUJI] Persist fehlgeschlagen: {wuji_err}")
-                self._notify_ghost_analyst(text, duration)
+                    asyncio.run(add_context_observation(text, metadata={"duration_sec": duration, "model": MODEL_NAME}))
+                    print("[CONTEXT] Beobachtung gespeichert.")
+                except Exception as ctx_err:
+                    print(f"[CONTEXT] Persist fehlgeschlagen: {ctx_err}")
+                self._notify_vision_analyst(text, duration)
                 self._forward_to_oc_brain(text, duration)
 
         except Exception as e:
             print(f"[ERROR] Vision API Fehler: {e}")
 
-    def _notify_ghost_analyst(self, analysis: str, duration: float):
+    def _notify_vision_analyst(self, analysis: str, duration: float):
         """
-        SCOUT-FUSION: Benachrichtigt Ghost Analyst ueber Vision Event.
-        Spawnt optional TTS Ghost fuer wichtige Events.
+        SCOUT-FUSION: Benachrichtigt Vision Analyst ueber Vision Event.
+        Spawnt optional TTS Worker fuer wichtige Events.
         """
         try:
             keywords_critical = ["person", "motion", "movement", "someone", "intruder"]
             is_critical = any(kw in analysis.lower() for kw in keywords_critical)
 
             if is_critical:
-                print(f"[GHOST-ANALYST] Kritisches Event: {analysis[:80]}...")
+                print(f"[VISION-ANALYST] Kritisches Event: {analysis[:80]}...")
                 try:
                     loop = asyncio.get_event_loop()
                     if loop.is_running():
-                        asyncio.create_task(self._spawn_tts_ghost(analysis))
+                        asyncio.create_task(self._spawn_tts_worker(analysis))
                     else:
-                        loop.run_until_complete(self._spawn_tts_ghost(analysis))
+                        loop.run_until_complete(self._spawn_tts_worker(analysis))
                 except RuntimeError:
-                    asyncio.run(self._spawn_tts_ghost(analysis))
+                    asyncio.run(self._spawn_tts_worker(analysis))
         except Exception as e:
-            print(f"[GHOST-ANALYST] Notification Fehler: {e}")
+            print(f"[VISION-ANALYST] Notification Fehler: {e}")
 
     def _forward_to_oc_brain(self, analysis: str, duration: float):
         """Sendet Vision-Analyse (Text, kein Base64) an OC Brain (non-blocking)."""
@@ -145,25 +145,25 @@ class MthoVisionDaemon:
 
         threading.Thread(target=_do_forward, daemon=True).start()
 
-    async def _spawn_tts_ghost(self, analysis: str):
-        """Spawnt Ghost Agent fuer TTS-Ausgabe bei kritischem Vision Event."""
+    async def _spawn_tts_worker(self, analysis: str):
+        """Spawnt Ephemeral Agent fuer TTS-Ausgabe bei kritischem Vision Event."""
         try:
-            from src.agents.mtho_agent import GhostIntent, get_ghost_pool
+            from src.agents.mtho_agent import IntentType, get_ephemeral_pool
             from src.agents.scout_mtho_handlers import register_all_handlers
 
-            pool = get_ghost_pool()
+            pool = get_ephemeral_pool()
             if not pool._handlers:
                 register_all_handlers(pool)
 
             tts_text = f"Achtung: {analysis[:100]}"
             result = await pool.spawn_and_execute(
-                GhostIntent.TTS_DISPATCH,
+                IntentType.TTS_DISPATCH,
                 {"text": tts_text, "target": "mini"},
                 ttl=15.0
             )
-            print(f"[GHOST-TTS] {'OK' if result.success else 'FAIL'}: {result.duration_ms:.0f}ms")
+            print(f"[EPHEMERAL-TTS] {'OK' if result.success else 'FAIL'}: {result.duration_ms:.0f}ms")
         except Exception as e:
-            print(f"[GHOST-TTS] Spawn Fehler: {e}")
+            print(f"[EPHEMERAL-TTS] Spawn Fehler: {e}")
 
     def run(self):
         print(f"[START] Verbinde zu RTSP: {RTSP_URL}")

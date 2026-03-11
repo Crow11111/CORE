@@ -12,7 +12,7 @@ from aiohttp import web
 from dotenv import load_dotenv
 
 # ═══════════════════════════════════════════════════════════
-# MTHO SYNC RELAY (THE CRADLE)
+# MTHO SYNC RELAY
 # ═══════════════════════════════════════════════════════════
 # Empfängt Live-Regel-Injections von G-MTHO (Cloud).
 # Empfängt Vektor-Syncs von G-MTHO → lokale ChromaDB.
@@ -126,7 +126,7 @@ async def handle_vectors(request):
     Endpoint: POST /vectors
     Header: X-Mtho-Secret: <MTHO_WEBHOOK_SECRET>
     Body: {
-        "collection": "wuji_field" | "simulation_evidence" | ...,
+        "collection": "context_field" | "simulation_evidence" | ...,
         "ids": ["id1", "id2", ...],
         "documents": ["doc1", "doc2", ...],
         "embeddings": [[0.1, 0.2, ...], ...],  # optional
@@ -140,7 +140,7 @@ async def handle_vectors(request):
 
     try:
         data = await request.json()
-        collection_name = data.get('collection', 'wuji_field')
+        collection_name = data.get('collection', 'context_field')
         ids = data.get('ids')
         documents = data.get('documents')
         embeddings = data.get('embeddings')
@@ -230,7 +230,7 @@ app.add_routes([
 ])
 
 if __name__ == '__main__':
-    logging.info(f"Starting MTHO CRADLE RELAY on port 8049...")
+    logging.info(f"Starting MTHO SYNC RELAY on port 8049...")
     logging.info(f"Endpoints: /inject (rules), /vectors (chroma sync), /status")
     logging.info(f"Target file: {TARGET_FILE}")
     web.run_app(app, port=8049)

@@ -1,16 +1,16 @@
 # ============================================================
-# MTHO-GENESIS: AGOS-0 WATCHDOG (HEPHAISTOS HARDENED)
+# MTHO-GENESIS: ZERO WATCHDOG (HEPHAISTOS HARDENED)
 # VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
 # LOGIC: 2-2-1-0 (NON-BINARY)
 # ============================================================
 
 """
-AGOS-0 WATCHDOG (Der intrinsische Beobachter).
+ZERO WATCHDOG (Der intrinsische Beobachter).
 Ersetzt den manuellen Trigger durch physikalische Realitaets-Checks.
 
 PROTOCOL: HEPHAISTOS_ANCHOR_V1
 1. Entropy Check: Ping (Latenz > 0ms beweist Existenz)
-2. Forge Rotation: Git Remote vs Local (Drift beweist Zeitfluss)
+2. Git Alignment Check: Git Remote vs Local (Drift beweist Zeitfluss)
 3. Friction Injection: Sendet keine Mocks, sondern echte Messdaten.
 """
 
@@ -94,7 +94,7 @@ async def check_connectivity() -> float:
         logger.error(f"[WATCHDOG] Ping Error: {e}")
         return -1.0
 
-async def check_forge_alignment() -> str:
+async def check_git_alignment() -> str:
     """
     Prüft die Synchronisation mit dem Git-Remote.
     Drift = Friction.
@@ -154,18 +154,18 @@ async def inject_reality_anchor(friction_data: Dict[str, Any]):
         context = "VOID_WARNING"
     elif git_status == "DESYNC":
         thought = f"Git-Synchronisations-Divergenz erkannt. Status: {git_status}. Push/Pull empfohlen."
-        context = "FORGE_DESYNC"
+        context = "GIT_DESYNC"
     else:
         # Alles normal -> Heartbeat, aber nur selten (um Log nicht zu fluten)
         # Wir senden hier nur, wenn wir explizit Friction erzeugen wollen (z.B. lange Stille)
-        thought = f"Reality Check: {latency:.1f}ms Latenz. Anker stabil. Wuji-Feld aktiv."
+        thought = f"Reality Check: {latency:.1f}ms Latenz. Anker stabil."
         context = "ANCHOR_HEARTBEAT"
 
     payload = {
         "thought": thought,
         "context": {
             "type": context,
-            "source": "AGOS_0_HEPHAISTOS",
+            "source": "ZERO_WATCHDOG_HEPHAISTOS",
             "telemetry": friction_data
         },
         "sender": "SYSTEM_WATCHDOG",
@@ -184,8 +184,8 @@ async def inject_reality_anchor(friction_data: Dict[str, Any]):
         logger.error(f"[WATCHDOG] Injection failed: {e}")
 
 async def watchdog_loop():
-    logger.info("AGOS-0 WATCHDOG (HEPHAISTOS EDITION) gestartet.")
-    logger.info(f"Target: {API_URL} | Threshold: {FRICTION_THRESHOLD}")
+    logger.info("ZERO WATCHDOG (HEPHAISTOS EDITION) gestartet.")
+    logger.info(f"Target: {API_URL} | Interval: {WATCHDOG_INTERVAL}s")
 
     # Initial Wait for Body
     while not await check_vital_signs():
@@ -201,12 +201,12 @@ async def watchdog_loop():
         latency = await check_connectivity()
         SYSTEM_STATE["last_latency_ms"] = latency
 
-        # 2. Forge Check (Git) - seltener
+        # 2. Git Alignment Check - seltener
         if current_time - SYSTEM_STATE["last_git_check"] > REMOTE_CHECK_INTERVAL:
-            git_status = await check_forge_alignment()
+            git_status = await check_git_alignment()
             SYSTEM_STATE["git_drift"] = git_status
             SYSTEM_STATE["last_git_check"] = current_time
-            logger.info(f"[WATCHDOG] Forge Status: {git_status}")
+            logger.info(f"[WATCHDOG] Git Alignment: {git_status}")
         else:
             git_status = SYSTEM_STATE["git_drift"]
 
@@ -235,8 +235,8 @@ async def watchdog_loop():
 
         logger.debug(f"[WATCHDOG] Tick. Latency: {latency:.1f}ms | Git: {git_status}")
 
-        from src.utils.time_metric import asym_sleep_prime_async
-        await asym_sleep_prime_async(int(WATCHDOG_INTERVAL))
+        from src.utils.time_metric import asym_sleep_float_async
+        await asym_sleep_float_async(WATCHDOG_INTERVAL)
 
 
 def _write_telemetry(latency_ms: float, git_status: str):

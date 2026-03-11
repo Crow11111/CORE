@@ -65,7 +65,7 @@ TEST_CASES = [
     {
         "name": "Root Prompt ohne Block",
         "thought": """[TEST]
-        root@server:~# rm -rf /wuji
+        root@server:~# rm -rf /context
         """,
         "expect_status": 406
     },

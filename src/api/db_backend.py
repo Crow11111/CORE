@@ -43,7 +43,7 @@ def get_db_connection():
         )
     """)
     conn.execute("""
-        CREATE TABLE IF NOT EXISTS argos_knowledge_graph (
+        CREATE TABLE IF NOT EXISTS knowledge_graph (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             component1 TEXT,
             component2 TEXT,
@@ -57,7 +57,7 @@ def get_db_connection():
         CREATE TABLE IF NOT EXISTS osmium_roles (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT UNIQUE NOT NULL,
-            layer TEXT NOT NULL CHECK(layer IN ('operative', 'council')),
+            layer TEXT NOT NULL CHECK(layer IN ('operative', 'validation')),
             function TEXT NOT NULL,
             voice_design TEXT,
             voice_id TEXT DEFAULT '',
@@ -98,7 +98,7 @@ class KryptoScanBuffer(BaseModel):
     threat_level: str
     affected_resources: str
 
-class ArgosKnowledgeGraph(BaseModel):
+class KnowledgeGraph(BaseModel):
     component1: str
     component2: str
     relation_type: str
@@ -150,15 +150,15 @@ def add_core_brain(entry: CoreBrainRegistr):
 @app.get("/knowledge_graph", response_model=List[dict])
 def get_knowledge_graph():
     conn = get_db_connection()
-    rows = conn.execute("SELECT * FROM argos_knowledge_graph").fetchall()
+    rows = conn.execute("SELECT * FROM knowledge_graph").fetchall()
     conn.close()
     return [dict(row) for row in rows]
 
 @app.post("/knowledge_graph")
-def add_knowledge_graph(entry: ArgosKnowledgeGraph):
+def add_knowledge_graph(entry: KnowledgeGraph):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO argos_knowledge_graph (component1, component2, relation_type, source_file) VALUES (?, ?, ?, ?)", 
+    cursor.execute("INSERT INTO knowledge_graph (component1, component2, relation_type, source_file) VALUES (?, ?, ?, ?)", 
                    (entry.component1, entry.component2, entry.relation_type, entry.source_file))
     conn.commit()
     conn.close()

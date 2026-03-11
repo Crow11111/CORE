@@ -12,7 +12,7 @@ in einer Form die direkt als Embedding/Query verwendet werden kann.
 
 Dimensionen:
     X: CAR/CDR Balance (0=pure NT, 1=pure ND)
-    Y: Gravitation (0=Wuji/flat, 1=Kollaps/Attraktor)
+    Y: Gravitation (0=flat, 1=Kollaps/Attraktor)
     Z: Widerstand (0=Nachgeben, 1=Veto)
     W: Takt (0-4 im Simultan-Kaskade-Zyklus)
 """
@@ -42,9 +42,38 @@ class MTHOStateVector:
     """4D Zustandsvektor des MTHO-Systems."""
 
     x_car_cdr: float  # 0=NT, 1=ND
-    y_gravitation: float  # 0=Wuji, 1=Kollaps
+    y_gravitation: float  # 0=flat, 1=Kollaps
     z_widerstand: float  # 0=Nachgeben, 1=Veto
     w_takt: float  # 0-4 Simultan-Kaskade-Zyklus (jetzt float wg. asymmetrischem Offset)
+
+    def __post_init__(self):
+        """Axiom A1 + A6 Enforcement: Verbotene Werte zur Laufzeit abfangen."""
+        for name, val in [
+            ("x_car_cdr", self.x_car_cdr),
+            ("y_gravitation", self.y_gravitation),
+            ("z_widerstand", self.z_widerstand),
+            ("w_takt", self.w_takt),
+        ]:
+            if not isinstance(val, float):
+                raise TypeError(
+                    f"[AXIOM-A6] {name} muss float sein, ist {type(val).__name__}. "
+                    f"int ist in der Resonanz-Domaene verboten."
+                )
+            if val == 0.0:
+                raise ValueError(
+                    f"[AXIOM-A1] {name}=0.0 verletzt das 0=0-Verbot. "
+                    f"Minimum: BARYONIC_DELTA ({BARYONIC_DELTA})"
+                )
+            if val == 1.0:
+                raise ValueError(
+                    f"[AXIOM-A1] {name}=1.0 verletzt das Einheits-Verbot. "
+                    f"Maximum: 1.0 - BARYONIC_DELTA ({1.0 - BARYONIC_DELTA})"
+                )
+            if val == 0.5:
+                raise ValueError(
+                    f"[AXIOM-A1] {name}=0.5 verletzt das Symmetrie-Verbot. "
+                    f"Verwende SYMMETRY_BREAK ({SYMMETRY_BREAK}) oder 0.51."
+                )
 
     def to_tuple(self) -> Tuple[float, float, float, float]:
         return (self.x_car_cdr, self.y_gravitation, self.z_widerstand, float(self.w_takt))
@@ -67,21 +96,21 @@ class MTHOStateVector:
 
 
 # Vordefinierte Zustaende (mit asymmetrischem Offset, kein 0=0)
-WUJI = MTHOStateVector(x_car_cdr=0.49, y_gravitation=BARYONIC_DELTA, z_widerstand=0.51, w_takt=BARYONIC_DELTA)
-ANSAUGEN = MTHOStateVector(x_car_cdr=COMP_PHI, y_gravitation=BARYONIC_DELTA*2, z_widerstand=INV_PHI, w_takt=1)
-VERDICHTEN = MTHOStateVector(x_car_cdr=INV_PHI, y_gravitation=SYMMETRY_BREAK, z_widerstand=COMP_PHI, w_takt=2)
-ARBEITEN = MTHOStateVector(x_car_cdr=BARYONIC_DELTA, y_gravitation=0.81, z_widerstand=BARYONIC_DELTA*3, w_takt=3)
-AUSSTOSSEN = MTHOStateVector(x_car_cdr=0.49, y_gravitation=COMP_PHI, z_widerstand=0.51, w_takt=4)
+BASE_STATE = MTHOStateVector(x_car_cdr=0.49, y_gravitation=BARYONIC_DELTA, z_widerstand=0.51, w_takt=BARYONIC_DELTA)
+ANSAUGEN = MTHOStateVector(x_car_cdr=COMP_PHI, y_gravitation=BARYONIC_DELTA*2, z_widerstand=INV_PHI, w_takt=1 + BARYONIC_DELTA)
+VERDICHTEN = MTHOStateVector(x_car_cdr=INV_PHI, y_gravitation=SYMMETRY_BREAK, z_widerstand=COMP_PHI, w_takt=2 - BARYONIC_DELTA)
+ARBEITEN = MTHOStateVector(x_car_cdr=BARYONIC_DELTA, y_gravitation=0.81, z_widerstand=BARYONIC_DELTA*3, w_takt=3 + BARYONIC_DELTA)
+AUSSTOSSEN = MTHOStateVector(x_car_cdr=0.49, y_gravitation=COMP_PHI, z_widerstand=0.51, w_takt=4 - BARYONIC_DELTA)
 
 
 # ---------------------------------------------------------------------------
 # MTHO Bases (DNA der Realitaet)
 # ---------------------------------------------------------------------------
 MTHO_BASES = {
-    "M": {"name": "Munin/Agency", "dna": "T", "val": M_VALUE, "role": "Physik/Feuer", "legacy": "P"},
-    "T": {"name": "Forge/Fluss", "dna": "A", "val": T_VALUE, "role": "Info/Fluss", "legacy": "I"},
-    "H": {"name": "Hugin/Archive", "dna": "G", "val": H_VALUE, "role": "Struktur/Erde", "legacy": "S"},
-    "O": {"name": "Council/Veto", "dna": "C", "val": O_VALUE, "role": "Logik/Luft", "legacy": "L"},
+    "M": {"name": "ExecutionRuntime", "dna": "T", "val": M_VALUE, "role": "Physik/Feuer", "legacy": "P"},
+    "T": {"name": "LogicFlow", "dna": "A", "val": T_VALUE, "role": "Info/Fluss", "legacy": "I"},
+    "H": {"name": "StateAnchor", "dna": "G", "val": H_VALUE, "role": "Struktur/Erde", "legacy": "S"},
+    "O": {"name": "ConstraintValidator", "dna": "C", "val": O_VALUE, "role": "Logik/Luft", "legacy": "L"},
 }
 
 MTHO_PAIRINGS = {
@@ -93,10 +122,10 @@ MTHO_PAIRINGS = {
 
 # 4-Strang Architektur (Updated to MTHO)
 TETRALOGIE = {
-    "AGENCY": {"takt": 3, "mtho": "M", "car": "Effizienz", "cdr": "Clean Code"},
-    "COUNCIL": {"takt": [1, 4], "mtho": "O", "car": "Paranoia", "cdr": "Compliance"},
-    "FORGE": {"takt": 2, "mtho": "T", "car": "Chaos", "cdr": "Architektur-Spec"},
-    "ARCHIVE": {"takt": 4, "mtho": "H", "car": "Vektor-Cluster", "cdr": "SQL-Index"},
+    "EXECUTION": {"takt": 3, "mtho": "M", "car": "Effizienz", "cdr": "Clean Code"},
+    "ORCHESTRATOR": {"takt": [1, 4], "mtho": "O", "car": "Paranoia", "cdr": "Compliance"},
+    "ARCHITECTURE": {"takt": 2, "mtho": "T", "car": "Chaos", "cdr": "Architektur-Spec"},
+    "ANCHOR": {"takt": 4, "mtho": "H", "car": "Vektor-Cluster", "cdr": "SQL-Index"},
 }
 
 
@@ -114,22 +143,23 @@ SIMULATION_EVIDENCE_STATS = {
 
 
 def get_current_state() -> MTHOStateVector:
-    """Gibt den aktuellen Systemzustand zurueck (Default: WUJI).
+    """Gibt den aktuellen Systemzustand zurueck (Default: BASE_STATE).
     Dynamisch aus Umgebung: MTHO_Z_WIDERSTAND, MTHO_STATE_PRESET.
-    Munin Veto: ring0_state Override hat Vorrang (Ring-0 Core Stability Anchor).
+    Ring-0 Veto: ring0_state Override hat Vorrang (Ring-0 Core Stability Anchor).
     """
 
-    # Munin Veto Override (Ring-0)
+    # Ring-0 Veto Override
     try:
-        from src.config.ring0_state import get_munin_veto_override
+        from src.config.ring0_state import get_drift_veto_override
 
-        z_override = get_munin_veto_override()
+        z_override = get_drift_veto_override()
         if z_override is not None:
+            z_clamped = max(BARYONIC_DELTA, min(1.0 - BARYONIC_DELTA, z_override))
             return MTHOStateVector(
-                x_car_cdr=WUJI.x_car_cdr,
-                y_gravitation=WUJI.y_gravitation,
-                z_widerstand=z_override,
-                w_takt=WUJI.w_takt,
+                x_car_cdr=BASE_STATE.x_car_cdr,
+                y_gravitation=BASE_STATE.y_gravitation,
+                z_widerstand=z_clamped,
+                w_takt=BASE_STATE.w_takt,
             )
     except Exception:
         pass
@@ -148,14 +178,14 @@ def get_current_state() -> MTHOStateVector:
         try:
             z = float(z_raw)
             return MTHOStateVector(
-                x_car_cdr=WUJI.x_car_cdr,
-                y_gravitation=WUJI.y_gravitation,
+                x_car_cdr=BASE_STATE.x_car_cdr,
+                y_gravitation=BASE_STATE.y_gravitation,
                 z_widerstand=max(BARYONIC_DELTA, min(1.0 - BARYONIC_DELTA, z)),
-                w_takt=WUJI.w_takt,
+                w_takt=BASE_STATE.w_takt,
             )
         except ValueError:
             pass
-    return WUJI
+    return BASE_STATE
 
 
 def state_to_embedding_text() -> str:
@@ -163,13 +193,13 @@ def state_to_embedding_text() -> str:
     Updated for MTHO Native format.
     """
     return f"""MTHO 4D State Vector - Bootloader (MTHO Native)
-Tetralogie: Agency(M/P)-Council(O/L)-Forge(T/I)-Archive(H/S)
+Tetralogie: Execution(M/P)-Orchestrator(O/L)-Architecture(T/I)-Anchor(H/S)
 Simultan-Kaskade-Zyklus: Diagnose(0)->Ansaugen(1)->Verdichten(2)->Arbeiten(3)->Ausstossen(4)
 CAR/CDR: ND-Kern(Tiefe,Muster,Divergenz) / NT-Interface(API,Docs,Clean)
-Gravitation: Wuji(flat)->Attraktor(Kollaps), Schwellwert={INV_PHI:.3f}
-MTHO: M(Agency,Physik), T(Forge,Info), H(Archive,Struktur), O(Council,Logik)
+Gravitation: flat->Attraktor(Kollaps), Schwellwert={INV_PHI:.3f}
+MTHO: M(ExecutionRuntime,Physik), T(LogicFlow,Info), H(StateAnchor,Struktur), O(ConstraintValidator,Logik)
 DNA: M(T), T(A), H(G), O(C)
-Pairings: M-H (Symmetrisches Rückgrat), O-T (Asymmetrischer Motor)
+Pairings: M-H (Symmetrisches Rueckgrat), O-T (Asymmetrischer Motor)
 Symmetriebruch: {SYMMETRY_BREAK}, Baryonisches Delta: {BARYONIC_DELTA}
 Evidence: {SIMULATION_EVIDENCE_STATS['indizien']} Indizien, {SIMULATION_EVIDENCE_STATS['vektoren']} Vektoren
 """

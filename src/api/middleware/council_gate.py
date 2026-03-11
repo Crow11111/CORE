@@ -5,11 +5,11 @@
 # ============================================================
 
 """
-Council Gate – Veto-Middleware für kritische Operationen.
+Veto Gate – Veto-Middleware für kritische Operationen.
 
 Prüft vor kritischen Routen (DELETE, Config, Token-Rotation, Backup) ob ein Veto
 erforderlich ist. Nutzt z_widerstand aus dem State Vector als Schwellwert.
-Bei kritischen Operationen: Audit-Log + optional Delay oder X-Council-Confirm.
+Bei kritischen Operationen: Audit-Log + optional Delay oder X-Veto-Confirm.
 """
 from __future__ import annotations
 
@@ -49,10 +49,10 @@ CRITICAL_PATH_PATTERNS = [
 # HTTP-Methoden die als kritisch gelten (alle Pfade)
 CRITICAL_METHODS = {"DELETE"}
 
-# Header für explizite Council-Bestätigung (optional, Wert egal wenn gesetzt)
-CONFIRM_HEADER = "X-Council-Confirm"
+# Header für explizite Veto-Bestätigung (optional, Wert egal wenn gesetzt)
+CONFIRM_HEADER = "X-Veto-Confirm"
 
-logger = logging.getLogger("council_gate")
+logger = logging.getLogger("veto_gate")
 
 
 def _is_critical_request(method: str, path: str) -> bool:
@@ -75,11 +75,11 @@ def _get_z_widerstand() -> float:
 
 
 def _has_confirmation(request: Request) -> bool:
-    """Prüft ob X-Council-Confirm gesetzt ist."""
+    """Prüft ob X-Veto-Confirm gesetzt ist."""
     return bool(request.headers.get(CONFIRM_HEADER))
 
 
-class CouncilGateMiddleware(BaseHTTPMiddleware):
+class VetoGateMiddleware(BaseHTTPMiddleware):
     """
     Veto-Middleware: Loggt kritische Operationen, optional Delay oder Confirmation.
     """
@@ -105,27 +105,27 @@ class CouncilGateMiddleware(BaseHTTPMiddleware):
 
         # Audit-Log (immer bei kritischen Operationen)
         logger.info(
-            "council_gate|critical|method=%s path=%s z_widerstand=%.3f veto_mode=%s confirm=%s",
+            "veto_gate|critical|method=%s path=%s z_widerstand=%.3f veto_mode=%s confirm=%s",
             request.method,
             request.url.path,
             z,
             in_veto_mode,
             has_confirm,
-            extra={"audit": "council_gate"},
+            extra={"audit": "veto_gate"},
         )
 
         # Veto-Modus: Confirmation erforderlich?
         if in_veto_mode and self._require_confirm and not has_confirm:
             logger.warning(
-                "council_gate|blocked|path=%s z=%.3f (X-Council-Confirm fehlt)",
+                "veto_gate|blocked|path=%s z=%.3f (X-Veto-Confirm fehlt)",
                 request.url.path,
                 z,
-                extra={"audit": "council_gate"},
+                extra={"audit": "veto_gate"},
             )
             return JSONResponse(
                 status_code=403,
                 content={
-                    "detail": "Kritische Operation erfordert Council-Bestätigung (Header: X-Council-Confirm)",
+                    "detail": "Kritische Operation erfordert Veto-Bestätigung (Header: X-Veto-Confirm)",
                     "veto_mode": True,
                     "z_widerstand": round(z, 3),
                 },
@@ -134,7 +134,7 @@ class CouncilGateMiddleware(BaseHTTPMiddleware):
         # Optional: Delay vor Ausführung (Rate-Limit / Überlegungszeit)
         delay = self._delay_ms
         if delay is None:
-            delay = float(os.getenv("COUNCIL_GATE_DELAY_MS", "0"))
+            delay = float(os.getenv("VETO_GATE_DELAY_MS", "0"))
         if delay > 0:
             await asyncio.sleep(delay / 1000.0)
 

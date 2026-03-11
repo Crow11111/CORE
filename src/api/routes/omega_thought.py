@@ -19,7 +19,7 @@ from loguru import logger
 from src.api.auth_webhook import verify_ha_auth
 from src.ai.llm_interface import mtho_llm
 from src.logic_core.takt_gate import check_takt_zero
-from src.network.chroma_client import add_wuji_observation
+from src.network.chroma_client import add_context_observation
 
 router = APIRouter(prefix="/webhook/omega_thought", tags=["omega-thought"])
 
@@ -32,14 +32,14 @@ class ThoughtPayload(BaseModel):
 
 def _heavy_reasoning_sync(sys_prompt: str, user_text: str) -> str:
     from src.logic_core.munin import inject_context_for_agent, check_semantic_drift, apply_veto
-    wuji_ctx = inject_context_for_agent(user_text, n_results=3, format="markdown")
-    if wuji_ctx:
-        sys_prompt += "\n\n## Relevanter Kontext (Wuji-Feld)\n" + wuji_ctx
+    context_ctx = inject_context_for_agent(user_text, n_results=3, format="markdown")
+    if context_ctx:
+        sys_prompt += "\n\n## Relevanter Kontext (context field)\n" + context_ctx
         
     reply = mtho_llm.invoke_heavy_reasoning(sys_prompt, user_text)
     
-    if wuji_ctx:
-        veto = check_semantic_drift(wuji_ctx, reply)
+    if context_ctx:
+        veto = check_semantic_drift(context_ctx, reply)
         if veto.vetoed:
             apply_veto(veto)
     return reply
@@ -57,15 +57,15 @@ async def receive_thought(
     if not await check_takt_zero():
         return {"status": "veto", "reason": "system_instability_takt0"}
 
-    # 1. Injektion in das Langzeitgedächtnis (Wuji-Feld / Vector DB)
+    # 1. Injektion in das Langzeitgedächtnis (context field / Vector DB)
     metadata = {}
     if payload.context:
         # Dictionary in flache Struktur für ChromaDB umwandeln
         for k, v in payload.context.items():
             metadata[f"ctx_{k}"] = str(v)
             
-    await add_wuji_observation(payload.thought, source=payload.sender, metadata=metadata)
-    logger.info(f"Gedanke physisch in wuji_field verankert: {payload.thought[:50]}...")
+    await add_context_observation(payload.thought, source=payload.sender, metadata=metadata)
+    logger.info(f"Gedanke physisch in context_field verankert: {payload.thought[:50]}...")
     
     # 2. Reflexion (falls gewünscht)
     reply = "Gedanke erfolgreich verankert (keine Antwort angefordert)."

@@ -10,13 +10,13 @@ GQA Refactor F2 - scout-direct-handler
 Lokaler Handler auf Scout: Steuerbefehle direkt verarbeiten, Deep-Reasoning an OC Brain.
 Fallback: Wenn lokale HA nicht erreichbar → Route über VPS.
 
-SCOUT-FUSION Update: Ghost Agent Integration (Signal-Vektor 2 / INTENT)
-- Ghost Agents werden bei deep_reasoning gespawnt
+SCOUT-FUSION Update: Ephemeral Agent Integration (Signal-Vektor 2 / INTENT)
+- Ephemeral Agents werden bei deep_reasoning gespawnt
 - Async-Variante fuer HA Conversation Agent
 
 Routing:
 - command/turn_on/turn_off/toggle → HA lokal (Scout)
-- deep_reasoning/chat → Ghost Agent → OC Brain (VPS)
+- deep_reasoning/chat → Ephemeral Agent → OC Brain (VPS)
 - HA unreachable → Fallback an MTHO_VPS_URL (falls konfiguriert)
 
 Voice: Smart Command Parser (src/voice/smart_command_parser) wird bevorzugt,
@@ -203,19 +203,19 @@ def process_text(text: str, context: dict | None = None) -> dict:
             from src.logic_core.munin import inject_context_for_agent, check_semantic_drift, apply_veto
             sys_prompt = "Du bist OMEGA, die Kern-Intelligenz für MTHO_CORE. Antworte analytisch, direkt und auf Systemik fokussiert."
 
-            # Ring-0: Munin Context Injection (Wuji Archivor)
-            wuji_ctx = inject_context_for_agent(text, n_results=3, format="markdown")
-            if wuji_ctx:
-                sys_prompt += "\n\n## Relevanter Kontext (Wuji-Feld)\n" + wuji_ctx
+            # Ring-0: Context Injection (context_injector)
+            context_ctx = inject_context_for_agent(text, n_results=3, format="markdown")
+            if context_ctx:
+                sys_prompt += "\n\n## Relevanter Kontext (context field)\n" + context_ctx
 
             reply = mtho_llm.invoke_heavy_reasoning(sys_prompt, text)
 
-            # Ring-0: Munin Veto (Semantic Drift Block)
-            if wuji_ctx:
-                veto = check_semantic_drift(wuji_ctx, reply)
+            # Ring-0: Drift Veto (Semantic Drift Block)
+            if context_ctx:
+                veto = check_semantic_drift(context_ctx, reply)
                 if veto.vetoed:
                     apply_veto(veto)
-                    logger.warning("Munin Veto: Semantic Drift erkannt, z_widerstand erhöht")
+                    logger.warning("Drift Veto: Semantic Drift erkannt, z_widerstand erhöht")
 
             # Sprachausgabe für Deep Reasoning Antworten asynchron starten
             import asyncio
@@ -232,12 +232,12 @@ def process_text(text: str, context: dict | None = None) -> dict:
 
 
 # ============================================================================
-# GHOST AGENT INTEGRATION (Async / Scout-Fusion)
+# EPHEMERAL AGENT INTEGRATION (Async / Scout-Fusion)
 # ============================================================================
 
 async def process_text_async(text: str, context: dict | None = None) -> dict:
     """
-    Async-Variante von process_text mit Ghost Agent Integration.
+    Async-Variante von process_text mit Ephemeral Agent Integration.
     Spawnt kurzlebige Sub-Instanzen fuer Intent-Verarbeitung.
     """
     context = context or {}
@@ -246,40 +246,36 @@ async def process_text_async(text: str, context: dict | None = None) -> dict:
         return {"reply": "Kein Text eingegeben.", "success": False, "routed": "local"}
 
     try:
-        from src.agents.mtho_agent import GhostIntent, get_ghost_pool
+        from src.agents.mtho_agent import IntentType, get_ephemeral_pool
         from src.agents.scout_mtho_handlers import register_all_handlers
 
-        pool = get_ghost_pool()
+        pool = get_ephemeral_pool()
         if pool.active_count == 0 and not pool._handlers:
             register_all_handlers(pool)
 
-        # Triage: Intent bestimmen
         triage = _load_triage().run_triage(text)
 
-        # Map Triage Intent zu Ghost Intent
-        ghost_intent = GhostIntent.COMMAND
+        intent_type = IntentType.COMMAND
         if triage.intent in ("deep_reasoning", "chat"):
-            ghost_intent = GhostIntent.DEEP_REASONING
+            intent_type = IntentType.DEEP_REASONING
         elif triage.intent in ("command", "turn_on", "turn_off", "toggle"):
-            ghost_intent = GhostIntent.COMMAND
+            intent_type = IntentType.COMMAND
 
-        # Ghost spawnen und ausfuehren
         payload = {"text": text, "context": context, "triage": triage.__dict__ if hasattr(triage, '__dict__') else {}}
-        result = await pool.spawn_and_execute(ghost_intent, payload, ttl=30.0)
+        result = await pool.spawn_and_execute(intent_type, payload, ttl=30.0)
 
         if result.success:
             reply = result.payload.get("reply", str(result.payload)) if isinstance(result.payload, dict) else str(result.payload)
             return {
                 "reply": reply,
                 "success": True,
-                "routed": f"ghost_{ghost_intent.value}",
-                "ghost_duration_ms": result.duration_ms
+                "routed": f"ephemeral_{intent_type.value}",
+                "duration_ms": result.duration_ms
             }
         else:
-            # Ghost failed, Fallback auf sync
-            logger.warning(f"Ghost Agent failed: {result.error}, sync fallback")
+            logger.warning(f"Ephemeral Agent failed: {result.error}, sync fallback")
             return process_text(text, context)
 
     except Exception as e:
-        logger.warning(f"Ghost Integration nicht verfuegbar: {e}, sync fallback")
+        logger.warning(f"Ephemeral Agent Integration nicht verfuegbar: {e}, sync fallback")
         return process_text(text, context)

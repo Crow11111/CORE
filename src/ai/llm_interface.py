@@ -12,8 +12,8 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from loguru import logger
 from pydantic import BaseModel, Field
 
-# ARGOS WATCHDOG INJECTION
-from src.logic_core.argos_damper import argos_protected, ArgosVetoException
+# Z-VECTOR DAMPER INJECTION
+from src.logic_core.argos_damper import argos_protected, RuntimeVetoException
 
 load_dotenv("C:/MTHO_CORE/.env")
 
@@ -113,8 +113,8 @@ class LLMInterface:
             ])
             logger.info(f"Triage Result: {result}")
             return result
-        except ArgosVetoException as e:
-            logger.error(f"ARGOS VETO in Triage: {e}")
+        except RuntimeVetoException as e:
+            logger.error(f"[Z-VETO] in Triage: {e}")
             return TriageResult(intent="unknown")
         except Exception as e:
             logger.error(f"SLM Triage failed: {e}")
@@ -136,9 +136,9 @@ class LLMInterface:
             ]
             response = self.heavy_llm.invoke(messages)
             return response.content
-        except ArgosVetoException as e:
-            logger.error(f"ARGOS VETO in Heavy Reasoning: {e}")
-            return f"System Hard-Stop: ARGOS Veto getriggert ({e})"
+        except RuntimeVetoException as e:
+            logger.error(f"[Z-VETO] in Heavy Reasoning: {e}")
+            return f"System Hard-Stop: Z-Veto getriggert ({e})"
         except Exception as e:
             logger.error(f"Tier 5 API Error: {e}")
             return f"Fehler in Tier 5: {e}"

@@ -5,8 +5,11 @@
 # ============================================================
 
 """
-MTHO Ghost Agents - Kurzlebige Sub-Instanzen fuer Signal-Vektor 2 (INTENT).
+MTHO Ephemeral Agents - Kurzlebige Sub-Instanzen fuer Signal-Vektor 2 (INTENT).
 """
-from .mtho_agent import GhostAgent, GhostAgentPool
+from .mtho_agent import EphemeralAgent, EphemeralAgentPool
 
-__all__ = ["GhostAgent", "GhostAgentPool"]
+# Backward-Kompatibilitaet
+from .mtho_agent import GhostAgent, GhostAgentPool  # noqa: F401
+
+__all__ = ["EphemeralAgent", "EphemeralAgentPool", "GhostAgent", "GhostAgentPool"]

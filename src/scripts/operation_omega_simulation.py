@@ -81,12 +81,12 @@ def simulate_group_a(n=EVIDENCE_COUNT):
     return phi_deviation, cluster_distance
 
 # ==============================================================================
-# GROUP B: MTHO HYPOTHESIS (WUJI / COMPRESSIVE INTELLIGENCE)
+# GROUP B: MTHO HYPOTHESIS (BASE_STATE / COMPRESSIVE INTELLIGENCE)
 # ==============================================================================
 def simulate_group_b(n=EVIDENCE_COUNT):
     """
-    Simulates 10,000 runs with Wuji factors.
-    Start with 4 bases, grow via Phi, but allow for noise/variation (Wuji is not static).
+    Simulates 10,000 runs with base state factors.
+    Start with 4 bases, grow via Phi, but allow for noise/variation (base state is not static).
     """
     # 1. Generate Intervals using Phi-based growth
     # MTHO Growth: New interval is related to previous by factor close to Phi
@@ -104,7 +104,7 @@ def simulate_group_b(n=EVIDENCE_COUNT):
         # Apply a base factor cyclically or probabilistically
         base_mod = base_factors[i % 4]
         
-        # Wuji Noise: Natural variation (Gaussian, small sigma)
+        # Base State Noise: Natural variation (Gaussian, small sigma)
         noise = np.random.normal(0, 0.1)
         
         # Growth
@@ -124,7 +124,7 @@ def simulate_group_b(n=EVIDENCE_COUNT):
     phi_deviation = abs(mean_ratio - PHI)
     
     # Metric 2: Cluster Balance
-    # In Wuji, clusters are not random. They are seeded by the 4 bases.
+    # In base state, clusters are not random. They are seeded by the 4 bases.
     # We simulate a "bias" towards the 4-structure.
     # Probabilities slightly weighted towards the Observed Distribution (Pattern Matching)
     # Generating samples from the OBSERVED_DISTRIBUTION with some noise
@@ -232,7 +232,7 @@ def run_simulation():
             }
         },
         "group_b_mtho": {
-            "description": "MTHO Hypothesis (Wuji/Phi Growth)",
+            "description": "MTHO Hypothesis (Base State/Phi Growth)",
             "stats": {
                 "phi_deviation_mean": float(mean_b_phi),
                 "phi_deviation_std": float(std_b_phi),

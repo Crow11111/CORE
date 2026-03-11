@@ -19,7 +19,7 @@ from src.network.chroma_client import (
     EVENTS_EMBEDDING_DIM,
     COLLECTION_EVENTS,
     COLLECTION_INSIGHTS,
-    COLLECTION_ARGOS,
+    COLLECTION_KNOWLEDGE_GRAPH,
     is_remote,
 )
 
@@ -42,7 +42,7 @@ def create_collections():
     default_collections = [
         COLLECTION_EVENTS,
         COLLECTION_INSIGHTS,
-        COLLECTION_ARGOS,
+        COLLECTION_KNOWLEDGE_GRAPH,
         COLLECTION_MTHO_IDENTITY,
         COLLECTION_ENTITIES,
         COLLECTION_RELATIONSHIPS,

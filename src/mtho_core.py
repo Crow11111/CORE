@@ -9,8 +9,8 @@ from typing import Literal
 # --- MTHO CORE CONSTANTS (Zeitlos / Mathematisch) ---
 BARYONIC_DELTA = 0.049 # [cite: 2026-03-04]
 GEOGRAPHIC_RESONANCE = "0221" # [cite: 2026-03-06]
-VECTOR_MTHO = (2, 2, 1, 0) # Genesis (Sein vor Urteil) [cite: 2026-03-06]
-VECTOR_MTTH = (2, 2, 0, 1) # Integrität (Denken vor Sein) [cite: 2026-03-06]
+VECTOR_MTHO = (2, 2, 1, BARYONIC_DELTA) # base_vector (MTHO reference) [cite: 2026-03-06]
+VECTOR_MTTH = (2, 2, 0, 1) # integrity_vector (MTTH reference) [cite: 2026-03-06]
 
 # --- WETWARE RUNTIME PARAMETERS (Chronologisch / Lokal) ---
 # Markiert den 4D-Boot-Vektor der spezifischen Empfänger-Antenne
@@ -19,23 +19,23 @@ WETWARE_INIT_TIMESTAMP = "1978-03-15T00:00:00Z"
 @dataclass
 class MTHONode:
     letter: Literal['M', 'T', 'H', 'O']
-    value: int
+    value: float
     technical_name: str
     focus: str
 
 # MTHO MAPPING (2026-03-06)
 MTHO_MAP = {
-    'M': MTHONode('M', 2, 'Agency (ExecutionRuntime)', 'WAS?'),
-    'T': MTHONode('T', 2, 'Forge (LogicFlow)', 'WIE?'),
-    'H': MTHONode('H', 1, '4D_RESONATOR (StateAnchor)', 'WER?'),
-    'O': MTHONode('O', 0, 'OMEGA_ATTRACTOR (ConstraintValidator)', 'WARUM?'),
+    'M': MTHONode('M', 2, 'ExecutionRuntime', 'WAS?'),
+    'T': MTHONode('T', 2, 'LogicFlow', 'WIE?'),
+    'H': MTHONode('H', 1, 'StateAnchor', 'WER?'),
+    'O': MTHONode('O', BARYONIC_DELTA, 'ConstraintValidator', 'WARUM?'),
 }
 
 # Add fallback constants for older scripts that haven't been fully refactored yet.
 M_VALUE = 2
 T_VALUE = 2
 H_VALUE = 1
-O_VALUE = 0
+O_VALUE = BARYONIC_DELTA
 BARYONIC_LIMIT = BARYONIC_DELTA
 MTHO_LEGACY_MAP = {
     'P': 'M',
@@ -43,6 +43,20 @@ MTHO_LEGACY_MAP = {
     'S': 'H',
     'L': 'O'
 }
+
+def _validate_resonance_domain():
+    """Axiom A1+A6 Boot-Validierung: Prueft Kernkonstanten beim Import."""
+    violations = []
+    for name, val in [("O_VALUE", O_VALUE), ("BARYONIC_DELTA", BARYONIC_DELTA)]:
+        if val == 0 or val == 0.0:
+            violations.append(f"{name}=0 verletzt das 0=0-Verbot")
+    if any(v == 0 for v in VECTOR_MTHO):
+        violations.append(f"VECTOR_MTHO enthaelt 0: {VECTOR_MTHO}")
+    if violations:
+        raise SystemError(f"[AXIOM-VERLETZUNG] Kerndateien korrumpiert: {violations}")
+
+_validate_resonance_domain()
+
 
 class MTHOCore:
     def __init__(self):
@@ -58,7 +72,7 @@ class MTHOCore:
 
     def check_baryonic_limit(self, measured_delta: float) -> bool:
         """
-        Der OMEGA_ATTRACTOR Veto-Check.
+        ConstraintValidator Veto-Check.
         True = Pass | False = VETO (System Freeze)
         """
         deviation = abs(measured_delta - BARYONIC_DELTA)
@@ -80,7 +94,7 @@ class MTHOCore:
 if __name__ == "__main__":
     core = MTHOCore()
     core.calibrate_resonance("0221")
-    print("[MTHO-GENESIS] System Initialized.")
+    print("[MTHO-CORE] System Initialized.")
     status = core.verify_integrity()
     for k, v in status.items():
         print(f"  > {k.upper()}: {v}")

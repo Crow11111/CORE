@@ -8,7 +8,7 @@
 Seed MTHO Knowledge Base aus mtho_knowledge_chromadb_import.json in ChromaDB.
 
 Importiert alle Kerninformationen (Identität, Architektur, Personen, Geräte, Integrationen)
-in argos_knowledge_graph.
+in knowledge_graph.
 
 Usage:
     python -m src.scripts.seed_mtho_knowledge_base
@@ -21,7 +21,7 @@ import sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
-from src.network.chroma_client import get_collection, COLLECTION_ARGOS
+from src.network.chroma_client import get_collection, COLLECTION_KNOWLEDGE_GRAPH
 
 
 def _load_json():
@@ -56,20 +56,20 @@ def main():
         return
 
     if dry_run:
-        print(f"[DRY-RUN] Würde {len(docs)} KB-Docs in argos_knowledge_graph importieren.")
+        print(f"[DRY-RUN] Würde {len(docs)} KB-Docs in knowledge_graph importieren.")
         for d in docs[:8]:
             print(f"  - {d['id']} ({d['metadata'].get('category','?')})")
         if len(docs) > 8:
             print(f"  ... und {len(docs)-8} weitere")
         return
 
-    col = get_collection(COLLECTION_ARGOS, create_if_missing=True)
+    col = get_collection(COLLECTION_KNOWLEDGE_GRAPH, create_if_missing=True)
     ids = [d["id"] for d in docs]
     documents = [d["document"] for d in docs]
     metadatas = [_metadata_sanitize(d.get("metadata", {})) for d in docs]
     try:
         col.upsert(ids=ids, documents=documents, metadatas=metadatas)
-        print(f"[OK] {len(docs)} KB-Dokumente in argos_knowledge_graph")
+        print(f"[OK] {len(docs)} KB-Dokumente in knowledge_graph")
     except Exception as e:
         print(f"[FAIL] {e}")
         sys.exit(1)

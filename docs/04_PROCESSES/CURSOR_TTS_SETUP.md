@@ -68,11 +68,23 @@ Dieser Wrapper ruft das Python-Modul `src.scripts.say_it` auf und kümmert sich 
 ./scripts/quick_tts.ps1 "Kritischer Fehler im Reaktor." -Target "elevenlabs" -Role "osmium"
 ```
 
+### Vorgefertigte TTS-Skripte
+
+Fuer haeufig genutzte Texte (z.B. Topologie-Erklaerungen) existieren fertige Skripte. Einfach ausfuehren, optional Target/Role anpassen:
+
+```powershell
+# Topologie 5D / Penterakt (TTS-optimiert, LaTeX/Markdown in gesprochene Form)
+./scripts/tts_topologie_5d.ps1
+
+# Mit ElevenLabs
+./scripts/tts_topologie_5d.ps1 -Target "elevenlabs" -Role "osmium"
+```
+
 ### Entrypoint: `src/scripts/say_it.py`
 
-Das eigentliche Python-Skript liegt unter `src/scripts/say_it.py`. Es nutzt `src.voice.tts_dispatcher.dispatch_tts` für die Verarbeitung.
+Das eigentliche Python-Skript liegt unter `src/scripts/say_it.py`. Es nutzt `src.voice.tts_dispatcher.dispatch_tts` fuer die Verarbeitung.
 
 ```python
-# Direkter Aufruf (nur für Debugging, Encoding beachten!)
+# Direkter Aufruf (nur fuer Debugging, Encoding beachten!)
 python -m src.scripts.say_it "Testnachricht" --target mini
 ```

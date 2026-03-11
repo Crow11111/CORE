@@ -10,11 +10,11 @@ MTHO 4D State Vector – Validierung aller Schwellwerte und Konstanten.
 
 Validiert:
 - Mathematische Konstanten (PHI, INV_PHI, COMP_PHI, SYMMETRY_BREAK, BARYONIC_DELTA)
-- Vordefinierte Zustaende (WUJI, ANSAUGEN, VERDICHTEN, ARBEITEN, AUSSTOSSEN)
+- Vordefinierte Zustaende (BASE_STATE, ANSAUGEN, VERDICHTEN, ARBEITEN, AUSSTOSSEN)
 - Simultan-Kaskade-Zyklus-Konsistenz
 - Phi-Balance- und Symmetriebruch-Pruefung
 - get_current_state() mit Env-Variablen
-- Munin-Veto-Override (ring0_state)
+- Drift-Veto-Override (ring0_state)
 """
 from __future__ import annotations
 
@@ -60,7 +60,7 @@ def test_constants() -> list[str]:
     else:
         print("  INV_PHI + COMP_PHI = 1 OK")
 
-    # SYMMETRY_BREAK (Wuji-Theorie: 0.49/0.51 minimale Asymmetrie)
+    # SYMMETRY_BREAK (minimale Asymmetrie 0.49/0.51)
     if SYMMETRY_BREAK != 0.49:
         errors.append(f"SYMMETRY_BREAK: {SYMMETRY_BREAK} != 0.49")
     else:
@@ -78,28 +78,32 @@ def test_constants() -> list[str]:
 def test_predefined_states() -> list[str]:
     """Validiert vordefinierte Zustaende gegen MTHO_4_STRANG_THEORIE."""
     from src.config.mtho_state_vector import (
-        WUJI,
+        BASE_STATE,
         ANSAUGEN,
         VERDICHTEN,
         ARBEITEN,
         AUSSTOSSEN,
+        BARYONIC_DELTA,
+        COMP_PHI,
+        INV_PHI,
+        SYMMETRY_BREAK,
     )
 
     expected = {
-        "WUJI": (0.5, 0.0, 0.5, 0),
-        "ANSAUGEN": (0.3, 0.2, 0.8, 1),
-        "VERDICHTEN": (0.7, 0.5, 0.4, 2),
-        "ARBEITEN": (0.2, 0.8, 0.2, 3),
-        "AUSSTOSSEN": (0.5, 0.3, 0.6, 4),
+        "BASE_STATE": (0.49, BARYONIC_DELTA, 0.51, BARYONIC_DELTA),
+        "ANSAUGEN": (COMP_PHI, BARYONIC_DELTA * 2, INV_PHI, 1 + BARYONIC_DELTA),
+        "VERDICHTEN": (INV_PHI, SYMMETRY_BREAK, COMP_PHI, 2 - BARYONIC_DELTA),
+        "ARBEITEN": (BARYONIC_DELTA, 0.81, BARYONIC_DELTA * 3, 3 + BARYONIC_DELTA),
+        "AUSSTOSSEN": (0.49, COMP_PHI, 0.51, 4 - BARYONIC_DELTA),
     }
-    states = [WUJI, ANSAUGEN, VERDICHTEN, ARBEITEN, AUSSTOSSEN]
-    names = ["WUJI", "ANSAUGEN", "VERDICHTEN", "ARBEITEN", "AUSSTOSSEN"]
+    states = [BASE_STATE, ANSAUGEN, VERDICHTEN, ARBEITEN, AUSSTOSSEN]
+    names = ["BASE_STATE", "ANSAUGEN", "VERDICHTEN", "ARBEITEN", "AUSSTOSSEN"]
     errors = []
 
     for name, state in zip(names, states):
         exp = expected[name]
         actual = (state.x_car_cdr, state.y_gravitation, state.z_widerstand, state.w_takt)
-        if actual != exp:
+        if not all(abs(a - e) < 1e-9 for a, e in zip(actual, exp)):
             errors.append(f"{name}: {actual} != {exp}")
         else:
             print(f"  {name}: {actual} OK")
@@ -108,16 +112,24 @@ def test_predefined_states() -> list[str]:
 
 
 def test_agos_cycle() -> list[str]:
-    """Prueft Simultan-Kaskade-Zyklus-Konsistenz (Takt 0-4)."""
-    from src.config.mtho_state_vector import WUJI, ANSAUGEN, VERDICHTEN, ARBEITEN, AUSSTOSSEN
+    """Prueft Simultan-Kaskade-Zyklus-Konsistenz (Takt 0-4, mit BARYONIC_DELTA-Offset)."""
+    from src.config.mtho_state_vector import (
+        BASE_STATE,
+        ANSAUGEN,
+        VERDICHTEN,
+        ARBEITEN,
+        AUSSTOSSEN,
+        BARYONIC_DELTA,
+    )
 
-    cycle = [WUJI, ANSAUGEN, VERDICHTEN, ARBEITEN, AUSSTOSSEN]
-    names = ["WUJI(0)", "ANSAUGEN(1)", "VERDICHTEN(2)", "ARBEITEN(3)", "AUSSTOSSEN(4)"]
+    cycle = [BASE_STATE, ANSAUGEN, VERDICHTEN, ARBEITEN, AUSSTOSSEN]
+    expected_w = [BARYONIC_DELTA, 1 + BARYONIC_DELTA, 2 - BARYONIC_DELTA, 3 + BARYONIC_DELTA, 4 - BARYONIC_DELTA]
+    names = ["BASE_STATE(0)", "ANSAUGEN(1)", "VERDICHTEN(2)", "ARBEITEN(3)", "AUSSTOSSEN(4)"]
     errors = []
 
-    for i, (s, n) in enumerate(zip(cycle, names)):
-        if s.w_takt != i:
-            errors.append(f"{n}: w_takt={s.w_takt} != {i}")
+    for i, (s, exp_w, n) in enumerate(zip(cycle, expected_w, names)):
+        if abs(s.w_takt - exp_w) > 1e-9:
+            errors.append(f"{n}: w_takt={s.w_takt} != {exp_w}")
         else:
             print(f"  Takt {i}: {n} OK")
 
@@ -130,7 +142,7 @@ def test_phi_balance() -> list[str]:
         MTHOStateVector,
         INV_PHI,
         COMP_PHI,
-        WUJI,
+        BASE_STATE,
     )
 
     errors = []
@@ -148,11 +160,11 @@ def test_phi_balance() -> list[str]:
     else:
         print("  is_in_phi_balance(COMP_PHI) OK")
 
-    # WUJI (0.5) ist NICHT in Phi-Balance (Toleranz 0.05)
-    if WUJI.is_in_phi_balance():
-        errors.append("WUJI(0.5) sollte phi_balance=False liefern (neutral)")
+    # BASE_STATE (0.49) ist NICHT in Phi-Balance (Toleranz 0.05)
+    if BASE_STATE.is_in_phi_balance():
+        errors.append("BASE_STATE(0.49) sollte phi_balance=False liefern (neutral)")
     else:
-        print("  WUJI(0.5) phi_balance=False OK (neutral)")
+        print("  BASE_STATE(0.49) phi_balance=False OK (neutral)")
 
     return errors
 
@@ -183,11 +195,13 @@ def test_get_current_state() -> list[str]:
     """Prueft get_current_state() mit Env-Variablen."""
     from src.config.mtho_state_vector import (
         get_current_state,
-        WUJI,
+        BASE_STATE,
         ANSAUGEN,
         VERDICHTEN,
         ARBEITEN,
         AUSSTOSSEN,
+        BARYONIC_DELTA,
+        COMP_PHI,
     )
 
     errors = []
@@ -195,28 +209,28 @@ def test_get_current_state() -> list[str]:
     orig_z = os.environ.get("MTHO_Z_WIDERSTAND")
 
     try:
-        # Default = WUJI
+        # Default = BASE_STATE
         if "MTHO_STATE_PRESET" in os.environ:
             del os.environ["MTHO_STATE_PRESET"]
         if "MTHO_Z_WIDERSTAND" in os.environ:
             del os.environ["MTHO_Z_WIDERSTAND"]
-        # Munin-Veto zuruecksetzen
+        # Ring-0 Veto zuruecksetzen
         try:
-            from src.config.ring0_state import clear_munin_veto
-            clear_munin_veto()
+            from src.config.ring0_state import clear_drift_veto
+            clear_drift_veto()
         except Exception:
             pass
 
         s = get_current_state()
-        if s.w_takt != WUJI.w_takt or abs(s.x_car_cdr - WUJI.x_car_cdr) > 1e-9:
-            errors.append(f"Default sollte WUJI sein: {s}")
+        if abs(s.w_takt - BASE_STATE.w_takt) > 1e-9 or abs(s.x_car_cdr - BASE_STATE.x_car_cdr) > 1e-9:
+            errors.append(f"Default sollte BASE_STATE sein: {s}")
         else:
-            print("  get_current_state() Default=WUJI OK")
+            print("  get_current_state() Default=BASE_STATE OK")
 
         # Preset ANSAUGEN
         os.environ["MTHO_STATE_PRESET"] = "ANSAUGEN"
         s = get_current_state()
-        if s.w_takt != 1 or abs(s.x_car_cdr - 0.3) > 1e-9:
+        if abs(s.w_takt - (1 + BARYONIC_DELTA)) > 1e-9 or abs(s.x_car_cdr - COMP_PHI) > 1e-9:
             errors.append(f"Preset ANSAUGEN: {s}")
         else:
             print("  MTHO_STATE_PRESET=ANSAUGEN OK")
@@ -224,7 +238,7 @@ def test_get_current_state() -> list[str]:
         # Preset VERDICHTEN
         os.environ["MTHO_STATE_PRESET"] = "VERDICHTEN"
         s = get_current_state()
-        if s.w_takt != 2:
+        if abs(s.w_takt - (2 - BARYONIC_DELTA)) > 1e-9:
             errors.append(f"Preset VERDICHTEN: w_takt={s.w_takt}")
         else:
             print("  MTHO_STATE_PRESET=VERDICHTEN OK")
@@ -248,41 +262,41 @@ def test_get_current_state() -> list[str]:
         elif "MTHO_Z_WIDERSTAND" in os.environ:
             del os.environ["MTHO_Z_WIDERSTAND"]
         try:
-            from src.config.ring0_state import clear_munin_veto
-            clear_munin_veto()
+            from src.config.ring0_state import clear_drift_veto
+            clear_drift_veto()
         except Exception:
             pass
 
     return errors
 
 
-def test_munin_veto_override() -> list[str]:
-    """Prueft Munin-Veto-Override (ring0_state)."""
-    from src.config.mtho_state_vector import get_current_state, WUJI
-    from src.config.ring0_state import set_munin_veto, clear_munin_veto, get_munin_veto_override
+def test_drift_veto_override() -> list[str]:
+    """Prueft Ring-0-Veto-Override (ring0_state)."""
+    from src.config.mtho_state_vector import get_current_state, BASE_STATE
+    from src.config.ring0_state import set_drift_veto, clear_drift_veto, get_drift_veto_override
 
     errors = []
     orig_preset = os.environ.get("MTHO_STATE_PRESET")
     try:
         if "MTHO_STATE_PRESET" in os.environ:
             del os.environ["MTHO_STATE_PRESET"]
-        clear_munin_veto()
+        clear_drift_veto()
 
-        set_munin_veto(0.95)
+        set_drift_veto(0.95)
         s = get_current_state()
         if abs(s.z_widerstand - 0.95) > 1e-9:
-            errors.append(f"Munin Veto 0.95: z={s.z_widerstand}")
+            errors.append(f"Drift Veto 0.95: z={s.z_widerstand}")
         else:
-            print("  Munin Veto z=0.95 OK")
+            print("  Drift Veto z=0.95 OK")
 
-        clear_munin_veto()
-        if get_munin_veto_override() is not None:
-            errors.append("clear_munin_veto() sollte None liefern")
+        clear_drift_veto()
+        if get_drift_veto_override() is not None:
+            errors.append("clear_drift_veto() sollte None liefern")
         else:
-            print("  clear_munin_veto() OK")
+            print("  clear_drift_veto() OK")
 
     finally:
-        clear_munin_veto()
+        clear_drift_veto()
         if orig_preset is not None:
             os.environ["MTHO_STATE_PRESET"] = orig_preset
 
@@ -291,15 +305,16 @@ def test_munin_veto_override() -> list[str]:
 
 def test_magnitude() -> list[str]:
     """Prueft magnitude()."""
-    from src.config.mtho_state_vector import MTHOStateVector, WUJI
+    from src.config.mtho_state_vector import MTHOStateVector, BASE_STATE
 
     errors = []
-    m = WUJI.magnitude()
-    expected = (0.5**2 + 0**2 + 0.5**2 + 0**2) ** 0.5
+    m = BASE_STATE.magnitude()
+    x, y, z, w = BASE_STATE.x_car_cdr, BASE_STATE.y_gravitation, BASE_STATE.z_widerstand, BASE_STATE.w_takt
+    expected = (x**2 + y**2 + z**2 + (w / 4) ** 2) ** 0.5
     if abs(m - expected) > 1e-9:
-        errors.append(f"WUJI.magnitude()={m} != {expected}")
+        errors.append(f"BASE_STATE.magnitude()={m} != {expected}")
     else:
-        print("  WUJI.magnitude() OK")
+        print("  BASE_STATE.magnitude() OK")
 
     return errors
 
@@ -315,7 +330,7 @@ def main() -> int:
         ("4. Phi-Balance", test_phi_balance),
         ("5. Symmetriebruch", test_symmetry_broken),
         ("6. get_current_state()", test_get_current_state),
-        ("7. Munin-Veto-Override", test_munin_veto_override),
+        ("7. Ring-0-Veto-Override", test_drift_veto_override),
         ("8. Magnitude", test_magnitude),
     ]
 

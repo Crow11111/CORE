@@ -6,13 +6,13 @@
 
 #!/usr/bin/env python3
 """
-GQA Refactor F8: Migration zu einheitlicher wuji_field Collection.
+GQA Refactor F8: Migration zu einheitlicher context_field Collection.
 
-Liest simulation_evidence, core_directives, session_logs (optional argos_knowledge_graph)
+Liest simulation_evidence, core_directives, session_logs (optional knowledge_graph)
 aus ChromaDB, transformiert in einheitliches Schema mit type + MTHO-Encoding,
-schreibt in Collection "wuji_field".
+schreibt in Collection "context_field".
 
-Schema: docs/02_ARCHITECTURE/WUJI_FIELD_SCHEMA.md
+Schema: docs/02_ARCHITECTURE/CONTEXT_FIELD_SCHEMA.md
 """
 from __future__ import annotations
 
@@ -37,7 +37,7 @@ _CATEGORY_TO_MTHO = {
 
 _MTHO_PAIRINGS = {"L": "I", "I": "L", "S": "P", "P": "S"}
 
-COLLECTION_WUJI = "wuji_field"
+COLLECTION_CONTEXT = "context_field"
 BATCH_SIZE = 50
 
 
@@ -141,7 +141,7 @@ def _transform_session(
 def _transform_context(
     doc_id: str, document: str, meta: dict, source: str
 ) -> tuple[str, str, dict]:
-    """Transformiert argos_knowledge_graph-Eintrag. ID-Prefix arg_."""
+    """Transformiert knowledge_graph-Eintrag. ID-Prefix arg_."""
     date_added = date.today().isoformat()
     out = {
         "type": "context",
@@ -165,11 +165,11 @@ def _migrate_from_chroma(client, dry_run: bool) -> dict[str, int]:
     )
 
     counts = {}
-    wuji = None
+    context_col = None
     if not dry_run:
-        wuji = client.get_or_create_collection(
-            name=COLLECTION_WUJI,
-            metadata={"description": "MTHO Wuji-Feld (GQA F8)", "hnsw:space": "cosine"},
+        context_col = client.get_or_create_collection(
+            name=COLLECTION_CONTEXT,
+            metadata={"description": "MTHO context field (GQA F8)", "hnsw:space": "cosine"},
         )
 
     transforms = [
@@ -203,7 +203,7 @@ def _migrate_from_chroma(client, dry_run: bool) -> dict[str, int]:
             new_metas.append(nmeta)
 
         counts[source] = len(new_ids)
-        if dry_run or not wuji:
+        if dry_run or not context_col:
             continue
 
         for i in range(0, len(new_ids), BATCH_SIZE):
@@ -217,18 +217,18 @@ def _migrate_from_chroma(client, dry_run: bool) -> dict[str, int]:
                 ]
             else:
                 batch_emb = None
-            wuji.upsert(
+            context_col.upsert(
                 ids=batch_ids,
                 documents=batch_docs,
                 metadatas=batch_meta,
                 embeddings=batch_emb,
             )
 
-    # Optional: argos_knowledge_graph
+    # Optional: knowledge_graph
     try:
-        from src.network.chroma_client import COLLECTION_ARGOS
+        from src.network.chroma_client import COLLECTION_KNOWLEDGE_GRAPH
 
-        col = client.get_collection(name=COLLECTION_ARGOS)
+        col = client.get_collection(name=COLLECTION_KNOWLEDGE_GRAPH)
         data = col.get(include=["documents", "embeddings", "metadatas"])
         ids = data.get("ids") or []
         if ids:
@@ -238,13 +238,13 @@ def _migrate_from_chroma(client, dry_run: bool) -> dict[str, int]:
             new_ids, new_docs, new_metas = [], [], []
             for oid, doc, meta in zip(ids, documents, metadatas):
                 nid, ndoc, nmeta = _transform_context(
-                    oid, doc or "", meta or {}, "argos_knowledge_graph"
+                    oid, doc or "", meta or {}, "knowledge_graph"
                 )
                 new_ids.append(nid)
                 new_docs.append(ndoc)
                 new_metas.append(nmeta)
-            counts["argos_knowledge_graph"] = len(new_ids)
-            if not dry_run and wuji:
+            counts["knowledge_graph"] = len(new_ids)
+            if not dry_run and context_col:
                 for i in range(0, len(new_ids), BATCH_SIZE):
                     batch_ids = new_ids[i : i + BATCH_SIZE]
                     batch_docs = new_docs[i : i + BATCH_SIZE]
@@ -256,16 +256,16 @@ def _migrate_from_chroma(client, dry_run: bool) -> dict[str, int]:
                         ]
                     else:
                         batch_emb = None
-                    wuji.upsert(
+                    context_col.upsert(
                         ids=batch_ids,
                         documents=batch_docs,
                         metadatas=batch_meta,
                         embeddings=batch_emb,
                     )
         else:
-            counts["argos_knowledge_graph"] = 0
+            counts["knowledge_graph"] = 0
     except Exception:
-        counts["argos_knowledge_graph"] = 0
+        counts["knowledge_graph"] = 0
 
     return counts
 
@@ -276,11 +276,11 @@ def _migrate_from_json(json_path: str, client, dry_run: bool) -> dict[str, int]:
         data = json.load(f)
 
     counts = {}
-    wuji = None
+    context_col = None
     if not dry_run:
-        wuji = client.get_or_create_collection(
-            name=COLLECTION_WUJI,
-            metadata={"description": "MTHO Wuji-Feld (GQA F8)", "hnsw:space": "cosine"},
+        context_col = client.get_or_create_collection(
+            name=COLLECTION_CONTEXT,
+            metadata={"description": "MTHO context field (GQA F8)", "hnsw:space": "cosine"},
         )
 
     for coll_key, transform_fn, source in [
@@ -304,11 +304,11 @@ def _migrate_from_json(json_path: str, client, dry_run: bool) -> dict[str, int]:
             new_metas.append(nmeta)
 
         counts[source] = len(new_ids)
-        if dry_run or not wuji:
+        if dry_run or not context_col:
             continue
 
         for i in range(0, len(new_ids), BATCH_SIZE):
-            wuji.upsert(
+            context_col.upsert(
                 ids=new_ids[i : i + BATCH_SIZE],
                 documents=new_docs[i : i + BATCH_SIZE],
                 metadatas=new_metas[i : i + BATCH_SIZE],
@@ -320,7 +320,7 @@ def _migrate_from_json(json_path: str, client, dry_run: bool) -> dict[str, int]:
 def main():
     import argparse
 
-    ap = argparse.ArgumentParser(description="Migration zu wuji_field (GQA F8)")
+    ap = argparse.ArgumentParser(description="Migration zu context_field (GQA F8)")
     ap.add_argument(
         "--source",
         choices=["chroma", "json"],
@@ -347,7 +347,7 @@ def main():
         print(f"ChromaDB-Client fehlgeschlagen: {e}")
         sys.exit(1)
 
-    print(f"Migration wuji_field | Quelle: {args.source} | Dry-Run: {args.dry_run}")
+    print(f"Migration context_field | Quelle: {args.source} | Dry-Run: {args.dry_run}")
     print("-" * 50)
 
     if args.source == "json":

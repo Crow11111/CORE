@@ -5,7 +5,7 @@
 # ============================================================
 
 #!/usr/bin/env python3
-"""Validiert wuji_field Schema: MTHO-Tags, type, source_collection, Datenverlust-Check."""
+"""Validiert context_field Schema: MTHO-Tags, type, source_collection, Datenverlust-Check."""
 from __future__ import annotations
 
 import sys
@@ -23,9 +23,9 @@ def main():
 
     client = get_chroma_client()
     try:
-        col = client.get_collection(name="wuji_field")
+        col = client.get_collection(name="context_field")
     except Exception as e:
-        print(f"FEHLER: wuji_field nicht gefunden: {e}")
+        print(f"FEHLER: context_field nicht gefunden: {e}")
         sys.exit(1)
 
     data = col.get(include=["documents", "metadatas"])
@@ -63,7 +63,7 @@ def main():
         if not (doc or "").strip():
             empty_docs += 1
 
-    print("=== WUJI_FIELD VALIDATION ===\n")
+    print("=== CONTEXT_FIELD VALIDATION ===\n")
     print(f"Gesamt: {len(ids)} Dokumente\n")
 
     print("--- type-Verteilung ---")
@@ -91,7 +91,7 @@ def main():
 
     # Quell-Vergleich
     print("\n--- Quell-Counts vs. Migration ---")
-    for coll in ["simulation_evidence", "core_directives", "session_logs", "argos_knowledge_graph"]:
+    for coll in ["simulation_evidence", "core_directives", "session_logs", "knowledge_graph"]:
         try:
             c = client.get_collection(name=coll)
             n = c.count()
@@ -99,7 +99,7 @@ def main():
             n = 0
         mig = source_counts.get(coll, 0)
         status = "OK" if n == mig else "DISKREPANZ"
-        print(f"  {coll}: Quelle={n}, wuji_field={mig} [{status}]")
+        print(f"  {coll}: Quelle={n}, context_field={mig} [{status}]")
 
 
 if __name__ == "__main__":

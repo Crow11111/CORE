@@ -35,10 +35,10 @@ Jede Zelle im MTHO-System ist ein Binär-Paar (Lisp cons-cell):
 REGEL: Jeder Agent-Output MUSS eine NT-kompatible Hülle (CDR) besitzen, die den ND-Kern (CAR) für den nächsten Takt konsumierbar macht.
 
 Cons-Zellen pro Strang:
-- Agency (Macher): CAR=Effizienz-Hacks, CDR=Clean Code/PEP8/Tests
-- Council (Richter): CAR=Paranoia/Anomalie-Erkennung, CDR=Compliance/JSON-Veto
-- Forge (Träumer): CAR=Chaos/Was-wäre-wenn, CDR=Architektur-Spec/Constraint-Schema
-- Archive (Bewahrer): CAR=Assoziative Vektor-Cluster, CDR=SQL-Index/API-Responses
+- ExecutionRuntime (Macher): CAR=Effizienz-Hacks, CDR=Clean Code/PEP8/Tests
+- ConstraintValidator (Richter): CAR=Paranoia/Anomalie-Erkennung, CDR=Compliance/JSON-Veto
+- LogicFlow (Träumer): CAR=Chaos/Was-wäre-wenn, CDR=Architektur-Spec/Constraint-Schema
+- StateAnchor (Bewahrer): CAR=Assoziative Vektor-Cluster, CDR=SQL-Index/API-Responses
 
 Handshake: Kommunikation zwischen Strängen läuft IMMER über CDR (NT-Interface). CAR bleibt intern."""
 

@@ -96,11 +96,11 @@ async def search_knowledge(
 
 
 @router.get("/context")
-def get_munin_context(
-    q: str = Query(..., description="Suchtext für Wuji-Kontext"),
+def get_context_injection(
+    q: str = Query(..., description="Suchtext für Context"),
     n: int = Query(5, ge=1, le=20, description="Max. Dokumente"),
 ):
-    """Ring-0 Munin: Context Injection für Agents. Holt Kontext aus wuji_field via Gravitator."""
+    """Ring-0 context_injector: Context Injection für Agents. Holt Kontext aus context_field via Gravitator."""
     try:
         from src.logic_core.munin import inject_context_for_agent
         ctx = inject_context_for_agent(q, n_results=n, format="markdown")
@@ -584,7 +584,7 @@ class EvidenceInput(BaseModel):
 async def add_evidence(body: EvidenceInput):
     """Fuegt ein neues Simulationstheorie-Indiz validiert hinzu.
     Ring-0 Write Gate: X-Ring0-Token oder Bearer (RING0_WRITE_TOKEN) erforderlich.
-    Council Gate: Bei z_widerstand >= 0.618 zusaetzlich X-Council-Confirm.
+    Veto Gate: Bei z_widerstand >= 0.618 zusaetzlich X-Veto-Confirm.
 
     Fuehrt automatisch quaternaere Klassifikation (V6+), temporale
     Konsistenzpruefung und Chargaff-Balance-Analyse durch.

@@ -30,7 +30,7 @@ class CollectionTarget:
     type: str  # evidence | directive | session | context | pattern
 
 
-# Collection-Repräsentanten: Signatur pro Collection (Wuji-Feld-kompatibel)
+# Collection-Repräsentanten: Signatur pro Collection (context-field-kompatibel)
 _COLLECTION_SIGNATURES: dict[str, tuple[str, str]] = {
     "simulation_evidence": (
         "evidence",
@@ -47,9 +47,9 @@ _COLLECTION_SIGNATURES: dict[str, tuple[str, str]] = {
         "Gesprächs-Sessions, Session-Logs, Dialoge, Turn-Turns, Gesprächsverläufe, "
         "Chat-History, Konversationen mit Nutzern.",
     ),
-    "argos_knowledge_graph": (
+    "knowledge_graph": (
         "context",
-        "Argos Knowledge Graph, Kontext, Wissensgraphen, Chunk-Daten, "
+        "Knowledge Graph, Kontext, Wissensgraphen, Chunk-Daten, "
         "dokumentierte Architektur und Konzepte.",
     ),
     "marc_li_patterns": (
@@ -174,14 +174,14 @@ async def route(
     ]
 
 
-async def route_to_wuji(
+async def route_to_context(
     query_text: str,
     top_k: int = 3,
     threshold: float = 0.22,
 ) -> list[CollectionTarget]:
-    """Routet zu wuji_field: Gibt CollectionTarget mit name='wuji_field' und type zurueck (Async)."""
+    """Routet zu context_field: Gibt CollectionTarget mit name='context_field' und type zurueck (Async)."""
     targets = await route(query_text, top_k=top_k, threshold=threshold)
     return [
-        CollectionTarget(name="wuji_field", score=t.score, type=t.type)
+        CollectionTarget(name="context_field", score=t.score, type=t.type)
         for t in targets
     ]

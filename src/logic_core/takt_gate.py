@@ -7,7 +7,7 @@ from src.mtho_core import MTHOCore
 
 async def check_takt_zero() -> bool:
     """
-    Asynchronous Takt 0 Check (Diagnose/Wuji).
+    Asynchronous Takt 0 Check (Diagnose/idle state).
     Verifies system resonance and state vector alignment before allowing transit.
 
     Returns:
@@ -22,7 +22,7 @@ async def check_takt_zero() -> bool:
         if not is_resonant:
             return False
 
-        # ARGOS Watchdog / Z-Vector Escalation
+        # Z-Vector Damper / Z-Vector Escalation
         import os
         z_vector = float(os.getenv("MTHO_Z_WIDERSTAND", "0.049"))
         if z_vector >= 0.9:
@@ -33,7 +33,7 @@ async def check_takt_zero() -> bool:
         # from a real data source. Passing the constant itself is a tautology.
         # Activated once telemetry provides a real drift metric (V6).
 
-        # Takt 0 is Wuji (Silence/Potential).
+        # Takt 0 is idle state (Silence/Potential).
         # We ensure we are not in a 'COLLAPSED' state (y=1 without purpose).
         # (Simplified check for now)
         return True

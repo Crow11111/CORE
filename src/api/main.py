@@ -17,7 +17,7 @@ from loguru import logger
 
 from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, mtho_knowledge, mtho_voice, mtho_events, github_webhook, omega_matrix, omega_thought, telemetry, chat
 
-from src.api.middleware.council_gate import CouncilGateMiddleware
+from src.api.middleware.council_gate import VetoGateMiddleware
 from src.api.middleware.friction_guard import FrictionGuardMiddleware
 
 _event_bus = None
@@ -26,7 +26,7 @@ _agent_pool = None
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    """MTHO API Lifecycle: Ghost Pool + Event-Bus Startup/Shutdown."""
+    """MTHO API Lifecycle: Ephemeral Pool + Event-Bus Startup/Shutdown."""
     global _event_bus, _agent_pool
 
     try:
@@ -48,7 +48,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     else:
         logger.info("[API] Event-Bus uebersprungen (HASS_URL/HASS_TOKEN nicht gesetzt)")
 
-    # --- CRADLE (MTHO Sync Relay) ---
+    # --- SYNC RELAY ---
     webhook_secret = (os.getenv("MTHO_WEBHOOK_SECRET") or "").strip()
     if webhook_secret:
         try:
@@ -56,19 +56,19 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
             import asyncio as _aio
             from aiohttp import web as _aio_web
 
-            def _run_cradle():
-                from src.network.mtho_sync_relay import app as cradle_app
+            def _run_sync_relay():
+                from src.network.mtho_sync_relay import app as sync_relay_app
                 loop = _aio.new_event_loop()
                 _aio.set_event_loop(loop)
-                loop.run_until_complete(_aio_web.run_app(cradle_app, port=8049, handle_signals=False, print=lambda *a: None))
+                loop.run_until_complete(_aio_web.run_app(sync_relay_app, port=8049, handle_signals=False, print=lambda *a: None))
 
-            _cradle_thread = threading.Thread(target=_run_cradle, daemon=True, name="mtho-cradle")
-            _cradle_thread.start()
-            logger.info("[API] CRADLE Sync Relay gestartet (Port 8049)")
+            _sync_relay_thread = threading.Thread(target=_run_sync_relay, daemon=True, name="mtho-sync-relay")
+            _sync_relay_thread.start()
+            logger.info("[API] Sync Relay gestartet (Port 8049)")
         except Exception as exc:
-            logger.error("[API] CRADLE Start fehlgeschlagen: {} – API laeuft weiter", exc)
+            logger.error("[API] Sync Relay Start fehlgeschlagen: {} – API laeuft weiter", exc)
     else:
-        logger.info("[API] CRADLE uebersprungen (MTHO_WEBHOOK_SECRET nicht gesetzt)")
+        logger.info("[API] Sync Relay uebersprungen (MTHO_WEBHOOK_SECRET nicht gesetzt)")
 
     yield
 
@@ -94,8 +94,8 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Council Gate: Veto-Middleware für kritische Operationen (DELETE, Config, Token, Backup)
-app.add_middleware(CouncilGateMiddleware)
+# Veto Gate: Veto-Middleware für kritische Operationen (DELETE, Config, Token, Backup)
+app.add_middleware(VetoGateMiddleware)
 # Friction Guard: Scannt LLM-Output auf Simulation (Heresy-Trap)
 app.add_middleware(FrictionGuardMiddleware)
 
@@ -145,7 +145,7 @@ def system_status() -> dict:
         "agent_pool": {
             "active": _agent_pool is not None,
         },
-        "cradle": {
+        "sync_relay": {
             "enabled": bool((os.getenv("MTHO_WEBHOOK_SECRET") or "").strip()),
             "port": 8049,
         },

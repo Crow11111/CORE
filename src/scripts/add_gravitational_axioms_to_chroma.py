@@ -23,7 +23,7 @@ DIRECTIVES = [
     (
         "gravitational_query_axiom",
         """GRAVITATIONAL QUERY AXIOM (Root-Protokoll)
-Wuji-Substrat: Datenbank = flacher n-dimensionaler Raum, keine Tags/Pfade/Vorab-Kategorisierung.
+Context substrate: Datenbank = flacher n-dimensionaler Raum, keine Tags/Pfade/Vorab-Kategorisierung.
 Prompt-Masse: Abfrage ist das einzige formgebende Element, schlägt als Singularität ein.
 Temporäre Gravitation: Kosinus-Ähnlichkeit krümmt den Raum; Container fallen in den Trichter.
 Organische Klammer: Ereignishorizont des Trichters = Kontext, dynamisch pro Takt. Klammer nicht vorher definieren.

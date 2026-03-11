@@ -16,7 +16,7 @@ OSMIUM_VOICE_CONFIG = {
     "mtho_high_density": {"voice_id": "DEZHhPbmb8LVZmWufkCh", "stability": 0.85, "similarity_boost": 0.90, "style": 0.0},
     "mtho_info":         {"voice_id": "MOOG1hZESAxDt4UaletY", "stability": 0.75, "similarity_boost": 0.85, "style": 0.0},
     "mtho_dialog":       {"voice_id": _FALLBACK_VOICE_ID, "stability": 0.65, "similarity_boost": 0.80, "style": 0.0},
-    # --- Council Layer (14 personas) ---
+    # --- Validation Layer (14 personas) ---
     "therapeut":          {"voice_id": _FALLBACK_VOICE_ID, "stability": 0.45, "similarity_boost": 0.75, "style": 0.2},
     "analyst":            {"voice_id": "sMeokm2JRizE4WimYqfK", "stability": 0.95, "similarity_boost": 0.95, "style": 0.0},
     "richter":            {"voice_id": _FALLBACK_VOICE_ID, "stability": 0.85, "similarity_boost": 0.90, "style": 0.0},

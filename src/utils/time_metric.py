@@ -12,7 +12,7 @@ def get_friction_timeout(base_timeout: float) -> float:
     """
     try:
         state = get_current_state()
-        # Die Reibung dehnt den Timeout aus. 
+        # Die Reibung dehnt den Timeout aus.
         # Bei Z hoch erhöht sich der Timeout asymmetrisch.
         friction_multiplier = 1.0 + (state.z_widerstand * BARYONIC_DELTA)
         # Kein Floor. Lass das System atmen.
@@ -37,7 +37,7 @@ def asym_sleep_prime(prime_base: int):
     valid_primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97}
     if prime_base not in valid_primes:
         raise ValueError(f"asym_sleep_prime erfordert eine echte Primzahl. {prime_base} ist eine 0=0 Illusion.")
-        
+
     time.sleep(prime_base + _get_baryonic_jitter())
 
 async def asym_sleep_prime_async(prime_base: int):
@@ -45,7 +45,7 @@ async def asym_sleep_prime_async(prime_base: int):
     valid_primes = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97}
     if prime_base not in valid_primes:
         raise ValueError(f"asym_sleep_prime_async erfordert eine echte Primzahl. {prime_base} ist eine 0=0 Illusion.")
-        
+
     await asyncio.sleep(prime_base + _get_baryonic_jitter())
 
 def asym_sleep_float(base_time: float):

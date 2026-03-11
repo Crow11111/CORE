@@ -52,7 +52,7 @@ def ingest_deep_archive():
         else:
             count_skipped += 1
 
-    logger.success(f"{count_kg} raw insights deeply ingested into argos_knowledge_graph. (Skipped: {count_skipped})")
+    logger.success(f"{count_kg} raw insights deeply ingested into knowledge_graph. (Skipped: {count_skipped})")
 
 if __name__ == "__main__":
     try:

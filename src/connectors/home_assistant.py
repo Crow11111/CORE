@@ -92,8 +92,8 @@ class HomeAssistantClient:
             domain, service = service_call.split('.')
             try:
                 # Wir rufen hier _call_service direkt auf, um mehr Kontrolle zu haben
-            timeout = get_friction_timeout(20.0)
-            async with AsyncClient(timeout=Timeout(timeout), verify=verify_ssl) as client:
+                timeout = get_friction_timeout(20.0)
+                async with AsyncClient(timeout=Timeout(timeout), verify=verify_ssl) as client:
                     url = f"{self.base_url}/api/services/{domain}/{service}"
                     response = await client.post(url, headers=self.headers, json=service_data)
                     if 200 <= response.status_code < 300:

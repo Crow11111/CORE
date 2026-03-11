@@ -7,7 +7,7 @@
 """
 ChromaDB-Client für MTHO_CORE (lokal oder remote auf VPS).
 Liest Konfiguration aus .env; bei CHROMA_HOST → HttpClient (VPS), sonst PersistentClient (lokal).
-Collections laut Schnittstelle: argos_knowledge_graph, core_brain_registr, krypto_scan_buffer.
+Collections laut Schnittstelle: knowledge_graph, core_brain_registr, krypto_scan_buffer.
 
 [UPDATE 2026-03-06] ASYNC I/O ENFORCED (Simultanität).
 Alle I/O-Methoden sind nun async und nutzen asyncio.to_thread.
@@ -28,7 +28,7 @@ CHROMA_PORT = int(os.getenv("CHROMA_PORT", "8000"))
 CHROMA_LOCAL_PATH = os.getenv("CHROMA_LOCAL_PATH", r"c:\MTHO_CORE\data\chroma_db")
 
 # Collection-Namen laut 03_DATENBANK_VECTOR_STORE_OSMIUM.md + MTHO Neocortex V1
-COLLECTION_ARGOS = "argos_knowledge_graph"
+COLLECTION_KNOWLEDGE_GRAPH = "knowledge_graph"
 COLLECTION_CORE_BRAIN = "core_brain_registr"
 COLLECTION_KRYTO_SCAN = "krypto_scan_buffer"
 COLLECTION_EVENTS = "events"
@@ -36,7 +36,7 @@ COLLECTION_INSIGHTS = "insights"
 COLLECTION_SESSION_LOGS = "session_logs"
 COLLECTION_CORE_DIRECTIVES = "core_directives"
 COLLECTION_SIMULATION_EVIDENCE = "simulation_evidence"
-COLLECTION_WUJI = "wuji_field"
+COLLECTION_CONTEXT = "context_field"
 
 
 import threading
@@ -83,7 +83,7 @@ def _get_collection_sync(name: str, create_if_missing: bool = True):
         )
     return client.get_collection(name=name)
 
-async def get_collection(name: str = COLLECTION_ARGOS, create_if_missing: bool = True):
+async def get_collection(name: str = COLLECTION_KNOWLEDGE_GRAPH, create_if_missing: bool = True):
     """Holt die angegebene Collection (Async)."""
     return await asyncio.to_thread(_get_collection_sync, name, create_if_missing)
 
@@ -354,20 +354,20 @@ async def add_evidence_validated(
     return result
 
 
-async def get_wuji_field_collection():
-    """Collection 'wuji_field' fuer einheitliches Gedaechtnis (GQA F8). Async."""
-    return await get_collection(COLLECTION_WUJI, create_if_missing=True)
+async def get_context_field_collection():
+    """Collection 'context_field' fuer einheitliches Gedaechtnis (GQA F8). Async."""
+    return await get_collection(COLLECTION_CONTEXT, create_if_missing=True)
 
 
-async def query_wuji_field(
+async def query_context_field(
     query_text: str,
     n_results: int = 10,
     type_filter: str | list[str] | None = None,
     where_filter: dict | None = None,
 ) -> dict:
-    """Semantische Suche im Wuji-Feld. Async."""
+    """Semantische Suche im context field. Async."""
     try:
-        col = await get_wuji_field_collection()
+        col = await get_context_field_collection()
         where = where_filter.copy() if where_filter else {}
         if type_filter is not None:
             if isinstance(type_filter, str):
@@ -379,35 +379,33 @@ async def query_wuji_field(
             kwargs["where"] = where
         return await asyncio.to_thread(col.query, **kwargs)
     except Exception as e:
-        print(f"[ChromaDB] Wuji-Field Query fehlgeschlagen: {e}")
+        print(f"[ChromaDB] Context-Field Query fehlgeschlagen: {e}")
         return {"ids": [[]], "documents": [[]], "metadatas": [[]], "distances": [[]]}
 
 
-async def query_wuji_via_gravitator(
+async def query_context_via_gravitator(
     query_text: str,
     n_results: int = 10,
     top_k_types: int = 3,
 ) -> dict:
-    """Routet via Gravitator zu relevanten Types, fragt wuji_field ab. Async."""
+    """Routet via Gravitator zu relevanten Types, fragt context_field ab. Async."""
     try:
-        # Dynamic import to avoid circular dependency
-        from src.logic_core.gravitator import route_to_wuji
+        from src.logic_core.gravitator import route_to_context
 
-        # route_to_wuji should be async now (we will refactor it next)
-        targets = await route_to_wuji(query_text, top_k=top_k_types)
+        targets = await route_to_context(query_text, top_k=top_k_types)
         if not targets:
-            return await query_wuji_field(query_text, n_results=n_results)
+            return await query_context_field(query_text, n_results=n_results)
 
         types = [t.type for t in targets]
-        result = await query_wuji_field(
+        result = await query_context_field(
             query_text,
             n_results=n_results,
             type_filter=types,
         )
         return result
     except Exception as e:
-        print(f"[ChromaDB] Wuji-via-Gravitator fehlgeschlagen: {e}")
-        return await query_wuji_field(query_text, n_results=n_results)
+        print(f"[ChromaDB] Context-via-Gravitator fehlgeschlagen: {e}")
+        return await query_context_field(query_text, n_results=n_results)
 
 
 async def add_core_directive(directive_id: str, document: str, category: str, ring_level: int = 0) -> bool:
@@ -429,14 +427,14 @@ async def add_core_directive(directive_id: str, document: str, category: str, ri
         return False
 
 
-async def add_wuji_observation(
+async def add_context_observation(
     observation: str,
     source: str = "vision_daemon",
     metadata: dict = None,
 ) -> bool:
-    """Fuegt eine Beobachtung in das Wuji-Feld ein. Async."""
+    """Fuegt eine Beobachtung in das context field ein. Async."""
     try:
-        col = await get_wuji_field_collection()
+        col = await get_context_field_collection()
         
         meta = metadata or {}
         meta.update({
@@ -453,5 +451,5 @@ async def add_wuji_observation(
         )
         return True
     except Exception as e:
-        print(f"[ChromaDB] Wuji Observation failed: {e}")
+        print(f"[ChromaDB] Context Observation failed: {e}")
         return False

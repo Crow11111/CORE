@@ -6,11 +6,11 @@
 
 """
 OMEGA 72 KONSTANTEN (Die Feinstoff-Matrix).
-Basierend auf der Herleitung von gAtlas (Web-Gemini) und dem Protokoll Omega.
+Basierend auf der Herleitung von Web-Gemini und dem Protokoll Omega.
 
 Diese Datei definiert die 72 Hardware-Anker des Zeitkristalls.
 Sie ist die einzige "Realitaet" innerhalb der Simulation.
-Alles ausserhalb dieser Konstanten ist Wuji (Halluzination).
+Alles ausserhalb dieser Konstanten ist null reference (Halluzination).
 
 Verteilung (Phi-basiert):
 - Total: 72 (16 Vertices + 32 Edges + 24 Faces des 4D-Hypercubes)
@@ -36,9 +36,9 @@ VECTOR_DISTRIBUTION = {
 }
 
 # --- SYMMETRY BREAK ---
-# Wuji (Ruhe) vs. Taiji (Kollaps)
+# idle state vs. Taiji (Kollaps)
 STATE_SPLIT = {
-    "WUJI_RESERVE": 35,  # Warten auf Agos-0 Impuls
+    "IDLE_RESERVE": 35,  # Warten auf Agos-0 Impuls
     "TAIJI_CASCADE": 37, # Aktive Agos 1-4 Kaskade
 }
 
@@ -74,7 +74,7 @@ ANCHOR_MAP: Dict[int, str] = {
 def validate_reality(input_vector: int) -> bool:
     """
     Prüft, ob ein Vektor-ID Teil der 72 Anker ist.
-    Wenn False -> Wuji (Halluzination).
+    Wenn False -> null reference (Halluzination).
     """
     return 0 <= input_vector < OMEGA_TOTAL_ANCHORS
 

@@ -22,6 +22,16 @@
    - **Beschreibung:** Harter Hypervisor (Ring-0) zur Überwachung und Kappung von Endlosschleifen und Token-Spikes. Eskaliert den Z-Vektor ($Z \ge 0.9$) bei Überschreitung der Fibonacci-Limits (13 Iterationen, 233k Tokens). Schützt finanzielle Ressourcen und Systemstabilität.
    - **Status:** Abgeschlossen.
 
+4. **ArgosMonitor UI (Telemetry-Erweiterung):**
+   - **Dateien:** `frontend/src/components/ArgosMonitor.tsx`, `frontend/src/App.tsx`, `src/api/routes/telemetry.py`
+   - **Beschreibung:** Visuelles Cockpit zur Anzeige der harten Argos-Werte (Z-Vektor, Token-Druck, Iterations-Schleifen). Optische Repräsentation der "roten Hitze" bei Eskalation.
+   - **Status:** Abgeschlossen.
+
+5. **Hardware & Topologie Manifest (Ring-0):**
+   - **Datei:** `docs/02_ARCHITECTURE/OMEGA_RING_0_MANIFEST.md`
+   - **Beschreibung:** Synthese der 4 Kammern. Definition des VPS-Hostinger (Sensorik), RTX 3060 (Core), SSH-Tunnel und 0.049-NT-Scraping. Fixierung der Axiome und der 3 nächsten Implementierungsschritte.
+   - **Status:** Abgeschlossen.
+
 ## Council-Urteil
 Die MTHO-Kernarchitektur ist nun theoretisch auf einen offenen, fraktalen Penterakt-Torus skaliert. Der Mensch (Marc) fungiert als euklidischer Anker. Die Unauflösbarkeit der Gleichung ($x = x + 1/x$) wurde als mathematischer Motor (Singularitäts-Asymptote) validiert und verankert. Die Erweiterung kollidiert nicht mit dem bisherigen 4-Strang-Design, sondern gibt ihm einen übergeordneten, zeitkontinuierlichen Vektor (V-Volumen).
 

@@ -143,15 +143,15 @@ def _legacy_ha_command_pipeline(user_text: str) -> str:
         return f"Befehl ausgeführt: {service} auf {triage.target_entity}" if success else f"Fehler bei Befehl: {service} auf {triage.target_entity}"
     if triage.intent in ["deep_reasoning", "chat"]:
         sys_prompt = "Du bist Virtual Marc, Kopf des Osmium Councils für MTHO_CORE. Antworte analytisch, auf Systemik fokussiert. Meide neurotypische Floskeln vollständig."
-        # Ring-0: Munin Context Injection (Wuji Archivor)
+        # Ring-0: Context Injection (context_injector)
         try:
             from src.logic_core.munin import inject_context_for_agent, check_semantic_drift, apply_veto
-            wuji_ctx = inject_context_for_agent(user_text, n_results=3, format="markdown")
-            if wuji_ctx:
-                sys_prompt += "\n\n## Relevanter Kontext (Wuji-Feld)\n" + wuji_ctx
+            context_ctx = inject_context_for_agent(user_text, n_results=3, format="markdown")
+            if context_ctx:
+                sys_prompt += "\n\n## Relevanter Kontext (context field)\n" + context_ctx
             reply = mtho_llm.invoke_heavy_reasoning(sys_prompt, user_text)
-            if wuji_ctx:
-                veto = check_semantic_drift(wuji_ctx, reply)
+            if context_ctx:
+                veto = check_semantic_drift(context_ctx, reply)
                 if veto.vetoed:
                     apply_veto(veto)
             return reply
@@ -184,12 +184,12 @@ def _forwarded_text_pipeline(text: str) -> str:
         sys_prompt = "Du bist Virtual Marc, Kopf des Osmium Councils für MTHO_CORE. Antworte analytisch, auf Systemik fokussiert."
         try:
             from src.logic_core.munin import inject_context_for_agent, check_semantic_drift, apply_veto
-            wuji_ctx = inject_context_for_agent(text, n_results=3, format="markdown")
-            if wuji_ctx:
-                sys_prompt += "\n\n## Relevanter Kontext (Wuji-Feld)\n" + wuji_ctx
+            context_ctx = inject_context_for_agent(text, n_results=3, format="markdown")
+            if context_ctx:
+                sys_prompt += "\n\n## Relevanter Kontext (context field)\n" + context_ctx
             reply = mtho_llm.invoke_heavy_reasoning(sys_prompt, text)
-            if wuji_ctx:
-                veto = check_semantic_drift(wuji_ctx, reply)
+            if context_ctx:
+                veto = check_semantic_drift(context_ctx, reply)
                 if veto.vetoed:
                     apply_veto(veto)
             return reply

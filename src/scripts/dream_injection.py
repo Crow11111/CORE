@@ -12,7 +12,7 @@ from datetime import datetime
 
 # Wir nutzen ChromaDB direkt.
 sys.path.append(os.getcwd())
-from src.network.chroma_client import add_wuji_observation
+from src.network.chroma_client import add_context_observation
 
 # Die heutigen Dissonanzen (Rohdaten)
 FRICTION_RAW_DATA = [
@@ -31,7 +31,7 @@ FRICTION_RAW_DATA = [
     {
         "id": str(uuid.uuid4()),
         "source": "OmegaAudit",
-        "detail": "Secondary Dissonances identified: Friction-Counter need, Orphan Control logic missing. Council Request: Hardening.",
+        "detail": "Secondary Dissonances identified: Friction-Counter need, Orphan Control logic missing. ConstraintValidator Request: Hardening.",
         "anchor_ref": "Axiom 4 (4-Takt-Motor)"
     },
     {
@@ -81,12 +81,12 @@ async def inject_dream_crystals():
 
         print(f"Injecting Crystal: {item['detail'][:50]}...")
         # Fire and forget (parallel)
-        tasks.append(add_wuji_observation(content, source="dream_injector", metadata=metadata))
+        tasks.append(add_context_observation(content, source="dream_injector", metadata=metadata))
 
     # Alle Kristalle parallel in die Matrix schiessen
     await asyncio.gather(*tasks)
 
-    print(f"\n[SUCCESS] {len(tasks)} Kristalle in das Wuji-Feld gebrannt.")
+    print(f"\n[SUCCESS] {len(tasks)} Kristalle in das context field gebrannt.")
     print("System Status: Hyper-Charged fuer naechsten Boot.")
     print("Erwarte Fokus-Signal vom H-Vektor beim Start.")
 

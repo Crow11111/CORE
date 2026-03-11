@@ -62,7 +62,7 @@ def main():
         # We don't wipe via API (no delete endpoint yet), so we just append the Gold Profile.
         logger.info("Starte Ingestion über Osmium FastAPI Backend...")
         ingest_gold_document("MTHO_ND_PROFILE_GOLD.md")
-        logger.success("Das Gold-Dokument wurde erfolgreich in die REST-API der ARGOS-Wissensdatenbank überführt.")
+        logger.success("Das Gold-Dokument wurde erfolgreich in die REST-API der Knowledge-Graph-Datenbank überführt.")
     except requests.exceptions.ConnectionError:
         logger.error(f"Konnte nicht zur API unter {API_BASE_URL} verbinden. Läuft db_backend.py?")
     except Exception as e:

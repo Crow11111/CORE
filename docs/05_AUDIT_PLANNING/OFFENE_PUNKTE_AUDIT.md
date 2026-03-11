@@ -58,3 +58,13 @@ Vaultwarden-Entities sind in HA sichtbar (z. B. `binary_sensor.vaultwarden_bitwa
 
 - **healthchecks.io:** Optional in .env als `HEALTHCHECK_URL` – bei Erfolg wird die URL von `daily_backup.py` aufgerufen (Dead-Man’s-Switch bei ausbleibendem Backup).
 - **ChromaDB Cold-Backup auf VPS:** Separates Skript auf dem VPS (Container stoppen → Verzeichnis archivieren → starten); optional per Cron. In BACKUP_PLAN_FINAL erwähnt; Skript nicht Teil von MTHO_CORE-Repo.
+
+---
+
+## Sigma-70 Nachzuegler (langfristig priorisiert)
+
+| ID | Punkt | Prio | Beschreibung |
+|----|-------|------|-------------|
+| S70-01 | Veto Gate Body-Signierung | MITTEL | X-Veto-Confirm aktuell statischer Secret-Vergleich. Upgrade auf HMAC-SHA256 Body-Signierung. Aendert API-Contract. Umsetzen wenn VETO_HMAC_SECRET produktiv. |
+| S70-02 | Vision Daemon async Rewrite | NIEDRIG | mtho_vision_daemon.py synchroner CV2-Loop. Vollstaendiger async Rewrite. Groesseres Refactoring. |
+| S70-03 | Takt-Gate echte Drift-Metrik | HOCH | check_baryonic_limit() bewusst deaktiviert (Tautologie). Braucht echte Telemetrie-Daten. NICHT gegen 0.5 pruefen (Axiom A5). |

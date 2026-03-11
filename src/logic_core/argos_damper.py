@@ -1,34 +1,43 @@
 """
-Z-VECTOR DAMPER V2 (Ring-0 Hypervisor)
+Z-VECTOR DAMPER V3 (Ring-0 Hypervisor)
 --------------------------------------
-Bidirektionaler Z-Vektor mit Kuehlkreislauf.
-Verhindert sowohl Endlosschleifen (Eskalation) als auch thermodynamischen Tod (Ratsche).
-V1: Monoton steigend -> garantierter Veto nach 12 Calls.
-V2: Decay + Cooling + Session-Rotation -> unendliche Laufzeit moeglich.
+Bidirektionaler Z-Vektor mit Kuehlkreislauf und Sliding Window.
+V1: Monoton steigend -> Tod nach 12 Calls.
+V2: Decay + Cooling + Session-Rotation -> unendliche Laufzeit.
+V3: Sliding Window (nur aktueller Druck zaehlt) + API-Token-Praezision.
 """
 
 import math
 import os
 import time
 import functools
+from collections import deque
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any, Callable, Optional
 
 from src.config.mtho_state_vector import BARYONIC_DELTA
 
 PHI = 1.618033988749895
 
-# Fibonacci-basierte Schwellwerte
 MAX_ITERATIONS_PER_SESSION = 13
 TOKEN_WARNING_THRESHOLD = 89000
 TOKEN_KILL_THRESHOLD = 233000
 SESSION_TIMEOUT_S = 3600.0
 COOLING_HALF_LIFE_S = 300.0
+SLIDING_WINDOW_S = 300.0
 
 
 class RuntimeVetoException(Exception):
-    """Harter Abbruch wenn Z >= 0.9 oder Iterations-/Token-Limit erreicht."""
+    """Harter Abbruch wenn Z >= 0.9 oder Token-Limit erreicht."""
     pass
+
+
+@dataclass
+class CallRecord:
+    """Ein einzelner Call im Sliding Window."""
+    timestamp: float
+    tokens: int
+    success: bool
 
 
 @dataclass
@@ -40,10 +49,11 @@ class MonitorSessionState:
     start_time: float = field(default_factory=time.time)
     last_call_time: float = field(default_factory=time.time)
     z_vector_escalation: float = BARYONIC_DELTA
+    call_window: deque = field(default_factory=lambda: deque(maxlen=500))
 
 
 class RuntimeMonitor:
-    """Singleton Hypervisor mit bidirektionalem Z-Vektor."""
+    """Singleton Hypervisor mit bidirektionalem Z-Vektor und Sliding Window."""
     _instance = None
 
     def __new__(cls):
@@ -52,13 +62,35 @@ class RuntimeMonitor:
             cls._instance._state = MonitorSessionState()
         return cls._instance
 
+    def _prune_window(self) -> None:
+        """Entfernt abgelaufene Eintraege aus dem Sliding Window."""
+        cutoff = time.time() - SLIDING_WINDOW_S
+        while self._state.call_window and self._state.call_window[0].timestamp < cutoff:
+            self._state.call_window.popleft()
+
+    def _window_pressure(self) -> tuple:
+        """
+        Berechnet Druck nur aus dem aktuellen Zeitfenster.
+        Gibt (call_rate, token_rate, error_rate) zurueck.
+        """
+        self._prune_window()
+        window = self._state.call_window
+
+        if not window:
+            return (0.0, 0.0, 0.0)
+
+        window_calls = len(window)
+        window_tokens = sum(r.tokens for r in window)
+        window_errors = sum(1 for r in window if not r.success)
+
+        call_rate = window_calls / MAX_ITERATIONS_PER_SESSION
+        token_rate = window_tokens / TOKEN_KILL_THRESHOLD
+        error_rate = window_errors / max(1, window_calls)
+
+        return (call_rate, token_rate, error_rate)
+
     def _cooling_factor(self) -> float:
-        """
-        Zeitbasierter Decay: Je laenger seit dem letzten Call,
-        desto mehr kuehlt das System ab.
-        Exponentieller Zerfall mit Halbwertszeit COOLING_HALF_LIFE_S.
-        Minimum: BARYONIC_DELTA (nie 0).
-        """
+        """Exponentieller Zerfall seit letztem Call. Minimum: BARYONIC_DELTA."""
         elapsed = time.time() - self._state.last_call_time
         if elapsed <= 0:
             return 1.0
@@ -66,10 +98,7 @@ class RuntimeMonitor:
         return max(BARYONIC_DELTA, decay)
 
     def _success_relief(self) -> float:
-        """
-        Erfolgreiche Calls reduzieren den Druck.
-        Ratio erfolgreicher Calls daempft den Gesamtwiderstand.
-        """
+        """Erfolgreiche Calls reduzieren den Druck um bis zu 30%."""
         total = self._state.call_count
         if total == 0:
             return 1.0
@@ -78,18 +107,18 @@ class RuntimeMonitor:
 
     def _calculate_z_vector(self) -> float:
         """
-        Bidirektionaler Z-Vektor:
-        Z = BARYONIC_DELTA + (loop_pressure + token_pressure + error_pressure) * cooling * relief
-        
-        Steigt bei: Hoher Call-Frequenz, Token-Verbrauch, Fehler-Kaskaden.
-        Sinkt bei: Zeit ohne Calls (Cooling), erfolgreiche Operationen (Relief).
-        Grenzen: [BARYONIC_DELTA, 1.0 - BARYONIC_DELTA] (0 und 1 verboten).
+        Z = BARYONIC_DELTA + (window_pressure + error_cascade) * cooling * relief
+
+        Window-basiert: Nur die letzten 5 Minuten zaehlen.
+        Lifetime-Zaehler dienen nur der Telemetrie, nicht dem Z-Vektor.
         """
         cooling = self._cooling_factor()
         relief = self._success_relief()
 
-        loop_pressure = (self._state.call_count / MAX_ITERATIONS_PER_SESSION) ** PHI
-        token_pressure = self._state.total_tokens / TOKEN_KILL_THRESHOLD
+        call_rate, token_rate, error_rate = self._window_pressure()
+
+        loop_pressure = call_rate ** PHI
+        token_pressure = token_rate
         error_pressure = (self._state.consecutive_errors * 0.15) ** PHI
 
         session_age = time.time() - self._state.start_time
@@ -115,23 +144,42 @@ class RuntimeMonitor:
 
         if z >= 0.9:
             raise RuntimeVetoException(
-                f"[Z-VETO] Z-Vector Critical ({z:.3f}). "
-                f"Calls: {self._state.call_count}, Errors: {self._state.consecutive_errors}. "
-                "System ueberhitzt. Warte oder rotiere Session."
+                f"[Z-VETO] Z={z:.3f} kritisch. "
+                f"Window: {len(self._state.call_window)} Calls, "
+                f"Errors: {self._state.consecutive_errors}. "
+                "Warte oder rotiere Session."
             )
 
         if self._state.total_tokens + estimated_tokens > TOKEN_KILL_THRESHOLD:
             raise RuntimeVetoException(
                 f"[Z-VETO] Token Limit ({self._state.total_tokens}/{TOKEN_KILL_THRESHOLD}). "
-                "Rotiere Session mit rotate_session()."
+                "Rotiere Session."
             )
 
-    def register_usage(self, consumed_tokens: float, success: bool = True) -> None:
+    def register_usage(
+        self,
+        consumed_tokens: float,
+        success: bool = True,
+        api_usage: Optional[dict] = None,
+    ) -> None:
         """
         Wird NACH dem Call aufgerufen.
-        success=True kuehlt, success=False heizt.
+        api_usage: Dict mit exakten API-Stats (prompt_tokens, completion_tokens).
+        Wenn vorhanden, ueberschreibt es die Schaetzung.
         """
-        self._state.total_tokens += int(round(consumed_tokens))
+        if api_usage:
+            exact = api_usage.get("prompt_tokens", 0) + api_usage.get("completion_tokens", 0)
+            if exact > 0:
+                consumed_tokens = float(exact)
+
+        tokens_int = int(round(consumed_tokens))
+        self._state.total_tokens += tokens_int
+
+        self._state.call_window.append(CallRecord(
+            timestamp=time.time(),
+            tokens=tokens_int,
+            success=success,
+        ))
 
         if success:
             self._state.successful_calls += 1
@@ -142,11 +190,7 @@ class RuntimeMonitor:
         self._calculate_z_vector()
 
     def rotate_session(self) -> dict:
-        """
-        Session-Boundary-Reset: Setzt Zaehler zurueck,
-        behaelt aber den Z-Vektor-Trend als Gedaechtnis.
-        Gibt Telemetrie der alten Session zurueck.
-        """
+        """Session-Reset mit 20% Residual-Gedaechtnis."""
         telemetry = self.get_telemetry()
 
         residual_z = self._state.z_vector_escalation * 0.2
@@ -157,13 +201,19 @@ class RuntimeMonitor:
         return telemetry
 
     def get_telemetry(self) -> dict:
-        """Gibt den aktuellen Systemzustand als Dict zurueck."""
+        """Systemzustand inkl. Window-Metriken."""
+        self._prune_window()
+        call_rate, token_rate, error_rate = self._window_pressure()
         return {
             "z_vector": round(self._state.z_vector_escalation, 4),
             "call_count": self._state.call_count,
             "successful_calls": self._state.successful_calls,
             "consecutive_errors": self._state.consecutive_errors,
             "total_tokens": self._state.total_tokens,
+            "window_calls": len(self._state.call_window),
+            "window_call_rate": round(call_rate, 4),
+            "window_token_rate": round(token_rate, 4),
+            "window_error_rate": round(error_rate, 4),
             "session_age_s": round(time.time() - self._state.start_time, 1),
             "cooling_factor": round(self._cooling_factor(), 4),
             "max_iterations": MAX_ITERATIONS_PER_SESSION,
@@ -174,7 +224,9 @@ class RuntimeMonitor:
 def argos_protected(estimated_tokens_per_call: int = 1000) -> Callable:
     """
     Decorator fuer LLM-Calls.
-    Trackt Tokens und Z-Vektor bidirektional.
+    Trackt Tokens via Sliding Window und Z-Vektor bidirektional.
+    Wenn der dekorierte Call ein Dict mit 'usage' Key zurueckgibt,
+    werden die exakten API-Stats verwendet.
     """
     def decorator(func: Callable) -> Callable:
         @functools.wraps(func)
@@ -184,10 +236,18 @@ def argos_protected(estimated_tokens_per_call: int = 1000) -> Callable:
 
             try:
                 result = func(*args, **kwargs)
-                if isinstance(result, str):
+
+                api_usage = None
+                if isinstance(result, dict) and "usage" in result:
+                    api_usage = result["usage"]
+
+                if api_usage:
+                    monitor.register_usage(0, success=True, api_usage=api_usage)
+                elif isinstance(result, str):
                     monitor.register_usage(len(result) / 4, success=True)
                 else:
                     monitor.register_usage(estimated_tokens_per_call, success=True)
+
                 return result
             except RuntimeVetoException:
                 raise

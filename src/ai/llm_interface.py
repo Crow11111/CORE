@@ -13,7 +13,7 @@ from loguru import logger
 from pydantic import BaseModel, Field
 
 # Z-VECTOR DAMPER INJECTION
-from src.logic_core.argos_damper import argos_protected, RuntimeVetoException
+from src.logic_core.z_vector_damper import argos_protected, RuntimeVetoException
 
 load_dotenv("C:/MTHO_CORE/.env")
 

@@ -86,7 +86,7 @@ async def get_telemetry():
         "token_kill_threshold": 233000
     }
     try:
-        from src.logic_core.argos_damper import z_damper, MAX_ITERATIONS, TOKEN_KILL_THRESHOLD
+        from src.logic_core.z_vector_damper import z_damper, MAX_ITERATIONS, TOKEN_KILL_THRESHOLD
         z_damper_data = {
             "z_vector": getattr(z_damper._state, "z_vector_escalation", 0.049),
             "total_tokens": getattr(z_damper._state, "total_tokens", 0),

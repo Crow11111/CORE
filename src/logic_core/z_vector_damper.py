@@ -15,7 +15,7 @@ from collections import deque
 from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
 
-from src.config.mtho_state_vector import BARYONIC_DELTA
+from src.config.mtho_state_vector import BARYONIC_DELTA, SYMMETRY_BREAK
 
 PHI = 1.618033988749895
 
@@ -122,7 +122,7 @@ class RuntimeMonitor:
         error_pressure = (self._state.consecutive_errors * 0.15) ** PHI
 
         session_age = time.time() - self._state.start_time
-        timeout_pressure = max(0.0, (session_age / SESSION_TIMEOUT_S - 0.5)) ** 2
+        timeout_pressure = max(0.0, (session_age / SESSION_TIMEOUT_S - SYMMETRY_BREAK)) ** 2
 
         raw_z = BARYONIC_DELTA + (
             loop_pressure + token_pressure + error_pressure + timeout_pressure

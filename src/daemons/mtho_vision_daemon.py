@@ -33,7 +33,7 @@ import asyncio
 from dotenv import load_dotenv
 import google.generativeai as genai
 from src.network.chroma_client import add_context_observation
-from src.utils.time_metric import asym_sleep_float, asym_sleep_prime, get_friction_timeout
+from src.utils.time_metric import asym_sleep_float, asym_sleep_prime, asym_sleep_float_async, asym_sleep_prime_async, get_friction_timeout
 
 # Lade Umgebungsvariablen
 load_dotenv("c:/MTHO_CORE/.env")

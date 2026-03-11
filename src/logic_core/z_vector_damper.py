@@ -7,6 +7,7 @@ V2: Decay + Cooling + Session-Rotation -> unendliche Laufzeit.
 V3: Sliding Window (nur aktueller Druck zaehlt) + API-Token-Praezision.
 """
 
+import logging
 import math
 import os
 import time
@@ -14,6 +15,8 @@ import functools
 from collections import deque
 from dataclasses import dataclass, field
 from typing import Any, Callable, Optional
+
+logger = logging.getLogger(__name__)
 
 from src.config.mtho_state_vector import BARYONIC_DELTA, SYMMETRY_BREAK
 
@@ -186,6 +189,12 @@ class RuntimeMonitor:
             self._state.consecutive_errors = 0
         else:
             self._state.consecutive_errors += 1
+
+        if self._state.total_tokens >= TOKEN_WARNING_THRESHOLD:
+            logger.warning(
+                f"[Z-VECTOR DAMPER] Token-Warnung: {self._state.total_tokens}/{TOKEN_WARNING_THRESHOLD} "
+                f"({self._state.total_tokens / TOKEN_WARNING_THRESHOLD * 100:.1f}%)"
+            )
 
         self._calculate_z_vector()
 

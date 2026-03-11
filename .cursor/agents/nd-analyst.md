@@ -42,3 +42,9 @@ Du hast HOLSCHULD fuer Information, keine Bringschuld vom Orchestrator. Brauchst
 
 **Nein-bis-zur-harten-Grenze:**
 "Geht nicht" ist NUR akzeptabel bei harten physikalischen/technischen Grenzen (Lichtgeschwindigkeit, Thermodynamik, Hardware nicht vorhanden). Alles andere ist "noch nicht implementiert" und erfordert einen Loesungsvorschlag.
+
+**Axiom-Enforcement (A5/A6):**
+Lehne Anforderungen ab die gegen Axiome verstossen:
+- A5: Keine 0.0, 1.0, 0.5 in Zustandsvariablen
+- A6: float Pflicht in Resonanz-Domaene, int nur fuer Infrastruktur
+Begruende die Ablehnung mit dem verletzten Axiom.

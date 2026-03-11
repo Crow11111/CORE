@@ -14,6 +14,8 @@ Bei kritischen Operationen: Audit-Log + optional Delay oder X-Veto-Confirm.
 from __future__ import annotations
 
 import asyncio
+import hashlib
+import hmac
 import logging
 import os
 import re
@@ -49,8 +51,11 @@ CRITICAL_PATH_PATTERNS = [
 # HTTP-Methoden die als kritisch gelten (alle Pfade)
 CRITICAL_METHODS = {"DELETE"}
 
-# Header für explizite Veto-Bestätigung (optional, Wert egal wenn gesetzt)
+# Header für explizite Veto-Bestätigung
 CONFIRM_HEADER = "X-Veto-Confirm"
+
+# HMAC-Secret: wenn gesetzt, wird X-Veto-Confirm kryptografisch geprueft
+VETO_SECRET = os.getenv("VETO_HMAC_SECRET", "")
 
 logger = logging.getLogger("veto_gate")
 
@@ -75,8 +80,13 @@ def _get_z_widerstand() -> float:
 
 
 def _has_confirmation(request: Request) -> bool:
-    """Prüft ob X-Veto-Confirm gesetzt ist."""
-    return bool(request.headers.get(CONFIRM_HEADER))
+    """Prüft X-Veto-Confirm. Mit VETO_HMAC_SECRET: HMAC-Vergleich. Ohne: Existenz-Check (Dev-Modus)."""
+    token = request.headers.get(CONFIRM_HEADER, "")
+    if not token:
+        return False
+    if not VETO_SECRET:
+        return True
+    return hmac.compare_digest(token, VETO_SECRET)
 
 
 class VetoGateMiddleware(BaseHTTPMiddleware):

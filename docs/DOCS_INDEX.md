@@ -19,9 +19,11 @@ Zentrale Übersicht der Projekt-Struktur.
 
 ## 1. CORE DNA (`docs/01_CORE_DNA/`)
 **Die Verfassung des Projekts.**
-- `CREW_MANIFEST.md` – Rollen & Aufgaben (Architect Zero, Backend Forge, etc.)
+- `CREW_MANIFEST.md` – Rollen & Aufgaben (**DEPRECATED**, s. `.cursor/agents/*.md`)
 - `MTHO_VOICE_ARCHITECTURE_V1.3.md` – Voice-Design & Persona-Definitionen
-- `stammdokumente_oc/` – Spezifische Dokumente für den Austausch mit OpenClaw (OC)
+- `PROMPT_A_USER_PERSONA.md` – User-Persona und Kommunikationsvektor
+- `TOPOLOGIE_5D_TESSERAKT.md` – 5D-Penterakt-Topologie und V-Dimension
+- `stammdokumente_oc/` – Spezifische Dokumente fuer den Austausch mit OpenClaw (OC)
 
 ---
 
@@ -54,6 +56,13 @@ Zentrale Übersicht der Projekt-Struktur.
 **Status, Backlog & Reviews.**
 - `OFFENE_PUNKTE_AUDIT.md` – Technisches Backlog & Schulden
 - `UMSETZUNGSPLANUNG.md` – Aktueller Projektplan
+- `SIGMA70_KAMMER1_TOPOLOGIE.md` – Sigma-70 Audit: Topologie & Systemtheorie
+- `SIGMA70_KAMMER2_HARDWARE.md` – Sigma-70 Audit: Hardware & Latenz
+- `SIGMA70_KAMMER3_INFORMATIONSTHEORIE.md` – Sigma-70 Audit: ChromaDB & Kompression
+- `SIGMA70_KAMMER4_SECURITY.md` – Sigma-70 Audit: Security & Veto-Logik
+- `AUDIT_SYMMETRIEBRUECHE.md` – Symmetriebruch-Audit Phase 1
+- `AUDIT_SYMMETRIE_PHASE2.md` – Symmetriebruch-Audit Phase 2
+- `SESSION_LOG_2026-03-11.md` – Session-Log (aktuell)
 
 ---
 

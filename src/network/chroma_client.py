@@ -37,6 +37,25 @@ COLLECTION_SESSION_LOGS = "session_logs"
 COLLECTION_CORE_DIRECTIVES = "core_directives"
 COLLECTION_SIMULATION_EVIDENCE = "simulation_evidence"
 COLLECTION_CONTEXT = "context_field"
+COLLECTION_WORLD_KNOWLEDGE = "world_knowledge"
+
+CHROMA_MAX_SIZE_MB = int(os.getenv("CHROMA_MAX_SIZE_MB", "5000"))
+
+
+def _check_disk_quota() -> bool:
+    """Prueft ob ChromaDB unter dem Groessenlimit liegt."""
+    if not os.path.exists(CHROMA_LOCAL_PATH):
+        return True
+    total_size = sum(
+        os.path.getsize(os.path.join(dirpath, f))
+        for dirpath, _, filenames in os.walk(CHROMA_LOCAL_PATH)
+        for f in filenames
+    )
+    size_mb = total_size / (1024 * 1024)
+    if size_mb >= CHROMA_MAX_SIZE_MB:
+        print(f"[ChromaDB] DISK QUOTA EXCEEDED: {size_mb:.1f}MB >= {CHROMA_MAX_SIZE_MB}MB")
+        return False
+    return True
 
 
 import threading
@@ -109,6 +128,8 @@ async def get_events_collection():
 
 async def add_event_to_chroma(event_id: str, event: dict, metadata_flat: dict) -> bool:
     """Fügt ein Event in ChromaDB events ein. Async."""
+    if not _check_disk_quota():
+        return False
     try:
         col = await get_events_collection()
         await asyncio.to_thread(
@@ -144,6 +165,8 @@ async def add_session_turn(
     ring_level: int = 2,
 ) -> bool:
     """Fuegt einen einzelnen Turn eines Session-Logs in ChromaDB ein. Async."""
+    if not _check_disk_quota():
+        return False
     try:
         col = await get_session_logs_collection()
         await asyncio.to_thread(
@@ -354,6 +377,24 @@ async def add_evidence_validated(
     return result
 
 
+async def get_world_knowledge_collection():
+    """Collection 'world_knowledge' fuer autonome Datenakquise (Scraper-Pipeline)."""
+    return await get_collection(COLLECTION_WORLD_KNOWLEDGE, create_if_missing=True)
+
+
+async def query_world_knowledge(query_text: str, n_results: int = 10, where_filter: dict = None) -> dict:
+    """Semantische Suche ueber Weltwissen. Async."""
+    try:
+        col = await get_world_knowledge_collection()
+        kwargs = {"query_texts": [query_text], "n_results": n_results}
+        if where_filter:
+            kwargs["where"] = where_filter
+        return await asyncio.to_thread(col.query, **kwargs)
+    except Exception as e:
+        print(f"[ChromaDB] World Knowledge Query fehlgeschlagen: {e}")
+        return {"ids": [[]], "documents": [[]], "metadatas": [[]], "distances": [[]]}
+
+
 async def get_context_field_collection():
     """Collection 'context_field' fuer einheitliches Gedaechtnis (GQA F8). Async."""
     return await get_collection(COLLECTION_CONTEXT, create_if_missing=True)
@@ -433,6 +474,8 @@ async def add_context_observation(
     metadata: dict = None,
 ) -> bool:
     """Fuegt eine Beobachtung in das context field ein. Async."""
+    if not _check_disk_quota():
+        return False
     try:
         col = await get_context_field_collection()
         

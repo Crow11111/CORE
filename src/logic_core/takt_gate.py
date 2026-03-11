@@ -29,9 +29,10 @@ async def check_takt_zero() -> bool:
             print(f"[TAKT 0 VETO] System Locked - Z-Vector Critical ({z_vector}). Auto-Loop detected.")
             return False
 
-        # NOTE: check_baryonic_limit requires a *measured* delta value
-        # from a real data source. Passing the constant itself is a tautology.
-        # Activated once telemetry provides a real drift metric (V6).
+        # DEAKTIVIERT: Wartet auf echte Drift-Metrik aus Telemetrie.
+        # Tautologie (0.049==0.049) bewusst nicht gefixed.
+        # TODO(A-30): check_baryonic_limit reaktivieren sobald Telemetrie
+        #   eine gemessene Drift-Metrik liefert (nicht Konstante vs. Konstante).
 
         # Takt 0 is idle state (Silence/Potential).
         # We ensure we are not in a 'COLLAPSED' state (y=1 without purpose).

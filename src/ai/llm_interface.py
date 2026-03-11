@@ -120,6 +120,8 @@ class LLMInterface:
             logger.error(f"SLM Triage failed: {e}")
             return TriageResult(intent="unknown")
 
+    MAX_RESPONSE_TOKENS = 4096
+
     @argos_protected(estimated_tokens_per_call=4000)
     def invoke_heavy_reasoning(self, system_prompt: str, user_input: str) -> str:
         """
@@ -135,7 +137,17 @@ class LLMInterface:
                 HumanMessage(content=user_input)
             ]
             response = self.heavy_llm.invoke(messages)
-            return response.content
+            result = response.content
+
+            word_count = len(result.split())
+            if word_count > self.MAX_RESPONSE_TOKENS:
+                logger.warning(
+                    f"[LLM] Halluzinations-Bremse: {word_count} Woerter > {self.MAX_RESPONSE_TOKENS} Limit -- gekappt"
+                )
+                words = result.split()
+                result = " ".join(words[: self.MAX_RESPONSE_TOKENS])
+
+            return result
         except RuntimeVetoException as e:
             logger.error(f"[Z-VETO] in Heavy Reasoning: {e}")
             return f"System Hard-Stop: Z-Veto getriggert ({e})"

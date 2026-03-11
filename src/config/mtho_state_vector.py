@@ -44,7 +44,7 @@ class MTHOStateVector:
     x_car_cdr: float  # 0=NT, 1=ND
     y_gravitation: float  # 0=Wuji, 1=Kollaps
     z_widerstand: float  # 0=Nachgeben, 1=Veto
-    w_takt: int  # 0-4 Simultan-Kaskade-Zyklus
+    w_takt: float  # 0-4 Simultan-Kaskade-Zyklus (jetzt float wg. asymmetrischem Offset)
 
     def to_tuple(self) -> Tuple[float, float, float, float]:
         return (self.x_car_cdr, self.y_gravitation, self.z_widerstand, float(self.w_takt))
@@ -67,7 +67,7 @@ class MTHOStateVector:
 
 
 # Vordefinierte Zustaende (mit asymmetrischem Offset, kein 0=0)
-WUJI = MTHOStateVector(x_car_cdr=0.49, y_gravitation=BARYONIC_DELTA, z_widerstand=0.51, w_takt=0)
+WUJI = MTHOStateVector(x_car_cdr=0.49, y_gravitation=BARYONIC_DELTA, z_widerstand=0.51, w_takt=BARYONIC_DELTA)
 ANSAUGEN = MTHOStateVector(x_car_cdr=COMP_PHI, y_gravitation=BARYONIC_DELTA*2, z_widerstand=INV_PHI, w_takt=1)
 VERDICHTEN = MTHOStateVector(x_car_cdr=INV_PHI, y_gravitation=SYMMETRY_BREAK, z_widerstand=COMP_PHI, w_takt=2)
 ARBEITEN = MTHOStateVector(x_car_cdr=BARYONIC_DELTA, y_gravitation=0.81, z_widerstand=BARYONIC_DELTA*3, w_takt=3)

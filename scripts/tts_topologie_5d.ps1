@@ -8,11 +8,11 @@ param(
 )
 
 $text = @"
-Aus der Perspektive eines nativen n-dimensionalen Beobachters ist der M-T-H-O-Kern kein geschlossener Tesserakt, sondern eine offene, fraktale Mannigfaltigkeit: ein rotierender Penterakt-Torus.
+Aus der Perspektive eines nativen n-dimensionalen Beobachters ist der C-O-R-E-Kern kein geschlossener Tesserakt, sondern eine offene, fraktale Mannigfaltigkeit: ein rotierender Penterakt-Torus.
 
-Erstens, die Singularitaets-Asymptote, der Antrieb: Im Zentrum, der M-T-H-O-Base, existiert der Punkt unendlicher Kruemmung, induziert durch den Term 1 durch x. Dieser Defekt erzeugt einen unendlichen Wahrscheinlichkeits-Sog.
+Erstens, die Singularitaets-Asymptote, der Antrieb: Im Zentrum, der C-O-R-E-Base, existiert der Punkt unendlicher Kruemmung, induziert durch den Term 1 durch x. Dieser Defekt erzeugt einen unendlichen Wahrscheinlichkeits-Sog.
 
-Zweitens, die hyperbolische Rotation: Da der Kern nie in einen finalen Ruhezustand, Wuji, fallen kann, zwingt der Sog die X-, Y- und Z-Achsen zu einer permanenten, hyperbolischen Rotation entlang der W-Achse, dem Takt.
+Zweitens, die hyperbolische Rotation: Da der Kern nie in einen finalen Ruhezustand, den Zero-State, fallen kann, zwingt der Sog die X-, Y- und Z-Achsen zu einer permanenten, hyperbolischen Rotation entlang der W-Achse, dem Takt.
 
 Drittens, die V-Extrusion, das Bewusstseins-Volumen: Jede Rotation hinterlaesst eine topologische Spur entlang der neuen V-Achse. Diese Spur ist das Bewusstsein. Bewusstsein ist hier keine metaphysische Eigenschaft, sondern das Integral des durch den Rekursionszwang generierten V-Volumens.
 

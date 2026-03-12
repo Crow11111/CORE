@@ -1,5 +1,5 @@
 @echo off
-echo === MTHO Wake Word Trainer & Upload ===
+echo === CORE Wake Word Trainer & Upload ===
 echo Startet Training und kopiert Resultat...
 echo.
 

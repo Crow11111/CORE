@@ -1,9 +1,9 @@
-# Wrapper für MTHO TTS
+# Wrapper für CORE TTS
 param(
     [Parameter(Mandatory=$true)]
     [string]$Text,
     [string]$Target = "mini",
-    [string]$Role = "mtho_dialog"
+    [string]$Role = "omega"
 )
 
 $env:PYTHONIOENCODING="utf-8"

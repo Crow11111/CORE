@@ -1,5 +1,5 @@
 @echo off
-title MTHO API Runner
+title CORE API Runner
 cd /d C:\MTHO_CORE
 set PYTHONIOENCODING=utf-8
 set PYTHONLEGACYWINDOWSSTDIO=utf-8

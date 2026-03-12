@@ -1,17 +1,17 @@
 @echo off
 chcp 65001 >nul
-title MTHO OMEGA COCKPIT - MASTER CONTROL
+title CORE OMEGA COCKPIT - MASTER CONTROL
 set "ROOT=%~dp0"
 set "ROOT=%ROOT:~0,-1%"
 cd /d "%ROOT%"
 
 echo ============================================================
-echo MTHO-GENESIS: OMEGA COCKPIT STARTUP
+echo CORE-GENESIS: OMEGA COCKPIT STARTUP
 echo ============================================================
 echo.
 
-REM --- CLEANUP: Nur MTHO-Prozesse beenden (Port-basiert) ---
-echo Bereinige alte MTHO-Prozesse...
+REM --- CLEANUP: Nur CORE-Prozesse beenden (Port-basiert) ---
+echo Bereinige alte CORE-Prozesse...
 powershell -Command "Get-NetTCPConnection -LocalPort 8000, 3000, 8049 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess | ForEach-Object { Stop-Process -Id $_ -Force -ErrorAction SilentlyContinue }" >nul 2>&1
 timeout /t 2 /nobreak >nul
 echo Bereinigung abgeschlossen.
@@ -19,15 +19,15 @@ echo.
 
 REM --- 1. API SERVER (minimiert) ---
 echo Starte API Server Port 8000
-start /min "MTHO API" cmd /c "set PYTHONIOENCODING=utf-8 & python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload"
+start /min "CORE API" cmd /c "set PYTHONIOENCODING=utf-8 & python -m uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload"
 
 REM --- 2. WATCHDOG (minimiert) ---
 echo Starte Agos-0 Watchdog
-start /min "MTHO WATCHDOG" cmd /c "set PYTHONIOENCODING=utf-8 & python src/daemons/agos_zero_watchdog.py"
+start /min "CORE WATCHDOG" cmd /c "set PYTHONIOENCODING=utf-8 & python src/daemons/agos_zero_watchdog.py"
 
 REM --- 3. FRONTEND (minimiert) ---
 echo Starte Frontend Dev Server Port 3000
-start /min "MTHO FRONTEND" cmd /c "cd frontend & npm run dev"
+start /min "CORE FRONTEND" cmd /c "cd frontend & npm run dev"
 
 REM --- Health-Check: Warte bis API antwortet ---
 echo Warte auf API...

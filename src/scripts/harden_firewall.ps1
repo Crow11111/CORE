@@ -3,13 +3,13 @@
 
 Write-Host "=== MTHO_CORE: Zero-Trust Firewall Konfiguration ===" -ForegroundColor Cyan
 
-Write-Host "[*] Bereinige alte MTHO-Regeln..."
-Remove-NetFirewallRule -DisplayName "MTHO Inbound SSH" -ErrorAction SilentlyContinue
-Remove-NetFirewallRule -DisplayName "MTHO Ollama API" -ErrorAction SilentlyContinue
+Write-Host "[*] Bereinige alte CORE-Regeln..."
+Remove-NetFirewallRule -DisplayName "CORE Inbound SSH" -ErrorAction SilentlyContinue
+Remove-NetFirewallRule -DisplayName "CORE Ollama API" -ErrorAction SilentlyContinue
 
 Write-Host "[*] Setze strikte Inbound-Ports (22, 11434)..."
-New-NetFirewallRule -DisplayName "MTHO Inbound SSH" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 22 | Out-Null
-New-NetFirewallRule -DisplayName "MTHO Ollama API" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 11434 | Out-Null
+New-NetFirewallRule -DisplayName "CORE Inbound SSH" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 22 | Out-Null
+New-NetFirewallRule -DisplayName "CORE Ollama API" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 11434 | Out-Null
 
 Write-Host "[+] Zero-Trust Firewall Regeln fuer Port 22 und 11434 erfolgreich hinzugefuegt." -ForegroundColor Green
 

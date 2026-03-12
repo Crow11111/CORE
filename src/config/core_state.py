@@ -25,7 +25,7 @@ import os
 # Import CORE Core Definitions as Single Source of Truth
 # CRITICAL: Hard dependency on CORE Core. System fails if not present.
 from src.core import (
-    M_VALUE, T_VALUE, H_VALUE, O_VALUE,
+    G_VALUE, T_VALUE, A_VALUE, C_VALUE,
     BARYONIC_LIMIT, CORE_LEGACY_MAP
 )
 
@@ -104,38 +104,38 @@ AUSSTOSSEN = StateVector(x_car_cdr=0.49, y_gravitation=COMP_PHI, z_widerstand=0.
 
 
 # ---------------------------------------------------------------------------
-# CORE Bases (DNA der Realitaet)
+# GTAC Bases (DNA der Realitaet)
 # ---------------------------------------------------------------------------
-CORE_BASES = {
-    "M": {"name": "ExecutionRuntime", "val": M_VALUE, "role": "Physik/Feuer"},
+GTAC_BASES = {
+    "G": {"name": "ExecutionRuntime", "val": G_VALUE, "role": "Physik/Feuer"},
     "T": {"name": "LogicFlow", "val": T_VALUE, "role": "Info/Fluss"},
-    "H": {"name": "StateAnchor", "val": H_VALUE, "role": "Struktur/Erde"},
-    "O": {"name": "ConstraintValidator", "val": O_VALUE, "role": "Logik/Luft"},
+    "A": {"name": "StateAnchor", "val": A_VALUE, "role": "Struktur/Erde"},
+    "C": {"name": "ConstraintValidator", "val": C_VALUE, "role": "Logik/Luft"},
 }
 
-CORE_PAIRINGS = {
-    "M": "H",  # Symmetrisches Rückgrat
-    "H": "M",
-    "O": "T",  # Asymmetrischer Motor
-    "T": "O",
+GTAC_PAIRINGS = {
+    "G": "A",  # Symmetrisches Rückgrat
+    "A": "G",
+    "C": "T",  # Asymmetrischer Motor
+    "T": "C",
 }
 
-# 4-Strang Architektur (Updated to CORE)
+# 4-Strang Architektur (Updated to CORE / GTAC)
 TETRALOGIE = {
-    "EXECUTION": {"takt": 3, "core": "M", "car": "Effizienz", "cdr": "Clean Code"},
-    "ORCHESTRATOR": {"takt": [1, 4], "core": "O", "car": "Paranoia", "cdr": "Compliance"},
+    "EXECUTION": {"takt": 3, "core": "G", "car": "Effizienz", "cdr": "Clean Code"},
+    "ORCHESTRATOR": {"takt": [1, 4], "core": "C", "car": "Paranoia", "cdr": "Compliance"},
     "ARCHITECTURE": {"takt": 2, "core": "T", "car": "Chaos", "cdr": "Architektur-Spec"},
-    "ANCHOR": {"takt": 4, "core": "H", "car": "Vektor-Cluster", "cdr": "SQL-Index"},
+    "ANCHOR": {"takt": 4, "core": "A", "car": "Vektor-Cluster", "cdr": "SQL-Index"},
 }
 
 
 # Simulation Evidence Statistik (aus ChromaDB VPS Export)
-# Updated to reflect CORE distribution logic if needed, kept generic for now
+# Updated to reflect GTAC distribution logic if needed, kept generic for now
 SIMULATION_EVIDENCE_STATS = {
     "vektoren": 12,
     "indizien": 58,
     "max_aeste": 13,
-    "core_verteilung": {"O": 19, "M": 13, "T": 13, "H": 13}, # New keys
+    "core_verteilung": {"C": 19, "G": 13, "T": 13, "A": 13}, # New keys
     "chargaff_li": 32,
     "chargaff_sp": 26,
     "phi_delta": BARYONIC_DELTA,
@@ -193,12 +193,12 @@ def state_to_embedding_text() -> str:
     Updated for CORE Native format.
     """
     return f"""CORE 4D State Vector - Bootloader (CORE Native)
-Tetralogie: Execution(M)-Orchestrator(O)-Architecture(T)-Anchor(H)
+Tetralogie: Execution(G)-Orchestrator(C)-Architecture(T)-Anchor(A)
 Simultan-Kaskade-Zyklus: Diagnose(0)->Ansaugen(1)->Verdichten(2)->Arbeiten(3)->Ausstossen(4)
 CAR/CDR: ND-Kern(Tiefe,Muster,Divergenz) / NT-Interface(API,Docs,Clean)
 Gravitation: flat->Attraktor(Kollaps), Schwellwert={INV_PHI:.3f}
-CORE: M(ExecutionRuntime,Physik), T(LogicFlow,Info), H(StateAnchor,Struktur), O(ConstraintValidator,Logik)
-Pairings: M-H (Symmetrisches Rueckgrat), O-T (Asymmetrischer Motor)
+GTAC: G(ExecutionRuntime,Physik), T(LogicFlow,Info), A(StateAnchor,Struktur), C(ConstraintValidator,Logik)
+Pairings: G-A (Symmetrisches Rueckgrat), C-T (Asymmetrischer Motor)
 Symmetriebruch: {SYMMETRY_BREAK}, Baryonisches Delta: {BARYONIC_DELTA}
 Evidence: {SIMULATION_EVIDENCE_STATS['indizien']} Indizien, {SIMULATION_EVIDENCE_STATS['vektoren']} Vektoren
 """

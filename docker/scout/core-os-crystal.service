@@ -9,8 +9,8 @@ User=root
 WorkingDirectory=/home/pi/core_scout
 ExecStart=/usr/bin/python3 -m src.daemons.os_crystal_daemon
 Environment="PYTHONPATH=/home/pi/core_scout"
-# Dry-Run aktiv fuer die ersten Tests (nur Logging, keine tc/cpufreq Eingriffe)
-Environment="CRYSTAL_OS_DRY_RUN=True"
+# Dry-Run deaktiviert: Die Helix ist aktiv (reale tc/netem Eingriffe auf eth0)
+Environment="CRYSTAL_OS_DRY_RUN=False"
 Restart=always
 RestartSec=4.9
 

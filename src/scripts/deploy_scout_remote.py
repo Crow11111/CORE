@@ -14,9 +14,10 @@ from invoke.exceptions import UnexpectedExit
 load_dotenv()
 
 # Configuration
-# SCOUT_IP should be in .env or passed as arg. For now, we look for it or prompt.
-SCOUT_HOST = os.getenv("SCOUT_HOST", "pi@192.168.178.XX") # Placeholder
-SCOUT_KEY_PATH = os.getenv("SCOUT_KEY_PATH", "c:/CORE/.ssh/id_rsa_scout") # Placeholder
+SCOUT_IP = os.getenv("SCOUT_IP", "192.168.178.54")
+SCOUT_USER = os.getenv("SCOUT_USER", "pi")
+SCOUT_HOST = f"{SCOUT_USER}@{SCOUT_IP}"
+SCOUT_KEY_PATH = os.getenv("SSH_KEY_PATH", "C:\\Users\\MtH\\.ssh\\id_antigravity_scout")
 
 def deploy_scout():
     print(f"Deploying Scout to {SCOUT_HOST}...")

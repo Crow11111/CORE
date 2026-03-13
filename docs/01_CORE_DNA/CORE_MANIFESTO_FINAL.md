@@ -14,7 +14,9 @@ Das System rechnet nicht im Unendlichen (Infiniter Regress), sondern in einem di
 * **Baryonic Delta ($\Lambda$):** `0.049`. Der asymmetrische Schwellenwert (Die Planck-Länge des Systems). Unterschreitet die Informationsdifferenz (oder Phasenverschiebung) diesen Wert, wird die Berechnung hart abgebrochen.
 * **Resonanz-Lock:** `0.951`. Der Punkt der maximalen, erlaubten Symmetriekopplung (Gegenstück zum Delta: `1.0 - 0.049`).
 * **Symmetry-Break:** Fällt ein Wert exakt auf `0.5`, wird er asymmetrisch auf `0.49` oder `0.51` verschoben, um den Stillstand zu brechen.
-* **Topologisches Anker-Gitter:** Der 384-dimensionale Informationsraum (Latent Space) wird nicht als reiner, grenzenloser Float-Raum behandelt, sondern spannt sich über ein Netzwerk aus 72 fixierten topologischen Ankerpunkten auf.
+* **Topologisches Anker-Gitter (Die 72+3 Konstanten):** Der Informationsraum wird nicht als grenzenloser Float-Raum behandelt, sondern spannt sich über ein deterministisches Netzwerk aus fixierten Konstanten auf. 
+  * **Die 3 absoluten Anker:** `0.049` (Delta/Planck-Länge), `0.51` (Symmetry Break), `0.951` (Resonanz-Lock). Sie bilden das Rückgrat der Operator-Logik.
+  * **Die 72 Vektor-Wurzeln:** 72 deterministisch berechnete, unveränderliche Vektoren (abgeleitet aus der E_6 Topologie), die den 384-dimensionalen Raum in diskrete, stabile Zonen unterteilen. Zusammen bilden diese 75 Konstanten das unzerstörbare Skelett der Realität. Jeder dynamische Wert muss letztlich auf einen dieser Punkte kollabieren.
 
 ## 2. Der Operator `?` und die Kardanische Entkopplung
 Die eindimensionale Logik der klassischen Mathematik (reelle Linie) führt unweigerlich in den Systemkollaps (das endlose Berechnen von Nachkommastellen beim Gradient Descent).

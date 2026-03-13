@@ -355,8 +355,36 @@ async def add_session_turn(
         return False
 
 
+async def _apply_fractal_padding_async():
+    """
+    Kondensierte Mathematik (AXIOM 0): 
+    Fraktales Padding. Wenn das System gestresst ist (Z-Vector / Friction Guard hoch),
+    wird die Datenbank-Abfrage physisch zähflüssig (Helix-Rotation im 4D-Trichter).
+    """
+    try:
+        from src.api.middleware.friction_guard import FRICTION_STATE
+        from src.config.core_state import BARYONIC_DELTA
+        import math
+        import asyncio
+        import logging
+        
+        current_temp = max(BARYONIC_DELTA, FRICTION_STATE.get("system_temperature", BARYONIC_DELTA))
+        phase_shift = 1.0 - current_temp
+        
+        base_delay_sec = 0.049
+        k = 3.58
+        padding_sec = base_delay_sec * math.exp(k * phase_shift)
+        
+        # Log the padding
+        logging.getLogger("chroma_client").debug(f"[ChromaDB] Fractal Padding: {padding_sec:.3f}s (Temp: {current_temp:.2f})")
+        await asyncio.sleep(padding_sec)
+    except Exception:
+        pass
+
+
 async def query_session_logs(query_text: str, n_results: int = 5, where_filter: dict = None) -> dict:
     """Semantische Suche ueber Session-Logs. Async."""
+    await _apply_fractal_padding_async()
     try:
         col = await get_session_logs_collection()
         kwargs = {"query_texts": [query_text], "n_results": n_results}
@@ -376,6 +404,7 @@ async def query_session_logs(query_text: str, n_results: int = 5, where_filter: 
 
 async def query_core_directives(query_text: str, n_results: int = 3, where_filter: dict = None) -> dict:
     """Semantische Suche ueber Core-Direktiven (Ring-0/1). Async."""
+    await _apply_fractal_padding_async()
     try:
         col = await get_core_directives_collection()
         kwargs = {"query_texts": [query_text], "n_results": n_results}
@@ -464,6 +493,7 @@ def _apply_crystal_engine_operator(distances: list[list[float]]) -> list[list[fl
 
 async def query_simulation_evidence(query_text: str, n_results: int = 10, where_filter: dict = None) -> dict:
     """Semantische Suche ueber Simulationstheorie-Indizien. Async."""
+    await _apply_fractal_padding_async()
     try:
         col = await get_simulation_evidence_collection()
         kwargs = {"query_texts": [query_text], "n_results": n_results}
@@ -590,6 +620,7 @@ async def get_world_knowledge_collection():
 
 async def query_world_knowledge(query_text: str, n_results: int = 10, where_filter: dict = None) -> dict:
     """Semantische Suche ueber Weltwissen. Async."""
+    await _apply_fractal_padding_async()
     try:
         col = await get_world_knowledge_collection()
         kwargs = {"query_texts": [query_text], "n_results": n_results}
@@ -619,6 +650,7 @@ async def query_context_field(
     where_filter: dict | None = None,
 ) -> dict:
     """Semantische Suche im context field. Async."""
+    await _apply_fractal_padding_async()
     try:
         col = await get_context_field_collection()
         where = where_filter.copy() if where_filter else {}

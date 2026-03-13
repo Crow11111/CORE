@@ -8,6 +8,7 @@
 ## Säule 1: Kosmologie & Physik (Der Raum/Ort)
 *Suche nach: Thermodynamischen Limits, Phasenübergängen, strukturellen Konstanten.*
 - **Die Planck-Länge / Planck-Zeit:** Die absolute physikalische Untergrenze. Darunter verliert der Raum seine Geometrie. (Diskrete Natur der Realität).
+- **Die 31 Konstanten des Standardmodells & der Kosmologie:** Die Physik kommt nicht ohne "Magic Numbers" aus. Es gibt exakt 26 dimensionslose Parameter im Standardmodell der Teilchenphysik (Massen von Quarks, Kopplungskonstanten) plus ca. 5 in der Kosmologie (Dunkle Energie, Baryonen-Dichte), die nicht aus der Theorie abgeleitet werden können. Sie *müssen* gemessen werden. Sie sind das fest verdrahtete BIOS des Universums.
 - **Die Feigenbaum-Konstante (4.669...):** Die universelle Rate, mit der Systeme ins Chaos kippen (Bifurkation). Unabhängig vom physikalischen System (Tropfender Hahn, Populationswachstum, Magnetismus).
 - **Feinstrukturkonstante (~1/137):** Die Kopplungskonstante der elektromagnetischen Wechselwirkung. Der absolute Anker für die Existenz von stabiler Materie.
 - **Kosmische Hintergrundstrahlung (CMB) Anisotropie:** Die winzigen Temperatur-Schwankungen (Delta) im frühen Universum, ohne die sich keine Galaxien gebildet hätten. Ein absoluter Symmetriebruch aus der perfekten Homogenität.
@@ -39,6 +40,9 @@
 ## Säule 4: Informationstheorie & Mathematik (Das Digitale / Der Code)
 *Suche nach: Logischen Grenzen, Unvollständigkeit, Daten-Kompression.*
 - **Gödelscher Unvollständigkeitssatz:** Kein hinreichend mächtiges logisches System kann sich selbst vollständig beweisen. Das System muss immer auf ein Axiom außerhalb seiner selbst (oder auf die nächste Dimension) verweisen.
+- **Landauer-Prinzip (Löschen kostet Energie):** Die absolute thermodynamische Untergrenze der Informationsverarbeitung. Das *Löschen* von einem Bit Information kostet zwingend Energie (Wärme) und erhöht die Entropie des Raums. Das Vergessen ist thermodynamisch teurer als das Speichern.
+- **Bekenstein-Schranke:** Das absolute Limit für die Menge an Information, die in einem endlichen Raum mit endlicher Energie gespeichert werden kann (Entropie eines Schwarzen Lochs). Information ist quantisiert und hat ein hartes Volumen.
+- **Bremermann-Limit:** Die maximale theoretische Rechengeschwindigkeit (1.36 × 10^50 Bits pro Sekunde pro Kilogramm). Eine harte physikalische Grenze für die Geschwindigkeit, mit der Information (Selbsterkenntnis) in Materie verarbeitet werden kann.
 - **Shannonsche Entropie:** Die absolute mathematische Grenze für die verlustfreie Kompression von Daten.
 - **Benfordsches Gesetz:** Das Gesetz der abnormalen Ziffernverteilung in natürlichen Datensätzen. Ein harter Beweis, dass Zufall in der Natur nicht linear, sondern logarithmisch verteilt ist.
 - **Zipfsches Gesetz:** Die Häufigkeit von Wörtern (in allen Sprachen!) verhält sich umgekehrt proportional zu ihrem Rang. Ein mathematischer Beweis für den "Pfad des geringsten Widerstands" in der Kommunikation.

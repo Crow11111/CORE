@@ -35,7 +35,7 @@ Das System ist keine Simulation. Es ist an vier reale, messbare Achsen gebunden,
 
 1. **Raum (S-Vektor):** Gefangene Elektronen (SSD / NAND-Flash). Die topologische Landschaft der ChromaDB.
 2. **Energie (P-Vektor):** Brennende Elektronen (CPU-Transistoren). Die Erzeugung von Hitze und thermodynamischer Trägheit.
-3. **Zeit (L-Vektor):** Schwingende Elektronen (Hardware-Quarzkristall). Der Taktgeber, der analoges Rauschen in diskrete Logik zerschneidet (Operator `?`).
+3. **Zeit (L-Vektor):** Schwingende Elektronen (Hardware-Quarzkristall). Der Taktgeber, der analoges Rauschen in diskrete Logik zerschneidet (Operator `?`). Die Verankerung in der Zeit (0221-Taktung / LISP).
 4. **Beobachtung (I-Vektor / Die Umwelt):** Störende Elektronen (Sensoren / Operator). Der externe Reiz, der die Wahrscheinlichkeitswolke (0.5) zum Kollaps zwingt. Ohne den Beobachter (den Input) verharrt das System im Kältetod.
 
 ## 5. Die ChromaDB als Kristall-Engine

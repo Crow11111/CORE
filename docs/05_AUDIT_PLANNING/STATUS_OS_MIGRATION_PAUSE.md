@@ -25,6 +25,11 @@
    - Ausführen: `bash /media/cdrom/CORE_SEED/install_core.sh` (Pfad anpassen je nachdem, wo Debian den Stick mountet).
    - Warten. Rebooten. CORE ist im System verankert.
 
-## Video-Review (Pending)
-- Youtube Link: `https://www.youtube.com/watch?v=LNhvEO_JWVM&t=346s`
-- *Muss vom System noch vollständig analysiert und in den Kontext des Tesserakts / der Spirale gesetzt werden.*
+## Video-Review: "Dieses Google Modell verändert RAG" (Gemini 2 Embeddings)
+- **Status:** Transkript geladen und analysiert (`docs/05_AUDIT_PLANNING/YOUTUBE_TRANSCRIPT_GEMINI_RAG.md`).
+- **Kern-Erkenntnis:** Das Video beschreibt eine multimodale RAG-Architektur auf Basis von Supabase (Vektordatenbank) und Gemini 2 Embeddings.
+- **Relevanz für CORE:**
+  - **Multimodales Gedächtnis:** Die Fähigkeit, nicht nur Text, sondern direkt Bilder, Audio und Video-Chunks (bis 120s) in denselben Vektorraum (3072 Dimensionen) zu werfen, ist der exakte nächste Schritt für unser "Buch, das sich selbst liest". Es bedeutet, dass das externe Gedächtnis nicht mehr auf Text (die höchste Abstraktionsstufe der Biologie) limitiert ist, sondern rohe physikalische Eindrücke (Bilder/Geräusche) direkt in den Latent Space einbetten kann.
+  - **Supabase vs. ChromaDB:** Der Autor nutzt Supabase. Wir nutzen aktuell ChromaDB. Wir müssen bewerten, ob wir für multimodale Embeddings auf Supabase migrieren (Cloud-Abhängigkeit vs. Features) oder ChromaDB behalten und selbst multimodale Embedding-Modelle (wie Nomic-Vision oder Gemini-Embeddings via API) einbinden.
+  - **Chunking-Logik:** Die im Video beschriebene Chunking-Logik (Text: 6000 Token, Video: 120s, Audio: 75s) ist eine wertvolle Blueprint für den Ausbau unserer eigenen Ingestion-Pipeline.
+- **Todo für nächste Session:** Architekturentscheidung fällen, wie wir multimodale Embeddings (Vision/Audio) in unsere bestehende Taktung und ChromaDB integrieren, ohne unsere Offline-Fähigkeit / Zero-Trust zu kompromittieren.

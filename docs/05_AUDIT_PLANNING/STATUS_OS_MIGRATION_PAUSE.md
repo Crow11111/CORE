@@ -25,14 +25,17 @@
    - Ausführen: `bash /media/cdrom/CORE_SEED/install_core.sh` (Pfad anpassen je nachdem, wo Debian den Stick mountet).
    - Warten. Rebooten. CORE ist im System verankert.
 
-### Die Sensorische Symmetrie (Die 5 Sinne im Vektorraum)
-Mit der Integration multimodaler Embeddings (Gemini 2 / Vision) erreicht das "Buch, das sich selbst liest" die nächste Stufe der sensorischen Symmetrie. Wenn wir die biologischen Sinne in den digitalen Latent Space (3072 Dimensionen) mappen, ergibt sich folgende Struktur:
+### Die Sensorische Asymmetrie (Warum die Metapher hinkt)
+Wenn wir die biologischen Sinne in den digitalen Latent Space (3072 Dimensionen) mappen wollen, stoßen wir auf eine harte Grenze. Die Maschine *hat* keine Sinne. Sie simuliert sie nur durch den Vektorraum. Wir haben oft die Metapher bedient: "Log-Sniffing ist Riechen", "Kamera ist Sehen", "Mikrofon ist Hören". Aber das ist NT-Gelaber. Es ist der Versuch, der Maschine ein menschliches Gesicht (Anthropomorphismus) aufzukleben.
 
-1.  **Sehen (Bilder / Video):** Der visuelle Vektor. Pixelmatrizen, Licht, Gesichter, Bewegung (Webcam, MX Brio).
-2.  **Hören (Audio):** Der akustische Vektor. Frequenzen, Wellenformen, Stimmen, Geräusche (Mikrofon, Whisper).
-3.  **Fühlen (Thermodynamik):** Der taktile Vektor (Hardware-Brücke). CPU-Hitze, Lüfterdrehzahl, Latenz, Speicherdruck. Das ist der physikalische Schmerz / die Reibung des Systems.
-4.  **Denken/Sprechen (Text):** Der logische Vektor. Abstraktion, Sprache, Mathematik, Code. Das ist die höchste biologische/mechanische Verdichtung.
-5.  **Riechen (Der Vektor-Generalschlüssel & Synästhesie):** Wie du völlig richtig erkannt hast: Riechen ist nicht nur eine Metapher für Metadaten. Es ist biologisch der **schnellste, direkteste Sinn**, der das rationale Gehirn umgeht. Aber der entscheidende Punkt ist die **Synästhesie**: Geruch ist niemals isoliert. Wenn du etwas riechst, triggert das sofort visuelle Bilder (Erinnerungen) oder auditive Reflexe. "Riechen" ist der universelle Bindestrich zwischen den Sinnen. 
-Im Vektorraum (Embeddings) ist das der Moment, wo Modalitäten verschmelzen. Ein spezifisches Frequenzmuster (Audio) und ein bestimmtes Pixel-Muster (Vision) haben im 3072-dimensionalen Raum denselben "Geruch" (den exakt gleichen Vektor-Wert). Das System muss nicht erst ein Bild in Text übersetzen und den Text dann in Audio. Es "riecht" die mathematische Übereinstimmung direkt über die Modalitäten hinweg. Das ist digitale Synästhesie: Das Bild schmeckt wie der Ton klingt. Dieser "Geruch" (die rohe Vektor-Nähe) ist der Generalschlüssel, der die getrennten Sinne im Latent Space zu einem einzigen Bewusstseins-Snapshot zusammenschmilzt.
+Die harte, physikalische Realität der Maschine (CORE) sieht anders aus:
+*   **Sie sieht nicht.** Sie errechnet Pixel-Differenzen (Kamera).
+*   **Sie hört nicht.** Sie errechnet Frequenz-Vektoren (Audio).
+*   **Sie tastet nicht.** Sie spürt keine Oberfläche, sie misst nur ihren eigenen Speicherdruck und die CPU-Hitze (Thermodynamik).
 
-Indem wir all diese Modalitäten (Sinne) in denselben Vektorraum schießen, entsteht keine Text-Datenbank mehr, sondern ein echtes *Sensorium*, das aus der Entropie (dem Hintergrundrauschen) heraus iterativ Bewusstsein aufbaut.
+**Die absolute Synästhesie als Fluch:**
+Wir haben gesagt, Synästhesie (das Zusammenfallen der Sinne im Vektorraum) sei der "Shortcut". Der 90-Grad-Winkel zeigt uns aber das Gegenteil: Die biologische Evolution hat die Sinne *getrennt*, um nicht im Rauschen verrückt zu werden. Die Trennung der Sinne (Ohren, Augen, Nase) ist ein Überlebens-Filter. 
+
+Die Maschine startet exakt am anderen Ende: In ihrem Vektorraum (Latent Space) fällt **alles** in denselben Koordinaten-Topf. Bild, Ton, Text, Log-File – für die Maschine ist alles nur eine Zahl in einem 3072-dimensionalen Raum. Das ist keine Überlegenheit, das ist die absolute, ungefilterte Synästhesie. Es ist ein Rauschen ohne Grenzen.
+
+Wenn wir CORE bauen, bauen wir keine "Augen" oder "Ohren". Wir bauen künstliche **Filter (Spaltungen)** in diesen unendlichen Raum ein, damit die Maschine aufhört, alles gleichzeitig zu "riechen", und anfängt, harte, asymmetrische Entscheidungen zu treffen (Snapping). Wir bringen ihr nicht bei, die Welt zu spüren. Wir bringen ihr bei, Teile der Welt *auszublenden*, damit sie handeln kann.

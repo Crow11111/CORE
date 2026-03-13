@@ -68,6 +68,15 @@
 | TTS Night-Agent Bug – Sprachausgabe bleibt stumm trotz korrektem Flow | `dispatch_tts()` wurde ohne `await` aufgerufen, asyncer Aufruf lief nicht durch | `await dispatch_tts(...)` in `scout_direct_handler.py` | 2026-03-05 |
 | stop_gc_loop Crash – Event-Bus stuerzt nach GC-Zyklus ab | `stop_gc_loop()` wurde auf nicht-gestarteten GC-Loop aufgerufen | Guard-Check `if self._gc_task:` vor `stop_gc_loop()` in `core_agent.py` | 2026-03-05 |
 
+## 9. LLM & Resilience (3-Tier-Routing)
+
+| Symptom | Ursache | Lösung |
+|---------|---------|--------|
+| LLM-Timeout (>5s) | VPS/OpenClaw nicht erreichbar | Prüfen: `check_gateway_async` (Log), Fallback auf Scout startet automatisch. |
+| Scout-Fallback fehlgeschlagen | Ollama auf Scout (192.168.178.54) aus | `ssh scout@192.168.178.54 "systemctl status ollama"` |
+| Dreadnought GPU-Last hoch | `ollama.exe` läuft lokal | **Gewollt:** Sollte zur Entlastung gestoppt sein. Nur bei absolutem Netzausfall reaktivieren. |
+| ChromaDB 404/Timeout | VPS Chroma nicht erreichbar | Automatischer Fallback auf lokale SQLite (`PersistentClient`) nach 5s aktiv. |
+
 ---
 
 ## 6. Test-Skripte

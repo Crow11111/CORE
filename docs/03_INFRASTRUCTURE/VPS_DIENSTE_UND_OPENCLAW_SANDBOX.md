@@ -21,12 +21,13 @@
 | **Backup-Ziel / Sync** | aktiv | **Ja** | VPS als externes Backup-Ziel (`/var/backups/core`); `daily_backup.py` pusht von 4D_RESONATOR (CORE) per SFTP; Retention 7 Tage (Cron auf VPS). Siehe [BACKUP_PLAN_FINAL.md](BACKUP_PLAN_FINAL.md). |
 | **API-Proxy / Webhook-Empfang** | HA + 4D_RESONATOR (CORE) | **Optional** | Öffentliche URL für Webhooks (z. B. von OpenClaw zu CORE); nur Weiterleitung, keine Logik. |
 | **Home Assistant** | Scout (Pi) | **Nein** | Bleibt lokal (Smart Home, Latenz, Datenhoheit). |
-| **Ollama (Haupt-Inferenz)** | 4D_RESONATOR (CORE) | **Nein** | GPU + sensible ND-Daten bleiben auf 4D_RESONATOR (CORE). |
+| **Ollama (Haupt-Inferenz)** | Scout (Pi) / Dreadnought (PC) | **Nein** | **3-Tier-Strategie:** 1. VPS (OpenClaw), 2. Scout (Ollama), 3. Dreadnought (Fallback). GPU auf Dreadnought wird entlastet. |
+| **TTS/STT (Piper/Whisper)** | Scout (Pi) | **Nein** | Läuft lokal auf dem Scout zur Latenzminimierung und Dreadnought-Entlastung. |
 
 **Faustregel:**  
-- **VPS:** Öffentlich erreichbare Dienste (OpenClaw, ggf. Webhook-Empfang), zentrale DB (Chroma), Backup-Ziel, optional leichtes Ollama.  
-- **4D_RESONATOR (CORE):** Kern-LLM, Chroma-Option lokal, Cursor/Cloud Agents, alle Keys und sensiblen Daten.  
-- **Scout (Pi):** HA, Edge, lokale Sensoren/WhatsApp-Webhook zu CORE.
+- **VPS:** Öffentlich erreichbare Dienste (OpenClaw, ggf. Webhook-Empfang), zentrale DB (Chroma), Backup-Ziel.  
+- **Dreadnought (PC):** Cursor/Cloud Agents, schwere Inferenz-Fallbacks, Gaming/Workstation-Ressourcen.  
+- **Scout (Pi):** Home Assistant, primäres lokales AI-Offloading (Ollama, Piper, Whisper), lokale Sensoren.
 
 ---
 

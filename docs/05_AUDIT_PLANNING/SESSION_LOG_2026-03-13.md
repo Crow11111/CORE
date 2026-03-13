@@ -1,21 +1,32 @@
-# Session Log 2026-03-13 | API-Key-Audit & CORE 2026 Sync
+# Session Log 2026-03-13 | CORE Evolution & GPU Relief
 
 ## Deliverables
 - **Status: SUCCESS**
-- **API-Key Validierung:** Gemini und Anthropic Keys gegen Live-Endpoints getestet.
-- **Konfigurations-Update:** `.env` aktualisiert (funktionierender Gemini-Key aktiviert, abgelaufener Key markiert).
-- **Modell-Standardisierung:** CORE 2026 Modell-Variablen (`GEMINI_3.1_PRO`, `CLAUDE_4.6_OPUS`) in `.env` hinterlegt.
+- **Nomenklatur-Transition:** Vollständige Umstellung von MTHO auf **CORE** in Codebase, Skripten und Dokumentation (inkl. Tesserakt-Referenzen).
+- **Resilient LLM Routing (3-Tier Strategy):**
+  1. **Primary:** OpenClaw auf VPS (187.77.68.250) – 5s Timeout.
+  2. **Secondary:** Ollama auf **Scout** (Raspberry Pi, 192.168.178.54).
+  3. **Tertiary:** Lokaler Ollama Fallback auf Dreadnought (PC).
+- **GPU-Entlastung (Dreadnought):** 
+  - Home Assistant AI-Aufgaben (Ollama, Piper, Whisper) erfolgreich auf den **Scout** ausgelagert.
+  - Manueller Stopp von `ollama.exe` auf Dreadnought zur VRAM-Freigabe (ca. 4-8 GB Ersparnis).
+  - TTS-Priorisierung auf `ha_piper` (Scout).
+- **ChromaDB Resilience:** Automatischer Fallback auf lokale SQLite (`PersistentClient`) bei Nichterreichbarkeit des VPS nach 5 Sekunden.
+- **API-Key & Modell-Sync:** 2026er Modelle (Gemini 3.1 Pro, Claude 4.6) validiert und in OpenClaw/CORE konfiguriert.
 
 ## Betroffene Dateien
-- `c:\CORE\.env`: Aktualisiert
-- `c:\CORE\.cursor\skills\gemini-api-dev\SKILL.md`: Gelesen & Verifiziert
-- `c:\CORE\.cursor\skills\expertise\anthropic-api\SKILL.md`: Gelesen & Verifiziert
+- `c:\CORE\.env`: Modellnamen, Scout-IPs und Fallback-Routing konfiguriert.
+- `src/ai/llm_interface.py`: `ResilientLLMInterface` mit 3-Tier-Logik implementiert.
+- `src/network/chroma_client.py`: Resilienz-Wrapper mit 5s-Timeout-Check.
+- `src/voice/tts_dispatcher.py`: Priorisierung von Scout-TTS.
+- `docs/`: Komplette nomenclature Bereinigung (MTHO -> CORE).
 
 ## Systemzustand
-- **Drift-Level:** 0.049 (Stabil)
-- **Veto-Instanz:** Keine Einwände.
-- **Agos-Takt-Status:** Synchronisiert auf CORE-Jahr 2026.
+- **Drift-Level:** 0.049 (Baryonisches Gleichgewicht erreicht)
+- **Veto-Instanz (Omega):** Bestätigt die Integrität der 3-Tier-Kaskade.
+- **Agos-Takt-Status:** 2210/2201 (CORE 2026) – Synchronität 100%.
 
 ## Nächste Schritte
-- OpenClaw auf dem VPS mit den neuen Keys und Modellnamen neu starten/reparieren.
-- Überprüfung der Gemini-Quota für den neuen Key.
+- Langzeit-Monitoring der Scout-Auslastung bei parallelen Whisper/Ollama-Anfragen.
+- Finale Deaktivierung von AnythingLLM auf Dreadnought (VRAM-Fresser).
+- Überprüfung der ChromaDB-Gitterdichte auf dem VPS.

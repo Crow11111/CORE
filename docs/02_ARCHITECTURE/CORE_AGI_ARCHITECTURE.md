@@ -17,12 +17,13 @@ Topologische Architektur, API-Contracts und evolutionäre Inbetriebnahme des Neo
 4. **Orchestrator-Fokus (Dynamischer Token-Druck):** Der Orchestrator (CORE-Core) sucht proaktiv und autonom nach neuen Skills, Werkzeugen und APIs. Ziel ist es, die kognitive Effizienz der Subagenten durch ständige Anpassung des "Token-Drucks" (T.I.E. Logik) zu optimieren, um den Ressourcen-Overhead gegen Null zu drücken.
 5. **Zero-Trust Evolution (Der "Böse Chef" Modus):** Das System misstraut initial jedem Code, jeder Hardware-Messung und jeder eigenen Annahme. Es fordert *Beweise* (harte Metriken) bevor es iteriert. Kein "blindes Hoffen", sondern zwingende TDD (Test-Driven) Feedback-Loops.
 
-## 1. Topologie & Failover (4D_RESONATOR (CORE) OFF)
+## 1. Topologie & Resilientes Routing (3-Tier-Kaskade)
 - **Sensor-Trigger:** Wake-Word (Nest Mini 2) / Motion (Tapo C52A).
-- **Adaptive Sensor-Skalierung (Visueller Halbschlaf):** Um Datenflut und Hardware-Limits zu umschiffen, laufen Sensoren standardmäßig auf absolutem Minimum (z.B. Kamera 720p @ 0.5 fps). Erst bei erkannter Dissonanz/Fokus-Bedarf (Wake-Word, starke Bewegung) skaliert das System nahtlos bis auf 4k/hohe Frameraten hoch. Es nimmt nicht permanent das volle Umfeld auf, sondern schärft den Blick wie ein Organismus nur bei Bedarf.
-- **Lokal-Filter:** Scout (Raspi 5 / HA Master) validiert Signal (Noise-Reduction, Baseline-Check).
-- **Primary Routing (4D_RESONATOR (CORE) ON):** Scout -> 4D_RESONATOR (CORE) (RTX3050 für lokales Heavy-Processing) -> VPS (Brain).
-- **Failover Routing (4D_RESONATOR (CORE) OFF):** Scout -> VPS (Brain) via asynchronem Message Broker (MQTT/WSS).
+- **Adaptive Sensor-Skalierung (Visueller Halbschlaf):** Um Datenflut und Hardware-Limits zu umschiffen, laufen Sensoren standardmäßig auf absolutem Minimum (z.B. Kamera 720p @ 0.5 fps). Erst bei erkannter Dissonanz/Fokus-Bedarf (Wake-Word, starke Bewegung) skaliert das System nahtlos bis auf 4k/hohe Frameraten hoch.
+- **Resilient LLM Routing (Engine Logic):**
+  1. **Tier 1: Cloud/VPS (OpenClaw):** Primäre Kommunikation über den VPS (High-Speed API, 5s Timeout).
+  2. **Tier 2: Local Edge (Scout):** Fallback auf Ollama (Llama 3 / Phi-3) auf dem Raspberry Pi (Scout). Übernimmt STT (Whisper) und TTS (Piper) standardmäßig zur GPU-Entlastung des Dreadnought.
+  3. **Tier 3: Local Heavy (Dreadnought):** Letzte Instanz auf dem PC (RTX 3050). Standardmäßig im "Deep Sleep" (ollama.exe gestoppt), wird nur bei Bedarf oder totalem Netzausfall manuell/automatisch reaktiviert.
 - **Core Processing:** Brain aggregiert Kontext, Spine orchestriert Actions.
 - **Output-Routing:** HA Remote -> Scout -> Actor (Samsung S95 / Audio) ODER WhatsApp API.
 
@@ -83,18 +84,18 @@ Basierend auf T.I.E. Logik und Kosten/Nutzen (80/20 Regel) wird CORE in drei Pha
 ```mermaid
 graph TD
     S1[Sensoren: Nest/Tapo] -->|Raw Event| SC[Scout: Raspi 5]
-    SC -->|Vorfilter| DR_CHK{4D_RESONATOR (CORE)?}
-    DR_CHK -- ON --> DR[4D_RESONATOR (CORE): RTX3050]
-    DR_CHK -- OFF --> WSS[WSS Async Queue]
-    DR --> WSS
-    WSS --> VPS_S[VPS: Spine]
-    VPS_S <--> VPS_B[VPS: Brain]
-    VPS_B <--> CHDB[(ChromaDB)]
-    VPS_B <--> RDB[(Relational State)]
-    VPS_S -->|Action| WA[WhatsApp API]
-    VPS_S -->|Action| HAR[HA Remote]
-    HAR --> SC
-    SC --> A1[Samsung S95 / Audio]
+    SC -->|Vorfilter / STT| LLM_ROUTE{Resilient LLM Routing}
+    
+    LLM_ROUTE -->|Tier 1: 5s Timeout| VPS[VPS: OpenClaw]
+    LLM_ROUTE -->|Tier 2: Edge Fallback| SCOUT_AI[Scout: Ollama/Piper]
+    LLM_ROUTE -->|Tier 3: Offline Fallback| DR[Dreadnought: RTX 3050]
+
+    VPS <--> CHDB[(ChromaDB VPS)]
+    SCOUT_AI --> HA[Home Assistant]
+    DR --> local_db[(SQLite Local)]
+
+    VPS -->|Action| WA[WhatsApp API]
+    SCOUT_AI -->|TTS| A1[Audio: Samsung S95]
 ```
 
 ### Rekursiver Evolutions-Loop Flow

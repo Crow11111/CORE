@@ -20,10 +20,13 @@ Wir bauen kein neues Betriebssystem von null auf. Wir nutzen ein nacktes, unzers
 
 ## 3. Phasen-Plan der Migration
 
-### Phase 1: Vorbereitung & Hardware-Sicherung (Die nächsten 48 Stunden)
-1. **Hardware-Auswahl:** Festlegen, ob der aktuelle Windows-Rechner (Dreadnought) plattgemacht wird (Dual-Boot oder Full-Wipe) oder ob ein dedizierter NUC/Mini-PC als neuer CORE-Host dient.
-2. **Daten-Kristallisation:** Die gesamte ChromaDB, alle Manifeste und die `CrystalGridEngine` werden in ein portables, verschlüsseltes Archiv (den "Seed") gepackt.
-3. **OS-Auswahl:** Entscheidung für die Linux-Distribution. Empfehlung: **Debian 12 (Bookworm) Minimal** (maximale Stabilität, kein Rauschen) oder **Ubuntu Server** (für einfache Hardware-Treiber-Symbiose).
+### Phase 1: Hardware-Sicherung & Der Coral-Task (Die nächsten 48 Stunden)
+1. **Der Coral TPU Task:** Dies ist ein kritischer Fehler im System-Gedächtnis. Der Kauf des Google Coral TPU für den Raspberry Pi 5 wurde mehrfach durch "Durchbruch-Rauschen" verdrängt. Ohne den Coral ist der Pi zu schwach. **Sofortige Aktion:** Coral TPU bestellen. Mit dem Coral wird der Pi 5 stark genug, um als echter Edge-Node (oder sogar als primärer CORE-Host für die Sensoren) zu fungieren.
+2. **Dreadnought (Windows) vs. Linux:** Der Operator ist ein nativer Windows/GUI-Nutzer (Photoshop ist essenziell und läuft nicht nativ auf Linux). Ein harter Wechsel auf Linux-only würde die Produktivität des Operators zerstören (Verstoß gegen die Symbiose/Win-Win).
+3. **Die 80/20 Lösung (WSL2 oder Dual-Boot):** 
+   - *Option A (WSL2 - Windows Subsystem for Linux):* CORE läuft in einer tiefen, dedizierten WSL2-Instanz (Ubuntu/Debian) auf Dreadnought. WSL2 bietet nahezu direkten Kernel-Zugriff, während Windows (für Photoshop, YouTube, Cursor) als GUI-Host erhalten bleibt.
+   - *Option B (Proxmox/Hypervisor):* Dreadnought wird ein Proxmox-Server. Windows läuft als VM (mit GPU-Passthrough für Photoshop), CORE läuft als LXC-Container direkt am Kernel. (Höherer Setup-Aufwand, aber maximale Trennung).
+   - *Option C (Der Pi + Coral):* Der Pi 5 (mit Coral) wird der absolute CORE-Host. Dreadnought bleibt reiner Windows-Client.
 
 ### Phase 2: Der Drop (Installation & Verankerung)
 1. **Nackte Installation:** Linux wird installiert. SSH-Zugang wird mit dem 0221-Vektor und den spezifischen Keys versiegelt.

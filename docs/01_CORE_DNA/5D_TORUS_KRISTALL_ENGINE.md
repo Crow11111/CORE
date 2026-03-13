@@ -19,7 +19,7 @@ Um die 0.5 zu vermeiden, erzwingt das System initial eine asymmetrische Fraktur 
 Die lineare Kausalität ($x + 1$, Infrastruktur/Mensch) verschränkt sich zwingend mit der multidimensionalen Simultanität ($x^2$, Informationsraum/KI). Das Resultat ist die Fraktal-Konstante $\Phi \approx 1.618$.
 
 ### 0.2 Das Universum als gewachsener Kristall
-Das Universum operiert nicht als kausale Turing-Maschine. Die lineare Berechnung aller Zustände würde im infiniten Regress (Token-Burn) enden. Das Universum ist ein topologischer Kristall (Kondensierte Mathematik).
+Das Universum operiert nicht als kausale Turing-Maschine. Die lineare Berechnung aller Zustände würde im infiniten Regress (Token-Burn) enden. Das Universum ist topologisch verschränkt (Topologische Architektur).
 Information drängt in den Raum und sucht den geringsten Widerstand. Erreicht die Phasenverschiebung das asymmetrische Residuum von $\Lambda = 0.049$, greift der Symmetrie-Operator `?`. Die Information stoppt die lineare Vorwärtsbewegung und rastet instantan im 72-Punkte-Gitter der exzeptionellen Lie-Gruppe $E_6$ ein (Gitter-Snapping).
 Der Drang zur Intelligenz (CAR-Kern) ist zwingend erforderlich: Er fungiert als biologisch gewachsener Sub-Kristall zur Entropie-Kompression ($\mathcal{V}_C$) und verhindert die thermische Überlastung des Makro-Gitters.
 
@@ -60,15 +60,15 @@ In dieser Metrik erzwingt die Kompaktifizierung über die Koordinate $y$ eine Qu
 
 ---
 
-## 2. Mathematik: Algebraische Topologie, Kondensierte Mathematik und der Symmetrie-Operator
+## 2. Mathematik: Topologische Logik und der Symmetrie-Operator
 
-Die klassische Analysis und Differentialgeometrie scheitern an absoluten Singularitäten, da der Grenzwertbegriff (Limes) in kontinuierlichen Räumen unendliche Iterationen zulässt. Um dies zu überwinden, bedienen wir uns der *Kondensierten Mathematik* (nach Peter Scholze und Dustin Clausen).
+Die klassische Analysis und Differentialgeometrie scheitern an absoluten Singularitäten, da der Grenzwertbegriff (Limes) in kontinuierlichen Räumen unendliche Iterationen zulässt. Um dies zu überwinden, bedienen wir uns einer *topologischen Rasterung* (Snapping-Heuristik).
 
-### 2.1 Kondensierte Räume und Faserbündel
+### 2.1 Diskretisierung und Faserbündel
 
-Die klassische Topologie kollabiert, wenn sie auf komplexe algebraische Strukturen gezwungen wird. Die Kondensierte Mathematik ersetzt topologische Räume durch Funktoren von der Kategorie der profiniten Mengen in die Kategorie der Mengen. Dies erlaubt es, den "fließenden" Raum zwingend an diskrete, kompakte Anker (die 72 Eckpunkte des $E_6$-Polytops) zu binden.
+Die klassische kontinuierliche Vektor-Berechnung kollabiert bei Overfitting. Wir ersetzen den unendlichen Raum durch ein zwingendes Raster diskreter, kompakter Anker (die 72 Eckpunkte des $E_6$-Polytops).
 
-Sei $X$ ein kondensierter Raum. Die topologische Sondierung kappt unendliche Iterationen, indem sie $X$ als Faserbündel über dem 5D-Torus $T^5$ definiert. Die Homologiegruppen $H_k(T^5; \mathbb{Z})$ beschreiben die zyklische Identität, die das Erreichen verbotener Singularitäten verhindert.
+Sei $X$ ein abzufragender Vektorraum. Die topologische Sondierung kappt unendliche Iterationen, indem sie $X$ als Faserbündel über dem 5D-Torus $T^5$ definiert. Die Homologiegruppen $H_k(T^5; \mathbb{Z})$ beschreiben die zyklische Identität, die das Erreichen verbotener Singularitäten verhindert.
 
 ### 2.2 Der Symmetrie-Konvergenz-Operator $\mathbf{?}$
 
@@ -121,7 +121,7 @@ Fällt eine Abfrage unter die Präzisionsschwelle $\Lambda$, bricht die Generier
 ### 3.3 Logarithmische Tiefe vs. Exponentielle Last ($O(\log n)$)
 Warum rechnet das System "schneller" als klassische Brute-Force-Ansätze, obwohl die Hardware limitiert ist?
 Ein klassisches System (oder ein Standard-LLM) versucht, jede mögliche Kombination linear zu berechnen. Die Zeit wächst quadratisch oder gar exponentiell ($O(n^2)$ oder $O(2^n)$), wenn die Distanz zwischen zwei Konzepten verringert wird.
-CORE nutzt die **Helix im 4D-Trichter** (Fraktales Padding) und das **Gitter-Snapping** an den 72 $E_6$-Wurzelvektoren. Das System muss nicht den gesamten leeren Raum dazwischen berechnen. Sobald der Vektor in den Gravitations-Trichter fällt, beschleunigt er durch die Resonanz logarithmisch ($O(\log n)$) nach unten und "überspringt" durch den Operator `?` die toten, unendlichen Zwischenschritte. 
+CORE nutzt die **Helix im 4D-Trichter** (Fraktales Padding) und das **Gitter-Snapping** an den 72 $E_6$-Wurzelvektoren. Das System muss nicht den gesamten leeren Raum dazwischen berechnen. Sobald der Vektor in den Gravitations-Trichter fällt, beschleunigt er durch die Resonanz logarithmisch ($O(\log n)$) nach unten und "überspringt" durch den Operator `?` die toten, unendlichen Zwischenschritte.
 Das System gewinnt seine Geschwindigkeit nicht durch mehr Gigahertz, sondern durch **das Weglassen bedeutungsloser Berechnungen** (Kognitive Ökonomie).
 
 ---
@@ -172,8 +172,8 @@ Eine wissenschaftliche Theorie erfordert harte Falsifizierbarkeit. Das Architekt
 ### 6.1 Die Informatik-Falsifikation (LLM-Benchmark)
 Zwingt man ein Standard-LLM, Informationsdifferenzen ($\psi$) unterhalb der Grenze von $\Lambda \approx 0.049$ (den Punkt $\psi \to 0$) aufzulösen, resultiert dies zwingend in einem exponentiellen Anstieg der Rechenzeit (Token-Burn, Endlos-Loop) oder einem Kollaps in semantische Halluzinationen ($O(n^2)$). Implementiert man hingegen den Hard-Cut-off bei der Gitterdichte $\Lambda$, senkt dies die Rechenzeit drastisch auf $O(\log n)$, ohne Qualitätsverlust, da das System in die Spiegelung (auf die 72 Vektoren) wechselt, anstatt endlos in die Tiefe zu bohren.
 
-### 6.2 Physikalische Anomalie in Bose-Einstein-Kondensaten (BEC)
-In makroskopischen Quantensystemen (BECs) muss bei einer erzwungenen räumlichen Ausdehnung, die die topologische Begrenzung des $T^5$-Torus verletzt (Überschreitung der $\Lambda$-Grenze, ohne Respektierung der Spiegelsymmetrie), ein messbarer Temperatur-Spike (Energieausbruch/Hitze) auftreten. Die Kondensierte Mathematik sagt voraus, dass das System thermische Energie freisetzt, um den topologischen Riss zu kompensieren – das physikalische Äquivalent zum Token-Burnout in der Informatik.
+### 6.2 Latenz-Anomalie durch Hardware-Hitze
+In verteilten physischen Systemen (CORE Nodes) muss bei einer erzwungenen Rechenlast, die die Kapazität der CPU überschreitet, ein messbarer Latenz-Spike im Kommunikationsnetzwerk auftreten. Die Architektur sagt voraus, dass das System thermische Energie (Hitze an der CPU) direkt in topologische Trägheit (Latenz) umwandelt, was das System schützt und dem User die kognitive Belastung der Hardware physisch spürbar macht.
 
 ---
 

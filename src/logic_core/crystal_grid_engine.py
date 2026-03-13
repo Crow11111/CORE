@@ -71,13 +71,14 @@ class CrystalGridEngine:
         """
         sign = -1.0 if value < 0 else 1.0
         abs_val = abs(value)
-        folded_val = abs_val % 1.0
-
+        
         # Verbot der 0.0 (Kältetod) und 1.0 (Singularität)
-        if folded_val == 0.0:
+        if abs_val == 0.0:
             return BARYONIC_DELTA * sign
-        if folded_val == 1.0:
+        if abs_val == 1.0:
             return RESONANCE_LOCK * sign
+
+        folded_val = abs_val % 1.0
 
         # 1. Ist die Abweichung extrem gering (<= 0.049)?
         if folded_val <= BARYONIC_DELTA:

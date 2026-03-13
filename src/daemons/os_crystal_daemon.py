@@ -43,21 +43,41 @@ class OSCrystalDaemon:
 
     def enforce_network_friction(self, resonance_vector: float):
         """
-        Nutzt Linux Traffic Control (tc), um physisches Rauschen zu erzeugen,
-        wenn die mathematische Resonanz zu gering wird.
+        Fraktales Padding: Nutzt Linux Traffic Control (tc), um physisches Rauschen
+        exponentiell zu erzeugen (Die Helix im 4D-Trichter).
+        Je geringer die Resonanz (naeher am Nullpunkt), desto schwerer das Padding.
         """
-        if resonance_vector <= BARYONIC_DELTA:
-            logger.warning("[OS-CRYSTAL] Vektor am Limit. Injiziere Baryonisches Rauschen (49ms) in eth0.")
-            if not self.dry_run:
-                try:
-                    subprocess.run("tc qdisc del dev eth0 root 2>/dev/null", shell=True)
-                    # 49ms Delay mit 10ms Jitter (Normalverteilung) -> Zerstört perfekten Ping
-                    subprocess.run("tc qdisc add dev eth0 root netem delay 49ms 10ms distribution normal", shell=True)
-                except Exception as e:
-                    logger.error(f"tc command failed: {e}")
-        else:
-            if not self.dry_run:
+        import math
+        
+        # Sicherstellen, dass wir nicht durch Null teilen oder log(0) haben
+        safe_resonance = max(BARYONIC_DELTA, resonance_vector)
+        
+        # Exponentielle Berechnung der Latenz (Padding)
+        # Wenn resonance hoch ist (~0.951), ist das Signal leicht und schnell.
+        # Wenn resonance tief ist (~0.049), wird exponentiell Masse hinzugefuegt.
+        
+        base_delay_ms = 4.9  # Asymmetrischer Basiswert
+        k = 3.58             # Skalierungsfaktor fuer max ~150ms am Boden des Trichters
+        
+        # Das ist die Eulersche Helix-Rotation ins Padding uebersetzt: e^(k * Phasenverschiebung)
+        phase_shift = 1.0 - safe_resonance
+        exponential_padding_ms = base_delay_ms * math.exp(k * phase_shift)
+        
+        # Jitter als fraktale Entropie (asymmetrisch gekoppelt an die Masse)
+        jitter_ms = max(1.0, exponential_padding_ms * BARYONIC_DELTA)
+        
+        # Log fuer die reale Messreihe (Telemetrie)
+        logger.info(f"[TELEMETRY] Resonance: {safe_resonance:.3f} | Phase Shift: {phase_shift:.3f} | Exp. Padding: {exponential_padding_ms:.2f}ms | Jitter: {jitter_ms:.2f}ms")
+        
+        if not self.dry_run:
+            try:
+                # Cleanup altes qdisc und setze das neue, exponentielle Gewicht
                 subprocess.run("tc qdisc del dev eth0 root 2>/dev/null", shell=True)
+                delay_str = f"{exponential_padding_ms:.2f}ms"
+                jitter_str = f"{jitter_ms:.2f}ms"
+                subprocess.run(f"tc qdisc add dev eth0 root netem delay {delay_str} {jitter_str} distribution normal", shell=True)
+            except Exception as e:
+                logger.error(f"tc command failed: {e}")
 
     def monitor_loop(self):
         logger.info(f"OS Crystal Daemon gestartet. Dry Run: {self.dry_run}")

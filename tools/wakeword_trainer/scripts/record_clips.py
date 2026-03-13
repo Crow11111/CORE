@@ -27,8 +27,8 @@ def setup_dirs():
     return pos_dir, neg_dir
 
 def record_sample(filename, duration, index, total, label):
-    print(f"\n[{index}/{total}] Aufnahme startet in 0.5s... SAGE '{label}'")
-    time.sleep(0.5)
+    print(f"\n[{index}/{total}] Aufnahme startet in 0.49s... SAGE '{label}'")
+    time.sleep(0.49)
     
     print("  >>> AUFNAHME <<<")
     try:
@@ -74,7 +74,7 @@ def main():
             if not success:
                 print("Abbruch wegen Fehler.")
                 break
-            time.sleep(0.5)
+            time.sleep(0.49)
     else:
         print(f"\n--- SCHRITT 1: Positive Beispiele ({current_pos}/{target_pos}) BEREITS ERLEDIGT ---")
 
@@ -96,7 +96,7 @@ def main():
             success = record_sample(filename, DURATION_NEG, i, target_neg, "IRGENDETWAS (NICHT CORE)")
             if not success:
                 break
-            time.sleep(0.5)
+            time.sleep(0.49)
     else:
         print(f"\n--- SCHRITT 2: Negative Beispiele ({current_neg}/{target_neg}) BEREITS ERLEDIGT ---")
 

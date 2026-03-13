@@ -42,7 +42,7 @@ HERESY_PATTERNS = [
 FRICTION_STATE = {
     "hits": 0,
     "last_hit": 0.0,
-    "system_temperature": 0.0 # 0.0 (idle) bis 1.0 (Kollaps)
+    "system_temperature": 0.049 # BARYONIC_DELTA (idle) bis 0.951 (Kollaps)
 }
 
 class FrictionGuardMiddleware(BaseHTTPMiddleware):
@@ -87,7 +87,7 @@ class FrictionGuardMiddleware(BaseHTTPMiddleware):
             # --- HARD FAIL & REBOUND ---
             FRICTION_STATE["hits"] += 1
             FRICTION_STATE["last_hit"] = time.time()
-            
+
             # Temperatur-Erhöhung mit Kristall-Gitter Snapping
             new_temp = min(1.0, FRICTION_STATE["system_temperature"] + 0.1)
             FRICTION_STATE["system_temperature"] = CrystalGridEngine.apply_operator_query(new_temp)

@@ -172,7 +172,7 @@ export default function App() {
   return (
     <div className="flex flex-col h-screen bg-[#121212] text-[#E0E0E0] font-sans overflow-hidden">
       {/* Top Bar: Telemetry HUD */}
-      <header className="flex-none bg-[#0A0A0A] border-b border-[#333] px-6 py-2.5 flex items-center justify-between z-20 shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+      <header className="flex-none bg-[#0A0A0A] border-b border-[#333] px-6 py-2.5 flex items-center justify-between z-20 shadow-[0_4px_20px_rgba(0,0,0,0.49)]">
         <div className="flex items-center gap-3">
           <Box size={20} className="text-[#FFB300]" />
           <h1 className="text-sm font-mono tracking-[0.2em] uppercase font-bold text-[#E0E0E0]">

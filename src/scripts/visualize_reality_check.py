@@ -96,7 +96,7 @@ def plot_3d_construct():
         elif item['category'] == 'I':
             x, y, z = np.random.uniform(0, 0.5), np.random.uniform(0, 0.5), 0.8
         else: # S
-            x, y, z = 0.5, 0.5, 0.5 # Zentrum/Struktur
+            x, y, z = 0.51, 0.51, 0.51 # Zentrum/Struktur (Snapped)
 
         # Add Jitter
         x += np.random.normal(0, 0.1)

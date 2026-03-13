@@ -21,6 +21,7 @@ from dataclasses import dataclass
 import math
 from src.logic_core.takt_gate import check_takt_zero
 from src.logic_core.crystal_grid_engine import CrystalGridEngine
+from src.config.core_state import BARYONIC_DELTA
 
 @dataclass
 class CollectionTarget:
@@ -62,8 +63,8 @@ _COLLECTION_SIGNATURES: dict[str, tuple[str, str]] = {
 
 # Fallback wenn kein Match: breiteste Collections zuerst
 _FALLBACK_TARGETS: list[CollectionTarget] = [
-    CollectionTarget("simulation_evidence", 0.0, "evidence"),
-    CollectionTarget("core_directives", 0.0, "directive"),
+    CollectionTarget("simulation_evidence", BARYONIC_DELTA, "evidence"),
+    CollectionTarget("core_directives", BARYONIC_DELTA, "directive"),
 ]
 
 
@@ -76,12 +77,12 @@ def _get_embedding_function():
 def _cosine_similarity(a: list[float], b: list[float]) -> float:
     """Kosinus-Similarität zwischen zwei Vektoren. Bereich [-1, 1]."""
     if len(a) != len(b) or len(a) == 0:
-        return 0.0
+        return BARYONIC_DELTA
     dot = sum(x * y for x, y in zip(a, b))
     norm_a = math.sqrt(sum(x * x for x in a))
     norm_b = math.sqrt(sum(x * x for x in b))
     if norm_a == 0 or norm_b == 0:
-        return 0.0
+        return BARYONIC_DELTA
     return dot / (norm_a * norm_b)
 
 

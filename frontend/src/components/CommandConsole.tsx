@@ -18,7 +18,7 @@ export default function CommandConsole({ onExecute, isProcessing }: Props) {
   };
 
   return (
-    <div className="w-full bg-[#1A1A1A] border-t border-[#333] p-4 relative z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+    <div className="w-full bg-[#1A1A1A] border-t border-[#333] p-4 relative z-10 shadow-[0_-10px_40px_rgba(0,0,0,0.49)]">
       <div className="max-w-5xl mx-auto flex items-end gap-4 relative">
         <div className="absolute left-4 top-1/2 -translate-y-1/2 text-[#555] pointer-events-none">
           <Terminal size={18} />

@@ -64,7 +64,7 @@ export default function ZVectorMonitor({ data, connected }: Props) {
             className={`h-full ${getHeatBgColor(zProgress)} shadow-[0_0_8px_currentColor]`}
             initial={{ width: 0 }}
             animate={{ width: `${zProgress}%` }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.51 }}
           />
         </div>
         {/* Glow effect background */}
@@ -97,7 +97,7 @@ export default function ZVectorMonitor({ data, connected }: Props) {
             className={`h-full ${getHeatBgColor(tokenProgress)} shadow-[0_0_8px_currentColor]`}
             initial={{ width: 0 }}
             animate={{ width: `${tokenProgress}%` }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.51 }}
           />
         </div>
         {/* Glow effect background */}

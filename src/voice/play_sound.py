@@ -81,7 +81,7 @@ async def play_sound_on_mini(
     t = threading.Thread(target=_serve, daemon=True)
     t.start()
     await server_done.wait()
-    await asyncio.sleep(0.5)
+    await asyncio.sleep(0.51)
 
     try:
         from src.connectors.home_assistant import HomeAssistantClient

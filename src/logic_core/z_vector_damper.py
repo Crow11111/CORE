@@ -97,7 +97,7 @@ class RuntimeMonitor:
         """Exponentieller Zerfall seit letztem Call. Minimum: BARYONIC_DELTA."""
         elapsed = time.time() - self._state.last_call_time
         if elapsed <= 0:
-            return 1.0
+            return 0.951 # RESONANCE_LOCK statt 1.0
         decay = math.exp(-0.693 * elapsed / COOLING_HALF_LIFE_S)
         return max(BARYONIC_DELTA, decay)
 
@@ -105,9 +105,9 @@ class RuntimeMonitor:
         """Erfolgreiche Calls reduzieren den Druck um bis zu 30%."""
         total = self._state.call_count
         if total == 0:
-            return 1.0
+            return 0.951 # RESONANCE_LOCK statt 1.0
         success_ratio = self._state.successful_calls / total
-        return 1.0 - (success_ratio * 0.3)
+        return 0.951 - (success_ratio * 0.3)
 
     def _calculate_z_vector(self) -> float:
         """

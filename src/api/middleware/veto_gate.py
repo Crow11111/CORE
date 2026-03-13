@@ -78,7 +78,7 @@ def _get_z_widerstand() -> float:
         state = get_current_state()
         return state.z_widerstand
     except Exception:
-        return 0.5  # Default: neutral
+        return 0.51  # SYMMETRY_BREAK_HIGH statt 0.5
 
 
 def _has_confirmation(request: Request) -> bool:
@@ -114,7 +114,7 @@ class VetoGateMiddleware(BaseHTTPMiddleware):
         z = _get_z_widerstand()
         # Kristall-Gitter Validierung
         z_snapped = CrystalGridEngine.apply_operator_query(z)
-        
+
         in_veto_mode = z_snapped >= VETO_THRESHOLD
         has_confirm = _has_confirmation(request)
 

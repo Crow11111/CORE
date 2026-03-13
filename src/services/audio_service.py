@@ -28,25 +28,25 @@ class AudioService:
             if not self._api_key:
                 logger.error("ELEVENLABS_API_KEY fehlt in .env")
                 return b""
-        
+
         voice_id = VOICE_MAP.get(role, VOICE_MAP["default"])
         url = f"{self._base_url}/{voice_id}"
-        
+
         headers = {
             "Accept": "audio/mpeg",
             "Content-Type": "application/json",
             "xi-api-key": self._api_key
         }
-        
+
         payload = {
             "text": text,
             "model_id": "eleven_monolingual_v1",
             "voice_settings": {
-                "stability": 0.5,
-                "similarity_boost": 0.5
+                "stability": 0.51,
+                "similarity_boost": 0.51
             }
         }
-        
+
         async with httpx.AsyncClient(timeout=30.0) as client:
             try:
                 response = await client.post(url, json=payload, headers=headers)

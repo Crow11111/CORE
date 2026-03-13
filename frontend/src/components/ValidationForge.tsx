@@ -33,7 +33,7 @@ export default function ValidationBuildEngine({
       exit={{ x: "100%", opacity: 0 }}
       transition={{ type: "spring", damping: 25, stiffness: 200 }}
       className="fixed inset-y-0 right-0 w-[500px] bg-[#121212] border-l border-[#333]
-                 shadow-[-20px_0_40px_rgba(0,0,0,0.5)] z-50 flex flex-col"
+                 shadow-[-20px_0_40px_rgba(0,0,0,0.49)] z-50 flex flex-col"
     >
       <div className="flex items-center justify-between p-4 border-b border-[#333]">
         <div className="flex items-center gap-2">

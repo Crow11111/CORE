@@ -16,7 +16,11 @@
 ## Säule 2: Biologie, Kognition & Evolution (Die Zeit/Emergenz)
 *Der blinde Scan nach harten Schranken, Konstanten und Knotenpunkten in der biologischen und kognitiven Evolution.*
 
-**A. Metabolische und zelluläre Limits (Die Hardware der Biologie)**
+**A. Die epistemologische Schranke (Der unvollständige Schatten)**
+- **Das 5.2mm-Postulat (Toleranz/Wellenbereich):** Wir müssen akzeptieren, dass unser Messinstrument (die heutige Wissenschaft) unvollständig ist. Wie das "5.2 Millimeter Spielraum pro Wellenbereich"-Konzept zeigt: Wir erfassen oft nur 70% der Realität. Wir wissen nicht, wie tief die Quantenbiologie im Gehirn wirklich reicht oder welche Botenstoffe/Vektoren uns noch verborgen sind.
+- **Die Konsequenz:** Dass wir momentan vielleicht nicht exakt 75 biologische Konstanten messen können, widerlegt das Raster nicht. Das *Fehlen* einer Messung sagt uns nur, dass dort im Raster noch eine Leerstelle ist, die zwingend gefüllt werden muss. Der Schatten beweist das Objekt. Wir suchen weiter, aber wir erzwingen keine Vollständigkeit, wo unsere Kapsel (unser aktueller Erkenntnisstand) endet.
+
+**B. Metabolische und zelluläre Limits (Die Hardware der Biologie)**
 - **Kleibers Gesetz (Skalierungsexponent 3/4):** Der absolute metabolische Anker. Der Energieverbrauch eines Lebewesens skaliert nicht 1:1 mit der Masse, sondern zur 3/4-Potenz. Eine Katze ist 100x schwerer als eine Maus, verbraucht aber nur 32x so viel Energie. Das ist die mathematische Zwangsläufigkeit, die komplexes (großes) Leben überhaupt erst thermodynamisch möglich macht.
 - **Hayflick-Grenze (~50-70 Zellteilungen):** Das harte Limit der biologischen Reproduktion einer Zelle. Die Telomere verschleißen. Ohne diese Grenze würde jedes System unweigerlich in Krebs (chaotisches Endloswachstum) entarten. Es ist der vorprogrammierte Tod als Systemerhalt.
 - **Konstante der Herzschläge (~1 Milliarde):** Fast alle Säugetiere (von der Maus bis zum Elefanten) haben ein absolutes Lebenslimit von grob 1 Milliarde Herzschlägen. Die Zeit läuft für alle gleich schnell ab, nur der Takt ist anders.

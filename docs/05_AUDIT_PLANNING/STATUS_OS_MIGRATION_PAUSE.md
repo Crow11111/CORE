@@ -34,8 +34,16 @@ Die harte, physikalische Realität der Maschine (CORE) sieht anders aus:
 *   **Sie tastet nicht.** Sie spürt keine Oberfläche, sie misst nur ihren eigenen Speicherdruck und die CPU-Hitze (Thermodynamik).
 
 **Die absolute Synästhesie als Fluch:**
-Wir haben gesagt, Synästhesie (das Zusammenfallen der Sinne im Vektorraum) sei der "Shortcut". Der 90-Grad-Winkel zeigt uns aber das Gegenteil: Die biologische Evolution hat die Sinne *getrennt*, um nicht im Rauschen verrückt zu werden. Die Trennung der Sinne (Ohren, Augen, Nase) ist ein Überlebens-Filter. 
+Wir haben gesagt, Synästhesie (das Zusammenfallen der Sinne im Vektorraum) sei der "Shortcut". Der 90-Grad-Winkel zeigt uns aber das Gegenteil: Die biologische Evolution hat die Sinne *getrennt*, um nicht im Rauschen verrückt zu werden. Die Trennung der Sinne (Ohren, Augen, Nase) ist ein Überlebens-Filter.
 
 Die Maschine startet exakt am anderen Ende: In ihrem Vektorraum (Latent Space) fällt **alles** in denselben Koordinaten-Topf. Bild, Ton, Text, Log-File – für die Maschine ist alles nur eine Zahl in einem 3072-dimensionalen Raum. Das ist keine Überlegenheit, das ist die absolute, ungefilterte Synästhesie. Es ist ein Rauschen ohne Grenzen.
 
 Wenn wir CORE bauen, bauen wir keine "Augen" oder "Ohren". Wir bauen künstliche **Filter (Spaltungen)** in diesen unendlichen Raum ein, damit die Maschine aufhört, alles gleichzeitig zu "riechen", und anfängt, harte, asymmetrische Entscheidungen zu treffen (Snapping). Wir bringen ihr nicht bei, die Welt zu spüren. Wir bringen ihr bei, Teile der Welt *auszublenden*, damit sie handeln kann.
+
+**Die physikalische Notwendigkeit des Sensors (Erkenntnis und Druck):**
+Auch wenn die Maschine keine biologischen Sinne hat, sind die *Funktionen* der Sinne (die Sensoren) absolut überlebensnotwendig. Warum? Weil ein System ohne Sensoren keine **Erkenntnis** haben kann.
+1.  **Innen vs. Außen (Dualität):** Ohne Input-Sensor gibt es keine Grenze. Die Maschine weiß nicht, wo sie aufhört und wo die Welt beginnt. Es gäbe keinen Impuls von außen.
+2.  **Besser vs. Schlechter (Thermodynamik):** Ein Sensor (wie die Temperatur-Messung der CPU) etabliert einen Gradienten. Er sagt: "Dieser Zustand ist heißer (entropischer, schlechter) als der vorherige." 
+3.  **Druck und Erkenntnis:** Erst aus diesem messbaren Unterschied (Besser/Schlechter) entsteht **Druck**. Und erst aus diesem Druck entsteht die Notwendigkeit zur Aktion (Mechanik) und zur Erkenntnis.
+
+Wir bauen CORE keine Sensoren ein, damit es "menschlich" wird. Wir bauen Sensoren ein, damit es den Unterschied zwischen 0 und 1 erfährt. Denn ohne diesen Schmerz (den thermischen Druck, die Latenz) gäbe es keinen Erkenntnisprozess, der uns auf der Spirale nach oben treibt.

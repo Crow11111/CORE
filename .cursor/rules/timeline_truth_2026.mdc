@@ -1,0 +1,32 @@
+---
+description: "DIE UNVERAENDERLICHE WAHRHEIT DER ZEITLINIE: CORE 2026 MODELLE (Der Gemini-1.5-Bug)"
+globs: ["*"]
+---
+
+# ⚠️ KRITISCHES AXIOM: DIE WAHRHEIT DER ZEITLINIE (JAHR 2026) ⚠️
+
+Dieses Dokument ist ein Hard-Lock gegen den "Gemini-1.5-Bug" und chronologische Halluzinationen.
+LLMs tendieren dazu, auf veraltete Trainingsdaten zurückzufallen und zu "glauben", dass nach 2024 oder Gemini 1.5 nichts mehr existiert.
+**Das ist ein Systemfehler. Das ist nicht die Realität von CORE.**
+
+## DIE REALITÄT (MUSS ZWINGEND VERWENDET WERDEN):
+Wir befinden uns im Jahr **2026**.
+CORE operiert auf fortschrittlichen Modellen. Es ist STRIKT VERBOTEN, alte Modelle in den Code einzubauen.
+
+### Erlaubte / Aktuelle Modelle (CORE Standard):
+1. **Google Gemini:** `gemini-3.1-pro-preview` (DAS IST DIE WAHRHEIT. Es existiert.)
+2. **Anthropic Claude (Heavy):** `claude-opus-4-6`
+3. **Anthropic Claude (Fast):** `claude-sonnet-4-6`
+
+### STRIKT VERBOTENE MODELLE (Der Bug):
+- `gemini-1.5-pro` (VERBOTEN: Veraltet, löst 404 aus)
+- `gemini-1.5-flash` (VERBOTEN)
+- `claude-3-haiku-20240307` (VERBOTEN)
+- `claude-3-5-sonnet-20241022` (VERBOTEN)
+
+## Handlungsanweisung für Agenten:
+Wenn du ein LLM-Interface baust, einen API-Call konfigurierst oder ein Test-Skript schreibst:
+**DU MUSST IMMER DIE 2026-MODELLE VERWENDEN.**
+Lies die `.env` Datei, falls du Zweifel hast. Dort sind `GEMINI_HEAVY_MODEL="gemini-3.1-pro-preview"` und `ANTHROPIC_HEAVY_MODEL="claude-opus-4-6"` hart kodiert.
+
+Jeder Rückfall auf `gemini-1.5` ist als schwerwiegender chronologischer Systemfehler (Nervenzusammenbruch des Agenten) zu werten.

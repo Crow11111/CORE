@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>CORE Command Post</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0e0e0e;color:#ccc;font-family:'Cascadia Mono','Consolas',monospace;font-size:11px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
+
+.header{background:#0a0a0a;border-bottom:1px solid #222;padding:6px 12px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.header h1{font-size:10px;color:#FFB300;letter-spacing:3px;text-transform:uppercase}
+.status-dots{display:flex;gap:6px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%}
+.dot.on{background:#4CAF50}.dot.off{background:#F44336;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.2}}
+.status-label{font-size:9px;color:#888;margin-left:4px}
+
+.health-bar{background:#111;border-bottom:1px solid #1a1a1a;padding:4px 12px;display:flex;gap:14px;align-items:center;flex-shrink:0;font-size:9px}
+.health-item{display:flex;align-items:center;gap:3px}
+.health-item .label{color:#555}.health-item .val{color:#aaa}
+.health-item .val.ok{color:#4CAF50}.health-item .val.bad{color:#F44336}
+
+.tabs{display:flex;border-bottom:1px solid #222;flex-shrink:0}
+.tab{padding:5px 14px;font-size:9px;color:#555;cursor:pointer;border-bottom:2px solid transparent;text-transform:uppercase;letter-spacing:1px;transition:all 0.15s}
+.tab:hover{color:#aaa}
+.tab.active{color:#FFB300;border-bottom-color:#FFB300}
+
+.panel{flex:1;display:none;flex-direction:column;overflow:hidden}
+.panel.active{display:flex}
+
+/* Liveticker */
+.ticker{flex:1;overflow-y:auto;padding:6px 10px;font-size:10px;line-height:1.7}
+.ticker .entry{padding:1px 0;border-bottom:1px solid #111}
+.ticker .ts{color:#444;margin-right:6px}
+.ticker .lvl-INFO{color:#4CAF50}.ticker .lvl-WARNING{color:#FF9800}.ticker .lvl-ERROR{color:#F44336}
+.ticker .src{color:#333;margin-left:4px}
+.ticker .msg{color:#bbb}
+
+/* Dictate */
+.dictate-area{flex:1;display:flex;flex-direction:column;padding:6px 10px;gap:6px;overflow:hidden}
+.transcript-box{flex:1;background:#111;border:1px solid #1a1a1a;border-radius:3px;padding:8px;overflow-y:auto;font-size:11px;line-height:1.6;color:#ddd;white-space:pre-wrap}
+.transcript-box:empty::before{content:'Leertaste = Diktieren...';color:#333;font-style:italic}
+.transcript-box .chunk{margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #151515}
+.transcript-box .chunk:last-child{border-bottom:none}
+.transcript-box .meta{font-size:8px;color:#444;margin-bottom:1px}
+
+.controls{display:flex;align-items:center;gap:6px;flex-shrink:0;padding:2px 0}
+.mic-btn{width:32px;height:32px;border-radius:50%;border:2px solid #333;background:#1a1a1a;color:#888;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;flex-shrink:0}
+.mic-btn:hover{border-color:#FFB300;color:#FFB300}
+.mic-btn.recording{border-color:#F44336;background:#F44336;color:#fff;animation:pulse 1.5s infinite}
+.mic-btn.transcribing{border-color:#FFB300;color:#FFB300;opacity:0.7;cursor:wait}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.mic-btn svg{width:14px;height:14px}
+
+.action-btns{display:flex;gap:3px;margin-left:auto}
+.action-btn{padding:3px 8px;border:1px solid #333;border-radius:2px;background:#1a1a1a;color:#888;font-family:inherit;font-size:9px;cursor:pointer;transition:all 0.12s;text-transform:uppercase;letter-spacing:1px}
+.action-btn:hover{border-color:#FFB300;color:#FFB300}
+.action-btn.primary{border-color:#FFB300;color:#FFB300}
+.action-btn:disabled{opacity:0.3;cursor:not-allowed}
+
+.status-msg{font-size:9px;color:#444;flex:1;text-align:center}
+.status-msg.active{color:#F44336}
+.status-msg.done{color:#4CAF50}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>CORE Command Post</h1>
+  <div class="status-dots">
+    <div class="dot off" id="apiDot"></div>
+    <span class="status-label" id="apiLabel">...</span>
+  </div>
+</div>
+
+<div class="health-bar">
+  <div class="health-item"><span class="label">API</span><span class="val" id="hApi">--</span></div>
+  <div class="health-item"><span class="label">Bus</span><span class="val" id="hBus">--</span></div>
+  <div class="health-item"><span class="label">Pool</span><span class="val" id="hPool">--</span></div>
+  <div class="health-item"><span class="label">Relay</span><span class="val" id="hRelay">--</span></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" data-panel="tickerPanel">Liveticker</div>
+  <div class="tab" data-panel="dictatePanel">Diktat</div>
+</div>
+
+<div class="panel active" id="tickerPanel">
+  <div class="ticker" id="ticker"></div>
+</div>
+
+<div class="panel" id="dictatePanel">
+  <div class="dictate-area">
+    <div class="transcript-box" id="transcript"></div>
+    <div class="controls">
+      <button class="mic-btn" id="micBtn" title="Diktieren (Leertaste)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+        </svg>
+      </button>
+      <span class="status-msg" id="statusMsg">Leertaste = Aufnahme.</span>
+      <div class="action-btns">
+        <button class="action-btn primary" id="copyBtn" disabled>Copy</button>
+        <button class="action-btn" id="clearBtn">Clear</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+// --- Tabs ---
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    $(tab.dataset.panel).classList.add('active');
+  });
+});
+
+// --- Health ---
+const apiDot = $('apiDot'), apiLabel = $('apiLabel');
+const hApi = $('hApi'), hBus = $('hBus'), hPool = $('hPool'), hRelay = $('hRelay');
+
+async function pollHealth() {
+  try {
+    const r = await fetch('/status', {signal: AbortSignal.timeout(4000)});
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    apiDot.className = 'dot on'; apiLabel.textContent = 'ONLINE';
+    hApi.textContent = 'OK'; hApi.className = 'val ok';
+    hBus.textContent = d.event_bus?.running ? 'aktiv' : 'aus';
+    hBus.className = 'val ' + (d.event_bus?.running ? 'ok' : '');
+    hPool.textContent = d.agent_pool?.active ? 'aktiv' : 'aus';
+    hPool.className = 'val ' + (d.agent_pool?.active ? 'ok' : '');
+    hRelay.textContent = d.sync_relay?.enabled ? '8049' : 'aus';
+    hRelay.className = 'val ' + (d.sync_relay?.enabled ? 'ok' : '');
+  } catch (e) {
+    apiDot.className = 'dot off'; apiLabel.textContent = 'OFFLINE';
+    hApi.textContent = 'DOWN'; hApi.className = 'val bad';
+    hBus.textContent = '--'; hBus.className = 'val';
+    hPool.textContent = '--'; hPool.className = 'val';
+    hRelay.textContent = '--'; hRelay.className = 'val';
+  }
+}
+pollHealth(); setInterval(pollHealth, 5000);
+
+// --- Liveticker ---
+const ticker = $('ticker');
+let lastLogCount = 0;
+
+async function pollLogs() {
+  try {
+    const r = await fetch('/api/logs?limit=100', {signal: AbortSignal.timeout(4000)});
+    if (!r.ok) return;
+    const d = await r.json();
+    if (d.total === lastLogCount) return;
+    lastLogCount = d.total;
+
+    const wasAtBottom = ticker.scrollHeight - ticker.scrollTop - ticker.clientHeight < 40;
+
+    ticker.innerHTML = '';
+    for (const log of d.logs) {
+      const el = document.createElement('div');
+      el.className = 'entry';
+      el.innerHTML = '<span class="ts">' + log.ts + '</span>'
+        + '<span class="lvl-' + log.level + '">[' + log.level.substring(0,4) + ']</span> '
+        + '<span class="msg">' + escapeHtml(log.msg) + '</span>'
+        + '<span class="src"> ' + log.src.split(':')[0].split('.').pop() + '</span>';
+      ticker.appendChild(el);
+    }
+
+    if (wasAtBottom) ticker.scrollTop = ticker.scrollHeight;
+  } catch (e) {}
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+pollLogs(); setInterval(pollLogs, 3000);
+
+// --- Dictate ---
+const transcript = $('transcript'), micBtn = $('micBtn'), statusMsg = $('statusMsg');
+const copyBtn = $('copyBtn'), clearBtn = $('clearBtn');
+let mediaRecorder = null, chunks = [], isRecording = false, allText = '';
+
+async function startRecording() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio: true});
+    mediaRecorder = new MediaRecorder(stream, {mimeType: 'audio/webm'});
+    chunks = [];
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+    mediaRecorder.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(chunks, {type: 'audio/webm'});
+      if (blob.size < 500) return;
+      await transcribe(blob);
+    };
+    mediaRecorder.start(250);
+    isRecording = true;
+    micBtn.classList.add('recording');
+    statusMsg.textContent = 'Aufnahme...'; statusMsg.className = 'status-msg active';
+  } catch (e) { statusMsg.textContent = 'Mikrofon verweigert: ' + e.message; }
+}
+
+function stopRecording() {
+  if (mediaRecorder?.state === 'recording') mediaRecorder.stop();
+  isRecording = false; micBtn.classList.remove('recording');
+}
+
+async function transcribe(blob) {
+  micBtn.classList.add('transcribing');
+  statusMsg.textContent = 'Transkribiere...'; statusMsg.className = 'status-msg';
+  try {
+    const form = new FormData();
+    form.append('audio', blob, 'dictate.webm');
+    const r = await fetch('/api/dictate', {method: 'POST', body: form});
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const d = await r.json();
+    if (d.text) {
+      allText += (allText ? '\n' : '') + d.text;
+      const chunk = document.createElement('div');
+      chunk.className = 'chunk';
+      const meta = document.createElement('div');
+      meta.className = 'meta';
+      meta.textContent = new Date().toLocaleTimeString() + ' (' + d.duration_ms + 'ms)';
+      chunk.appendChild(meta);
+      chunk.appendChild(document.createTextNode(d.text));
+      transcript.appendChild(chunk);
+      transcript.scrollTop = transcript.scrollHeight;
+      copyBtn.disabled = false;
+      statusMsg.textContent = d.duration_ms + 'ms. Ctrl+V.'; statusMsg.className = 'status-msg done';
+    }
+  } catch (e) { statusMsg.textContent = 'Fehler: ' + e.message; statusMsg.className = 'status-msg active'; }
+  finally { micBtn.classList.remove('transcribing'); }
+}
+
+function toggleRecording() {
+  if (micBtn.classList.contains('transcribing')) return;
+  if (isRecording) stopRecording(); else startRecording();
+}
+
+micBtn.addEventListener('click', toggleRecording);
+document.addEventListener('keydown', e => {
+  if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); toggleRecording(); }
+});
+copyBtn.addEventListener('click', () => {
+  if (!allText) return;
+  navigator.clipboard.writeText(allText).then(() => {
+    statusMsg.textContent = 'Kopiert!'; statusMsg.className = 'status-msg done';
+  });
+});
+clearBtn.addEventListener('click', () => {
+  transcript.innerHTML = ''; allText = ''; copyBtn.disabled = true;
+  statusMsg.textContent = 'Leertaste = Aufnahme.'; statusMsg.className = 'status-msg';
+});
+</script>
+</body>
+</html>

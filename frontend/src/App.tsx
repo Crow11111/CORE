@@ -6,6 +6,7 @@ import {
   Cpu,
   ShieldAlert,
   GitBranch,
+  AlertTriangle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import TelemetryHUD from "./components/TelemetryHUD";
@@ -206,6 +207,25 @@ export default function App() {
           </button>
         </div>
       </header>
+
+      {/* Backend Offline Warning Banner */}
+      <AnimatePresence>
+        {!telemetryConnected && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="flex-none bg-[#F44336]/15 border-b-2 border-[#F44336] px-6 py-3 flex items-center justify-center gap-3 overflow-hidden"
+          >
+            <AlertTriangle size={18} className="text-[#F44336] flex-none" />
+            <span className="text-[13px] font-mono text-[#F44336] font-bold uppercase tracking-wider">
+              Backend nicht erreichbar (Port 8000) -- Starte mit:
+              START_OMEGA_COCKPIT.bat oder python -m uvicorn src.api.main:app
+              --port 8000
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Content Area */}
       <main className="flex-1 flex relative overflow-hidden">

@@ -10,18 +10,37 @@ from typing import AsyncIterator
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
 from loguru import logger
 
 # Temporär auskommentiert wegen ImportError
 # from src.api.routes import id_safe
 
-from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, core_knowledge, core_voice, core_events, github_webhook, omega_matrix, omega_thought, telemetry, chat
+from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, core_knowledge, core_voice, core_events, github_webhook, omega_matrix, omega_thought, telemetry, chat, dictate
 
 from src.api.middleware.veto_gate import VetoGateMiddleware
 from src.api.middleware.friction_guard import FrictionGuardMiddleware
 
 _event_bus = None
 _agent_pool = None
+
+from collections import deque
+import time as _time
+
+_log_buffer: deque[dict] = deque(maxlen=200)
+
+
+def _log_sink(message):
+    record = message.record
+    _log_buffer.append({
+        "ts": record["time"].strftime("%H:%M:%S"),
+        "level": record["level"].name,
+        "msg": record["message"],
+        "src": f"{record['name']}:{record['function']}",
+    })
+
+
+logger.add(_log_sink, format="{message}", level="INFO")
 
 
 @asynccontextmanager
@@ -60,7 +79,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
                 from src.network.core_sync_relay import app as sync_relay_app
                 loop = _aio.new_event_loop()
                 _aio.set_event_loop(loop)
-                loop.run_until_complete(_aio_web.run_app(sync_relay_app, port=8049, handle_signals=False, print=lambda *a: None))
+                try:
+                    loop.run_until_complete(_aio_web.run_app(sync_relay_app, port=8049, handle_signals=False, print=lambda *a: None))
+                except OSError as e:
+                    if e.errno == 10048:
+                        logger.warning("[API] Sync Relay Port 8049 bereits belegt (vermutlich alter Reload-Prozess) -- uebersprungen")
+                    else:
+                        raise
 
             _sync_relay_thread = threading.Thread(target=_run_sync_relay, daemon=True, name="core-sync-relay")
             _sync_relay_thread.start()
@@ -123,11 +148,29 @@ app.include_router(omega_matrix.router)
 app.include_router(omega_thought.router)
 app.include_router(telemetry.router)
 app.include_router(chat.router)
+app.include_router(dictate.router)
 # app.include_router(id_safe.router)
 
 @app.get("/")
 def read_root():
     return {"status": "online", "system": "CORE", "version": "1.0.0"}
+
+
+@app.get("/api/logs")
+def get_logs(since: int = 0, limit: int = 50):
+    """Liefert die letzten Log-Eintraege aus dem Ringbuffer."""
+    logs = list(_log_buffer)
+    if since > 0:
+        logs = logs[since:]
+    return {"logs": logs[-limit:], "total": len(_log_buffer)}
+
+
+@app.get("/health", response_class=HTMLResponse)
+def health_dashboard():
+    """CORE Command Post: Health + Diktat + Chat -- fuer Cursor Simple Browser."""
+    html_path = os.path.join(os.path.dirname(__file__), "static", "health.html")
+    with open(html_path, "r", encoding="utf-8") as f:
+        return f.read()
 
 
 @app.get("/status")

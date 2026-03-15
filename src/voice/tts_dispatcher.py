@@ -5,19 +5,19 @@
 # ============================================================
 
 """
-TTS-Dispatcher: Verteilt TTS an Mini (HA), ElevenLabs (lokal/Stream) oder Piper (Fallback).
-
-SCOUT-FUSION Update: HA-Piper-Remote (Wyoming) als Failover-Option
+TTS-Dispatcher: Verteilt TTS an Gemini, ElevenLabs, Piper oder Mini (HA).
 
 Targets:
+- gemini_tts: Gemini 2.5 Flash TTS (kostenlos, 30 Stimmen, Emotionssteuerung)
+- gemini_tts_stream: Gemini TTS → WAV → HA media_player.play_media (Stream zu Mini)
 - mini: HA TTS (google_translate_say) auf media_player
 - elevenlabs: ElevenLabs lokal auf PC (os.startfile)
 - elevenlabs_stream: ElevenLabs → MP3 → HA media_player.play_media (Stream zu Mini)
-- both: mini + elevenlabs parallel
+- both: mini + gemini_tts parallel
 - piper: Piper TTS lokal (Fallback wenn ElevenLabs nicht verfuegbar)
 - ha_piper: HA Piper (Wyoming auf Scout) - Remote TTS
 
-Fallback-Kette: elevenlabs* → Piper (lokal) → ha_piper (Remote) → mini (HA TTS)
+Fallback-Kette: Gemini TTS → ElevenLabs → Piper (lokal) → ha_piper (Remote) → mini (HA TTS)
 """
 from __future__ import annotations
 
@@ -39,6 +39,38 @@ DEFAULT_ENTITY = "media_player.schreibtisch"
 DEFAULT_STREAM_PORT = 8002
 # CORE-Default-Stimme (core_dialog aus voice_config)
 DEFAULT_CORE_VOICE_ID = "0ISBUrWf7OGBgepl5lu2"
+
+
+def _gemini_tts_available() -> bool:
+    """Prueft ob Gemini TTS nutzbar ist (API-Key + google-genai installiert)."""
+    if not os.getenv("GEMINI_API_KEY", "").strip():
+        return False
+    try:
+        from google import genai  # noqa: F401
+        return True
+    except ImportError:
+        return False
+
+
+async def _gemini_speak(
+    text: str,
+    style_prompt: str = "",
+    output_path: Optional[str] = None,
+    play: bool = True,
+) -> Optional[str]:
+    """Gemini TTS -- gibt Dateipfad zurueck oder None bei Fehler."""
+    try:
+        from src.voice.gemini_tts import speak_text
+
+        voice = os.getenv("GEMINI_TTS_VOICE", "Kore").strip()
+        style = style_prompt or os.getenv("GEMINI_TTS_STYLE", "").strip()
+        path = await asyncio.to_thread(
+            speak_text, text, voice, style, output_path, play,
+        )
+        return path
+    except Exception as e:
+        logger.error(f"Gemini TTS fehlgeschlagen: {e}")
+        return None
 
 
 def _elevenlabs_available() -> bool:
@@ -195,6 +227,65 @@ async def _ha_piper_tts(text: str) -> bool:
         return False
 
 
+async def _stream_audio_to_mini(audio_path: str) -> bool:
+    """Streamt eine lokale Audiodatei zum HA media_player via temporaerem HTTP-Server."""
+    hass_url = os.getenv("HASS_URL") or os.getenv("HA_URL")
+    hass_token = os.getenv("HASS_TOKEN") or os.getenv("HA_TOKEN")
+    if not hass_url or not hass_token:
+        logger.warning("HASS_URL/TOKEN fehlt -- spiele lokal ab.")
+        await asyncio.to_thread(os.startfile, audio_path)
+        return True
+
+    host_ip = os.getenv("CORE_HOST_IP", "192.168.178.20")
+    port = int(os.getenv("TTS_STREAM_PORT", str(DEFAULT_STREAM_PORT)))
+    filename = os.path.basename(audio_path)
+    serve_dir = os.path.dirname(os.path.abspath(audio_path))
+    audio_url = f"http://{host_ip}:{port}/{filename}"
+    entity_id = (
+        os.getenv("TTS_CONFIRMATION_ENTITY", DEFAULT_ENTITY).strip() or DEFAULT_ENTITY
+    )
+
+    server_done = asyncio.Event()
+    server_obj = [None]
+
+    def _serve():
+        orig_dir = os.getcwd()
+        os.chdir(serve_dir)
+        server = HTTPServer(("0.0.0.0", port), SimpleHTTPRequestHandler)
+        server_obj[0] = server
+        server_done.set()
+        server.serve_forever()
+        os.chdir(orig_dir)
+
+    t = threading.Thread(target=_serve, daemon=True)
+    t.start()
+    await server_done.wait()
+    await asyncio.sleep(0.51)
+
+    try:
+        from src.connectors.home_assistant import HomeAssistantClient
+
+        client = HomeAssistantClient()
+        result = await client.call_service(
+            "media_player",
+            "play_media",
+            {
+                "entity_id": entity_id,
+                "media_content_id": audio_url,
+                "media_content_type": "music",
+            },
+        )
+        if result is not None:
+            logger.info("Audio-Stream: Datei auf Mini gestartet.")
+        else:
+            logger.warning("HA play_media fehlgeschlagen.")
+        await asyncio.sleep(8)
+        return result is not None
+    finally:
+        if server_obj[0]:
+            server_obj[0].shutdown()
+
+
 async def _elevenlabs_stream_to_mini(
     text: str,
     role_name: str = "core_dialog",
@@ -280,11 +371,14 @@ async def dispatch_tts(
     Spielt TTS ab.
 
     Targets:
-    - mini: HA TTS (google_translate_say) auf media_player
-    - elevenlabs: ElevenLabs lokal (Fallback: Piper → mini)
-    - elevenlabs_stream: ElevenLabs → HA media_player.play_media (Fallback: Piper → mini)
-    - both: mini + elevenlabs parallel
-    - piper: Piper TTS lokal (nur wenn Piper installiert)
+    - gemini_tts: Gemini 2.5 Flash TTS lokal (30 Stimmen, Emotion per Prompt)
+    - gemini_tts_stream: Gemini TTS → WAV → HA media_player.play_media
+    - mini: HA TTS (google_translate_say)
+    - elevenlabs / local: Volle Fallback-Kette (Gemini→ElevenLabs→Piper→mini)
+    - elevenlabs_stream: ElevenLabs → HA media_player.play_media
+    - both: mini + Fallback-Kette parallel
+    - piper: Piper TTS lokal
+    - ha_piper: HA Piper (Wyoming auf Scout)
     """
     text = (text or "").strip()
     if not text:
@@ -293,16 +387,20 @@ async def dispatch_tts(
 
     target = (target or "mini").lower()
 
-    async def _local_elevenlabs() -> bool:
-        if _elevenlabs_available():
-            path = await _elevenlabs_speak(text, role_name, play=True)
+    async def _full_fallback_chain(play_local: bool = True) -> bool:
+        """Gemini -> ElevenLabs -> HA Piper -> Piper lokal -> mini"""
+        if _gemini_tts_available():
+            path = await _gemini_speak(text, play=play_local)
             if path:
                 return True
-        # Scout-Prefer: Versuche erst HA Piper (Remote), dann lokales Piper
+        if _elevenlabs_available():
+            path = await _elevenlabs_speak(text, role_name, play=play_local)
+            if path:
+                return True
         if await _ha_piper_tts(text):
             return True
         if _piper_available():
-            path = await _piper_speak(text, play=True)
+            path = await _piper_speak(text, play=play_local)
             if path:
                 return True
         return await _mini_tts(text)
@@ -316,18 +414,35 @@ async def dispatch_tts(
                 return True
         return await _mini_tts(text)
 
+    if target == "gemini_tts":
+        if _gemini_tts_available():
+            path = await _gemini_speak(text, play=True)
+            if path:
+                return True
+        logger.warning("Gemini TTS nicht verfuegbar, Fallback-Kette.")
+        return await _full_fallback_chain()
+
+    if target == "gemini_tts_stream":
+        path = None
+        if _gemini_tts_available():
+            path = await _gemini_speak(text, play=False)
+        if path and os.path.isfile(path):
+            return await _stream_audio_to_mini(path)
+        logger.warning("Gemini TTS Stream fehlgeschlagen, Fallback.")
+        return await _full_fallback_chain()
+
     if target == "mini":
         return await _mini_tts(text)
 
     if target == "elevenlabs" or target == "local":
-        return await _local_elevenlabs()
+        return await _full_fallback_chain()
 
     if target == "elevenlabs_stream":
         return await _stream_elevenlabs()
 
     if target == "both":
         ok_mini, ok_local = await asyncio.gather(
-            _mini_tts(text), _local_elevenlabs()
+            _mini_tts(text), _full_fallback_chain()
         )
         return ok_mini or ok_local
 
@@ -347,5 +462,5 @@ async def dispatch_tts(
         logger.warning("HA Piper nicht verfuegbar, Fallback auf mini.")
         return await _mini_tts(text)
 
-    logger.warning(f"dispatch_tts: unbekanntes target='{target}', nutze mini.")
-    return await _mini_tts(text)
+    logger.warning(f"dispatch_tts: unbekanntes target='{target}', nutze Fallback-Kette.")
+    return await _full_fallback_chain()

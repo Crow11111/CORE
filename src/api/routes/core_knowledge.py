@@ -109,6 +109,31 @@ def get_context_injection(
         return {"ok": False, "query": q, "error": str(e), "context": ""}
 
 
+@router.get("/rag")
+async def get_rag_context(
+    q: str = Query(..., description="Suchtext für RAG (Query → ChromaDB → Context für LLM)"),
+    n: int = Query(5, ge=1, le=20, description="Max. Dokumente pro Collection"),
+):
+    """OC Brain RAG: Query → world_knowledge + mth_user_profile → Kontext für LLM. Parallelabfrage beider Collections."""
+    try:
+        from src.network.chroma_client import query_world_knowledge, query_mth_user_profile
+        wk, mth = await asyncio.gather(
+            query_world_knowledge(q, n_results=n),
+            query_mth_user_profile(q, n_results=n),
+        )
+        docs_wk = (wk.get("documents") or [[]])[0] or []
+        docs_mth = (mth.get("documents") or [[]])[0] or []
+        parts = []
+        if docs_wk:
+            parts.append("## world_knowledge\n" + "\n\n".join(d[:2000] for d in docs_wk if d))
+        if docs_mth:
+            parts.append("## mth_user_profile\n" + "\n\n".join(d[:2000] for d in docs_mth if d))
+        context = "\n\n".join(parts) if parts else ""
+        return {"ok": True, "query": q, "context": context, "sources": {"world_knowledge": len(docs_wk), "mth_user_profile": len(docs_mth)}}
+    except Exception as e:
+        return {"ok": False, "query": q, "error": str(e), "context": "", "sources": {}}
+
+
 @router.get("/evidence")
 def list_all_evidence():
     """Alle Simulationstheorie-Indizien aus ChromaDB."""

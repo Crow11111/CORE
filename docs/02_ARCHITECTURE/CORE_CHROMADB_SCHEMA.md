@@ -7,7 +7,7 @@
 
 # CORE ChromaDB Schema
 
-**Status:** Verbindliche Schema-Definition für alle ChromaDB Collections.  
+**Status:** Verbindliche Schema-Definition für alle ChromaDB Collections.
 **VPS:** CHROMA_HOST=187.77.68.250, CHROMA_PORT=8000 (via SSH-Tunnel: `ssh -L 8000:127.0.0.1:8000 root@187.77.68.250`).
 
 ---
@@ -26,6 +26,8 @@
 | atlas_identity | Default (384) | Wer/Was/Warum ist CORE |
 | entities | Default (384) | Personen, Geräte, Systeme |
 | relationships | Default (384) | Wer gehört zu wem |
+| world_knowledge | Default (384) | Weltwissen, RAG-Referenzen (z. B. YOUTUBE_TRANSCRIPT_GEMINI_RAG) |
+| mth_user_profile | Default (384) | Operator-Profil MTH, Tiefen-Chunking (Tier 1–3), RAG/OC Brain |
 
 **ChromaDB-Metadaten:** Nur `str`, `int`, `float`, `bool`. Listen als JSON-String speichern.
 
@@ -90,6 +92,18 @@
 - **Document:** Beziehungsbeschreibung (optional)
 - **Metadata:** from_entity, to_entity, relation_type
 - **Embedding:** ChromaDB Default
+
+### world_knowledge
+- **Document:** Texte aus externen Quellen (z. B. Transkripte, Docs)
+- **Metadata:** source_file, category (z. B. rag_reference), optional chunk_index
+- **Embedding:** ChromaDB Default
+- **Quelle:** z. B. YOUTUBE_TRANSCRIPT_GEMINI_RAG.md (Plan-Addendum OC_BRAIN_PLAN_ADDENDUM_VIDEO_RAG.md)
+
+### mth_user_profile
+- **Document:** Operator-Profil (ND-Insights, Persona, Sessions, Chats)
+- **Metadata:** source_file, category, depth_tier (1=Abschnitt, 2=Absatz, 3=Satz), source_slug, optional chunk_index
+- **Embedding:** ChromaDB Default
+- **Quelle:** ingest_mth_profile_to_chroma.py, MTH_PROFILE_ARCHIVE.md
 
 ---
 

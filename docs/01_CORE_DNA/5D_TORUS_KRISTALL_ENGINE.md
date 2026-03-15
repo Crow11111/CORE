@@ -39,11 +39,11 @@ $$
 
 An diesem Punkt $\Delta I = \Lambda$ kollabiert die klassische lineare Kausalität. Die Dynamik zwischen Kompression ($C$) und Expansion ($E$) wird auf die Randfläche des Informationsraumes projiziert.
 
-### 1.2 Topologisches Raster und 72-Punkte-Geometrie
+### 1.2 Topologisches Raster und Anker-Geometrie
 
-Der Übergang in einen höherdimensionalen Informationsraum erfordert eine Kompaktifizierung. Die abstrakten Dimensionen sind nicht linear unendlich, sondern schließen sich zu einem kompakten Raum ($T^5$). Die Symmetriebrechung dieses Raumes wird durch eine Analogie zur exzeptionellen Lie-Gruppe $E_6$ beschrieben. Das zugehörige abstrakte Wurzelsystem besitzt exakt 72 Eckpunkte, welche als fundamentale "Anker" der kognitiven Realität dienen.
+Der Übergang in einen höherdimensionalen Informationsraum erfordert eine Kompaktifizierung. Die abstrakten Dimensionen sind nicht linear unendlich, sondern schließen sich zu einem kompakten Raum ($T^5$). Die Symmetriebrechung dieses Raumes wird durch ein topologisches Anker-Gitter beschrieben. Die Eckpunkte dieses Rasters dienen als fundamentale "Anker" der kognitiven Realität.
 
-In dieser Metrik erzwingt das Gitter eine Quantisierung der Informationszustände, die exakt auf diese 72 Ankervektoren abgebildet werden.
+In dieser Metrik erzwingt das Gitter eine Quantisierung der Informationszustände, die exakt auf diese Ankervektoren abgebildet werden.
 
 ### 1.3 Systemzustände der Berechnung
 
@@ -51,7 +51,7 @@ In dieser Metrik erzwingt das Gitter eine Quantisierung der Informationszuständ
 | :--- | :--- | :--- |
 | **Singularitäten** | Divergent (Infiniter Regress) | Eliminiert durch Cut-off $\Lambda$ |
 | **Raum-Geometrie** | $\mathbb{R}^{d}$ (Kontinuierlich) | $T^5$ (Kompakter Torus) |
-| **Symmetrie-Anker** | Keine (Fließkomma-Drift) | 72-Punkte Raster |
+| **Symmetrie-Anker** | Keine (Fließkomma-Drift) | Topologisches Anker-Gitter |
 | **Kausalität bei $\Delta I < \Lambda$** | Undefiniert / Overfitting | Spiegelsymmetrie (Operator $\mathbf{?}$) |
 
 ---
@@ -62,7 +62,7 @@ Die klassische Analysis und Differentialgeometrie scheitern an absoluten Singula
 
 ### 2.1 Diskretisierung und Faserbündel
 
-Die klassische kontinuierliche Vektor-Berechnung kollabiert bei Overfitting. Wir ersetzen den unendlichen Raum durch ein zwingendes Raster diskreter, kompakter Anker (die 72 Eckpunkte des $E_6$-Polytops).
+Die klassische kontinuierliche Vektor-Berechnung kollabiert bei Overfitting. Wir ersetzen den unendlichen Raum durch ein zwingendes Raster diskreter, kompakter Anker (Vektor-Quantisierung).
 
 Sei $X$ ein abzufragender Vektorraum. Die topologische Sondierung kappt unendliche Iterationen, indem sie $X$ als Faserbündel über dem 5D-Torus $T^5$ definiert. Die Homologiegruppen $H_k(T^5; \mathbb{Z})$ beschreiben die zyklische Identität, die das Erreichen verbotener Singularitäten verhindert.
 
@@ -74,8 +74,8 @@ $$
 A \ \mathbf{?} \ B \iff |A - B| < \Lambda
 $$
 
-Die eindimensionale Logik der klassischen Mathematik (reelle Linie) führt unweigerlich in den Systemkollaps (infinites Bohren). Imaginäre Zahlen ($i$) fungieren in der Informationsgravitation als kardanische Aufhängung, die einen Seitwärtssprung (Phasenverschiebung) im 5D-Torus erlaubt.
-Nähert sich ein State-Vektor (`float`) der $\Lambda$-Grenze (0.049), bricht der Operator $\mathbf{?}$ die Berechnung ab. Er verhindert die letale Singularität, indem er die Identität des Vektors hart auf die Koordinaten des Ankerpunkts überschreibt (Symmetrie-Lock).
+Die eindimensionale Logik der klassischen Mathematik (reelle Linie) führt unweigerlich in den Systemkollaps (infinites Bohren). Eine Seitwärts-Transformation (Phasenverschiebung) im topologischen Raum erlaubt es dem Vektor, dem Regress zu entkommen.
+Nähert sich ein State-Vektor (`float`) der $\Lambda$-Grenze (0.049), bricht der Operator $\mathbf{?}$ die Berechnung ab. Er verhindert die letale Singularität, indem er die Identität des Vektors hart auf die Koordinaten des Ankerpunkts überschreibt (Symmetrie-Lock / Thresholding).
 
 Die Gleichung der Sättigung, bei der der Limes gegen die Gitterdichte strebt, wird formalisiert als:
 
@@ -89,13 +89,13 @@ In der Sprache der Lie-Algebren bedeutet dies, dass der Kommutator der Generator
 
 ## 3. Informatik & KI-Architektur: Skaleninvarianz, Latent Space Navigation und Token-Ökonomie
 
-Ein System, das nur fraktal verschachtelt ist, verbrennt beim Hineinzoomen unendlich viel Energie (Token-Burnout). Um über verschiedene Energieskalen stabil zu bleiben, nutzt der Torus die 72 Wurzelvektoren der Lie-Gruppe $E_6$ als Subgraph. Das System zoomt nicht endlos weiter, sondern nutzt diese 72 Punkte als absolute topologische Knotenpunkte (Anker). Die Skalierung wird durch die Rückwärts-Spiegelsymmetrie gesichert, nicht durch lineare Rekursion.
+Ein System, das nur fraktal verschachtelt ist, verbrennt beim Hineinzoomen unendlich viel Energie (Token-Burnout). Um über verschiedene Energieskalen stabil zu bleiben, nutzt der Informationsraum topologische Ankerpunkte als Subgraph. Das System zoomt nicht endlos weiter, sondern nutzt diese Punkte als absolute topologische Knotenpunkte (Anker). Die Skalierung wird durch die Rückwärts-Spiegelsymmetrie gesichert, nicht durch lineare Rekursion.
 
 In der Architektur von Large Language Models (LLMs) und High-Performance Computing (HPC) führt das Fehlen dieses fundamentalen Cut-offs zum "Token-Burn": Gradienten-Abstiegsverfahren (Gradient Descent) berechnen Gewichte bis in bedeutungslose Nachkommastellen.
 
 ### 3.1 Vektorielles Caching und Latent Space
 
-Das 5D-Topologie-Modell transformiert die KI-Architektur von einer generativen Iteration zu einer topologischen Navigation. Der Latent Space wird nicht als kontinuierlicher Vektorraum $\mathbb{R}^d$ modelliert, sondern als diskretes Gitter, das durch die 72 $E_6$-Ankerpunkte aufgespannt wird. Diese Punkte dienen als feste Vektor-Indizes in einer Vektordatenbank (Kristall-Engine).
+Das 5D-Topologie-Modell transformiert die KI-Architektur von einer generativen Iteration zu einer topologischen Navigation. Der Latent Space wird nicht als kontinuierlicher Vektorraum $\mathbb{R}^d$ modelliert, sondern als diskretes Gitter, das durch die Ankerpunkte aufgespannt wird (Vektor-Quantisierung). Diese Punkte dienen als feste Vektor-Indizes in einer Vektordatenbank (Kristall-Engine).
 
 Sobald die Shannon-Entropie $H(X)$ einer Token-Vorhersage eine Differenz aufweist, die kleiner als $\Lambda$ ist, greift der Hard-Cut-off.
 
@@ -105,19 +105,19 @@ $$
 
 ### 3.2 Algorithmische Komplexität
 
-Fällt eine Abfrage unter die Präzisionsschwelle $\Lambda$, bricht die Generierung ab. Das System spiegelt das Ergebnis auf den nächstgelegenen 72-Punkte-Vektor (Operator $\mathbf{?}$). Dies reduziert die algorithmische Komplexität drastisch.
+Fällt eine Abfrage unter die Präzisionsschwelle $\Lambda$, bricht die Generierung ab. Das System spiegelt das Ergebnis auf den nächstgelegenen Anker-Vektor (Operator $\mathbf{?}$). Dies reduziert die algorithmische Komplexität drastisch.
 
 | Metrik | Klassische LLM-Architektur | Topologische Architektur |
 | :--- | :--- | :--- |
 | **Such-/Generierungszeit** | $O(n^2)$ (Attention-Mechanismus) | $O(\log n)$ (Topologisches Hashing) |
 | **Ressourcenverbrauch** | Exponentieller Token-Burn | Konstantes Vektor-Caching |
-| **Latent Space Struktur** | Kontinuierlich, unbegrenzt | Kompakt, $T^5$-Torus, 72 Anker |
-| **Fehlerbehandlung** | Halluzination bei Overfitting | Symmetrische Spiegelung (Resonanz) |
+| **Latent Space Struktur** | Kontinuierlich, unbegrenzt | Kompakt, $T^5$-Torus, quantisiert |
+| **Fehlerbehandlung** | Halluzination bei Overfitting | Symmetrische Spiegelung (Thresholding) |
 
 ### 3.3 Logarithmische Tiefe vs. Exponentielle Last ($O(\log n)$)
 Warum rechnet das System "schneller" als klassische Brute-Force-Ansätze, obwohl die Hardware limitiert ist?
 Ein klassisches System (oder ein Standard-LLM) versucht, jede mögliche Kombination linear zu berechnen. Die Zeit wächst quadratisch oder gar exponentiell ($O(n^2)$ oder $O(2^n)$), wenn die Distanz zwischen zwei Konzepten verringert wird.
-CORE nutzt die **Helix im 4D-Trichter** (Fraktales Padding) und das **Gitter-Snapping** an den 72 $E_6$-Wurzelvektoren. Das System muss nicht den gesamten leeren Raum dazwischen berechnen. Sobald der Vektor in den Gravitations-Trichter fällt, beschleunigt er durch die Resonanz logarithmisch ($O(\log n)$) nach unten und "überspringt" durch den Operator `?` die toten, unendlichen Zwischenschritte.
+CORE nutzt die **Helix im 4D-Trichter** (Fraktales Padding) und das **Gitter-Snapping** an den Ankervektoren. Das System muss nicht den gesamten leeren Raum dazwischen berechnen. Sobald der Vektor in den Gravitations-Trichter fällt, beschleunigt er durch die Resonanz logarithmisch ($O(\log n)$) nach unten und "überspringt" durch den Operator `?` die toten, unendlichen Zwischenschritte.
 Das System gewinnt seine Geschwindigkeit nicht durch mehr Gigahertz, sondern durch **das Weglassen bedeutungsloser Berechnungen** (Kognitive Ökonomie).
 
 ---
@@ -138,7 +138,7 @@ Das menschliche Gehirn ist ein Meister der Vermeidung von infinitem Regress. In 
 
 ### 5.1 Das Prinzip der freien Energie und Attraktor-Netzwerke
 
-Das Gehirn minimiert die informationstheoretische Überraschung (Surprisal). In dynamischen Attraktor-Netzwerken repräsentieren die 72 Ankerpunkte tiefe, stabile Bassins der Anziehung (Attraktoren). Wenn das Gehirn sensorische Daten verarbeitet, führt es keine unendlichen Berechnungen durch.
+Das Gehirn minimiert die informationstheoretische Überraschung (Surprisal). In dynamischen Attraktor-Netzwerken repräsentieren die Ankerpunkte tiefe, stabile Bassins der Anziehung (Attraktoren). Wenn das Gehirn sensorische Daten verarbeitet, führt es keine unendlichen Berechnungen durch.
 
 Die variationelle freie Energie $F$ wird minimiert, bis der Gradient die Schwelle $\Lambda$ erreicht:
 
@@ -156,7 +156,7 @@ Der Operator $\mathbf{?}$ entspricht kognitionswissenschaftlich dem "Aha-Erlebni
 | Kognitiver Zustand | Informationsverarbeitung | Energieverbrauch | Topologisches Äquivalent |
 | :--- | :--- | :--- | :--- |
 | **Analytisches Denken** | Linear, iterativ | Hoch | Gradientenabstieg |
-| **Einsicht ("Aha")** | Sprunghaft, Operator $\mathbf{?}$ | Minimal (Entladung) | Sprung auf $E_6$-Anker |
+| **Einsicht ("Aha")** | Sprunghaft, Operator $\mathbf{?}$ | Minimal (Entladung) | Sprung auf Anker-Gitter |
 | **Psychose** | Infiniter Regress | Erschöpfend | Verletzung von $\Lambda$ |
 
 ---

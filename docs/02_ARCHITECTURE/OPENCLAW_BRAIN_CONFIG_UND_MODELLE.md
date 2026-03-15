@@ -88,7 +88,33 @@ Nach Änderungen: Config ohne REDACTED/$VAR auf den VPS deployen, Container neus
 
 ---
 
-## 4. Empfohlener Ablauf
+## 4. OpenClaw-Provider für Ollama (lokal/VPS)
+
+Damit OC Brain ein **lokales Ollama** (z. B. auf demselben Host oder VPS Port 11434) nutzen kann, Provider in `openclaw.json` ergänzen:
+
+```json
+"models": {
+  "providers": {
+    "ollama": {
+      "baseUrl": "http://localhost:11434/v1",
+      "models": [
+        {"id": "qwen2.5:14b", "name": "Qwen 2.5 14B"},
+        {"id": "llama3.2:3b", "name": "Llama 3.2 3B"}
+      ]
+    }
+  }
+}
+```
+
+- **VPS:** Wenn Ollama auf demselben Host läuft: `baseUrl: "http://127.0.0.1:11434/v1"` (localhost/127.0.0.1).
+- **Agent-Modell:** `agents.list[].model` bzw. `agents.defaults.model.primary` = `ollama/qwen2.5:14b` (Format `provider/model-id`).
+- **Alias:** Unter `agents.defaults.models` Eintrag `"ollama/qwen2.5:14b": { "alias": "Qwen 2.5 14B" }` hinzufügen.
+
+Das Deploy-Skript `deploy_openclaw_config_vps.py` fügt derzeit nur Google und Anthropic hinzu; Ollama muss manuell in der Config ergänzt oder das Skript erweitert werden.
+
+---
+
+## 5. Empfohlener Ablauf
 
 1. Lokal: `.env` mit gültigen Werten für `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `OPENCLAW_GATEWAY_TOKEN`.
 2. Deploy so ausführen, dass **nur echte Werte** aus der `.env` in die Config geschrieben werden (z. B. `python -m src.scripts.deploy_openclaw_config_vps` mit Env-Injection).

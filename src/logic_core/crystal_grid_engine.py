@@ -30,7 +30,7 @@ class CrystalGridEngine:
     Engine zur Emulation des topologischen Gitters.
     Vektoren werden nicht 'berechnet', sondern auf ihre Resonanz zum Gitter gespiegelt.
     """
-    
+
     _anchors: List[List[float]] = []
 
     @classmethod
@@ -41,9 +41,9 @@ class CrystalGridEngine:
         """
         if cls._anchors:
             return
-            
+
         # Deterministischer Seed, damit die Topologie bei jedem Start identisch ist
-        rng = random.Random(2210) 
+        rng = random.Random(2210)
         for _ in range(72):
             vec = [rng.gauss(0, 1) for _ in range(EMBEDDING_DIM)]
             # Normalisierung auf Einheitskreis (Sphäre)
@@ -71,7 +71,7 @@ class CrystalGridEngine:
         """
         sign = -1.0 if value < 0 else 1.0
         abs_val = abs(value)
-        
+
         # Verbot der 0.0 (Kältetod) und 1.0 (Singularität)
         if abs_val == 0.0:
             return BARYONIC_DELTA * sign
@@ -83,7 +83,7 @@ class CrystalGridEngine:
         # 1. Ist die Abweichung extrem gering (<= 0.049)?
         if folded_val <= BARYONIC_DELTA:
             logger.debug(f"[CRYSTAL] Phase diff <= {BARYONIC_DELTA}. Snapping to Symmetrie-Lock {RESONANCE_LOCK}")
-            return BARYONIC_DELTA * sign 
+            return BARYONIC_DELTA * sign
 
         # 2. Verbot der 0.5-Mitte: Harter Shift auf 0.51
         if SYMMETRY_BREAK_LOW < folded_val < SYMMETRY_BREAK_HIGH:
@@ -148,17 +148,17 @@ class CrystalGridEngine:
         Der Raum kollabiert auf das Kristallgitter.
         """
         cls._initialize_e6_roots()
-        
+
         best_anchor_id = -1
         max_resonance = -1.0
-        
+
         # Finde den Anker mit der höchsten komplexen Resonanz
         for idx, anchor_vec in enumerate(cls._anchors):
             resonance = cls.calculate_resonance(embedding, anchor_vec)
             if resonance > max_resonance:
                 max_resonance = resonance
                 best_anchor_id = idx
-                
+
         # Topologischer Cut-off: Der Vektor verliert seine ursprünglichen Nachkommastellen
         # und WIRD zum Ankerpunkt. Das ist die Kondensierung.
         logger.debug(f"[CRYSTAL] Vector snapped to E_6 Anchor {best_anchor_id} (Resonanz: {max_resonance:.3f})")

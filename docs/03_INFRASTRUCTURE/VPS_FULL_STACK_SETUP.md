@@ -16,8 +16,17 @@
 | Container | Port | Netzwerk | Funktion |
 |---|---|---|---|
 | homeassistant | 18123 | atlas_net | Home Assistant Docker; Remote HA nach Scout |
-| openclaw-admin | 18789 | atlas_net | OC Gehirn; Gemini 3.1 Pro, Claude 4.6, Nexos, WhatsApp |
-| openclaw-spine | 18790 | atlas_net | OC Spine; sauberes System, nutzt admin als Gateway |
+| openclaw-admin | 18789 | atlas-core_atlas_net | OC Gehirn; Ollama (qwen2.5:7b), Claude, WhatsApp |
+| openclaw-spine | 18790 | atlas-core_atlas_net | OC Spine; sauberes System, nutzt admin als Gateway |
+| evolution-api | 55775 | evolution-api-yxa5_default | WhatsApp Multi-Device API Hub (Evolution API) |
+| kong | 32773-32775 | kong-s7rk_default | API Gateway (zentrales Traffic-Routing) |
+| monica | 32769 | monica-0mip_default | Personal CRM / Kontaktverwaltung |
+| atlas_agi_core | 8080 | atlas_net | AGI-State Persistenz-Layer |
+| atlas_chroma_state | intern | atlas_net | ChromaDB 0.4.24 (Legacy AGI-State) |
+| atlas_postgres_state | intern | atlas_net | pgvector/pg15 (AGI-State DB) |
+| chroma-uvmy | 32768 | chroma-uvmy_default | ChromaDB 1.0.15 (primaere Vektor-DB) |
+| mcp-server | 8001 | bridge | MCP Server fuer Tool-Integration |
+| openclaw-wslc (Hostinger) | 55800 | openclaw-wslc_default | Hostinger One-Click OpenClaw Instanz |
 
 ## Netzwerk-Isolation
 
@@ -29,8 +38,9 @@
 
 ## Firewall (ufw)
 
-Offen: 22/tcp, 18789/tcp, 18790/tcp, 18123/tcp, 443/tcp, 80/tcp.
+Offen: 22/tcp, 18789/tcp, 18790/tcp, 18123/tcp, 443/tcp, 80/tcp, 11434/tcp (Ollama), 55775/tcp (Evolution API), 55800/tcp (Hostinger OC).
 Geblockt: 8000/tcp (ChromaDB nur intern).
+Ollama: systemd-Daemon, bound auf 0.0.0.0:11434, Modell qwen2.5:7b.
 
 ---
 
@@ -84,8 +94,15 @@ Geblockt: 8000/tcp (ChromaDB nur intern).
 
 ---
 
+## Ollama (Strang B)
+
+Lokales LLM auf demselben VPS: siehe **VPS_OLLAMA_SETUP.md**. Installation: `python -m src.scripts.install_ollama_vps`.
+
+---
+
 ## Referenzen
 
+- VPS_OLLAMA_SETUP.md (Ollama Port 11434, Modell, Firewall)
 - OPENCLAW_ADMIN_ARCHITEKTUR.md
 - PROJEKT_ANNAHMEN_UND_KORREKTUREN.md
 - NEXOS_EINBINDUNG.md

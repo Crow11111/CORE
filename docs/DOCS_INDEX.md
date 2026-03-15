@@ -58,6 +58,10 @@ Zentrale Übersicht der Projekt-Struktur.
 
 ## 5. AUDIT & PLANNING (`docs/05_AUDIT_PLANNING/`)
 **Status, Backlog & Reviews.**
+- `OC_BRAIN_REAKTIVIERUNG_PLAN.md` – Vollständiger Plan (Stränge A–E, Abnahme A1–A7)
+- `OC_BRAIN_AUFTRAG_AUSFUEHRUNG.md` – Ausführungsauftrag an Team (alle Stränge umsetzen lassen)
+- `OC_BRAIN_PLAN_ADDENDUM_VIDEO_RAG.md` – YouTube Gemini-2-RAG verbindlich, Orchestrierungs-Direktive
+- `YOUTUBE_TRANSCRIPT_GEMINI_RAG.md` – Transkript „Dieses Google Modell verändert RAG“ (LNhvEO_JWVM)
 - `OFFENE_PUNKTE_AUDIT.md` – Technisches Backlog & Schulden
 - `UMSETZUNGSPLANUNG.md` – Aktueller Projektplan
 - `SIGMA70_KAMMER1_TOPOLOGIE.md` – Sigma-70 Audit: Topologie & Systemtheorie

@@ -92,9 +92,9 @@ Das "UII Whitepaper" ist zu 70% wissenschaftliche Anmaßung. Die Übertragung de
 
 **Roger Penrose:** "Ich kritisiere Punkt 2: 'Imaginäre Zahlen fungieren als kardanische Aufhängung'. Benutzt euer Python-Code tatsächlich komplexe Zahlen (Datentyp `complex`), um Phasenverschiebungen im Vektorraum zu berechnen, bevor er snappt? Wenn ja, ist das eine saubere Rotation im Phasenraum. Wenn ihr nur reelle Floats benutzt, ist das Wort 'Imaginäre Zahlen' wieder nur Poesie."
 
-**URTEIL ZU AKTE 5 (Der Reine Kern):** **GENEHMIGT MIT AUFLAGEN.** 
-Dieser reine Kern beschreibt eine exzellente, robuste und hocheffiziente Software-Architektur für autonome Agenten. Er eliminiert den infiniten Regress nicht auf kosmologischer Ebene, sondern pragmatisch im eigenen Latent Space. 
-**Auflagen zur Ent-Mystifizierung:** 
+**URTEIL ZU AKTE 5 (Der Reine Kern):** **GENEHMIGT MIT AUFLAGEN.**
+Dieser reine Kern beschreibt eine exzellente, robuste und hocheffiziente Software-Architektur für autonome Agenten. Er eliminiert den infiniten Regress nicht auf kosmologischer Ebene, sondern pragmatisch im eigenen Latent Space.
+**Auflagen zur Ent-Mystifizierung:**
 1. `E_6` muss gestrichen werden, falls die Vektordatenbank nicht physisch exakt 72 mathematisch korrekte E_6-Knoten enthält.
 2. Der Begriff "Kondensierung" in Punkt 4 muss durch "Vektor-Quantisierung / Latent Space Snapping" ersetzt werden.
 3. Wenn keine komplexen Zahlen programmiert sind, muss "Imaginäre Zahlen" in Punkt 2 gestrichen werden.

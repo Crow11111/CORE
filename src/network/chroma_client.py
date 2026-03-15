@@ -188,6 +188,7 @@ COLLECTION_CORE_DIRECTIVES = "core_directives"
 COLLECTION_SIMULATION_EVIDENCE = "simulation_evidence"
 COLLECTION_CONTEXT = "context_field"
 COLLECTION_WORLD_KNOWLEDGE = "world_knowledge"
+COLLECTION_MTH_USER_PROFILE = "mth_user_profile"
 
 CHROMA_MAX_SIZE_MB = int(os.getenv("CHROMA_MAX_SIZE_MB", "5000"))
 
@@ -321,6 +322,18 @@ async def get_core_directives_collection():
     return await get_collection(COLLECTION_CORE_DIRECTIVES, create_if_missing=True)
 
 
+import chromadb
+from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
+
+_default_embedder = None
+
+def _get_embedding(text: str) -> list[float]:
+    global _default_embedder
+    if _default_embedder is None:
+        _default_embedder = DefaultEmbeddingFunction()
+    # Returns a list of embeddings
+    return _default_embedder([text])[0]
+
 async def add_session_turn(
     turn_id: str,
     document: str,
@@ -336,18 +349,27 @@ async def add_session_turn(
         return False
     try:
         col = await get_session_logs_collection()
+        
+        # 5D Kristall-Logik: Embedding generieren und auf Anker snappen
+        raw_emb = await asyncio.to_thread(_get_embedding, document)
+        anchor_id, snapped_emb = CrystalGridEngine.snap_to_grid(raw_emb)
+        
+        metadaten = {
+            "source": source,
+            "session_date": session_date,
+            "turn_number": turn_number,
+            "speaker": speaker,
+            "topics": topics,
+            "ring_level": ring_level,
+            "e6_anchor": anchor_id  # Topologischer Beweis im Metadatum
+        }
+        
         await asyncio.to_thread(
             col.add,
             ids=[turn_id],
             documents=[document],
-            metadatas=[{
-                "source": source,
-                "session_date": session_date,
-                "turn_number": turn_number,
-                "speaker": speaker,
-                "topics": topics,
-                "ring_level": ring_level,
-            }]
+            embeddings=[snapped_emb],
+            metadatas=[metadaten]
         )
         return True
     except Exception as e:
@@ -627,6 +649,28 @@ async def add_evidence_validated(
 async def get_world_knowledge_collection():
     """Collection 'world_knowledge' fuer autonome Datenakquise (Scraper-Pipeline)."""
     return await get_collection(COLLECTION_WORLD_KNOWLEDGE, create_if_missing=True)
+
+
+async def get_mth_user_profile_collection():
+    """Collection 'mth_user_profile' fuer Operator-Profil (OC Brain RAG, Tier 1–3)."""
+    return await get_collection(COLLECTION_MTH_USER_PROFILE, create_if_missing=True)
+
+
+async def query_mth_user_profile(query_text: str, n_results: int = 10, where_filter: dict = None) -> dict:
+    """Semantische Suche ueber MTH-Operator-Profil. Async."""
+    await _apply_fractal_padding_async()
+    try:
+        col = await get_mth_user_profile_collection()
+        kwargs = {"query_texts": [query_text], "n_results": n_results}
+        if where_filter:
+            kwargs["where"] = where_filter
+        result = await asyncio.to_thread(col.query, **kwargs)
+        if "distances" in result and result["distances"]:
+            result["distances"] = _apply_crystal_engine_operator(result["distances"])
+        return result
+    except Exception as e:
+        print(f"[ChromaDB] MTH User Profile Query fehlgeschlagen: {e}")
+        return {"ids": [[]], "documents": [[]], "metadatas": [[]], "distances": [[]]}
 
 
 async def query_world_knowledge(query_text: str, n_results: int = 10, where_filter: dict = None) -> dict:

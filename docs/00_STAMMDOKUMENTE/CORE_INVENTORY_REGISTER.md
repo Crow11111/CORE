@@ -19,7 +19,9 @@
 | **Orchestrierung Linux** | `docs/02_ARCHITECTURE/OMEGA_LINUX_ORCHESTRATION.md` | Topologie Arch, Health-Skripte, Testmatrix. |
 | **Bibliothek Kern** | `docs/BIBLIOTHEK_KERN_DOKUMENTE.md` | Zentraler Einstieg; Index 00–05, Was wurde gemacht, Wo nachschauen. |
 | **Infrastruktur** | `docs/03_INFRASTRUCTURE/` | VPS-Setup, Docker-Sandbox, Backup-Pläne. |
+| **VPS-Knoten & Flüsse** | `docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md` | Monica, Kong, Evolution, DBs: Zweck, Pull/Push-Matrix, Einbindung. |
 | **Ollama VPS (Strang B)** | `docs/03_INFRASTRUCTURE/VPS_OLLAMA_SETUP.md` | Ollama auf Hostinger-VPS, Port 11434, Modell, Firewall. |
+| **Vollkreis-Plan** | `docs/05_AUDIT_PLANNING/OMEGA_VOLLKREIS_PLAN.md` | Geschlossene Kette, Team-Arbeitspakete A–G, Linux-Auswirkungen. |
 | **Prozesse** | `docs/04_PROCESSES/` | Workflows, Sicherheitsrat, Deployment-Regeln. |
 | **Audit & Planung** | `docs/05_AUDIT_PLANNING/` | Session Logs, technische Schulden, Roadmaps. |
 | **OC Brain Plan** | `docs/05_AUDIT_PLANNING/OC_BRAIN_REAKTIVIERUNG_PLAN.md` | Vollständiger Plan Stränge A–E, Abnahme A1–A7. |
@@ -58,7 +60,7 @@
 | **Key Script** | `src/scripts/verify_oc_brain_deliverables.py` | Abnahme OC Brain Plan (Verify, don't trust). |
 | **Key Script** | `src/scripts/install_ollama_vps.py` | Strang B: Ollama auf VPS installieren, Modell pullen, api/tags prüfen. |
 | **Key Script** | `src/scripts/ingest_mth_profile_to_chroma.py` | MTH-Profil Tiefen-Chunking → ChromaDB mth_user_profile. |
-| **Key Script** | `src/scripts/verify_vps_stack.py` | VPS: SSH, docker ps, Chroma v2 heartbeat (siehe BIBLIOTHEK „Wo nachschauen“). |
+| **Key Script** | `src/scripts/verify_vps_stack.py` | VPS: SSH, docker ps, Chroma v2 heartbeat; optionale Knoten Evolution, Monica, Kong (siehe VPS_KNOTEN_UND_FLUSSE). |
 | **Utils** | `src/utils/` | Circuit-Breaker, Zeit-Metriken, Logging-Helfer. |
 
 ---

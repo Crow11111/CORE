@@ -72,6 +72,7 @@
 | Dokument | Pfad | Funktion |
 |----------|------|----------|
 | **VPS Full-Stack** | `@docs/03_INFRASTRUCTURE/VPS_FULL_STACK_SETUP.md` | Hostinger, Container, Ports, Firewall. |
+| **VPS-Knoten & Flüsse** | `@docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md` | Monica, Kong, Evolution, DBs: Zweck, Pull/Push-Matrix, Einbindung. |
 | **Backup (final)** | `@docs/03_INFRASTRUCTURE/BACKUP_PLAN_FINAL.md` | Einziges Ziel VPS, daily_backup.py, Chroma Cold-Backup. |
 | **WhatsApp E2E HA** | `@docs/03_INFRASTRUCTURE/WHATSAPP_E2E_HA_SETUP.md` | rest_command, Automation, E2E-Test. |
 | **VPS Ollama** | `@docs/03_INFRASTRUCTURE/VPS_OLLAMA_SETUP.md` | Ollama auf VPS (Strang B). |
@@ -103,12 +104,14 @@
 | **Umsetzungsplanung** | `@docs/05_AUDIT_PLANNING/UMSETZUNGSPLANUNG.md` | Roadmap. |
 | **OC Brain Plan** | `@docs/05_AUDIT_PLANNING/OC_BRAIN_REAKTIVIERUNG_PLAN.md` | Stränge A–E, Abnahme. |
 | **Session-Logs** | `@docs/05_AUDIT_PLANNING/SESSION_LOG_*.md` | Durchgeführte Schritte pro Session. |
-| **Orchestrierung Linux** | `@docs/02_ARCHITECTURE/OMEGA_LINUX_ORCHESTRATION.md` | Topologie Arch, Modell-Matrix, Health-Skripte, Testmatrix. Detailplan: Cursor Plan „omega-linux-reorchestrierung“. |
+| **Orchestrierung Linux** | `@docs/02_ARCHITECTURE/OMEGA_LINUX_ORCHESTRATION.md` | Topologie Arch, Modell-Matrix, Health-Skripte, Testmatrix, Push/Pull-Verweis. |
+| **Vollkreis-Plan** | `@docs/05_AUDIT_PLANNING/OMEGA_VOLLKREIS_PLAN.md` | Geschlossene Kette, Team-Arbeitspakete (A–G), Linux-Auswirkungen, was zieht/drückt wann. |
 
 ---
 
 ## Was wurde gemacht (Changelog Kern)
 
+- **2026-03-18 (Vollkreis):** VPS_KNOTEN_UND_FLUSSE.md angelegt (Monica, Kong, Evolution, DBs; Pull/Push-Matrix). OMEGA_VOLLKREIS_PLAN.md (Team-Arbeitspakete A–G, Linux-Auswirkungen, geschlossene Kette). verify_vps_stack.py um optionale Knoten (Evolution, Monica, Kong) erweitert. OMEGA_LINUX_ORCHESTRATION um VPS-Knoten und Verweis auf Vollkreis/Knoten-Doc ergänzt.
 - **2026-03-18 (Phase 3):** OMEGA_LINUX_ORCHESTRATION.md angelegt (Topologie, Health-Skripte, Testmatrix). BIBLIOTHEK Sektion 2 um Verweis ergänzt.
 - **2026-03-18 (Phase 2):** Infrastruktur verifiziert: Dreadnought (Backend/Frontend/Daemons/Ollama aktiv, Ports 8000/3000), VPS (SSH, docker, Chroma v2 heartbeat OK). verify_vps_stack.py angelegt.
 - **2026-03-18 (Phase 1 Orchestrierung):** AI_MODEL_CAPABILITIES.md angelegt (Gemini, Anthropic, Ollama, Nexos; Rollen-Mapping). `src/ai/model_registry.py` (Env-basierte Registry), `src/ai/api_inspector.py` (list_gemini_models, list_ollama_models). BIBLIOTHEK um Verweis auf AI_MODEL_CAPABILITIES ergänzt.

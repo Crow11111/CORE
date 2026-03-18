@@ -15,6 +15,9 @@
 | **Axiom 0** | `docs/01_CORE_DNA/AXIOM_0_AUTOPOIESIS.md` | Die Autopoiesis des Gitters (x^2=x+1). |
 | **White Paper** | `docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION.md` | Theorie-Synthese & Topologie. |
 | **Architektur** | `docs/02_ARCHITECTURE/` | System-Design, Schnittstellen, Flow-Diagramme. |
+| **AI-Modelle** | `docs/02_ARCHITECTURE/AI_MODEL_CAPABILITIES.md` | Modell-IDs, Rollen-Mapping, Token-Richtwerte. |
+| **Orchestrierung Linux** | `docs/02_ARCHITECTURE/OMEGA_LINUX_ORCHESTRATION.md` | Topologie Arch, Health-Skripte, Testmatrix. |
+| **Bibliothek Kern** | `docs/BIBLIOTHEK_KERN_DOKUMENTE.md` | Zentraler Einstieg; Index 00–05, Was wurde gemacht, Wo nachschauen. |
 | **Infrastruktur** | `docs/03_INFRASTRUCTURE/` | VPS-Setup, Docker-Sandbox, Backup-Pläne. |
 | **Ollama VPS (Strang B)** | `docs/03_INFRASTRUCTURE/VPS_OLLAMA_SETUP.md` | Ollama auf Hostinger-VPS, Port 11434, Modell, Firewall. |
 | **Prozesse** | `docs/04_PROCESSES/` | Workflows, Sicherheitsrat, Deployment-Regeln. |
@@ -39,6 +42,8 @@
 | **Logic Core** | `src/logic_core/` | Takt-Gate, Gravitator, Veto-Logik, Filter. |
 | **Crystal Engine** | `src/logic_core/crystal_grid_engine.py` | Topologisches Gitter-Snapping (Axiom 0). |
 | **AI Interface** | `src/ai/` | LLM-Routing, ResilientLLMInterface, Prompt-Kompression. |
+| **Model Registry** | `src/ai/model_registry.py` | Env-basierte Modell-IDs und Rollen-Mapping (siehe AI_MODEL_CAPABILITIES.md). |
+| **API Inspector** | `src/ai/api_inspector.py` | list_gemini_models, list_ollama_models für Task-Router/Agenten. |
 | **Network** | `src/network/` | Chroma-Client, OpenClaw-Client, HA-Connector. |
 | **Voice** | `src/voice/` | TTS-Dispatcher, Smart-Command-Parser, Listener. |
 
@@ -53,6 +58,7 @@
 | **Key Script** | `src/scripts/verify_oc_brain_deliverables.py` | Abnahme OC Brain Plan (Verify, don't trust). |
 | **Key Script** | `src/scripts/install_ollama_vps.py` | Strang B: Ollama auf VPS installieren, Modell pullen, api/tags prüfen. |
 | **Key Script** | `src/scripts/ingest_mth_profile_to_chroma.py` | MTH-Profil Tiefen-Chunking → ChromaDB mth_user_profile. |
+| **Key Script** | `src/scripts/verify_vps_stack.py` | VPS: SSH, docker ps, Chroma v2 heartbeat (siehe BIBLIOTHEK „Wo nachschauen“). |
 | **Utils** | `src/utils/` | Circuit-Breaker, Zeit-Metriken, Logging-Helfer. |
 
 ---

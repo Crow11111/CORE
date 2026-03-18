@@ -15,14 +15,14 @@ Dieser Dialog enthält fundamentale Ableitungen:
 - Keimzelle der Dynamik
 """
 import sys
-sys.path.insert(0, "c:/CORE")
+sys.path.insert(0, "/OMEGA_CORE")
 
 from datetime import datetime
 
 def main():
     import chromadb
     
-    CHROMA_LOCAL_PATH = r"c:\CORE\data\chroma_db"
+    CHROMA_LOCAL_PATH = r"/OMEGA_CORE\data\chroma_db"
     client = chromadb.PersistentClient(path=CHROMA_LOCAL_PATH)
     
     col_directives = client.get_or_create_collection(

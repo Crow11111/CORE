@@ -12,7 +12,7 @@
 | Parameter | Wert |
 |-----------|------|
 | VPS | 187.77.68.250 |
-| SSH Key | `c:\CORE\.ssh\id_ed25519_hostinger` |
+| SSH Key | `/OMEGA_CORE\.ssh\id_ed25519_hostinger` |
 | User | root |
 | Port | 8001 |
 
@@ -24,7 +24,7 @@
 ## Automatischer Deploy (empfohlen)
 
 ```powershell
-# .env: VPS_HOST=187.77.68.250, VPS_USER=root, VPS_SSH_KEY=c:\CORE\.ssh\id_ed25519_hostinger
+# .env: VPS_HOST=187.77.68.250, VPS_USER=root, VPS_SSH_KEY=/OMEGA_CORE\.ssh\id_ed25519_hostinger
 python -m src.scripts.deploy_vps_slim
 ```
 
@@ -34,13 +34,13 @@ Kopiert `src/` + `Dockerfile.vps`, baut Docker-Image, startet Container auf Port
 
 ```powershell
 # 1. SSH-Verbindung testen
-ssh -i c:\CORE\.ssh\id_ed25519_hostinger root@187.77.68.250 "echo OK"
+ssh -i /OMEGA_CORE\.ssh\id_ed25519_hostinger root@187.77.68.250 "echo OK"
 
 # 2. Code + .env auf VPS kopieren (tar+scp wie deploy_agi_state.py)
 # Oder: python -m src.scripts.deploy_vps_slim
 
 # 3. Auf VPS: Service starten
-ssh -i c:\CORE\.ssh\id_ed25519_hostinger root@187.77.68.250
+ssh -i /OMEGA_CORE\.ssh\id_ed25519_hostinger root@187.77.68.250
 cd /opt/core-core
 source .venv/bin/activate  # oder: python -m venv .venv && pip install -r src/requirements.txt
 VPS_SLIM_PORT=8001 python -m uvicorn src.api.vps_slim:app --host 0.0.0.0 --port 8001

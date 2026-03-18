@@ -22,7 +22,7 @@ from src.network.openclaw_client import send_message_to_agent_async, is_configur
 from src.api.entry_adapter import normalize_request, NormalizedEntry
 from src.logic_core.takt_gate import check_takt_zero
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 
 async def _mirror_to_oc_brain(text: str, sender: str, msg_type: str = "whatsapp") -> None:

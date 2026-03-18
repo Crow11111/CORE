@@ -6,13 +6,13 @@ Collections laut Schnittstelle: shell_knowledge_graph, core_brain_registr, krypt
 import os
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 # Remote (VPS): CHROMA_HOST + CHROMA_PORT (Standard 8000)
 CHROMA_HOST = os.getenv("CHROMA_HOST", "").strip()
 CHROMA_PORT = int(os.getenv("CHROMA_PORT", "8000"))
 # Lokal (Dreadnought/Windows), wenn CHROMA_HOST leer
-CHROMA_LOCAL_PATH = os.getenv("CHROMA_LOCAL_PATH", r"c:\CORE\data\chroma_db")
+CHROMA_LOCAL_PATH = os.getenv("CHROMA_LOCAL_PATH", r"/OMEGA_CORE\data\chroma_db")
 
 # Collection-Namen laut 03_DATENBANK_VECTOR_STORE_OSMIUM.md + ATLAS Neocortex V1
 COLLECTION_SHELL = "shell_knowledge_graph"

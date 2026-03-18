@@ -10,8 +10,8 @@ os.environ["PYTHONIOENCODING"] = "utf-8"
 sys.stdout.reconfigure(encoding="utf-8")
 
 from dotenv import load_dotenv
-load_dotenv("C:/CORE/.env")
-sys.path.append("C:/CORE")
+load_dotenv("/OMEGA_CORE/.env")
+sys.path.append("/OMEGA_CORE")
 
 from src.network.chroma_client import query_simulation_evidence
 

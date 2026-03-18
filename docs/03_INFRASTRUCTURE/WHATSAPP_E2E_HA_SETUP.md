@@ -74,7 +74,7 @@ Details (inkl. OC-Prozedere und Antwortformat [CORE]/[OC]): **docs/WHATSAPP_ROUT
 **Voraussetzungen:** HA erreichbar, rest_command und Automation wie oben eingerichtet, CORE-CORE-API läuft und ist von HA aus erreichbar.
 
 ```bash
-cd C:\CORE
+cd /OMEGA_CORE
 python -m src.scripts.run_whatsapp_e2e_ha
 ```
 
@@ -119,7 +119,7 @@ OC (OpenClaw) hat einen **eigenen** WhatsApp-Kanal (Gateway mit Baileys auf dem 
 **E2E-Test (schnell prüfbar):**
 
 ```bash
-cd C:\CORE
+cd /OMEGA_CORE
 python -m src.scripts.run_whatsapp_e2e_ha
 ```
 

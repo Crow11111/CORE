@@ -238,14 +238,14 @@ ChromaDB läuft im Container auf dem VPS. Ein Cold-Backup (Container kurz stoppe
 
 - **Zeitpunkt:** Täglich, z. B. 04:00 Uhr (Windows: Task Scheduler; Linux: cron).
 - **Windows (Task Scheduler):**
-  - **Programm:** `C:\CORE\scripts\run_daily_backup.bat`  
-  - **Arbeitsverzeichnis:** `C:\CORE`  
-  - Oder direkt: Programm `python`, Argument `C:\CORE\src\scripts\daily_backup.py`, Starten in `C:\CORE`.
+  - **Programm:** `/OMEGA_CORE\scripts\run_daily_backup.bat`  
+  - **Arbeitsverzeichnis:** `/OMEGA_CORE`  
+  - Oder direkt: Programm `python`, Argument `/OMEGA_CORE\src\scripts\daily_backup.py`, Starten in `/OMEGA_CORE`.
 - **Linux (cron):**  
   `0 4 * * * cd /pfad/zu/CORE && python3 src/scripts/daily_backup.py >> logs/backup.log 2>&1`
 - **Windows Task Scheduler (einmalig anlegen):**  
   Als Administrator in cmd/PowerShell:  
-  `schtasks /create /tn "CORE Daily Backup" /tr "C:\CORE\scripts\run_daily_backup.bat" /sc daily /st 04:00 /ru SYSTEM`  
+  `schtasks /create /tn "CORE Daily Backup" /tr "/OMEGA_CORE\scripts\run_daily_backup.bat" /sc daily /st 04:00 /ru SYSTEM`  
   (Oder GUI: Aufgabenplanung → Aufgabe erstellen → Trigger täglich 04:00, Aktion: Batch-Datei oder `python …\daily_backup.py`.)
 
 ### 7. Aufbewahrung (Retention)
@@ -328,7 +328,7 @@ Diese Anleitung beschreibt, wie eine Logitech Brio Kamera in `go2rtc` **auf dem 
 Um den exakten Namen der Kamera für FFmpeg zu finden, führe folgenden Befehl aus:
 
 ```powershell
-& "C:\CORE\driver\go2rtc_win64\ffmpeg.exe" -list_devices true -f dshow -i dummy
+& "/OMEGA_CORE\driver\go2rtc_win64\ffmpeg.exe" -list_devices true -f dshow -i dummy
 ```
 
 Suche unter der Sektion „DirectShow video devices“ nach dem Namen deiner Kamera (z. B. `"Logitech BRIO"` oder `"Logitech BRIO 4K"`). Notiere dir diesen Namen exakt.
@@ -572,7 +572,7 @@ copy models\core\core_v1.tflite S:\share\openwakeword\
 | `hey_jarvis_v0.1.tflite` | 1.2 MB | Standard Jarvis Model |
 | `computer_v2.tflite` | 207 KB | Star Trek "Computer" |
 
-Speicherort auf 4D_RESONATOR (CORE): `c:\CORE\data\openwakeword_models\`
+Speicherort auf 4D_RESONATOR (CORE): `/OMEGA_CORE\data\openwakeword_models\`
 Speicherort auf Scout: `/share/openwakeword/`
 
 ---
@@ -1911,7 +1911,7 @@ core_api_url: "http://192.168.178.20:8000"
 core_webhook_token: "778aabf5b13c7b5120161168811908da51448b9435423aacf4b67f31e3bb57e7"
 ```
 
-**Hinweis:** `core_webhook_token` = `HA_WEBHOOK_TOKEN` aus `c:\CORE\.env`.
+**Hinweis:** `core_webhook_token` = `HA_WEBHOOK_TOKEN` aus `/OMEGA_CORE\.env`.
 
 #### 5.2 rest_command.core_assist
 
@@ -2234,7 +2234,7 @@ Kurzform - spielt sofort ab.
 {
     "status": "ok",
     "played": true,
-    "path": "c:\\CORE\\media\\tts_abc123.mp3"
+    "path": "/OMEGA_CORE\\media\\tts_abc123.mp3"
 }
 ```
 
@@ -2851,7 +2851,7 @@ Die Daten auf dem VPS bleiben **erhalten**. Der IP-Wechsel betrifft nur die Netz
 | Parameter | Wert |
 |-----------|------|
 | VPS | 187.77.68.250 |
-| SSH Key | `c:\CORE\.ssh\id_ed25519_hostinger` |
+| SSH Key | `/OMEGA_CORE\.ssh\id_ed25519_hostinger` |
 | User | root |
 | Port | 8001 |
 
@@ -2863,7 +2863,7 @@ Die Daten auf dem VPS bleiben **erhalten**. Der IP-Wechsel betrifft nur die Netz
 ### Automatischer Deploy (empfohlen)
 
 ```powershell
-## .env: VPS_HOST=187.77.68.250, VPS_USER=root, VPS_SSH_KEY=c:\CORE\.ssh\id_ed25519_hostinger
+## .env: VPS_HOST=187.77.68.250, VPS_USER=root, VPS_SSH_KEY=/OMEGA_CORE\.ssh\id_ed25519_hostinger
 python -m src.scripts.deploy_vps_slim
 ```
 
@@ -2873,13 +2873,13 @@ Kopiert `src/` + `Dockerfile.vps`, baut Docker-Image, startet Container auf Port
 
 ```powershell
 ## 1. SSH-Verbindung testen
-ssh -i c:\CORE\.ssh\id_ed25519_hostinger root@187.77.68.250 "echo OK"
+ssh -i /OMEGA_CORE\.ssh\id_ed25519_hostinger root@187.77.68.250 "echo OK"
 
 ## 2. Code + .env auf VPS kopieren (tar+scp wie deploy_agi_state.py)
 ## Oder: python -m src.scripts.deploy_vps_slim
 
 ## 3. Auf VPS: Service starten
-ssh -i c:\CORE\.ssh\id_ed25519_hostinger root@187.77.68.250
+ssh -i /OMEGA_CORE\.ssh\id_ed25519_hostinger root@187.77.68.250
 cd /opt/core-core
 source .venv/bin/activate  # oder: python -m venv .venv && pip install -r src/requirements.txt
 VPS_SLIM_PORT=8001 python -m uvicorn src.api.vps_slim:app --host 0.0.0.0 --port 8001
@@ -3006,7 +3006,7 @@ Details (inkl. OC-Prozedere und Antwortformat [CORE]/[OC]): **docs/WHATSAPP_ROUT
 **Voraussetzungen:** HA erreichbar, rest_command und Automation wie oben eingerichtet, CORE-CORE-API läuft und ist von HA aus erreichbar.
 
 ```bash
-cd C:\CORE
+cd /OMEGA_CORE
 python -m src.scripts.run_whatsapp_e2e_ha
 ```
 
@@ -3051,7 +3051,7 @@ OC (OpenClaw) hat einen **eigenen** WhatsApp-Kanal (Gateway mit Baileys auf dem 
 **E2E-Test (schnell prüfbar):**
 
 ```bash
-cd C:\CORE
+cd /OMEGA_CORE
 python -m src.scripts.run_whatsapp_e2e_ha
 ```
 

@@ -25,7 +25,7 @@ Custom Conversation Agent, der den transkribierten Text der Assist-Pipeline an C
 
 4. Konfiguration:
    - **CORE API URL:** z.B. `http://192.168.178.20:8000`
-   - **Bearer Token:** `HA_WEBHOOK_TOKEN` aus `c:\CORE\.env`
+   - **Bearer Token:** `HA_WEBHOOK_TOKEN` aus `/OMEGA_CORE\.env`
 
 ### Option B: HACS (falls als Custom Repo hinzugefügt)
 

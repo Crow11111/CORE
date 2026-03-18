@@ -10,7 +10,7 @@ import sys
 from dotenv import load_dotenv
 
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 IP = os.getenv("SCOUT_IP", "192.168.178.54")
 PASSWORD = os.getenv("HA_SSH_PASSWORD")

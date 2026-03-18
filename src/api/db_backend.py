@@ -12,7 +12,7 @@ from typing import List, Optional
 from datetime import datetime
 
 # Core Council: Low Latency Database Settings (WAL-Mode)
-DB_PATH = r"c:\CORE\data\shell_db\shell_knowledge_graph.sqlite"
+DB_PATH = r"/OMEGA_CORE\data\shell_db\shell_knowledge_graph.sqlite"
 
 app = FastAPI(title="CORE Database Backend (Osmium Standard V1.3)")
 
@@ -20,10 +20,10 @@ def get_db_connection():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     conn.row_factory = sqlite3.Row
-    
+
     conn.execute("PRAGMA journal_mode=WAL;")
     conn.execute("PRAGMA synchronous=NORMAL;")
-    
+
     # --- Original Osmium Tables ---
     conn.execute("""
         CREATE TABLE IF NOT EXISTS core_brain_registr (
@@ -51,7 +51,7 @@ def get_db_connection():
             source_file TEXT
         )
     """)
-    
+
     # --- Phase 7: Osmium Circle V1.3 Tables ---
     conn.execute("""
         CREATE TABLE IF NOT EXISTS osmium_roles (
@@ -158,7 +158,7 @@ def get_knowledge_graph():
 def add_knowledge_graph(entry: KnowledgeGraph):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO knowledge_graph (component1, component2, relation_type, source_file) VALUES (?, ?, ?, ?)", 
+    cursor.execute("INSERT INTO knowledge_graph (component1, component2, relation_type, source_file) VALUES (?, ?, ?, ?)",
                    (entry.component1, entry.component2, entry.relation_type, entry.source_file))
     conn.commit()
     conn.close()
@@ -176,7 +176,7 @@ def get_krypto_scan():
 def add_krypto_scan(entry: KryptoScanBuffer):
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO krypto_scan_buffer (threat_level, affected_resources) VALUES (?, ?)", 
+    cursor.execute("INSERT INTO krypto_scan_buffer (threat_level, affected_resources) VALUES (?, ?)",
                    (entry.threat_level, entry.affected_resources))
     conn.commit()
     conn.close()

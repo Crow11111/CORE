@@ -8,7 +8,7 @@ import os
 from google import genai
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 try:

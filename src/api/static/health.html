@@ -87,6 +87,11 @@ body{background:#0e0e0e;color:#ccc;font-family:'Cascadia Mono','Consolas',monosp
 
 <div class="panel active" id="tickerPanel">
   <div class="ticker" id="ticker"></div>
+  <div class="controls" style="padding:4px 10px;">
+    <button class="action-btn primary" id="koreBtn" title="Kore liest die letzten Logs vor">Kore vorlesen</button>
+    <span class="status-msg" id="koreStatus"></span>
+    <audio id="koreAudio" style="display:none"></audio>
+  </div>
 </div>
 
 <div class="panel" id="dictatePanel">
@@ -100,9 +105,8 @@ body{background:#0e0e0e;color:#ccc;font-family:'Cascadia Mono','Consolas',monosp
           <line x1="12" y1="19" x2="12" y2="22"/>
         </svg>
       </button>
-      <span class="status-msg" id="statusMsg">Leertaste = Aufnahme.</span>
+      <span class="status-msg" id="statusMsg">Leertaste = Aufnahme (Auto-Copy aktiv)</span>
       <div class="action-btns">
-        <button class="action-btn primary" id="copyBtn" disabled>Copy</button>
         <button class="action-btn" id="clearBtn">Clear</button>
       </div>
     </div>
@@ -184,6 +188,39 @@ function escapeHtml(s) {
 
 pollLogs(); setInterval(pollLogs, 3000);
 
+// --- TTS (Kore) ---
+const koreBtn = $('koreBtn'), koreStatus = $('koreStatus'), koreAudio = $('koreAudio');
+
+koreBtn.addEventListener('click', async () => {
+  const entries = ticker.querySelectorAll('.entry');
+  if (!entries.length) return;
+  const last10 = Array.from(entries).slice(-10).map(e => e.textContent.trim()).join('. ');
+  const summary = 'Letzte Systemaktivitaet: ' + last10;
+
+  koreBtn.disabled = true;
+  koreStatus.textContent = 'Kore spricht...';
+  koreStatus.className = 'status-msg active';
+  try {
+    const r = await fetch('/api/tts', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({text: summary, voice: 'Kore', style: 'Sage ruhig und klar:'}),
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const blob = await r.blob();
+    const url = URL.createObjectURL(blob);
+    koreAudio.src = url;
+    koreAudio.play();
+    koreStatus.textContent = '';
+    koreStatus.className = 'status-msg done';
+  } catch (e) {
+    koreStatus.textContent = 'TTS-Fehler: ' + e.message;
+    koreStatus.className = 'status-msg active';
+  } finally {
+    koreBtn.disabled = false;
+  }
+});
+
 // --- Dictate ---
 const transcript = $('transcript'), micBtn = $('micBtn'), statusMsg = $('statusMsg');
 const copyBtn = $('copyBtn'), clearBtn = $('clearBtn');
@@ -233,8 +270,16 @@ async function transcribe(blob) {
       chunk.appendChild(document.createTextNode(d.text));
       transcript.appendChild(chunk);
       transcript.scrollTop = transcript.scrollHeight;
-      copyBtn.disabled = false;
-      statusMsg.textContent = d.duration_ms + 'ms. Ctrl+V.'; statusMsg.className = 'status-msg done';
+
+      // AUTO-COPY
+      navigator.clipboard.writeText(allText).then(() => {
+        statusMsg.textContent = d.duration_ms + 'ms. (Auto-Kopiert)';
+        statusMsg.className = 'status-msg done';
+      }).catch(err => {
+        statusMsg.textContent = d.duration_ms + 'ms. (Auto-Copy fehlgeschlagen)';
+        statusMsg.className = 'status-msg warn';
+      });
+
     }
   } catch (e) { statusMsg.textContent = 'Fehler: ' + e.message; statusMsg.className = 'status-msg active'; }
   finally { micBtn.classList.remove('transcribing'); }
@@ -249,14 +294,8 @@ micBtn.addEventListener('click', toggleRecording);
 document.addEventListener('keydown', e => {
   if (e.code === 'Space' && e.target === document.body) { e.preventDefault(); toggleRecording(); }
 });
-copyBtn.addEventListener('click', () => {
-  if (!allText) return;
-  navigator.clipboard.writeText(allText).then(() => {
-    statusMsg.textContent = 'Kopiert!'; statusMsg.className = 'status-msg done';
-  });
-});
 clearBtn.addEventListener('click', () => {
-  transcript.innerHTML = ''; allText = ''; copyBtn.disabled = true;
+  transcript.innerHTML = ''; allText = '';
   statusMsg.textContent = 'Leertaste = Aufnahme.'; statusMsg.className = 'status-msg';
 });
 </script>

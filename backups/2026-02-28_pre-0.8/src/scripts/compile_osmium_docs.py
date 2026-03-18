@@ -3,9 +3,9 @@ import ollama
 from loguru import logger
 
 MODEL = "llama3.1"
-SOURCE_DIR = r"c:\CORE\data\antigravity_docs_compiled"
-OUTPUT_DIR = r"c:\CORE\data\antigravity_docs_osmium"
-GOLD_DOC = r"c:\CORE\docs\01_CORE_DNA\nd_insights_v4\ATLAS_ND_PROFILE_GOLD.md"
+SOURCE_DIR = r"/OMEGA_CORE\data\antigravity_docs_compiled"
+OUTPUT_DIR = r"/OMEGA_CORE\data\antigravity_docs_osmium"
+GOLD_DOC = r"/OMEGA_CORE\docs\01_CORE_DNA\nd_insights_v4\ATLAS_ND_PROFILE_GOLD.md"
 
 def load_gold_rules():
     if not os.path.exists(GOLD_DOC):

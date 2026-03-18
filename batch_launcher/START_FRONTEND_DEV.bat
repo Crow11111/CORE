@@ -4,7 +4,7 @@ echo ============================================================
 echo CORE-GENESIS: FRONTEND DEV AGENT (Port 3000)
 echo ============================================================
 
-cd /d C:\CORE\frontend
+cd /d /OMEGA_CORE\frontend
 
 echo [1/2] Checking Dependencies...
 if not exist node_modules (

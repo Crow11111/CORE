@@ -5,7 +5,7 @@ echo CORE-GENESIS: BACKEND SERVICES (API + WATCHDOG)
 echo VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
 echo ============================================================
 
-cd /d C:\CORE\batch_launcher
+cd /d /OMEGA_CORE\batch_launcher
 
 echo [1/2] Starte CORE API Server...
 start "CORE API" _launch_api.bat

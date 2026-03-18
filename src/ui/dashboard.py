@@ -49,7 +49,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-DB_PATH = r"c:\CORE\data\shell_db\shell_knowledge_graph.sqlite"
+DB_PATH = r"/OMEGA_CORE\data\shell_db\shell_knowledge_graph.sqlite"
 
 def load_data(table_name):
     try:

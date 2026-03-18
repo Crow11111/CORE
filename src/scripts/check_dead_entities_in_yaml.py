@@ -98,7 +98,9 @@ def main():
     # Home Assistant REST API liefert nicht den Source Code von Automations. 
     # Wir muessen ueber Samba/UNC lesen.
     
-    # Da wir vorher ueber den Samba-Share S:\ zugegriffen haben (Windows Node), koennen wir dort lesen.
+    # Da wir vorher ueber den Samba-Share zugegriffen haben (Windows Node), koennen wir dort lesen.
+    # Unter Linux via Mount (z.B. /mnt/ha_config) oder lokaler Kopie.
+    ha_config_path = os.getenv("HA_CONFIG_PATH", "/mnt/ha_config")
     try:
         import yaml
         
@@ -113,11 +115,11 @@ def main():
                 if dead in content:
                     print(f"WARNUNG: Leiche '{dead}' wird in {os.path.basename(filepath)} referenziert!")
                     
-        check_file("S:\\automations.yaml")
-        check_file("S:\\scripts.yaml")
-        check_file("S:\\scenes.yaml")
+        check_file(os.path.join(ha_config_path, "automations.yaml"))
+        check_file(os.path.join(ha_config_path, "scripts.yaml"))
+        check_file(os.path.join(ha_config_path, "scenes.yaml"))
     except Exception as e:
-        print(f"Konnte YAML Files auf S:\\ nicht parsen: {e}")
+        print(f"Konnte YAML Files in {ha_config_path} nicht parsen: {e}")
 
 if __name__ == "__main__":
     main()

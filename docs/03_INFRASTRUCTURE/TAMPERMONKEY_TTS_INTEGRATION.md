@@ -160,7 +160,7 @@ Kurzform - spielt sofort ab.
 {
     "status": "ok",
     "played": true,
-    "path": "c:\\CORE\\media\\tts_abc123.mp3"
+    "path": "/OMEGA_CORE\\media\\tts_abc123.mp3"
 }
 ```
 

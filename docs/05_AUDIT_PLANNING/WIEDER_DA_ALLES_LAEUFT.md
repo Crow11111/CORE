@@ -23,7 +23,7 @@ Kurz-Checkliste, damit CORE, Brain, Sehen/Hören/Sprechen und Proof durchlaufen.
 
 ## 1. .env prüfen (einmalig)
 
-In `c:\CORE\.env` sollten gesetzt sein:
+In `/OMEGA_CORE\.env` sollten gesetzt sein:
 
 | Variable | Zweck |
 |----------|--------|
@@ -77,7 +77,7 @@ python -m src.scripts.openclaw_doctor_vps
 ## 3. Beweis: Alles funktioniert
 
 ```bat
-cd c:\CORE
+cd /OMEGA_CORE
 python -m src.scripts.proof_hoert_sieht_spricht
 ```
 
@@ -124,6 +124,6 @@ In eigenem Fenster laufen lassen.
 Damit das CORE-Backend beim Anmelden/Start von Windows (4D_RESONATOR (CORE)) startet und WhatsApp sofort funktioniert:
 
 - **Startordner:** `Win+R` → `shell:startup` → Verknüpfung zu `batch_launcher/START_BACKEND_SERVICES.bat` (oder `START_OMEGA_COCKPIT.bat`) ablegen. Dann starten die Dienste beim Login.
-- **Oder Taskplaner:** Aufgabe „Beim Anmelden“ erstellen, Aktion: `C:\CORE\batch_launcher/START_BACKEND_SERVICES.bat` (Arbeitsverzeichnis: `C:\CORE`).
+- **Oder Taskplaner:** Aufgabe „Beim Anmelden“ erstellen, Aktion: `/OMEGA_CORE\batch_launcher/START_BACKEND_SERVICES.bat` (Arbeitsverzeichnis: `/OMEGA_CORE`).
 
 Danach ist CORE bereit, sobald der Rechner läuft – die eingehende Nachricht triggert die Kette.

@@ -10,7 +10,7 @@ import os
 import sys
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 IP = os.getenv("SCOUT_IP", "192.168.178.54")

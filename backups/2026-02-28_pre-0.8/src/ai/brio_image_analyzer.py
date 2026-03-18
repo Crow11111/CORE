@@ -9,7 +9,7 @@ from typing import Optional
 from loguru import logger
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 # Optional: google-genai für Vision
 try:

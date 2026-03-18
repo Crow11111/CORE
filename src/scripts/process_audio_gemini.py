@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 if not GEMINI_API_KEY:
@@ -20,8 +20,8 @@ if not GEMINI_API_KEY:
 
 client = genai.Client(api_key=GEMINI_API_KEY)
 MODEL_NAME = os.getenv("GEMINI_AUDIO_MODEL", "gemini-3.1-pro-preview")
-AUDIO_FILE = r"c:\CORE\media\REWE 2.m4a"
-OUTPUT_DIR = r"c:\CORE\docs\nd_insights_v4"
+AUDIO_FILE = r"/OMEGA_CORE\media\REWE 2.m4a"
+OUTPUT_DIR = r"/OMEGA_CORE\docs\nd_insights_v4"
 
 # --- PERSONAS ---
 DATA_ARCHIVIST = """

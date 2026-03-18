@@ -24,7 +24,7 @@ import math
 from dotenv import load_dotenv
 from src.logic_core.crystal_grid_engine import CrystalGridEngine
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 logger = logging.getLogger("core.chroma_client")
 
@@ -175,7 +175,7 @@ class ResilientChromaClient:
 CHROMA_HOST = os.getenv("CHROMA_HOST", "").strip()
 CHROMA_PORT = int(os.getenv("CHROMA_PORT", "8000"))
 # Lokal (Dreadnought/Windows), wenn CHROMA_HOST leer
-CHROMA_LOCAL_PATH = os.getenv("CHROMA_LOCAL_PATH", r"c:\CORE\data\chroma_db")
+CHROMA_LOCAL_PATH = os.getenv("CHROMA_LOCAL_PATH", r"/OMEGA_CORE\data\chroma_db")
 
 # Collection-Namen laut 03_DATENBANK_VECTOR_STORE_OSMIUM.md + CORE Neocortex V1
 COLLECTION_KNOWLEDGE_GRAPH = "knowledge_graph"

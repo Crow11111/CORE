@@ -45,7 +45,7 @@ except ImportError:
 # Konfiguration
 WATCHDOG_INTERVAL = 61.0  # Sekunden (Herzschlag) - Primzahl für Zikaden-Prinzip
 REMOTE_CHECK_INTERVAL = 300.0 # Alle 5 Min Git Check (teuer)
-TELEMETRY_PATH = os.path.join(os.getenv("CORE_DATA_DIR", "c:/CORE/data"), "telemetry.json")
+TELEMETRY_PATH = os.path.join(os.getenv("CORE_DATA_DIR", "/OMEGA_CORE/data"), "telemetry.json")
 
 # Environment
 env_vars = dotenv_values(".env")

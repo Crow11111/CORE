@@ -19,7 +19,7 @@ from starlette.responses import JSONResponse
 router = APIRouter(prefix="/api/core", tags=["telemetry"])
 
 TELEMETRY_PATH = os.path.join(
-    os.getenv("CORE_DATA_DIR", "c:/CORE/data"),
+    os.getenv("CORE_DATA_DIR", "/OMEGA_CORE/data"),
     "telemetry.json",
 )
 _api_start_time = time.time()

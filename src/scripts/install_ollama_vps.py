@@ -23,7 +23,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 import paramiko
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 def _env(key: str, default: str = "") -> str:
     v = (os.getenv(key) or default).strip().strip('"').strip("'")

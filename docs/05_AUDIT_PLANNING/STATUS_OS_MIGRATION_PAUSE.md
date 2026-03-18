@@ -14,7 +14,7 @@
      - Ordner `J:\CORE_SEED` kurz auf `C:\` (Desktop) kopieren.
      - Rufus (https://rufus.ie/) starten.
      - USB-Stick (J:\) auswählen.
-     - Datei `C:\CORE\debian-12-minimal.iso` auswählen.
+     - Datei `/OMEGA_CORE\debian-12-minimal.iso` auswählen.
      - START klicken und flashen lassen.
      - Danach: Ordner `CORE_SEED` vom Desktop *wieder zurück* auf den USB-Stick (J:\) kopieren.
   2. **Die Installation:**

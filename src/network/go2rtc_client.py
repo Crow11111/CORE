@@ -16,7 +16,7 @@ Kaskade: go2rtc (Scout) → Scout-MX (HA camera_proxy) → Tapo/Fallback.
 import os
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 GO2RTC_BASE_URL = os.getenv("GO2RTC_BASE_URL", "http://192.168.178.54:1984").rstrip("/")
 GO2RTC_STREAM_NAME = os.getenv("GO2RTC_STREAM_NAME", "mx_brio")

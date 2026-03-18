@@ -10,7 +10,7 @@ import requests
 import urllib3
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

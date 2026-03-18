@@ -8,10 +8,10 @@ os.environ["PYTHONIOENCODING"] = "utf-8"
 sys.stdout.reconfigure(encoding="utf-8")
 
 from dotenv import load_dotenv
-load_dotenv("C:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 # Wir fuegen CORE zum Pfad hinzu
-sys.path.append("C:/CORE")
+sys.path.append("/OMEGA_CORE")
 
 from langchain_google_genai import ChatGoogleGenerativeAI
 from src.network.chroma_client import query_core_directives
@@ -25,7 +25,7 @@ async def run_linear_attention():
 
     # Wir laden 10.000 Zeichen der Dokumentation, um eine kleine RAG/Kontext-Last zu simulieren
     # Ein echtes System muesste Millionen Tokens lesen.
-    docs_dir = "C:/CORE/docs/01_CORE_DNA"
+    docs_dir = "/OMEGA_CORE/docs/01_CORE_DNA"
     all_text = ""
     for root, _, files in os.walk(docs_dir):
         for f in files:

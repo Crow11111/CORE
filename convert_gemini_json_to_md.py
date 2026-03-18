@@ -58,8 +58,8 @@ def format_timestamp(ts: str) -> str:
 
 
 def main():
-    input_path = Path(r"c:\Users\MtH\Downloads\MeineAktivitäten.json")
-    output_path = Path(r"c:\CORE\gemini.md")
+    input_path = Path(r"/home/mth\Downloads\MeineAktivitäten.json")
+    output_path = Path(r"/OMEGA_CORE\gemini.md")
 
     if not input_path.exists():
         print(f"Fehler: {input_path} nicht gefunden.")

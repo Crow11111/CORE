@@ -16,12 +16,12 @@ from pathlib import Path
 from loguru import logger
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 VPS_HOST = os.getenv("VPS_HOST", "187.77.68.250")
 VPS_USER = os.getenv("VPS_USER", "root")
-VPS_SSH_KEY = os.getenv("VPS_SSH_KEY", r"c:\CORE\.ssh\id_ed25519_hostinger")
-BACKUP_DIR = Path("c:/CORE/backups/vps")
+VPS_SSH_KEY = os.getenv("VPS_SSH_KEY", r"/OMEGA_CORE\.ssh\id_ed25519_hostinger")
+BACKUP_DIR = Path("/OMEGA_CORE/backups/vps")
 RETENTION_DAYS = 7
 
 

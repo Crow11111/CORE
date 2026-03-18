@@ -6,7 +6,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 import subprocess
 
-SSH_KEY = r"c:\ATLAS_CORE\.ssh\id_ed25519_hostinger"
+SSH_KEY = r"/OMEGA_CORE\.ssh\id_ed25519_hostinger"
 VPS_HOST = "187.77.68.250"
 
 SQL = """

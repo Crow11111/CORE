@@ -10,7 +10,7 @@ import sys
 import requests
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 VOICE_ID = "Jlcx1FmOrJUxrzeCDuEL"
 API_KEY = os.getenv("ELEVENLABS_API_KEY")
@@ -57,7 +57,7 @@ if resp.status_code != 200:
     print(f"[FEHLER] ElevenLabs: {resp.status_code} {resp.text[:200]}")
     sys.exit(1)
 
-out_path = "c:/CORE/media/unbeantwortete_fragen_vorlesen.mp3"
+out_path = "/OMEGA_CORE/media/unbeantwortete_fragen_vorlesen.mp3"
 with open(out_path, "wb") as f:
     f.write(resp.content)
 print(f"[TTS] Audio gespeichert: {out_path} ({len(resp.content)} bytes)")

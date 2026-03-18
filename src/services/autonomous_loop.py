@@ -18,7 +18,7 @@ from src.services.action_dispatcher import ActionDispatcher
 from src.voice.elevenlabs_tts import speak_text
 
 # Pfade
-ROOT = "c:/CORE"
+ROOT = "/OMEGA_CORE"
 EVENTS_DIR = os.path.join(ROOT, "data", "events")
 PROCESSED_DIR = os.path.join(EVENTS_DIR, "processed")
 

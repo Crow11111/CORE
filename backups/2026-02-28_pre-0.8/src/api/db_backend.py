@@ -6,7 +6,7 @@ from typing import List, Optional
 from datetime import datetime
 
 # Core Council: Low Latency Database Settings (WAL-Mode)
-DB_PATH = r"c:\CORE\data\shell_db\shell_knowledge_graph.sqlite"
+DB_PATH = r"/OMEGA_CORE\data\shell_db\shell_knowledge_graph.sqlite"
 
 app = FastAPI(title="ATLAS_CORE Database Backend (Osmium Standard V1.3)")
 

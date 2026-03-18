@@ -34,7 +34,7 @@
 **Nächster Schritt (User/VPS):** Auf dem VPS prüfen, ob ChromaDB/Container laufen und Port 8000 gebunden ist. Danach Sync erneut ausführen:
 
 ```powershell
-cd C:\CORE
+cd /OMEGA_CORE
 python -m src.scripts.run_vps_sync_with_tunnel
 ```
 

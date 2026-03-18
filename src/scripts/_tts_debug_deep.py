@@ -10,7 +10,7 @@ import json
 import urllib3
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 urllib3.disable_warnings()
 
 TOKEN = os.getenv("HASS_TOKEN", "")

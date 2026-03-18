@@ -21,7 +21,7 @@
 
 **Option A – Automatisch (Tunnel + Sync + Abgleich):**
 ```powershell
-cd C:\CORE
+cd /OMEGA_CORE
 python -m src.scripts.run_vps_sync_with_tunnel
 ```
 Nutzt zuerst Paramiko (`.env`: `VPS_HOST`, `VPS_USER`, `VPS_PASSWORD` oder `VPS_SSH_KEY`). Bei Fehler: Fallback auf System-SSH (Key-Auth nötig). Lokaler Tunnel-Port: **8001**.

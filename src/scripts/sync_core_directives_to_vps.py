@@ -9,7 +9,7 @@
 Synchronisiert alle core_directives von lokaler ChromaDB zum VPS.
 Voraussetzung: SSH-Tunnel zur VPS-ChromaDB (z. B. ssh -L 8000:127.0.0.1:8000 root@187.77.68.250).
 Umgebung: CHROMA_VPS_HOST=localhost CHROMA_VPS_PORT=8000 (oder Standard localhost:8000).
-Lokale DB: CHROMA_LOCAL_PATH bzw. c:\\CORE\\data\\chroma_db.
+Lokale DB: CHROMA_LOCAL_PATH bzw. /OMEGA_CORE\\data\\chroma_db.
 """
 import os
 import sys
@@ -18,7 +18,7 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 sys.path.insert(0, ROOT)
 os.chdir(ROOT)
 
-LOCAL_PATH = os.getenv("CHROMA_LOCAL_PATH", r"c:\CORE\data\chroma_db")
+LOCAL_PATH = os.getenv("CHROMA_LOCAL_PATH", r"/OMEGA_CORE\data\chroma_db")
 VPS_HOST = os.getenv("CHROMA_VPS_HOST", "localhost")
 VPS_PORT = int(os.getenv("CHROMA_VPS_PORT", "8000"))
 

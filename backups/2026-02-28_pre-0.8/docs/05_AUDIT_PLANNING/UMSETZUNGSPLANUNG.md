@@ -119,7 +119,7 @@ Konkrete Tasks aus Projektplan und Doku. Status: offen / in Arbeit / erledigt.
 
 - [x] **1** Skript `src/scripts/daily_backup.py`: Archiv (Code, config/, data/shell_db/), .env nur verschlüsselt (Fernet); Upload per SFTP; Retention 7 Tage auf VPS.
 - [ ] **2** Scheduler einrichten (einmalig):
-  - **Windows:** Task Scheduler, täglich z.B. 04:00 Uhr, Aufruf `C:\CORE\scripts\run_daily_backup.bat` oder `python C:\CORE\src\scripts\daily_backup.py` mit Arbeitsverzeichnis `C:\CORE`.
+  - **Windows:** Task Scheduler, täglich z.B. 04:00 Uhr, Aufruf `/OMEGA_CORE\scripts\run_daily_backup.bat` oder `python /OMEGA_CORE\src\scripts\daily_backup.py` mit Arbeitsverzeichnis `/OMEGA_CORE`.
   - **Linux:** cron, z.B. `0 4 * * * cd /pfad/zu/ATLAS_CORE && python3 src/scripts/daily_backup.py >> logs/backup.log 2>&1`.
 - [ ] **3** Wiederherstellungstest: Einmal pro Monat Restore aus Backup auf Testordner prüfen.
 

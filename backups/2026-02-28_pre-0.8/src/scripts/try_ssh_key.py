@@ -4,10 +4,10 @@ import sys
 from dotenv import load_dotenv
 
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 IP = os.getenv("SCOUT_IP", "192.168.178.54")
-KEY_PATH = r"C:\Users\MtH\.ollama\id_ed25519"
+KEY_PATH = r"/home/mth\.ollama\id_ed25519"
 
 def try_ssh_key(user, port, key_path):
     ssh = paramiko.SSHClient()

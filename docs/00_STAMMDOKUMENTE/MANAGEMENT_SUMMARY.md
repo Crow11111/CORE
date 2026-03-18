@@ -34,7 +34,7 @@ Codex: `docs/01_CORE_DNA/CORE_GENESIS_CODEX.md`
 
 | Knoten | Rolle | Standort |
 |--------|-------|----------|
-| **4D_RESONATOR (CORE)** | Windows-PC, Backend, TTS, Vision | Lokal |
+| **4D_RESONATOR (CORE)** | CachyOS (Linux) PC, Backend, TTS, Vision | Lokal |
 | **Scout** | Raspberry Pi 5, Home Assistant, Sensoren | Lokal |
 | **VPS (Hostinger)** | OMEGA_ATTRACTOR, VPS-Slim Failover, ChromaDB | Cloud |
 | **Cloud Agents** | Cursor/Gemini – holen Befehle via Git | Cloud |

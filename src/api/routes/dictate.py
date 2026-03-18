@@ -1,8 +1,8 @@
 """
-Diktat-Route: Audio -> Gemini STT -> Transkription mit CORE-Glossar.
+Diktat + TTS Routen.
 
-POST /api/dictate -- Nimmt Audio (WAV/WebM) entgegen, transkribiert via Gemini,
-gibt Text zurueck. Frontend kann Mikrofon-Aufnahme senden.
+POST /api/dictate -- Audio -> Gemini STT -> Text
+POST /api/tts     -- Text  -> Gemini TTS -> Audio (WAV)
 """
 from __future__ import annotations
 
@@ -11,9 +11,10 @@ import os
 
 import httpx
 from fastapi import APIRouter, UploadFile, File, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
-router = APIRouter(prefix="/api", tags=["dictate"])
+router = APIRouter(prefix="/api", tags=["dictate", "tts"])
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 MODEL = "gemini-2.5-flash"
@@ -94,3 +95,41 @@ async def dictate(audio: UploadFile = File(...)):
     text = "\n".join(p.get("text", "") for p in parts if "text" in p).strip()
 
     return DictateResponse(text=text, duration_ms=duration_ms, model=MODEL)
+
+
+class TTSRequest(BaseModel):
+    text: str
+    voice: str = "Kore"
+    style: str = ""
+
+
+@router.post("/tts")
+async def tts_speak(req: TTSRequest):
+    """Generiert Sprache via Gemini TTS, liefert WAV zurueck."""
+    if not GEMINI_API_KEY:
+        raise HTTPException(status_code=500, detail="GEMINI_API_KEY nicht konfiguriert")
+    if not req.text.strip():
+        raise HTTPException(status_code=400, detail="Leerer Text")
+
+    import time
+    t0 = time.monotonic()
+
+    try:
+        from src.voice.gemini_tts import speak_text
+        wav_path = speak_text(
+            text=req.text,
+            voice_name=req.voice,
+            style_prompt=req.style or None,
+            play=False,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=f"TTS fehlgeschlagen: {e}")
+
+    if not wav_path or not os.path.isfile(wav_path):
+        raise HTTPException(status_code=502, detail="TTS hat keine Datei erzeugt")
+
+    return FileResponse(
+        wav_path,
+        media_type="audio/wav",
+        headers={"X-TTS-Duration-Ms": str(int((time.monotonic() - t0) * 1000))},
+    )

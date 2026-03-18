@@ -29,7 +29,7 @@ def _load_json():
         os.path.dirname(__file__), "..", "..", "data", "knowledge_base", "core_knowledge_chromadb_import.json"
     )
     if not os.path.exists(path):
-        path = r"c:\CORE\data\knowledge_base\core_knowledge_chromadb_import.json"
+        path = r"/OMEGA_CORE\data\knowledge_base\core_knowledge_chromadb_import.json"
     with open(path, "r", encoding="utf-8") as f:
         return json.load(f)
 

@@ -61,7 +61,7 @@
 **Nächster Schritt (User/VPS):** Auf dem VPS prüfen, ob ChromaDB/Container laufen und Port 8000 gebunden ist. Danach Sync erneut ausführen:
 
 ```powershell
-cd C:\CORE
+cd /OMEGA_CORE
 python -m src.scripts.run_vps_sync_with_tunnel
 ```
 
@@ -196,7 +196,7 @@ Entscheidungstraeger fuer Aenderungen ist der **Code-Sicherheitsrat** (CEO/Counc
 ### Voraussetzungen
 
 - GitHub Account: `Crow11111`
-- Lokales Repo: `c:\CORE` (existiert bereits)
+- Lokales Repo: `/OMEGA_CORE` (existiert bereits)
 - Aktueller Branch: `2026-02-25-cjle`
 
 ### Schritt 1: GitHub Repository erstellen
@@ -219,7 +219,7 @@ Entscheidungstraeger fuer Aenderungen ist der **Code-Sicherheitsrat** (CEO/Counc
 
 ### Schritt 3: Remote hinzufügen
 
-Führe im Terminal (in `c:\CORE`) aus:
+Führe im Terminal (in `/OMEGA_CORE`) aus:
 
 ```powershell
 git remote add origin https://github.com/Crow11111/CORE.git
@@ -779,7 +779,7 @@ python -m src.scripts.test_elevenlabs_output
 
 **Option A – Automatisch (Tunnel + Sync + Abgleich):**
 ```powershell
-cd C:\CORE
+cd /OMEGA_CORE
 python -m src.scripts.run_vps_sync_with_tunnel
 ```
 Nutzt zuerst Paramiko (`.env`: `VPS_HOST`, `VPS_USER`, `VPS_PASSWORD` oder `VPS_SSH_KEY`). Bei Fehler: Fallback auf System-SSH (Key-Auth nötig). Lokaler Tunnel-Port: **8001**.

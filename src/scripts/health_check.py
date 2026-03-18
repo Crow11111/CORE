@@ -17,10 +17,10 @@ from datetime import datetime
 from loguru import logger
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 VPS_HOST = os.getenv("VPS_HOST", "187.77.68.250")
-VPS_SSH_KEY = os.getenv("VPS_SSH_KEY", r"c:\CORE\.ssh\id_ed25519_hostinger")
+VPS_SSH_KEY = os.getenv("VPS_SSH_KEY", r"/OMEGA_CORE\.ssh\id_ed25519_hostinger")
 VPS_USER = os.getenv("VPS_USER", "root")
 SCOUT_IP = os.getenv("SCOUT_IP", "192.168.178.54")
 

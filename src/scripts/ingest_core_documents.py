@@ -190,8 +190,8 @@ async def ingest_file(filepath: str, collection_name: str):
 
 async def main():
     files = [
-        (r"c:\CORE\src\core\Leidensdruck und Genese.md", "core_genese"),
-        (r"c:\CORE\Untitled-1.sty", "core_fraktal_dialog"),
+        (r"/OMEGA_CORE\src\core\Leidensdruck und Genese.md", "core_genese"),
+        (r"/OMEGA_CORE\Untitled-1.sty", "core_fraktal_dialog"),
     ]
 
     all_results = {}

@@ -32,7 +32,7 @@ import websockets
 import ssl
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 # Configuration
 HA_HOST = "192.168.178.54"

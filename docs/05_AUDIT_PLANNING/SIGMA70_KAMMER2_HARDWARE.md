@@ -194,7 +194,7 @@ AllowedIPs = 10.49.0.2/32
 
 **Ring-0 / Dreadnought (Client):**
 ```ini
-# C:\CORE\.wireguard\wg0.conf
+# /OMEGA_CORE\.wireguard\wg0.conf
 [Interface]
 Address = 10.49.0.2/24
 PrivateKey = <RING0_PRIVATE_KEY>

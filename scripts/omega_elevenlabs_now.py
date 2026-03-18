@@ -6,7 +6,7 @@
 Sendet das Omega-Protokoll an ElevenLabs und spielt es ab.
 """
 import sys
-sys.path.insert(0, "c:/CORE")
+sys.path.insert(0, "/OMEGA_CORE")
 
 from src.voice.elevenlabs_tts import speak_text
 

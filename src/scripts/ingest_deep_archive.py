@@ -9,7 +9,7 @@ import requests
 from loguru import logger
 import re
 
-INSIGHTS_DIR = r"c:\CORE\docs\nd_insights_v4"
+INSIGHTS_DIR = r"/OMEGA_CORE\docs\nd_insights_v4"
 RAW_FILE = os.path.join(INSIGHTS_DIR, "V4_raw_backup.txt")
 API_BASE_URL = "http://localhost:8000"
 

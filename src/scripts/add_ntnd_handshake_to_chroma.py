@@ -19,7 +19,7 @@ import chromadb
 import requests
 
 # Konfiguration
-LOCAL_PATH = r"c:\CORE\data\chroma_db"
+LOCAL_PATH = r"/OMEGA_CORE\data\chroma_db"
 VPS_BASE = "https://187.77.68.250/chroma/api/v2"
 VERIFY_SSL = False
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)

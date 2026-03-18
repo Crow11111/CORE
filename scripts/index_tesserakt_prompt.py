@@ -4,7 +4,7 @@
 import chromadb
 from datetime import datetime
 
-client = chromadb.PersistentClient(path=r"c:\CORE\data\chroma_db")
+client = chromadb.PersistentClient(path=r"/OMEGA_CORE\data\chroma_db")
 col = client.get_or_create_collection("core_directives")
 
 doc_id = "nano_banana_tesserakt_master_prompt_v1"

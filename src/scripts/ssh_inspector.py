@@ -9,7 +9,7 @@ import paramiko
 import os
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 IP = os.getenv("SCOUT_IP", "192.168.178.54")
 PORT = int(os.getenv("SCOUT_PORT", 22))

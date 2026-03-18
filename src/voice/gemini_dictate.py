@@ -29,7 +29,7 @@ import numpy as np
 import sounddevice as sd
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 MODEL = "gemini-2.5-flash"

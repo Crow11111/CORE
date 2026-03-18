@@ -157,7 +157,7 @@ copy models\core\atlas_v1.tflite S:\share\openwakeword\
 | `hey_jarvis_v0.1.tflite` | 1.2 MB | Standard Jarvis Model |
 | `computer_v2.tflite` | 207 KB | Star Trek "Computer" |
 
-Speicherort auf 4D_RESONATOR (CORE): `c:\CORE\data\openwakeword_models\`
+Speicherort auf 4D_RESONATOR (CORE): `/OMEGA_CORE\data\openwakeword_models\`
 Speicherort auf Scout: `/share/openwakeword/`
 
 ---

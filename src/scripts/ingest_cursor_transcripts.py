@@ -16,7 +16,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".
 from src.network.chroma_client import get_session_logs_collection
 
 # Konfiguration
-TRANSCRIPTS_DIR = r"C:\Users\MtH\.cursor\projects\c-CORE-CORE\agent-transcripts"
+TRANSCRIPTS_DIR = r"/home/mth\.cursor\projects\c-CORE-CORE\agent-transcripts"
 BATCH_SIZE = 10  # Kleine Batches, um API Rate-Limits (z.B. Gemini/Ollama) zu schonen
 DELAY_BETWEEN_BATCHES = 2.0  # Wartezeit in Sekunden
 MAX_TEXT_LENGTH = 4000  # Abschneiden von zu langen Code-Blöcken für Embeddings

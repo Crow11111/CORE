@@ -20,7 +20,7 @@ Setup-Anleitung:
   5. Beim ersten Aufruf oeffnet sich der Browser fuer die Autorisierung
   6. Token wird in data/google_token.json gespeichert (auto-refresh)
 
-Alternativ: credentials.json direkt nach c:/CORE/data/google_credentials.json legen.
+Alternativ: credentials.json direkt nach /OMEGA_CORE/data/google_credentials.json legen.
 """
 import os
 import sys

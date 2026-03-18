@@ -36,7 +36,7 @@ import numpy as np
 import websockets
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 # HA Configuration
 HA_HOST = os.getenv("HA_HOST_IP", "192.168.178.54")

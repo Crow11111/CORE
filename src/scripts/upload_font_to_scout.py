@@ -18,7 +18,7 @@ USERNAME = "dreadnought"
 PASSWORD = "USsxrqqgF5eFqgaSUvU0in0RFTDsAK72LEIkn6gROJBTDRERgifAwuVw9qaPOahc"
 
 # Paths
-LOCAL_PATH = r"c:\Users\MtH\Documents\reain save\Skins\Sonder\@Resources\Fonts\goodtime.ttf"
+LOCAL_PATH = r"/home/mth\Documents\reain save\Skins\Sonder\@Resources\Fonts\goodtime.ttf"
 REMOTE_DIR = "/config/www"
 REMOTE_PATH = f"{REMOTE_DIR}/goodtime.ttf"
 

@@ -4,7 +4,7 @@ import os
 import time
 from loguru import logger
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 SCOUT_IP = os.getenv("SCOUT_IP")
 SCOUT_PORT = int(os.getenv("SCOUT_PORT", 22))

@@ -18,7 +18,7 @@ Wenn du **manuell** im Ordner `frontend` arbeitest und **PowerShell** nutzt, kan
 - **Option B:** In PowerShell einmal erlauben:  
   `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`  
   Danach z. B. `npm install` im Ordner frontend ausführen.
-- **Option C:** In **CMD** (cmd.exe) wechseln: `cd C:\CORE\frontend` und dort `npm install` ausführen.
+- **Option C:** In **CMD** (cmd.exe) wechseln: `cd /OMEGA_CORE\frontend` und dort `npm install` ausführen.
 
 ## Port 8000 bereits belegt
 

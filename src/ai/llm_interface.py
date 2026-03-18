@@ -18,7 +18,7 @@ from pydantic import BaseModel, Field
 from src.logic_core.z_vector_damper import shell_protected, RuntimeVetoException
 from src.network.openclaw_client import send_message_to_agent_async, is_configured as is_oc_configured
 
-load_dotenv("C:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 class TriageResult(BaseModel):
     intent: str = Field(description="The primary intent of the user. Options: 'command', 'deep_reasoning', 'chat', 'unknown'")

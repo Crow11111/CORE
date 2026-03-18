@@ -9,7 +9,7 @@ import sys
 import time
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 from google import genai
 from google.genai import types
@@ -22,7 +22,7 @@ if not key:
 client = genai.Client(api_key=key)
 MODEL = os.getenv("GEMINI_AUDIO_MODEL", "gemini-3.1-pro-preview")
 
-test_file = r"c:\CORE\media\Neue Aufnahme 3.m4a.mp4"
+test_file = r"/OMEGA_CORE\media\Neue Aufnahme 3.m4a.mp4"
 print(f"Uploading {test_file} ({os.path.getsize(test_file)} bytes)...")
 
 uploaded = client.files.upload(

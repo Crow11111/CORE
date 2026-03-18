@@ -124,7 +124,7 @@ atlas_api_url: "http://192.168.178.20:8000"
 atlas_webhook_token: "778aabf5b13c7b5120161168811908da51448b9435423aacf4b67f31e3bb57e7"
 ```
 
-**Hinweis:** `atlas_webhook_token` = `HA_WEBHOOK_TOKEN` aus `c:\CORE\.env`.
+**Hinweis:** `atlas_webhook_token` = `HA_WEBHOOK_TOKEN` aus `/OMEGA_CORE\.env`.
 
 ### 5.2 rest_command.atlas_assist
 

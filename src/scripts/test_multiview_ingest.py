@@ -7,7 +7,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 import asyncio
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from dotenv import load_dotenv
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 
 TEST_DOCS = [

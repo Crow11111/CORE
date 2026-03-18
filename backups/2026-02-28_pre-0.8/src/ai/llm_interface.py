@@ -6,7 +6,7 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from loguru import logger
 from pydantic import BaseModel, Field
 
-load_dotenv("C:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 class TriageResult(BaseModel):
     intent: str = Field(description="The primary intent of the user. Options: 'command', 'deep_reasoning', 'chat', 'unknown'")

@@ -171,7 +171,7 @@ async def insert_multi_view(
     """Fuegt ein Multi-View-Embedding in pgvector ein."""
     import subprocess
 
-    ssh_key = r"c:\ATLAS_CORE\.ssh\id_ed25519_hostinger"
+    ssh_key = r"/OMEGA_CORE\.ssh\id_ed25519_hostinger"
     vps_host = "187.77.68.250"
 
     doc_escaped = document.replace("'", "''")

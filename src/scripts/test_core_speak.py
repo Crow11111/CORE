@@ -15,7 +15,7 @@ import sys
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from dotenv import load_dotenv
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 DEFAULT_MESSAGE = "CORE Prototyp 0.5. Scout wieder online. Sehen, Hoeren, Sprechen – Test."
 

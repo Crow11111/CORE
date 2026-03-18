@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from loguru import logger
 import subprocess
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 API_KEY = os.getenv("ELEVENLABS_API_KEY")
 VOICE_ID = os.getenv("ELEVENLABS_VOICE_ELA_CONVERSATION") # "NE7AIW5DoJ7lUosXV2KR"
@@ -48,7 +48,7 @@ def generate_and_play():
         logger.error(f"Fehler bei ElevenLabs: {response.text}")
         return
         
-    output_path = r"c:\CORE\media\core_first_words.mp3"
+    output_path = r"/OMEGA_CORE\media\core_first_words.mp3"
     
     with open(output_path, "wb") as f:
         f.write(response.content)

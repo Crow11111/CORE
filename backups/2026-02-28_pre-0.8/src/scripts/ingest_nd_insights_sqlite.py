@@ -2,8 +2,8 @@ import os
 import sqlite3
 from loguru import logger
 
-INSIGHTS_DIR = r"c:\CORE\docs\nd_insights"
-DB_DIR = r"c:\CORE\data\shell_db"
+INSIGHTS_DIR = r"/OMEGA_CORE\docs\nd_insights"
+DB_DIR = r"/OMEGA_CORE\data\shell_db"
 DB_FILE = os.path.join(DB_DIR, "shell_knowledge_graph.sqlite")
 
 def init_db():

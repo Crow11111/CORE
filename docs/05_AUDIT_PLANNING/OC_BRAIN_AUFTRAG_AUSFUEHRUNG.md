@@ -62,7 +62,7 @@
 Nach Abschluss der Arbeiten aus Projektroot ausführen:
 
 ```powershell
-cd c:\CORE
+cd /OMEGA_CORE
 $env:PYTHONIOENCODING="utf-8"
 python -m src.scripts.verify_oc_brain_deliverables
 ```

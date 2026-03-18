@@ -28,4 +28,4 @@ def find_recent_files(directory, limit=15):
         print(f"[{time_str}] {rel_path}")
 
 if __name__ == "__main__":
-    find_recent_files("c:\\ATLAS_CORE")
+    find_recent_files("/OMEGA_CORE")

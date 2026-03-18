@@ -173,7 +173,7 @@ leg.get_title().set_color("white")
 ax.text(1.45, -1.42, "Stand: 2026-03-01\nChromaDB: simulation_evidence",
         fontsize=8, color="#555", ha="right", va="bottom", fontfamily="sans-serif")
 
-out = os.path.join("c:/CORE/media", "simulation_evidence_graph.png")
+out = os.path.join("/OMEGA_CORE/media", "simulation_evidence_graph.png")
 plt.savefig(out, dpi=200, bbox_inches="tight", facecolor="#0a0e1a", pad_inches=0.3)
 print(f"[OK] Graph gespeichert: {out}")
 plt.close()
@@ -370,7 +370,7 @@ ax2.text(-1.4, 1.2,
 ax2.text(1.45, -1.42, "Stand: 2026-03-01\nChromaDB: simulation_evidence",
          fontsize=8, color="#555", ha="right", va="bottom", fontfamily="sans-serif")
 
-out2 = os.path.join("c:/CORE/media", "simulation_evidence_fibonacci.png")
+out2 = os.path.join("/OMEGA_CORE/media", "simulation_evidence_fibonacci.png")
 plt.savefig(out2, dpi=200, bbox_inches="tight", facecolor="#0a0e1a", pad_inches=0.3)
 print(f"[OK] Fibonacci-Graph gespeichert: {out2}")
 plt.close()

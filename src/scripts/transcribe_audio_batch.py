@@ -14,7 +14,7 @@ import time
 from pathlib import Path
 from dotenv import load_dotenv
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 from google import genai
 from google.genai import types
@@ -34,12 +34,12 @@ Gib NUR die Transkription zurueck, keine Kommentare, kein Intro, kein Outro.
 Wenn mehrere Themen vorkommen, trenne sie mit einer Leerzeile."""
 
 AUDIO_FILES = [
-    r"c:\CORE\media\Neue Aufnahme.m4a.mp4",
-    r"c:\CORE\media\Neue Aufnahme 3.m4a.mp4",
-    r"c:\CORE\media\Neue Aufnahme 4.m4a.mp4",
-    r"c:\CORE\media\Neue Aufnahme 5.m4a.mp4",
-    r"c:\CORE\media\Neue Aufnahme 6.m4a.mp4",
-    r"c:\CORE\media\Neue Aufnahme 7.m4a.mp4",
+    r"/OMEGA_CORE\media\Neue Aufnahme.m4a.mp4",
+    r"/OMEGA_CORE\media\Neue Aufnahme 3.m4a.mp4",
+    r"/OMEGA_CORE\media\Neue Aufnahme 4.m4a.mp4",
+    r"/OMEGA_CORE\media\Neue Aufnahme 5.m4a.mp4",
+    r"/OMEGA_CORE\media\Neue Aufnahme 6.m4a.mp4",
+    r"/OMEGA_CORE\media\Neue Aufnahme 7.m4a.mp4",
 ]
 
 
@@ -101,7 +101,7 @@ def main():
 
     combined = "\n\n---\n\n".join(all_transcripts)
 
-    out_path = r"c:\CORE\data\session_logs\audio_transcripts_2026-03-01.md"
+    out_path = r"/OMEGA_CORE\data\session_logs\audio_transcripts_2026-03-01.md"
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w", encoding="utf-8") as fout:
         fout.write(f"# Audio-Transkriptionen 2026-03-01\n\n{combined}")

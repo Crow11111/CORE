@@ -1,6 +1,10 @@
 # ==============================================================================
 # CORE OS: AUTOMATED USB CREATOR & SEED PACKAGER
 # ==============================================================================
+# ACHTUNG: Dieses Skript wurde urspruenglich fuer die Migration von Windows
+# auf Debian/Linux geschrieben (Referenz auf J:\ und C:\).
+# Das System laeuft inzwischen erfolgreich auf CachyOS (Linux).
+# ==============================================================================
 # Dieses Skript macht exakt das, was der Operator gefordert hat:
 # 1. Es ldt das Debian ISO herunter.
 # 2. Es brennt das ISO bootfhig auf den USB-Stick (J:).
@@ -22,7 +26,7 @@ from pathlib import Path
 USB_DRIVE = "J:"
 ISO_URL = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.3.0-amd64-netinst.iso"
 ISO_FILENAME = "debian-12-minimal.iso"
-CORE_ROOT = Path("C:/CORE")
+CORE_ROOT = Path("/OMEGA_CORE")
 SEED_DIR = Path(f"{USB_DRIVE}/CORE_SEED")
 
 def download_iso():

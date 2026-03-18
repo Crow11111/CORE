@@ -12,7 +12,7 @@
 ## Voraussetzungen
 
 - GitHub Account: `Crow11111`
-- Lokales Repo: `c:\CORE` (existiert bereits)
+- Lokales Repo: `/OMEGA_CORE` (existiert bereits)
 - Aktueller Branch: `2026-02-25-cjle`
 
 ## Schritt 1: GitHub Repository erstellen
@@ -35,7 +35,7 @@
 
 ## Schritt 3: Remote hinzufügen
 
-Führe im Terminal (in `c:\CORE`) aus:
+Führe im Terminal (in `/OMEGA_CORE`) aus:
 
 ```powershell
 git remote add origin https://github.com/Crow11111/CORE.git

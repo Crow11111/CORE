@@ -12,7 +12,7 @@ from loguru import logger
 from src.config.voice_config import build_elevenlabs_payload, OSMIUM_VOICE_CONFIG
 
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 
 def speak_text(
@@ -71,7 +71,7 @@ def speak_text(
         return None
 
     if output_path is None:
-        media_dir = os.path.join("c:/CORE", "media")
+        media_dir = os.path.join("/OMEGA_CORE", "media")
         os.makedirs(media_dir, exist_ok=True)
         output_path = os.path.join(media_dir, "core_reply.mp3")
 

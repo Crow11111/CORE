@@ -18,7 +18,7 @@
 - **API-Key & Modell-Sync:** 2026er Modelle (Gemini 3.1 Pro, Claude 4.6) validiert und in OpenClaw/CORE konfiguriert.
 
 ## Betroffene Dateien
-- `c:\CORE\.env`: Modellnamen, Scout-IPs und Fallback-Routing konfiguriert.
+- `/OMEGA_CORE\.env`: Modellnamen, Scout-IPs und Fallback-Routing konfiguriert.
 - `src/logic_core/crystal_grid_engine.py`: Neu erstellt (Gitter-Snapping).
 - `docs/01_CORE_DNA/AXIOM_0_AUTOPOIESIS.md`: Neu erstellt.
 - `docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION.md`: Neu erstellt.

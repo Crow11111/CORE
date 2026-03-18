@@ -38,7 +38,7 @@ import aiohttp
 from dotenv import load_dotenv
 from loguru import logger
 
-load_dotenv("c:/CORE/.env")
+load_dotenv("/OMEGA_CORE/.env")
 
 HASS_URL = (os.getenv("HASS_URL") or "").strip().rstrip("/")
 HASS_TOKEN = (os.getenv("HASS_TOKEN") or "").strip()

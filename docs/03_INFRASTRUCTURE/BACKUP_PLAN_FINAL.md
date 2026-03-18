@@ -50,14 +50,14 @@ ChromaDB läuft im Container auf dem VPS. Ein Cold-Backup (Container kurz stoppe
 
 - **Zeitpunkt:** Täglich, z. B. 04:00 Uhr (Windows: Task Scheduler; Linux: cron).
 - **Windows (Task Scheduler):**
-  - **Programm:** `C:\CORE\scripts\run_daily_backup.bat`  
-  - **Arbeitsverzeichnis:** `C:\CORE`  
-  - Oder direkt: Programm `python`, Argument `C:\CORE\src\scripts\daily_backup.py`, Starten in `C:\CORE`.
+  - **Programm:** `/OMEGA_CORE\scripts\run_daily_backup.bat`  
+  - **Arbeitsverzeichnis:** `/OMEGA_CORE`  
+  - Oder direkt: Programm `python`, Argument `/OMEGA_CORE\src\scripts\daily_backup.py`, Starten in `/OMEGA_CORE`.
 - **Linux (cron):**  
   `0 4 * * * cd /pfad/zu/CORE && python3 src/scripts/daily_backup.py >> logs/backup.log 2>&1`
 - **Windows Task Scheduler (einmalig anlegen):**  
   Als Administrator in cmd/PowerShell:  
-  `schtasks /create /tn "CORE Daily Backup" /tr "C:\CORE\scripts\run_daily_backup.bat" /sc daily /st 04:00 /ru SYSTEM`  
+  `schtasks /create /tn "CORE Daily Backup" /tr "/OMEGA_CORE\scripts\run_daily_backup.bat" /sc daily /st 04:00 /ru SYSTEM`  
   (Oder GUI: Aufgabenplanung → Aufgabe erstellen → Trigger täglich 04:00, Aktion: Batch-Datei oder `python …\daily_backup.py`.)
 
 ## 7. Aufbewahrung (Retention)

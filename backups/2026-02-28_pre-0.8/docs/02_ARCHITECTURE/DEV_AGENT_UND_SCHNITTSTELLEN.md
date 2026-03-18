@@ -27,7 +27,7 @@ Kleines Tool zur Bedienung des Dev-Agenten über eine lokale Web-UI (ohne Cursor
 **Starten:**
 
 ```bash
-cd C:\CORE
+cd /OMEGA_CORE
 streamlit run src/ui/dev_agent_console.py
 ```
 
@@ -146,7 +146,7 @@ Alternativ mit explizitem Python: `python -m streamlit run src/ui/dev_agent_cons
 ## ChromaDB (Vektor-DB / RAG)
 
 - **Rolle:** Vektor-Datenbank für RAG (u. a. ND-Insights, shell_knowledge_graph). Laut [03_DATENBANK_VECTOR_STORE_OSMIUM.md](../../data/antigravity_docs_osmium/03_DATENBANK_VECTOR_STORE_OSMIUM.md) Collections: `shell_knowledge_graph`, `core_brain_registr`, `krypto_scan_buffer`.
-- **Lokal (Standard):** `PersistentClient` mit `CHROMA_LOCAL_PATH` (z. B. `c:\CORE\data\chroma_db`).
+- **Lokal (Standard):** `PersistentClient` mit `CHROMA_LOCAL_PATH` (z. B. `/OMEGA_CORE\data\chroma_db`).
 - **Remote (VPS):** Wenn `CHROMA_HOST` in `.env` gesetzt ist, nutzt ATLAS_CORE `HttpClient(host=CHROMA_HOST, port=CHROMA_PORT)` – typisch Port 8000. Chroma-Server auf dem VPS muss laufen (`chroma run --path /pfad` o. ä.).
 - **Code:** `src/network/chroma_client.py` – `get_chroma_client()`, `get_collection(name)`. Ingest: `src/scripts/ingest_nd_insights_to_chroma.py`.
 

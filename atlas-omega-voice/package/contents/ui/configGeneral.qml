@@ -331,7 +331,7 @@ Item {
             }
 
             Label {
-                text: i18n("Sage „Atlas“ oder „Jarvis“, um Sprachbefehle ohne Klick zu starten.")
+                text: i18n("Sage „Atlas“, um Sprachbefehle ohne Klick zu starten (Wake-Wort).")
                 wrapMode: Text.Wrap
                 Layout.fillWidth: true
                 color: Kirigami.Theme.disabledTextColor

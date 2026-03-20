@@ -206,7 +206,8 @@ bool JarvisAudio::detectWakeWord(const QByteArray &audioData)
     params.print_timestamps = false;
     params.single_segment   = true;
     params.no_context       = true;
-    params.language         = "en";
+    // Mehrsprachiges ggml-tiny.bin: Auto — „Atlas“ auf Deutsch/Englisch erkennbar
+    params.language         = nullptr;
     params.n_threads        = 2;
     params.audio_ctx        = 512;
 
@@ -226,12 +227,12 @@ bool JarvisAudio::detectWakeWord(const QByteArray &audioData)
         QString transcript = QString::fromUtf8(text).toLower().trimmed();
         qDebug() << "[ATLAS] Spracherkennung Text:" << transcript;
 
+        // Wake-Wort: ATLAS (mit üblichen Whisper-Fehlern). Kein „Jarvis“ mehr — Marke einheitlich.
         if (transcript.contains(QStringLiteral("atlas")) ||
             transcript.contains(QStringLiteral("a.t.l.a.s")) ||
-            transcript.contains(QStringLiteral("jarvis")) ||
-            transcript.contains(QStringLiteral("jarves")) ||
-            transcript.contains(QStringLiteral("jarvas")) ||
-            transcript.contains(QStringLiteral("j.a.r.v.i.s"))) {
+            transcript.contains(QStringLiteral("atlaz")) ||
+            transcript.contains(QStringLiteral("etlas")) ||
+            transcript.contains(QStringLiteral("adlas"))) {
             return true;
         }
     }

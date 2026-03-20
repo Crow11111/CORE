@@ -201,7 +201,7 @@ Item {
 
                 Repeater {
                     model: [
-                        { icon: "preferences-desktop-text-to-speech", text: i18n("Sprache mit Wake-Word (Atlas / Jarvis)") },
+                        { icon: "preferences-desktop-text-to-speech", text: i18n("Sprache mit Wake-Word „Atlas“") },
                         { icon: "dialog-messages", text: i18n("Dialog über OMEGA LLM-Router") },
                         { icon: "audio-volume-high", text: i18n("TTS über Backend oder Piper") },
                         { icon: "utilities-system-monitor", text: i18n("Live-Systemmonitor (CPU, RAM, Temperatur)") },

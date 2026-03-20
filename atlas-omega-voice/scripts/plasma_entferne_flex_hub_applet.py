@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Entfernt Plasma.Flex.Hub aus plasma-org.kde.plasma.desktop-appletsrc und
-streicht die Applet-IDs aus allen AppletOrder-Zeilen.
+Entfernt Plasma-Applets anhand von plugin=… aus plasma-org.kde.plasma.desktop-appletsrc
+und streicht die Applet-IDs aus allen AppletOrder-Zeilen.
 
-Grund: Die Leiste verweist weiter auf das Plugin, obwohl der Ordner weg ist —
-dann sucht Plasma unter plasmoids/ (inkl. *.bak) und erzeugt Terminal-Spam.
+Ohne Argumente: nur Plasma.Flex.Hub (Abwärtskompatibilität).
 
-Vor dem Schreiben: gleiche Datei mit Endung .bak-OMEGA neben dem Original.
+Beispiele:
+  python3 plasma_entferne_flex_hub_applet.py org.kde.plasma.activitypager
+  python3 plasma_entferne_flex_hub_applet.py Plasma.Flex.Hub org.kde.plasma.activitypager
+
+Vor dem Schreiben: Backup plasma-org.kde.plasma.desktop-appletsrc.bak-OMEGA
 """
 from __future__ import annotations
 
@@ -28,7 +31,7 @@ def applet_prefix(line: str) -> tuple[int, int] | None:
     return int(m.group(1)), int(m.group(2))
 
 
-def find_flex_hub_applets(lines: list[str]) -> set[tuple[int, int]]:
+def find_applets_with_plugins(lines: list[str], plugin_ids: set[str]) -> set[tuple[int, int]]:
     bad: set[tuple[int, int]] = set()
     for i, line in enumerate(lines):
         s = line.strip()
@@ -39,7 +42,8 @@ def find_flex_hub_applets(lines: list[str]) -> set[tuple[int, int]]:
         j = i + 1
         while j < len(lines) and not lines[j].strip().startswith("["):
             if lines[j].startswith("plugin="):
-                if lines[j].split("=", 1)[1].strip() == "Plasma.Flex.Hub":
+                pid = lines[j].split("=", 1)[1].strip()
+                if pid in plugin_ids:
                     bad.add((c, a))
                 break
             j += 1
@@ -56,28 +60,8 @@ def strip_applet_order(line: str, remove_ids: set[str]) -> str:
     return f"{key}={';'.join(parts)}{nl}"
 
 
-def main() -> int:
-    cfg = Path(
-        os.environ.get(
-            "PLASMA_APPLETSRC",
-            Path.home() / ".config/plasma-org.kde.plasma.desktop-appletsrc",
-        )
-    )
-    if not cfg.is_file():
-        print(f"[ATLAS] Keine Datei: {cfg}", file=sys.stderr)
-        return 1
-
-    text = cfg.read_text(encoding="utf-8", errors="replace")
-    lines = text.splitlines(keepends=True)
-
-    bad = find_flex_hub_applets(lines)
-    if not bad:
-        print("[ATLAS] Kein plugin=Plasma.Flex.Hub in der Leisten-Config — nichts zu tun.")
-        return 0
-
+def strip_config(lines: list[str], bad: set[tuple[int, int]]) -> list[str]:
     remove_ids = {str(a) for _, a in bad}
-    print(f"[ATLAS] Entferne Plasma.Flex.Hub Applets (Containment,Applet): {sorted(bad)}")
-
     out: list[str] = []
     i = 0
     while i < len(lines):
@@ -100,6 +84,34 @@ def main() -> int:
             line = strip_applet_order(line, remove_ids)
         out.append(line)
         i += 1
+    return out
+
+
+def main() -> int:
+    cfg = Path(
+        os.environ.get(
+            "PLASMA_APPLETSRC",
+            Path.home() / ".config/plasma-org.kde.plasma.desktop-appletsrc",
+        )
+    )
+    if not cfg.is_file():
+        print(f"[ATLAS] Keine Datei: {cfg}", file=sys.stderr)
+        return 1
+
+    plugin_ids = set(sys.argv[1:]) if len(sys.argv) > 1 else {"Plasma.Flex.Hub"}
+
+    text = cfg.read_text(encoding="utf-8", errors="replace")
+    lines = text.splitlines(keepends=True)
+
+    bad = find_applets_with_plugins(lines, plugin_ids)
+    if not bad:
+        print(f"[ATLAS] Kein Eintrag für plugin in {sorted(plugin_ids)} — nichts zu tun.")
+        return 0
+
+    remove_ids = {str(a) for _, a in bad}
+    print(f"[ATLAS] Entferne Applets (Containment,Applet): {sorted(bad)} für {sorted(plugin_ids)}")
+
+    out = strip_config(lines, bad)
 
     backup = cfg.with_name(cfg.name + ".bak-OMEGA")
     backup.write_text(text, encoding="utf-8")

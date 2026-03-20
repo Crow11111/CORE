@@ -25,7 +25,7 @@
 | **ATLAS Whisper-Setup** | `atlas-omega-voice/scripts/install_whisper_modell.sh` | Lädt `ggml-tiny.bin` nach `~/.local/share/jarvis/` für Wake-Wort (siehe ATLAS-Doku). |
 | **ATLAS Piper-Stimme** | `atlas-omega-voice/scripts/install_piper_stimme.sh` | Lädt Piper-ONNX nach `~/.local/share/jarvis/piper-voices/` (Alan/Thorsten). |
 | **ATLAS Legacy-Plasmoids** | `atlas-omega-voice/scripts/alte_plasmoids_auslagern.sh` | Archiviert Flex.Hub / lokales jarvis nach `~/.local/share/OMEGA-plasmoid-archiv/` (nicht unter `plasmoids/`); ruft Config-Bereinigung auf. |
-| **ATLAS Plasma Flex.Hub** | `atlas-omega-voice/scripts/plasma_entferne_flex_hub_applet.py` | Entfernt `plugin=Plasma.Flex.Hub` aus `plasma-org.kde.plasma.desktop-appletsrc` + AppletOrder. |
+| **ATLAS Plasma Leiste** | `atlas-omega-voice/scripts/plasma_entferne_flex_hub_applet.py` | Entfernt Applets per `plugin=` (Args, Default: Flex.Hub), z. B. `org.kde.plasma.activitypager` bei kaputtem `plasma-desktop`. |
 | **Bibliothek Kern** | `docs/BIBLIOTHEK_KERN_DOKUMENTE.md` | Zentraler Einstieg; Index 00–05, Was wurde gemacht, Wo nachschauen. |
 | **Infrastruktur** | `docs/03_INFRASTRUCTURE/` | VPS-Setup, Docker-Sandbox, Backup-Pläne. |
 | **VPS-Knoten & Flüsse** | `docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md` | Monica, Kong, Evolution, DBs: Zweck, Pull/Push-Matrix, Einbindung. |

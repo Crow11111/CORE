@@ -19,6 +19,11 @@ Lokales **Sprach- und Chat-Plasmoid** für KDE Plasma 6, angebunden an das **OME
 | Was los ist | **Plasma.Flex.Hub** ist ein **anderes** Widget (nicht unser ATLAS). **Wichtig:** Legst du es nur als `*.bak` **im selben Ordner** `~/.local/share/plasma/plasmoids/` ab, **scannt Plasma die trotzdem** (`metadata.json`) — dann kommen weiter die KPackage-Fehler. Zusätzlich bleibt oft ein Eintrag **`plugin=Plasma.Flex.Hub`** in `~/.config/plasma-org.kde.plasma.desktop-appletsrc` → Meldung „Paket existiert nicht“. |
 | Was du tun kannst | **`bash /OMEGA_CORE/atlas-omega-voice/scripts/alte_plasmoids_auslagern.sh`** — verschiebt Pakete nach **`~/.local/share/OMEGA-plasmoid-archiv/<Zeit>/`** (nicht unter `plasmoids/`) und ruft **`plasma_entferne_flex_hub_applet.py`** auf (entfernt Flex.Hub aus der Leisten-Config, Backup `*.bak-OMEGA`). Danach **`plasmashell --replace`**. Nur Flex.Hub: `python3 …/plasma_entferne_flex_hub_applet.py`. **Hinweis:** Leiste ggf. **ATLAS Ω Voice** neu einfügen. |
 
+### 1b) `kf.package` … **activitypager** … `mainscript` / `ui/main.qml`
+
+| Was los ist | **Entscheidend:** Unter `/usr/share/plasma/plasmoids/org.kde.plasma.activitypager/` liegt bei dir (CachyOS **`plasma-desktop`**) praktisch **nur** `metadata.json` — **kein** Ordner `contents/ui/main.qml`. Plasma 6 erwartet aber genau diese Struktur → **KPackage-Fehler** bei jedem `plasmashell`-Start. Das ist **kein** ATLAS-Bug, sondern ein **kaputtes/unvollständiges Distro-Paket** (oder Split-Build ohne Applet-Dateien). |
+| Was du tun kannst | **A)** Leisten-Eintrag entfernen (damit Plasma das Paket nicht mehr lädt): `python3 /OMEGA_CORE/atlas-omega-voice/scripts/plasma_entferne_flex_hub_applet.py org.kde.plasma.activitypager` → **`plasmashell --replace`**. **B)** Distro: `sudo pacman -Syu plasma-desktop` / bei anhaltendem Fehler **CachyOS-Forum** oder Bugreport (Paket liefert nur Metadaten). **C)** Widget später wieder hinzufügen, wenn das Paket repariert ist. |
+
 ### 2) ATLAS schreibt: Sprachmodell fehlt / kein Wake-Wort
 
 | Was los ist | Für **Wake-Wort** (per Stimme „aufwecken“) braucht ATLAS **eine Datei** auf der Festplatte: `ggml-tiny.bin`. Ohne diese Datei: **kein** automatisches Zuhören aufs Wach-Wort — **Chat und OMEGA** können trotzdem gehen, wenn du anders auslöst. |

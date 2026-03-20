@@ -1,6 +1,6 @@
 # J.A.R.V.I.S. (KDE-Plasmoid) ↔ OMEGA CORE — LLM-Verbindung
 
-**Vektor:** 2210 | **Delta:** 0.049  
+**Vektor:** 2210 | **Delta:** 0.049
 **Status:** Diagnose + Fix-Plan (Umsetzung siehe Git + lokaler Jarvis-Tree)
 
 ---
@@ -23,7 +23,7 @@ Chat und TTS hängen dagegen an:
 - `<llmServerUrl>/v1/chat/completions`
 - `<llmServerUrl>/v1/audio/speech`
 
-**Falsche Konfiguration:** Basis-URL = `http://127.0.0.1:8000/v1/chat/completions`  
+**Falsche Konfiguration:** Basis-URL = `http://127.0.0.1:8000/v1/chat/completions`
 → Health wird zu `http://127.0.0.1:8000/v1/chat/completions/health` → **404** → `connected = false`.
 
 **Messung (OMEGA laufend auf :8000):**
@@ -37,6 +37,14 @@ Chat und TTS hängen dagegen an:
 
 ---
 
+## 2b. Symptom: Chat 500, ATLAS spricht nichts
+
+- **Health** kann **grün** sein (`/health` oder `/v1/chat/completions/health`), **Chat** liefert trotzdem **500**.
+- **Häufige Ursache:** `jarvis_mri_coupler` leitete **nur** `OLLAMA_LOCAL_HOST` (localhost:11434) an. Auf Dreadnought läuft Ollama oft **nicht** lokal, sondern unter **`OLLAMA_HOST`** (z. B. LAN-Pi). Dann fehlt dort das Modell für `core-local-min` (`llama3.2:1b`) → **404** von Ollama → **500** am Plasmoid. **TTS** kommt erst nach einer gültigen LLM-Antwort — wirkt dann wie „es spricht gar nicht“.
+- **Fix (Code):** `OLLAMA_API_BASE` = `JARVIS_OLLAMA_URL` **oder** `OLLAMA_HOST` **oder** `OLLAMA_LOCAL_HOST` (siehe `jarvis_mri_coupler.py`). Nach Änderung: **Backend neu starten**.
+
+---
+
 ## 3. Umgesetzte / geplante Fixes
 
 ### A) OMEGA Backend (`src/api/main.py`)
@@ -46,32 +54,32 @@ Chat und TTS hängen dagegen an:
 
 ### B) Jarvis-Quellbaum (lokal, z. B. `jarvis-main`)
 
-1. **`jarvissettings.cpp`** — rekonstruiert (vorher: doppelte Funktionen + Syntaxbruch).  
-2. **`normalizeLlmBaseUrl()`** — trimmt, entfernt trailing `/`, strippt Suffix `/v1/chat/completions` (case-insensitive). Wird in `loadSettings()` und `setLlmServerUrl()` angewendet.  
-3. **Default-Port** — `8000` statt `8080` (llama.cpp-Default vs. OMEGA).  
-4. **`main.qml`** — HUD-Text nutzt **`JarvisBackend.llmServerUrl`** statt hardcodiert `127.0.0.1:8080`.  
+1. **`jarvissettings.cpp`** — rekonstruiert (vorher: doppelte Funktionen + Syntaxbruch).
+2. **`normalizeLlmBaseUrl()`** — trimmt, entfernt trailing `/`, strippt Suffix `/v1/chat/completions` (case-insensitive). Wird in `loadSettings()` und `setLlmServerUrl()` angewendet.
+3. **Default-Port** — `8000` statt `8080` (llama.cpp-Default vs. OMEGA).
+4. **`main.qml`** — HUD-Text nutzt **`JarvisBackend.llmServerUrl`** statt hardcodiert `127.0.0.1:8080`.
 5. **`configGeneral.qml`** — Placeholder `8000`.
 
 **Build auf Dreadnought:** im Build-Verzeichnis `cmake --build .` → `sudo make install` → Plasmoid neu laden.
 
 ### C) GitHub / Repo „Atlas-Omega-Voice“
 
-- Soll: eigener Clone mit obigen Änderungen + Theme (dunkelgrau / Bordeaux / Weiß).  
+- Soll: eigener Clone mit obigen Änderungen + Theme (dunkelgrau / Bordeaux / Weiß).
 - Aktuell: Tree oft unter `~/Downloads/jarvis_temp/...` — in Git-Repo überführen und pushen (Operator-Flow).
 
 ### D) Nächste Schritte (optional)
 
-- Health strikt auf **`GET /status`** + JSON-Prüfung (C++), falls du HTML an `/health` vermeiden willst.  
-- Qt: bei HTTP 4xx sicherstellen, dass `QNetworkReply::error()` gesetzt ist (Version-abhängig).  
+- Health strikt auf **`GET /status`** + JSON-Prüfung (C++), falls du HTML an `/health` vermeiden willst.
+- Qt: bei HTTP 4xx sicherstellen, dass `QNetworkReply::error()` gesetzt ist (Version-abhängig).
 - TTS-Stimmen: Mapping zu `voice_bridge` / Gemini Kore / ElevenLabs (`.env`) — getrennt von dieser LLM-Health-Thematik.
 
 ---
 
 ## 4. Referenzen
 
-- `@docs/BIBLIOTHEK_KERN_DOKUMENTE.md` — Index.  
-- `@docs/02_ARCHITECTURE/CORE_SCHNITTSTELLEN_UND_KANAALE.md` — API-Kontext.  
-- `@CORE_EICHUNG.md` — System-Eichung, Backend-Port.  
+- `@docs/BIBLIOTHEK_KERN_DOKUMENTE.md` — Index.
+- `@docs/02_ARCHITECTURE/CORE_SCHNITTSTELLEN_UND_KANAALE.md` — API-Kontext.
+- `@CORE_EICHUNG.md` — System-Eichung, Backend-Port.
 - Code: `src/api/main.py`, Router `jarvis_mri_coupler.py`, `voice_bridge.py`.
 
 ---

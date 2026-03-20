@@ -29,10 +29,10 @@ Lokales **Sprach- und Chat-Plasmoid** für KDE Plasma 6, angebunden an das **OME
 | Was los ist | KDE findet kein Eingabegerät oder das Format passt nicht. |
 | Was du tun kannst | **Systemeinstellungen → Sound → Eingabe:** Standard-Mikro wählen, Pegel testen. |
 
-### 4) ATLAS redet mit OMEGA nicht
+### 4) ATLAS redet mit OMEGA nicht / Chat-Fehler 500
 
-| Was los ist | Backend läuft nicht oder die **Basis-URL** ist falsch (kein `/v1/...` an die URL hängen). |
-| Was du tun kannst | OMEGA-Backend starten (Port **8000**). Im Widget nur z. B. `http://127.0.0.1:8000`. Optional `CORE_API_URL` in `~/.config/plasma-workspace/env/atlas-omega.sh` — siehe unten. Details: `JARVIS_OMEGA_LLM_VERBINDUNG.md`. |
+| Was los ist | Backend down, falsche **Basis-URL** (kein `/v1/...` anhängen), oder **Chat** scheitert intern (z. B. Ollama nur unter `OLLAMA_HOST` erreichbar, nicht unter localhost) — dann **keine Antwort** und oft **kein TTS**. |
+| Was du tun kannst | Backend **:8000**, Widget-Basis `http://127.0.0.1:8000`. **`OLLAMA_HOST`** in `.env` setzen (LAN-Ollama), Backend **neustarten**. API-Pfade: `JARVIS_OMEGA_LLM_VERBINDUNG.md` Abschnitt 2b. |
 
 ---
 

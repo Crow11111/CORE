@@ -15,8 +15,12 @@
 | **Axiom 0** | `docs/01_CORE_DNA/AXIOM_0_AUTOPOIESIS.md` | Die Autopoiesis des Gitters (x^2=x+1). |
 | **White Paper** | `docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION.md` | Theorie-Synthese & Topologie. |
 | **Architektur** | `docs/02_ARCHITECTURE/` | System-Design, Schnittstellen, Flow-Diagramme. |
-| **AI-Modelle** | `docs/02_ARCHITECTURE/AI_MODEL_CAPABILITIES.md` | Modell-IDs, Rollen-Mapping, Token-Richtwerte. |
+| **AI-Modelle** | `docs/02_ARCHITECTURE/AI_MODEL_CAPABILITIES.md` | Modell-IDs, Rollen-Mapping, Kosten 2.5 Flash vs Pro, Token-Richtwerte, Deep Research & Computer Use. |
+| **Deep Research & Computer Use** | `docs/02_ARCHITECTURE/DEEP_RESEARCH_UND_COMPUTER_USE.md` | Deep Research: Projekt-Omega-Verifikation (Vektorisierung, ChromaDB, Abgleich). Computer Use: Linux-Integration. |
+| **Duale Topologie & Vektor-Härtung** | `docs/02_ARCHITECTURE/DUALE_TOPOLOGIE_UND_VEKTOR_HAERTUNG.md` | G-Atlas-Soll; Ist-Zustand; RAG-Einheitlichkeit; Vektor-Härtung. |
+| **AI Studio Prompt** | `docs/02_ARCHITECTURE/AI_STUDIO_PROMPT.md` | Copy-Paste-Prompt für Google AI Studio (Schnittstellen, Live=Flash, Pro). |
 | **Orchestrierung Linux** | `docs/02_ARCHITECTURE/OMEGA_LINUX_ORCHESTRATION.md` | Topologie Arch, Health-Skripte, Testmatrix. |
+| **Jarvis ↔ OMEGA LLM** | `docs/02_ARCHITECTURE/JARVIS_OMEGA_LLM_VERBINDUNG.md` | Plasmoid Health-URL, falsche `/v1/chat/completions`-Basis, Kompat-Route `/v1/chat/completions/health`. |
 | **Bibliothek Kern** | `docs/BIBLIOTHEK_KERN_DOKUMENTE.md` | Zentraler Einstieg; Index 00–05, Was wurde gemacht, Wo nachschauen. |
 | **Infrastruktur** | `docs/03_INFRASTRUCTURE/` | VPS-Setup, Docker-Sandbox, Backup-Pläne. |
 | **VPS-Knoten & Flüsse** | `docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md` | Monica, Kong, Evolution, DBs: Zweck, Pull/Push-Matrix, Einbindung. |

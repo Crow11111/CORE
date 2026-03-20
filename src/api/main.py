@@ -16,7 +16,7 @@ from loguru import logger
 # Temporär auskommentiert wegen ImportError
 # from src.api.routes import id_safe
 
-from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, core_knowledge, core_voice, core_events, github_webhook, omega_matrix, omega_thought, telemetry, chat, dictate
+from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, core_knowledge, core_voice, core_events, github_webhook, omega_matrix, omega_thought, telemetry, chat, dictate, voice_bridge, jarvis_mri_coupler
 
 from src.api.middleware.veto_gate import VetoGateMiddleware
 from src.api.middleware.friction_guard import FrictionGuardMiddleware
@@ -148,12 +148,52 @@ app.include_router(omega_matrix.router)
 app.include_router(omega_thought.router)
 app.include_router(telemetry.router)
 app.include_router(chat.router)
+app.include_router(jarvis_mri_coupler.router)
+app.include_router(voice_bridge.router)
 app.include_router(dictate.router)
+app.include_router(voice_bridge.router)
 # app.include_router(id_safe.router)
 
 @app.get("/")
 def read_root():
     return {"status": "online", "system": "CORE", "version": "1.0.0"}
+
+
+def _cockpit_category(entry: dict) -> str:
+    """
+    Kategorien fuer Cockpit-Ticker (Frontend blendet per Toggle ein/aus).
+    """
+    msg = entry.get("msg") or ""
+    if not str(msg).strip():
+        return "skip"
+    level = (entry.get("level") or "INFO").upper()
+    mlow = msg.lower()
+    if any(
+        k in mlow
+        for k in (
+            "kernel:",
+            "[kernel",
+            "systemd",
+            " oom ",
+            "oom-killer",
+            "segfault",
+            "dbus",
+        )
+    ):
+        return "host"
+    if "[EVENT-BUS]" in msg:
+        if "[CRITICAL]" in msg:
+            return "ha_crit"
+        if "[WARNING]" in msg:
+            return "ha_warn"
+        if "[INFO]" in msg:
+            return "ha_sensor"
+        return "ha_sensor"
+    if level == "ERROR":
+        return "system"
+    if level == "WARNING":
+        return "heuristic"
+    return "core"
 
 
 @app.get("/api/logs")
@@ -165,10 +205,54 @@ def get_logs(since: int = 0, limit: int = 50):
     return {"logs": logs[-limit:], "total": len(_log_buffer)}
 
 
+@app.get("/api/cockpit_feed")
+def get_cockpit_feed(limit: int = 250):
+    """Alle Logzeilen mit cockpit_category — Frontend filtert (Kein Server-Vorhalten)."""
+    n = max(1, min(int(limit), 400))
+    raw = list(_log_buffer)[-n:]
+    out = []
+    for e in raw:
+        cat = _cockpit_category(e)
+        if cat == "skip":
+            continue
+        row = dict(e)
+        row["category"] = cat
+        out.append(row)
+    return {"logs": out, "total_ring": len(_log_buffer)}
+
+
+@app.get("/api/cockpit_ticker")
+def get_cockpit_ticker(limit: int = 100):
+    """Legacy: ohne HA-Sensor-INFO (nutzt Cockpit lieber /api/cockpit_feed + Toggles)."""
+    logs = [e for e in _log_buffer if _cockpit_category(e) != "ha_sensor"]
+    logs = [e for e in logs if _cockpit_category(e) != "skip"]
+    out = logs[-max(1, min(limit, 200)) :]
+    return {"logs": out, "total": len(logs), "filtered_from": len(_log_buffer)}
+
+
 @app.get("/health", response_class=HTMLResponse)
 def health_dashboard():
     """CORE Command Post: Health + Diktat + Chat -- fuer Cursor Simple Browser."""
     html_path = os.path.join(os.path.dirname(__file__), "static", "health.html")
+    with open(html_path, "r", encoding="utf-8") as f:
+        return f.read()
+
+
+@app.get("/v1/chat/completions/health")
+def jarvis_wrong_base_health_compat() -> dict:
+    """Kompatibilitaet: KDE-Jarvis-Plasmoid haengt '/health' an die konfigurierte Basis-URL.
+
+    Wenn die Basis fälschlich ``.../v1/chat/completions`` ist, wird sonst
+    ``.../v1/chat/completions/health`` (404) aufgerufen. Diese Route liefert 200.
+    Korrekte Konfiguration bleibt: nur Origin, z. B. ``http://127.0.0.1:8000``.
+    """
+    return {"status": "ok", "note": "jarvis-compat-wrong-llm-base"}
+
+
+@app.get("/voice-bridge", response_class=HTMLResponse)
+def voice_bridge_page():
+    """Stimme rein/raus ueber CORE-API (unabhaengig von AI Studio Voice)."""
+    html_path = os.path.join(os.path.dirname(__file__), "static", "voice_bridge.html")
     with open(html_path, "r", encoding="utf-8") as f:
         return f.read()
 

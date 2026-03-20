@@ -218,7 +218,12 @@ void JarvisBackend::testVoice(const QString &voiceId)
     const QString voicesDir = m_settings->jarvisDataDir() + QStringLiteral("/piper-voices");
     const QString onnxPath = voicesDir + QStringLiteral("/") + voiceId + QStringLiteral(".onnx");
     if (!QFile::exists(onnxPath)) {
-        qWarning() << "[ATLAS] testVoice: onnx not found:" << onnxPath;
+        qWarning() << "[ATLAS] testVoice: Piper-ONNX fehlt (lokal):" << onnxPath
+                   << "— nutze OMEGA-TTS (Backend). Stimme vorher mit „Aktivieren“ wählen oder ONNX unter"
+                   << voicesDir << "ablegen (Download im Widget oder Skript).";
+        m_tts->stop();
+        m_tts->speak(QStringLiteral(
+            "ATLAS meldet sich. Piper-Stimme ist lokal noch nicht installiert — du hörst OMEGA über das Netz."));
         return;
     }
 

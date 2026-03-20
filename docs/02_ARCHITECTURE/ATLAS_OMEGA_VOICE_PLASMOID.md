@@ -67,6 +67,8 @@ bash /OMEGA_CORE/atlas-omega-voice/scripts/install_whisper_modell.sh
 
 **Spracheingabe:** Standard ist der **Mikrofon-Knopf** im Widget — **kein** Dauer-Hören, **kein** Wake-Wort, solange die Option „Wake-Wort im Hintergrund“ aus ist (Default: **aus**). Optional weiterhin „Atlas“-Wake; Whisper nutzt **Sprache `de`** (Wake + Sprachbefehl nach Knopf).
 
+**Piper „Abspielen“ / testVoice:** Braucht die **.onnx**-Datei unter `~/.local/share/jarvis/piper-voices/`. Fehlt sie, nutzt **testVoice** automatisch **OMEGA-TTS** (Backend). Lokal nachziehen: `bash atlas-omega-voice/scripts/install_piper_stimme.sh` (Standard: `en_GB-alan-medium`) oder `…/install_piper_stimme.sh de_DE-thorsten-high`.
+
 ---
 
 ## Für Entwickler (kurz)

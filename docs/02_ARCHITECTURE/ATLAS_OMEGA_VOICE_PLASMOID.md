@@ -17,7 +17,7 @@ Lokales **Sprach- und Chat-Plasmoid** für KDE Plasma 6, angebunden an das **OME
 ### 1) Im Terminal steht viel Kram mit „Plasma.Flex.Hub“ — oder altes Jarvis lokal
 
 | Was los ist | **Plasma.Flex.Hub** ist ein **anderes** Widget (nicht unser ATLAS). Eine **alte Kopie** von `org.kde.plasma.jarvis` unter `~/.local/share/plasma/plasmoids/` kann die **neue Installation unter /usr** überdecken. |
-| Was du tun kannst | Einmal: `bash /OMEGA_CORE/atlas-omega-voice/scripts/alte_plasmoids_auslagern.sh` — legt betroffene Ordner als `*.bak-OMEGA-…` zur Seite (nichts unwiderruflich löschen). Danach `plasmashell --replace`. |
+| Was du tun kannst | Einmal: `bash /OMEGA_CORE/atlas-omega-voice/scripts/alte_plasmoids_auslagern.sh` — legt betroffene Ordner als `*.bak-OMEGA-…` zur Seite (nichts unwiderruflich löschen). Danach `plasmashell --replace`. **Hinweis:** Wenn in der Leiste ein **leeres oder kaputtes Feld** war: Eintrag entfernen und **ATLAS Ω Voice** neu aus der Widget-Liste ziehen. |
 
 ### 2) ATLAS schreibt: Sprachmodell fehlt / kein Wake-Wort
 

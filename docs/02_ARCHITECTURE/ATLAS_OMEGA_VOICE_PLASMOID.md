@@ -1,7 +1,7 @@
 # ATLAS Ω Voice — KDE-Plasmoid (OMEGA CORE)
 
-**Vektor:** 2210 | **Delta:** 0.049  
-**Pfad im Repo:** `atlas-omega-voice/`  
+**Vektor:** 2210 | **Delta:** 0.049
+**Pfad im Repo:** `atlas-omega-voice/`
 **Oberfläche:** Deutsch (Standard)
 
 ---
@@ -16,8 +16,8 @@ Lokales **Sprach- und Chat-Plasmoid** für KDE Plasma 6, angebunden an das **OME
 
 ### 1) Im Terminal steht viel Kram mit „Plasma.Flex.Hub“ — oder altes Jarvis lokal
 
-| Was los ist | **Plasma.Flex.Hub** ist ein **anderes** Widget (nicht unser ATLAS). Eine **alte Kopie** von `org.kde.plasma.jarvis` unter `~/.local/share/plasma/plasmoids/` kann die **neue Installation unter /usr** überdecken. |
-| Was du tun kannst | Einmal: `bash /OMEGA_CORE/atlas-omega-voice/scripts/alte_plasmoids_auslagern.sh` — legt betroffene Ordner als `*.bak-OMEGA-…` zur Seite (nichts unwiderruflich löschen). Danach `plasmashell --replace`. **Hinweis:** Wenn in der Leiste ein **leeres oder kaputtes Feld** war: Eintrag entfernen und **ATLAS Ω Voice** neu aus der Widget-Liste ziehen. |
+| Was los ist | **Plasma.Flex.Hub** ist ein **anderes** Widget (nicht unser ATLAS). **Wichtig:** Legst du es nur als `*.bak` **im selben Ordner** `~/.local/share/plasma/plasmoids/` ab, **scannt Plasma die trotzdem** (`metadata.json`) — dann kommen weiter die KPackage-Fehler. Zusätzlich bleibt oft ein Eintrag **`plugin=Plasma.Flex.Hub`** in `~/.config/plasma-org.kde.plasma.desktop-appletsrc` → Meldung „Paket existiert nicht“. |
+| Was du tun kannst | **`bash /OMEGA_CORE/atlas-omega-voice/scripts/alte_plasmoids_auslagern.sh`** — verschiebt Pakete nach **`~/.local/share/OMEGA-plasmoid-archiv/<Zeit>/`** (nicht unter `plasmoids/`) und ruft **`plasma_entferne_flex_hub_applet.py`** auf (entfernt Flex.Hub aus der Leisten-Config, Backup `*.bak-OMEGA`). Danach **`plasmashell --replace`**. Nur Flex.Hub: `python3 …/plasma_entferne_flex_hub_applet.py`. **Hinweis:** Leiste ggf. **ATLAS Ω Voice** neu einfügen. |
 
 ### 2) ATLAS schreibt: Sprachmodell fehlt / kein Wake-Wort
 
@@ -40,7 +40,7 @@ Lokales **Sprach- und Chat-Plasmoid** für KDE Plasma 6, angebunden an das **OME
 
 - **Server-Basis-URL:** nur Origin, z. B. `http://127.0.0.1:8000` oder die in `.env` gesetzte **`CORE_API_URL`** (wird vom Plasmoid als **Umgebungsvariable** gelesen, wenn noch kein gespeicherter Wert in QSettings existiert).
 - **Plasma:** Umgebungsvariable für die Session z. B. unter `~/.config/plasma-workspace/env/atlas-omega.sh`:
-  - `export CORE_API_URL=http://<CORE_HOST_IP>:<CORE_API_PORT>`  
+  - `export CORE_API_URL=http://<CORE_HOST_IP>:<CORE_API_PORT>`
   Werte aus lokaler `.env` übernehmen — **nicht** ins Repository schreiben.
 - **QSettings-Gruppe:** `OMEGA` / `AtlasOmegaVoice` (getrennt vom Original-Jarvis).
 
@@ -78,8 +78,8 @@ bash /OMEGA_CORE/atlas-omega-voice/scripts/install_whisper_modell.sh
 
 ## Siehe auch
 
-- `docs/BIBLIOTHEK_KERN_DOKUMENTE.md`  
-- `docs/02_ARCHITECTURE/JARVIS_OMEGA_LLM_VERBINDUNG.md`  
+- `docs/BIBLIOTHEK_KERN_DOKUMENTE.md`
+- `docs/02_ARCHITECTURE/JARVIS_OMEGA_LLM_VERBINDUNG.md`
 - `CORE_EICHUNG.md` (Anhang A/B)
 
 ---

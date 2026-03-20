@@ -35,8 +35,9 @@ find_package(KF6 REQUIRED COMPONENTS
 find_package(Plasma REQUIRED)
 
 # whisper.cpp - lightweight local speech recognition
-find_library(WHISPER_LIB NAMES whisper PATHS /usr/local/lib /usr/lib)
-find_path(WHISPER_INC whisper.h PATHS /usr/local/include /usr/include)
+# Wir suchen zuerst in einem lokalen OMEGA_CORE Pfad, falls wir es dort mit CUDA gebaut haben.
+find_library(WHISPER_LIB NAMES whisper PATHS ${CMAKE_SOURCE_DIR}/libs/whisper.cpp /usr/local/lib /usr/lib)
+find_path(WHISPER_INC whisper.h PATHS ${CMAKE_SOURCE_DIR}/libs/whisper.cpp /usr/local/include /usr/include)
 if(NOT WHISPER_LIB OR NOT WHISPER_INC)
     message(FATAL_ERROR "whisper.cpp not found. Install it: https://github.com/ggerganov/whisper.cpp")
 endif()

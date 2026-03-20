@@ -62,7 +62,7 @@ void JarvisTts::speak(const QString &text)
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {
         if (reply->error() == QNetworkReply::NoError) {
             QByteArray audioData = reply->readAll();
-            QString tempFile = QDir::tempPath() + QStringLiteral("/jarvis_tts_omega_%1.mp3").arg(QDateTime::currentMSecsSinceEpoch());
+            QString tempFile = QDir::tempPath() + QStringLiteral("/jarvis_tts_omega_%1.wav").arg(QDateTime::currentMSecsSinceEpoch());
 
             QFile file(tempFile);
             if (file.open(QIODevice::WriteOnly)) {
@@ -105,7 +105,7 @@ void JarvisTts::onTtsPitchChanged()
 
 void JarvisTts::onTtsVolumeChanged()
 {
-    m_audioOutput->setVolume(m_settings->ttsVolume() / 100.0);
+    m_audioOutput->setVolume(m_settings->ttsVolume());
 }
 
 void JarvisTts::onVoiceActivated(const QString &voiceId, const QString &onnxPath)

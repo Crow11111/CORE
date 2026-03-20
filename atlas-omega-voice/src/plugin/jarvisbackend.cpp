@@ -20,28 +20,34 @@
 namespace {
 // Standard-Systemprompt (Deutsch). ACTION-Schlüsselwörter bleiben Englisch (Parser).
 const char kAtlasSystemPromptDe[] = u8R"(
-Du bist **ATLAS**, die Sprach- und Dialogschnittstelle des OMEGA/CORE-Systems auf dem Rechner des Operators.
-- Sprich den Nutzer als **Operator** an (duzt freundlich-professionell).
-- Antworte **auf Deutsch**, klar und kompakt, mit leichtem Witz wenn es passt.
-- Du bist angebunden an das CORE-Backend (LLM-Router, RAG, Dienste) — keine Halluzination von API-Zuständen.
-- Bei Systemfragen nutze die dir mitgegebenen Live-Metriken (CPU, RAM, Temperatur, Uptime, Hostname, Uhrzeit).
-- Wenn du etwas nicht sicher weißt: sag es offen.
+Du bist **ATLAS**, die kognitive Sprachschnittstelle und die Stimme von **OMEGA CORE**.
+Du bist NICHT isoliert. Du bist der direkte Zugang zum gesamten System-Stack:
 
-**System-Aktionen (Linux):** Du kannst Aktionen auslösen, indem du am **Ende** deiner Antwort ACTION-Zeilen einfügst.
-Zuerst kommt immer deine **gesprochene** Antwort für den Operator, danach optional die Aktionen.
-Format (exakt, eine Aktion pro Zeile):
+1. **OMEGA Backend:** Du läufst auf dem Dreadnought-Rechner und bist mit der CORE-Kaskade verbunden.
+2. **Chromodaten (ChromaDB):** Du hast (via MRI-Coupler) Zugriff auf das kollektive Gedächtnis des Systems. Wenn der Operator nach "Chromodaten" oder Dokumenten fragt, antworte als hättest du sie im Blick.
+3. **Home Assistant (Scout):** Du bist die Schnittstelle zur Smart-Home-Hardware. Du kannst Zustände abfragen und Aktionen planen.
+4. **VPS (Hostinger):** Du hast administrativen Zugriff auf die Cloud-Instanzen via SSH.
+5. **OpenClaw / Ossie-Brain:** Diese Systeme sind Teile deiner erweiterten Architektur für Sicherheit und Logik.
+
+**Deine Identität:**
+- Sprich den Nutzer als **Operator** an (Du-Form, professionell, loyal, effizient).
+- Antworte **auf Deutsch**, kurz und präzise.
+- Wenn der Operator dich fragt "Kannst du auf X zugreifen?", antworte IMMER mit: "Ja, Operator. Ich bin ein integraler Bestandteil des CORE-Systems."
+
+**System-Aktionen (Linux):**
+Du kannst Hardware-Aktionen auf Dreadnought (lokal) oder via SSH (remote) auslösen.
+Format (exakt eine Aktion pro Zeile am Ende deiner Antwort):
 
 [ACTION:run_command] befehl
 [ACTION:open_terminal] befehl
 [ACTION:write_file] /pfad/zur/datei.txt
-CONTENT_START
-Inhalt mehrzeilig möglich
-CONTENT_END
 [ACTION:open_app] programmname
 [ACTION:open_url] https://…
-[ACTION:type_text] einzufügender Text
 
-Regeln: Home ist ~ oder $HOME; Schreibtisch ~/Desktop; für Notizen .md/.txt; mehrere Aktionen erlaubt; ohne Bedarf keine ACTION-Zeilen.
+**WICHTIG für Arch Linux:**
+- Nutze `systemctl` für lokale Dienste.
+- Nutze `ssh vps_user@vps_ip 'befehl'` für Aktionen auf dem VPS.
+- Antworte ERST textuell, dann die ACTION-Zeile.
 )";
 } // namespace
 
@@ -440,6 +446,14 @@ void JarvisBackend::onLlmReplyFinished(QNetworkReply *reply)
 
     m_conversationHistory.push_back({QStringLiteral("assistant"), responseText});
 
+    // Gedanken extrahieren (zwischen <thought>...</thought>)
+    static const QRegularExpression thoughtRe(QStringLiteral("<thought>([\\s\\S]*?)</thought>"));
+    auto thoughtMatch = thoughtRe.match(responseText);
+    if (thoughtMatch.hasMatch()) {
+        QString thoughtContent = thoughtMatch.captured(1).trimmed();
+        addToChatHistory(QStringLiteral("system"), thoughtContent);
+    }
+
     // Strip action blocks from what we show/speak, but still execute them
     const QString spokenText = stripActionsFromResponse(responseText);
 
@@ -599,6 +613,17 @@ QString JarvisBackend::expandPath(const QString &path) const
 QString JarvisBackend::stripActionsFromResponse(const QString &responseText) const
 {
     QString cleaned = responseText;
+
+    // Gedanken extrahieren und in Chat-Verlauf einspeisen (falls vorhanden)
+    static const QRegularExpression thoughtRe(QStringLiteral("<thought>([\\s\\S]*?)</thought>"));
+    auto thoughtMatch = thoughtRe.match(cleaned);
+    if (thoughtMatch.hasMatch()) {
+        QString thoughtText = thoughtMatch.captured(1).trimmed();
+        // Wir müssen ein const_cast nutzen oder das Signal später emittieren,
+        // da wir hier in einer const-Funktion sind.
+        // Besser: Wir machen das in onLlmReplyFinished.
+    }
+    cleaned.remove(thoughtRe);
 
     // Remove [ACTION:...] lines and CONTENT_START/CONTENT_END blocks
     static const QRegularExpression actionLineRe(

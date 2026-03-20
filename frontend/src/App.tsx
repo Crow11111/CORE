@@ -1,39 +1,45 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
-  Terminal,
   Box,
   Settings,
-  Cpu,
-  ShieldAlert,
   GitBranch,
   AlertTriangle,
+  Activity,
 } from "lucide-react";
+import HealthBoard from "./components/HealthBoard";
+import LiveTicker from "./components/LiveTicker";
+import ThoughtStream from "./components/ThoughtStream";
+import VoiceStrip, { type VoiceMode } from "./components/VoiceStrip";
+import {
+  DEFAULT_TICKER_VISIBILITY,
+  TICKER_CATEGORY_IDS,
+  TICKER_CATEGORY_META,
+  type TickerCategoryId,
+} from "./cockpitTickerCategories";
 import { motion, AnimatePresence } from "motion/react";
 import TelemetryHUD from "./components/TelemetryHUD";
 import ZVectorMonitor from "./components/ZVectorMonitor";
-import CommandConsole from "./components/CommandConsole";
 import ValidationBuildEngine from "./components/ValidationForge";
 import { useTelemetryPolling } from "./hooks/useTelemetryPolling";
 
-type Message = {
-  id: string;
-  role: "user" | "system";
-  content: string;
-  timestamp: Date | string;
+type FeedRow = {
+  ts: string;
+  level: string;
+  msg: string;
+  src?: string;
+  category: TickerCategoryId;
 };
 
 export default function App() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "system-init",
-      role: "system",
-      content: "CORE ENGINE INITIALIZED. WAITING FOR DIRECTIVES.",
-      timestamp: new Date(),
-    },
-  ]);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const [voiceMode, setVoiceMode] = useState<VoiceMode>("live");
   const [isBuildEngineOpen, setIsBuildEngineOpen] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isHealthBoardOpen, setIsHealthBoardOpen] = useState(false);
+  const [tickerVis, setTickerVis] = useState<Record<TickerCategoryId, boolean>>(
+    DEFAULT_TICKER_VISIBILITY,
+  );
+  const [feedLogs, setFeedLogs] = useState<FeedRow[]>([]);
+  const [feedOk, setFeedOk] = useState(false);
+  const [wsThoughts, setWsThoughts] = useState<string[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
 
   const apiBase = (
@@ -43,267 +49,229 @@ export default function App() {
   const { data: telemetry, connected: telemetryConnected } =
     useTelemetryPolling({ apiBase });
 
-  // Initialisiere Websocket (fuer Event-Streaming)
   useEffect(() => {
-    let ws: WebSocket;
-    let reconnectTimer: any;
+    let alive = true;
+    const pull = async () => {
+      try {
+        const r = await fetch(`${apiBase}/api/cockpit_feed?limit=400`, {
+          signal: AbortSignal.timeout(5000),
+        });
+        if (!r.ok) {
+          if (alive) setFeedOk(false);
+          return;
+        }
+        const data = await r.json();
+        if (!alive) return;
+        const logs: FeedRow[] = (data.logs || []).map(
+          (l: Record<string, unknown>) => ({
+            ts: String(l.ts ?? ""),
+            level: String(l.level ?? "INFO"),
+            msg: String(l.msg ?? ""),
+            src: l.src != null ? String(l.src) : undefined,
+            category: (l.category as TickerCategoryId) || "core",
+          }),
+        );
+        setFeedLogs(logs);
+        setFeedOk(true);
+      } catch {
+        if (alive) setFeedOk(false);
+      }
+    };
+    pull();
+    const t = setInterval(pull, 2000);
+    return () => {
+      alive = false;
+      clearInterval(t);
+    };
+  }, [apiBase]);
 
+  useEffect(() => {
+    let cancelled = false;
+    let ws: WebSocket | null = null;
+    let reconnectTimer: ReturnType<typeof setTimeout> | undefined;
     const connect = () => {
+      if (cancelled) return;
       ws = new WebSocket(wsUrl);
       wsRef.current = ws;
-
-      ws.onopen = () => {
-        console.log("[WS] Connected to Core");
-      };
-
       ws.onmessage = (event) => {
         try {
           const data = JSON.parse(event.data);
-          if (data.type === "chat_chunk" && data.content) {
-            setMessages((prev) => {
-              const last = prev[prev.length - 1];
-              if (last && last.role === "system" && last.id === data.msg_id) {
-                return [
-                  ...prev.slice(0, -1),
-                  { ...last, content: last.content + data.content },
-                ];
-              } else {
-                return [
-                  ...prev,
-                  {
-                    id: data.msg_id || Date.now().toString(),
-                    role: "system",
-                    content: data.content,
-                    timestamp: new Date(),
-                  },
-                ];
-              }
-            });
+          if (data.type === "cockpit_thought" && data.text) {
+            setWsThoughts((prev) => [...prev, String(data.text)].slice(-80));
           }
-        } catch (e) {
-          console.error("[WS] Parse error", e);
+        } catch {
+          /* ignore */
         }
       };
-
       ws.onclose = () => {
-        console.log("[WS] Disconnected. Reconnecting in 5s...");
-        reconnectTimer = setTimeout(connect, 5000);
+        if (!cancelled) {
+          reconnectTimer = setTimeout(connect, 5000);
+        }
       };
     };
-
     connect();
-
     return () => {
-      clearTimeout(reconnectTimer);
-      if (wsRef.current) wsRef.current.close();
+      cancelled = true;
+      if (reconnectTimer) clearTimeout(reconnectTimer);
+      ws?.close();
+      wsRef.current = null;
     };
   }, [wsUrl]);
 
-  // Auto-scroll
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const handleCommand = async (cmd: string) => {
-    if (!cmd.trim()) return;
-
-    const newMsg: Message = {
-      id: Date.now().toString(),
-      role: "user",
-      content: cmd,
-      timestamp: new Date(),
-    };
-    setMessages((prev) => [...prev, newMsg]);
-    setIsProcessing(true);
-
-    // Wenn der Befehl "audit" oder "build_engine" enthaelt, oeffne die Build-Engine testweise
-    if (
-      cmd.toLowerCase().includes("build_engine") ||
-      cmd.toLowerCase().includes("audit")
-    ) {
-      setIsBuildEngineOpen(true);
-    }
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
-
-    try {
-      const res = await fetch(`${apiBase}/api/chat`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: cmd, mode: "fast" }),
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!res.ok) throw new Error(`System error: ${res.status}`);
-
-      const data = await res.json();
-
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString() + "-sys",
-          role: "system",
-          content: data.response || "No response generated.",
-          timestamp: new Date(),
-        },
-      ]);
-    } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: Date.now().toString() + "-err",
-          role: "system",
-          content: "[ERROR] Core API nicht erreichbar oder Timeout.",
-          timestamp: new Date(),
-        },
-      ]);
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  const handleBuildEngineRotate = () => {
-    // Dummy-Action fuer die UI Demonstration
-    console.log("Rotating Build-Engine...");
+  const toggleTickerCat = (id: TickerCategoryId) => {
+    setTickerVis((v) => ({ ...v, [id]: !v[id] }));
   };
 
   return (
     <div className="flex flex-col h-screen bg-[#121212] text-[#E0E0E0] font-sans overflow-hidden">
-      {/* Top Bar: Telemetry HUD */}
-      <header className="flex-none bg-[#0A0A0A] border-b border-[#333] px-6 py-2.5 flex items-center justify-between z-20 shadow-[0_4px_20px_rgba(0,0,0,0.49)]">
+      <header className="flex-none bg-[#0A0A0A] border-b border-[#333] px-4 py-2 flex flex-wrap items-center justify-between gap-2 z-20 shadow-[0_4px_20px_rgba(0,0,0,0.49)]">
         <div className="flex items-center gap-3">
           <Box size={20} className="text-[#FFB300]" />
           <h1 className="text-sm font-mono tracking-[0.2em] uppercase font-bold text-[#E0E0E0]">
-            CORE COCKPIT
+            CORE Cockpit
           </h1>
+          <span
+            className={`px-2 py-0.5 rounded font-mono text-[10px] uppercase border hidden sm:inline
+              ${voiceMode === "live" ? "text-[#4CAF50] border-[#4CAF50]/40" : "text-[#FFB300] border-[#FFB300]/40"}`}
+          >
+            Diktat: {voiceMode === "live" ? "LIVE" : "DEEP"}
+          </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 flex-wrap">
           <TelemetryHUD data={telemetry} connected={telemetryConnected} />
           <ZVectorMonitor data={telemetry} connected={telemetryConnected} />
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setIsHealthBoardOpen(true)}
+            className="p-1.5 rounded-lg border border-[#333] bg-[#1A1A1A] text-[#A0A0A0] hover:text-[#E0E0E0] hover:border-[#666] transition-all flex items-center gap-2"
+            title="Aufnahme & Status"
+          >
+            <Activity size={16} />
+            <span className="text-[10px] uppercase font-mono tracking-wider px-1 hidden sm:inline">
+              Status
+            </span>
+          </button>
           <button
             onClick={() => setIsBuildEngineOpen(!isBuildEngineOpen)}
             className={`p-1.5 rounded-lg border transition-all flex items-center gap-2
               ${isBuildEngineOpen ? "bg-[#FFB300] text-[#121212] border-[#FFB300]" : "bg-[#1A1A1A] text-[#A0A0A0] border-[#333] hover:text-[#E0E0E0] hover:border-[#666]"}`}
-            title="Validation Build-Engine"
+            title="Build-Engine"
           >
             <GitBranch size={16} />
-            <span className="text-[10px] uppercase font-mono tracking-wider px-1">
-              Build-Engine
+            <span className="text-[10px] uppercase font-mono tracking-wider px-1 hidden sm:inline">
+              Build
             </span>
           </button>
-          <div className="w-px h-6 bg-[#333] mx-1"></div>
           <button
             className="text-[#666] hover:text-[#E0E0E0] transition-colors p-1"
-            title="Settings"
+            title="Einstellungen"
           >
             <Settings size={18} />
           </button>
         </div>
       </header>
 
-      {/* Backend Offline Warning Banner */}
+      <div className="flex-none flex flex-wrap items-center gap-1.5 px-3 py-1.5 bg-[#0D0D0D] border-b border-[#222]">
+        <span className="text-[9px] text-[#555] font-mono uppercase tracking-wider mr-1 shrink-0">
+          Ticker
+        </span>
+        {TICKER_CATEGORY_IDS.map((id) => {
+          const on = tickerVis[id];
+          const m = TICKER_CATEGORY_META[id];
+          return (
+            <button
+              key={id}
+              type="button"
+              onClick={() => toggleTickerCat(id)}
+              title={
+                m.label +
+                (on ? " — sichtbar (Klick: aus)" : " — aus (Klick: ein)")
+              }
+              className={`px-2 py-0.5 rounded border text-[9px] font-mono font-bold transition-all
+                ${on ? `${m.color} border-current` : `bg-[#151515] ${m.inactive}`}`}
+            >
+              {m.short}
+            </button>
+          );
+        })}
+      </div>
+
       <AnimatePresence>
         {!telemetryConnected && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="flex-none bg-[#F44336]/15 border-b-2 border-[#F44336] px-6 py-3 flex items-center justify-center gap-3 overflow-hidden"
+            className="flex-none bg-[#F44336]/15 border-b-2 border-[#F44336] px-4 py-2 flex items-center gap-2 overflow-hidden"
           >
-            <AlertTriangle size={18} className="text-[#F44336] flex-none" />
-            <span className="text-[13px] font-mono text-[#F44336] font-bold uppercase tracking-wider">
-              Backend nicht erreichbar (Port 8000) -- Starte mit:
-              START_OMEGA_COCKPIT.bat oder python -m uvicorn src.api.main:app
-              --port 8000
+            <AlertTriangle size={18} className="text-[#F44336] shrink-0" />
+            <span className="text-[11px] font-mono text-[#F44336] font-bold uppercase">
+              Kern nicht erreichbar — uvicorn auf Port 8000 starten
+              (VITE_CORE_API_URL prüfen).
             </span>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex relative overflow-hidden">
-        {/* Output Area (Chat / Logs) */}
-        <div className="flex-1 overflow-y-auto px-6 py-8 pb-32">
-          <div className="max-w-5xl mx-auto space-y-6">
-            {messages.map((msg) => (
-              <motion.div
-                key={msg.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[85%] rounded-lg p-4 font-mono text-sm leading-relaxed whitespace-pre-wrap
-                    ${
-                      msg.role === "user"
-                        ? "bg-[#1A1A1A] border border-[#333] text-[#E0E0E0]"
-                        : "bg-transparent border-l-2 border-[#FFB300] pl-6 text-[#A0A0A0]"
-                    }`}
-                >
-                  {msg.role === "user" && (
-                    <div className="text-[10px] text-[#666] uppercase tracking-wider mb-2 flex items-center gap-2">
-                      <Terminal size={10} /> DIRECTIVE
-                    </div>
-                  )}
-                  {msg.content}
-                </div>
-              </motion.div>
-            ))}
-            {isProcessing && (
-              <div className="flex justify-start">
-                <div className="bg-transparent border-l-2 border-[#333] pl-6 text-[#666] font-mono text-sm uppercase flex items-center gap-3">
-                  <div className="w-2 h-2 bg-[#FFB300] rounded-full animate-pulse"></div>
-                  Processing...
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
+      <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
+        <div className="flex-1 flex min-h-0 min-w-0">
+          <div className="flex-1 flex flex-col min-h-0">
+            <LiveTicker
+              logs={feedLogs}
+              feedOk={feedOk}
+              className="flex-1 min-h-0"
+              visibleCategories={tickerVis}
+            />
           </div>
+          <ThoughtStream
+            logs={feedLogs}
+            feedOk={feedOk}
+            wsThoughtLines={wsThoughts}
+          />
         </div>
-
-        {/* Sliding Validation Build-Engine Panel */}
-        <ValidationBuildEngine
-          isOpen={isBuildEngineOpen}
-          onClose={() => setIsBuildEngineOpen(false)}
-          isRotating={false}
-          onRotate={handleBuildEngineRotate}
-          logs={[
-            {
-              id: "1",
-              source: "Architect",
-              severity: "info",
-              message:
-                "Keine strukturellen Verletzungen in der API-Route gefunden.",
-            },
-            {
-              id: "2",
-              source: "Security",
-              severity: "warning",
-              message:
-                'CORS-Headers koennten in der Produktion zu offen sein. (allow_origins=["*"])',
-            },
-            {
-              id: "3",
-              source: "Performance",
-              severity: "error",
-              message:
-                "Thread-Locking in ChromaDB koennte bei >10 req/s zu Timeouts fuehren.",
-            },
-          ]}
+        <VoiceStrip
+          apiBase={apiBase}
+          mode={voiceMode}
+          onModeChange={setVoiceMode}
         />
       </main>
 
-      {/* Bottom Command Interface */}
-      <div className="absolute bottom-0 left-0 right-0">
-        <CommandConsole onExecute={handleCommand} isProcessing={isProcessing} />
-      </div>
+      <ValidationBuildEngine
+        isOpen={isBuildEngineOpen}
+        onClose={() => setIsBuildEngineOpen(false)}
+        isRotating={false}
+        onRotate={() => {}}
+        logs={[
+          {
+            id: "1",
+            source: "Architekt",
+            severity: "info",
+            message: "Keine strukturellen Verletzungen in der API-Route.",
+          },
+          {
+            id: "2",
+            source: "Sicherheit",
+            severity: "warning",
+            message: 'CORS in Produktion ggf. zu offen (allow_origins=["*"]).',
+          },
+          {
+            id: "3",
+            source: "Performance",
+            severity: "error",
+            message: "ChromaDB-Locking bei hoher Last prüfen.",
+          },
+        ]}
+      />
+
+      <HealthBoard
+        isOpen={isHealthBoardOpen}
+        onClose={() => setIsHealthBoardOpen(false)}
+        apiBase={apiBase}
+        chatMode={voiceMode === "live" ? "live" : "deep"}
+      />
     </div>
   );
 }

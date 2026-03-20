@@ -39,6 +39,8 @@
 | **OC Brain RAG Spec** | `docs/02_ARCHITECTURE/OC_BRAIN_RAG_SPEC.md` | RAG-Pipeline Query → ChromaDB → Context → LLM (Strang D). |
 | **OC Brain Strang A+E Bericht** | `docs/05_AUDIT_PLANNING/OC_BRAIN_STRANG_A_E_BERICHT.md` | Kurzbericht Diagnose (doctor) + WhatsApp (QR-Pairing, Config). |
 | **OC Brain Strang B Bericht** | `docs/05_AUDIT_PLANNING/OC_BRAIN_STRANG_B_BERICHT.md` | Kurzbericht Ollama auf VPS (Installation, api/tags, Modell). |
+| **Projektplan ATLAS 2026** | `docs/05_AUDIT_PLANNING/PROJECT_PLAN_ATLAS_TRANSFORMATION_2026.md` | Detaillierter Plan (Luminescence, Sentinel, Memory-Core). |
+| **Session-Log 2026-03-20** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-20.md` | ATLAS Transformation (Red Theme, Daemon Monitoring, Deep RAG). |
 | **Session-Log 2026-03-14** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-14.md` | Durchgeführte Schritte OC Brain (Verify, Doctor, Ollama), Abnahme A1–A7. |
 | **Wissensbasis** | `docs/06_WORLD_KNOWLEDGE/` | Externe Forschung, Theorie-Cluster. |
 

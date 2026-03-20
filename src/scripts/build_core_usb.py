@@ -1,13 +1,9 @@
 # ==============================================================================
 # CORE OS: AUTOMATED USB CREATOR & SEED PACKAGER
 # ==============================================================================
-# ACHTUNG: Dieses Skript wurde urspruenglich fuer die Migration von Windows
-# auf Debian/Linux geschrieben (Referenz auf J:\ und C:\).
-# Das System laeuft inzwischen erfolgreich auf CachyOS (Linux).
-# ==============================================================================
 # Dieses Skript macht exakt das, was der Operator gefordert hat:
 # 1. Es ldt das Debian ISO herunter.
-# 2. Es brennt das ISO bootfhig auf den USB-Stick (J:).
+# 2. Es brennt das ISO bootfaehig auf den USB-Stick (CORE_USB_DRIVE, z.B. J: oder /mnt/usb).
 # 3. Es packt die gesamte CORE Codebase (inkl. ChromaDB) als Seed auf den Stick.
 # 4. Es legt ein Auto-Setup-Skript auf den Stick, das nach der Installation
 #    mit einem Klick ausgefǬhrt wird.
@@ -23,11 +19,12 @@ import shutil
 from pathlib import Path
 
 # --- KONFIGURATION ---
-USB_DRIVE = "J:"
+# USB-Stick: unter Windows z.B. J:, unter Linux z.B. /mnt/usb; ENV CORE_USB_DRIVE ueberschreibt.
+USB_DRIVE = os.getenv("CORE_USB_DRIVE", "J:" if os.name == "nt" else "/mnt/usb")
 ISO_URL = "https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/debian-13.3.0-amd64-netinst.iso"
 ISO_FILENAME = "debian-12-minimal.iso"
 CORE_ROOT = Path("/OMEGA_CORE")
-SEED_DIR = Path(f"{USB_DRIVE}/CORE_SEED")
+SEED_DIR = Path(USB_DRIVE) / "CORE_SEED"
 
 def download_iso():
     iso_path = Path(ISO_FILENAME)
@@ -46,12 +43,12 @@ def create_bootable_usb(iso_path):
     # entweder Rufus per CLI aufrufen oder den Operator bitten, Rufus zu nutzen.
     # Um das System nicht zu bricken, bereiten wir den Stick als Daten-Stick vor.
     print("-> HINWEIS: Windows erlaubt kein direktes 'dd' auf USB-Sticks ohne externe Tools.")
-    print("-> Bitte nutze Rufus (rufus.ie), um die Datei 'debian-12-minimal.iso' auf J: zu flashen.")
+    print(f"-> Bitte nutze Rufus (rufus.ie), um die Datei 'debian-12-minimal.iso' auf {USB_DRIVE} zu flashen.")
     print("-> WICHTIG: Sobald Rufus fertig ist, fǬhre dieses Skript NOCHMAL aus, um den CORE-Seed auf den Stick zu kopieren!")
 
 def package_core_seed():
     if not Path(USB_DRIVE).exists():
-        print(f"FEHLER: Laufwerk {USB_DRIVE} nicht gefunden.")
+        print(f"FEHLER: Laufwerk {USB_DRIVE} nicht gefunden. Setze CORE_USB_DRIVE (z.B. J: oder /mnt/usb).")
         return
 
     print(f"[3/4] Packe CORE Codebase & ChromaDB auf den Stick ({SEED_DIR})...")
@@ -153,11 +150,11 @@ if __name__ == "__main__":
     print("\n" + "="*80)
     print("WICHTIGE ANWEISUNG FUER DEN OPERATOR:")
     print("1. Lade dir Rufus herunter (https://rufus.ie)")
-    print("2. Waehle dein USB-Laufwerk (J:) aus")
+    print(f"2. Waehle dein USB-Laufwerk ({USB_DRIVE}) aus")
     print("3. Waehle die Datei 'debian-12-minimal.iso' (liegt hier im CORE-Ordner)")
     print("4. Klicke auf START und warte, bis Rufus fertig ist.")
-    print("5. WICHTIG: Kopiere danach den Ordner 'CORE_SEED' von J: (oder wo er jetzt liegt) wieder auf den Stick!")
+    print(f"5. WICHTIG: Kopiere danach den Ordner 'CORE_SEED' von {USB_DRIVE} (oder wo er jetzt liegt) wieder auf den Stick!")
     print("   (Rufus formatiert den Stick, daher haben wir den Seed jetzt schon mal vorbereitet.)")
-    print("   Am besten kopierst du den Ordner J:\\CORE_SEED jetzt kurz auf deinen Desktop (C:\\),")
-    print("   laesst Rufus laufen, und kopierst ihn danach wieder auf J:\\.")
+    print(f"   Am besten kopierst du den Ordner CORE_SEED kurz in einen lokalen Ordner (z.B. Desktop),")
+    print(f"   laesst Rufus laufen, und kopierst ihn danach wieder auf {USB_DRIVE}.")
     print("="*80)

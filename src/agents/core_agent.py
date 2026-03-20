@@ -218,9 +218,8 @@ def get_ephemeral_pool() -> EphemeralAgentPool:
     return _global_pool
 
 
-# Backward-Kompatibilitaet
-Night-AgentIntent = IntentType
-Night-AgentResult = EphemeralResult
-Night-AgentAgent = EphemeralAgent
-Night-AgentAgentPool = EphemeralAgentPool
+NightAgentIntent = IntentType
+NightAgentResult = EphemeralResult
+NightAgentAgent = EphemeralAgent
+NightAgentAgentPool = EphemeralAgentPool
 get_night_agent_pool = get_ephemeral_pool

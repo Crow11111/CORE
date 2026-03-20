@@ -15,23 +15,24 @@ Damit der komplette Weg **Nachricht → HA → CORE → Antwort im Chat** funkti
 
 ## 1. rest_command in HA
 
-CORE muss von HA aus per HTTP erreichbar sein (4D_RESONATOR (CORE) oder Scout, z. B. `http://192.168.178.20:8000`). In `configuration.yaml` (oder über die HA-Oberfläche → Einstellungen → Geräte & Dienste → REST-Befehle):
+CORE muss von HA (Scout) aus per HTTP erreichbar sein. Die URL muss auf **Dreadnought** (CORE-Backend) :8000 zeigen. In `.env` ist dafür **CORE_HOST_IP** definiert (Standard: `192.168.178.20`). In `configuration.yaml` (oder über die HA-Oberfläche → Einstellungen → Geräte & Dienste → REST-Befehle):
 
 ```yaml
 rest_command:
-  atlas_whatsapp_webhook:
-    url: "http://DEINE_CORE_IP:8000/webhook/whatsapp"
+  core_whatsapp_webhook:
+    # Dreadnought-IP = CORE_HOST_IP aus CORE .env (z. B. 192.168.178.20)
+    url: "http://192.168.178.20:8000/webhook/whatsapp"
     method: POST
     content_type: "application/json"
     payload: '{{ payload | tojson }}'
     timeout: 15
 ```
 
-- **DEINE_CORE_IP** durch die IP des Rechners ersetzen, auf dem die CORE-CORE-API läuft (z. B. 4D_RESONATOR (CORE)), oder die des Scouts, falls CORE dort läuft.
+**Konkret:** `url` = `http://<Dreadnought-IP>:8000/webhook/whatsapp`. Dreadnought-IP = Wert aus CORE `.env` **CORE_HOST_IP** (z. B. `192.168.178.20`). Falls CORE auf Scout läuft, stattdessen Scout-IP nutzen.
 - **timeout: 15** (Sekunden): CORE antwortet bei Chat/Reasoning sofort mit HTTP 202; 15s reichen. Ohne Angabe nutzt HA 10s – ausreichend, da keine lange Wartezeit mehr im Request.
 - Der Aufruf übergibt den Schlüssel **payload**; der Wert (Addon-Event-Daten) wird als JSON an CORE gesendet.
 
-Falls du eine Konfiguration über die UI nutzt: Der REST-Befehl soll **POST** an `http://ATLAS_IP:8000/webhook/whatsapp` senden, Body = JSON aus dem übergebenen **payload**.
+Falls du eine Konfiguration über die UI nutzt: Der REST-Befehl soll **POST** an `http://<Dreadnought-IP>:8000/webhook/whatsapp` senden (z. B. `http://192.168.178.20:8000/webhook/whatsapp`), Body = JSON aus dem übergebenen **payload**.
 
 ---
 
@@ -45,7 +46,7 @@ Bei jeder eingehenden WhatsApp-Nachricht (Addon feuert Event) soll der rest_comm
     - platform: event
       event_type: whatsapp_message_received
   action:
-    - service: rest_command.atlas_whatsapp_webhook
+    - service: rest_command.core_whatsapp_webhook
       data:
         payload: "{{ trigger.event.data }}"
 ```
@@ -78,7 +79,7 @@ cd /OMEGA_CORE
 python -m src.scripts.run_whatsapp_e2e_ha
 ```
 
-Das Skript ruft den HA-Service **rest_command.atlas_whatsapp_webhook** mit einem addon-ähnlichen Payload auf (Absender = WHATSAPP_TARGET_ID aus .env, Nachricht = "E2E-Test von HA: Ping"). Damit durchläuft die gleiche Kette wie bei einer echten Nachricht: HA → CORE → Antwort per **send_whatsapp** → HA whatsapp/send_message. Wenn alles stimmt, erscheint die CORE-Antwort im Chat zu WHATSAPP_TARGET_ID (in der Regel dein eigener Chat).
+Das Skript ruft den HA-Service **rest_command.core_whatsapp_webhook** mit einem addon-ähnlichen Payload auf (Absender = WHATSAPP_TARGET_ID aus .env, Nachricht = "E2E-Test von HA: Ping"). Damit durchläuft die gleiche Kette wie bei einer echten Nachricht: HA → CORE → Antwort per **send_whatsapp** → HA whatsapp/send_message. Wenn alles stimmt, erscheint die CORE-Antwort im Chat zu WHATSAPP_TARGET_ID (in der Regel dein eigener Chat).
 
 ---
 
@@ -112,7 +113,7 @@ OC (OpenClaw) hat einen **eigenen** WhatsApp-Kanal (Gateway mit Baileys auf dem 
 | Symptom | Ursache | Maßnahme |
 |--------|---------|---------|
 | Verbindung dreht minutenlang, bricht ab, danach wieder „warten“ | HA **rest_command** wartet auf CORE-Antwort; Default-Timeout 10s. Früher: CORE führte LLM (30s+) synchron aus → HA brach ab. | CORE antwortet bei Chat/Reasoning sofort mit **HTTP 202** und verarbeitet im Hintergrund. rest_command mit `timeout: 15` reicht. Doku oben prüfen. |
-| Keine Antwort im Chat | CORE-API von HA aus nicht erreichbar (Netz/Firewall, falsche IP). | `url` in rest_command prüfen (http://ATLAS_IP:8000). Von HA-Host aus: `curl -X POST http://ATLAS_IP:8000/webhook/whatsapp -H "Content-Type: application/json" -d '{}'` → erwartet 200/202 oder JSON. |
+| Keine Antwort im Chat | CORE-API von HA aus nicht erreichbar (Netz/Firewall, falsche IP). | `url` in rest_command prüfen: muss Dreadnought :8000 sein (z. B. `http://192.168.178.20:8000`, vgl. CORE_HOST_IP in .env). Von HA-Host aus: `curl -X POST http://<Dreadnought-IP>:8000/webhook/whatsapp -H "Content-Type: application/json" -d '{}'` → erwartet 200/202 oder JSON. |
 | 4xx von CORE | Falsches Payload-Format (z. B. fehlendes `message`/`key.remoteJid`). | Automation muss `payload: "{{ trigger.event.data }}"` übergeben. Addon-Event-Struktur in HA unter Entwicklerwerkzeuge → Ereignisse prüfen. |
 | WhatsApp-Nachricht geht nicht raus (CORE → HA) | HA-Service `whatsapp/send_message` nicht erreichbar oder Timeout. | HASS_URL/HASS_TOKEN in .env. CORE nutzt 15s Timeout für send_whatsapp. HA-Logs und Addon-Status prüfen. |
 

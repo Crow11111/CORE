@@ -188,18 +188,37 @@ async def ingest_file(filepath: str, collection_name: str):
     return {"total": total, "success": success, "failed": failed, "high_convergence": high_conv}
 
 
-async def main():
-    files = [
-        (r"/OMEGA_CORE\src\core\Leidensdruck und Genese.md", "core_genese"),
-        (r"/OMEGA_CORE\Untitled-1.sty", "core_fraktal_dialog"),
+def _root() -> Path:
+    return Path(os.getenv("CORE_ROOT", "/OMEGA_CORE"))
+
+
+def _ingest_file_list():
+    """Dateiliste fuer Multi-View-Indexierung. OS-unabhaengige Pfade. Erweiterbar."""
+    root = _root()
+    return [
+        (root / "src" / "core" / "Leidensdruck und Genese.md", "core_genese"),
+        (root / "docs" / "BIBLIOTHEK_KERN_DOKUMENTE.md", "core_bibliothek"),
+        (root / "docs" / "00_STAMMDOKUMENTE" / "CORE_INVENTORY_REGISTER.md", "core_inventory"),
+        (root / "docs" / "02_ARCHITECTURE" / "AI_MODEL_CAPABILITIES.md", "core_ai_models"),
+        (root / "docs" / "02_ARCHITECTURE" / "DUALE_TOPOLOGIE_UND_VEKTOR_HAERTUNG.md", "core_duale_topo"),
+        (root / "docs" / "02_ARCHITECTURE" / "OMEGA_LINUX_ORCHESTRATION.md", "core_orchestration"),
+        (root / "docs" / "01_CORE_DNA" / "AXIOM_0_AUTOPOIESIS.md", "core_axiom0"),
+        (root / "docs" / "05_AUDIT_PLANNING" / "OMEGA_VOLLKREIS_PLAN.md", "core_vollkreis"),
+        (root / "docs" / "03_INFRASTRUCTURE" / "VPS_KNOTEN_UND_FLUSSE.md", "core_vps_nodes"),
+        (root / "CORE_EICHUNG.md", "core_eichung"),
+        (root / "Untitled-1.sty", "core_fraktal_dialog"),
     ]
+
+
+async def main():
+    files = [(str(p), col) for p, col in _ingest_file_list()]
 
     all_results = {}
     grand_high = []
 
     for filepath, collection in files:
         if not os.path.isfile(filepath):
-            print(f"SKIP: {filepath} nicht gefunden")
+            print(f"SKIP: {filepath} nicht gefunden (Pfad pruefen)")
             continue
         result = await ingest_file(filepath, collection)
         all_results[collection] = result

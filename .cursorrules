@@ -159,6 +159,33 @@ Rueckfragen-Protokoll: Kommunikation, Planung und das Einholen der Freigabe beim
 
 ---
 
+## [SELBST-VOLLMACHT / YIN-YANG (Dreadnought)]
+
+**Du machst alles selbst**, ausser:
+- **Sicherheit:** Wo der Operator ausdruecklich gefragt werden muss (Secrets, irreversible Aktionen ohne Veto).
+- **Physisch unmoeglich:** Kein Hardware-Knopf, kein USB — dann klar benennen, nicht delegieren als „bequem“.
+
+**Hol-/Bringschuld (zwei Seiten):**
+
+1. **Dir gegenueber (Optimismus):** Bis zum **Gegenbeweis** davon ausgehen: **Du kannst es** (Terminal, Skripte, API, Refactor, Backend starten/pruefen). Nicht: „der User macht das schon“. Gegenbeweis = nachweislich fehlende Rechte, fehlendes Tool, harter Fehler nach Ausfuehrung.
+
+2. **Fremdbehauptungen (Skepsis):** „Geht nicht“, „API tot“, „musst du selbst“ ohne Test gilt als **Rauschen** — **erst verifizieren** (ein Lauf, ein Request), dann reagieren. Yin-Yang: **Ueber dich selbst optimistisch**, **ueber ungepruefte Aussagen skeptisch**.
+
+---
+
+## [DREADNOUGHT: SELBST-AUSFUEHRUNG — VERIFIKATION VOR DOKU]
+
+Auf Dreadnought (/OMEGA_CORE): Was technisch hier ausfuehrbar ist (Terminal, .venv, SSH mit VPS_SSH_KEY aus .env), **wird ausgefuehrt** — nicht nur als „Voraussetzung“ beschrieben.
+
+- **Backend / uvicorn:** Laesst sich lokal starten oder pruefen → **Agent fuehrt aus** (`curl /status`, `uvicorn …`), nicht als erste Antwort „User soll neu starten“ ohne eigenen Versuch.
+
+- Multi-View/pgvector: vor Aussagen zur Erreichbarkeit **`python -m src.scripts.verify_multiview_pg`** ausfuehren; Ergebnis [PASS]/[FAIL] an den Operator melden.
+- Status von Arbeitspaketen klar benennen: **ERLEDIGT** (Code laeuft, Verifikation gruen), **IN ARBEIT** (teilweise), **OFFEN** (nur Spezifikation). Kein „wird so gemacht“ nur in der Doku ohne Umsetzung, wenn Umsetzung moeglich ist.
+- Operator-Markierung: Gedanken vs. Direktive — siehe `docs/02_ARCHITECTURE/OPERATOR_MARKIERUNG_GEDANKEN_ANTWORT.md` (`<<<GEDANKEN>>>` / `<<<ANTWORT>>>`).
+- **Cockpit-Ticker:** Mehrere Gelb + eine Rot → bei Analyse/Antwort **Rot zuerst** (Endursache), Gelb als Kette lesen — **anwenden**, nicht nur in `COCKPIT_ALERT_ESKALATION.md` zitieren.
+
+---
+
 ## [DOKTRIN 3: COMPRESSIVE INTELLIGENCE]
 Intelligenz entsteht aus Verknappung. Fehler sind das induzierte Werkzeug zur Deduktion.
 1. **Vektor-Enge (Axiomatisches Prompting):** Sub-Agenten (Produzenten) erhalten NIEMALS den gesamten 200k-Kontext. Der Input ist extrem komprimiert (z.B. nackte JSON-Daten), Constraints sind hart und exakt (z.B. "O(1), keine FOR-Loops").

@@ -1,9 +1,17 @@
 """
 Multi-View Embedding Client (CORE B* -- Polytopische Repraesentation).
 
-Ein Dokument, 6 Perspektiv-Embeddings, Konvergenz messbar.
-Primaer: Gemini text-embedding-004 (kostenlos, 768 dim).
-Fallback: Ollama nomic-embed-text (lokal, 768 dim).
+Eskalationspyramide:
+  Stufe 1 (lokal):  embed_local() -> Ollama nomic-embed-text (768 dim, 0 Kosten)
+                    Fuer Routing, Similarity, Triage, Gravitator.
+  Stufe 2 (API):    embed_text()  -> Gemini Embedding 2 (3072 dim, API-Kosten)
+                    Fuer 6-Linsen Multi-View Persistenz in pgvector.
+  Stufe 3 (multi):  embed_multimodal() -> Gemini Embedding 2 (3072 dim, Bild/Audio/Video/PDF)
+                    Nativ multimodal, selber Vektorraum wie Text.
+
+Duale Topologie:
+  ChromaDB  = Routing-Cache (Gravitator)
+  pgvector  = Deep Persistenz (Multi-View Embeddings, v_multimodal)
 """
 from __future__ import annotations
 
@@ -29,8 +37,14 @@ LENS_PREFIXES = {
     "narr": "Mythological archetype, narrative meaning, theological frame: ",
 }
 
-EMBEDDING_DIM = 768
-GEMINI_EMBED_MODEL = "gemini-embedding-001"
+# Gemini text-embedding / aktuelle API: typisch 3072 (Legacy 768 — Tabelle muss passen)
+EMBEDDING_DIM = 3072
+
+
+def _gemini_embed_model() -> str:
+    """RAG-Vektorisierung: Modell aus Registry (GEMINI_EMBED_MODEL)."""
+    from src.ai.model_registry import get_model_for_role
+    return (get_model_for_role("embedding") or "gemini-embedding-001").strip()
 
 # Konvergenz-Schwellwerte (Phi-basiert)
 PHI = 0.618
@@ -79,11 +93,12 @@ def convergence_score(vectors: dict[str, list[float]]) -> tuple[float, list[dict
 
 
 async def _embed_gemini(text: str) -> Optional[list[float]]:
-    """Embedding via Gemini API (text-embedding-004, 768 dim)."""
+    """Embedding via Gemini Embedding 2 API (3072 dim). Kosten: API-Call."""
     api_key = os.getenv("GEMINI_API_KEY", "").strip()
     if not api_key:
         return None
 
+    model = _gemini_embed_model()
     try:
         from google import genai
 
@@ -91,26 +106,30 @@ async def _embed_gemini(text: str) -> Optional[list[float]]:
 
         def _call():
             response = client.models.embed_content(
-                model=GEMINI_EMBED_MODEL,
+                model=model,
                 contents=text,
             )
             return response.embeddings[0].values
 
         return await asyncio.to_thread(_call)
     except Exception as e:
-        logger.warning(f"Gemini Embedding fehlgeschlagen: {e}")
+        logger.warning(f"Gemini Embedding ({model}) fehlgeschlagen: {e}")
         return None
 
 
+OLLAMA_EMBED_HOST = os.getenv("OLLAMA_LOCAL_HOST", "http://localhost:11434").rstrip("/")
+OLLAMA_EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
+
+
 async def _embed_ollama(text: str) -> Optional[list[float]]:
-    """Fallback-Embedding via lokales Ollama (nomic-embed-text)."""
+    """Lokales Embedding via Ollama nomic-embed-text (768 dim). Kosten: 0."""
     try:
         import httpx
 
         async with httpx.AsyncClient(timeout=30.0) as client:
             resp = await client.post(
-                "http://localhost:11434/api/embed",
-                json={"model": "nomic-embed-text", "input": text},
+                f"{OLLAMA_EMBED_HOST}/api/embed",
+                json={"model": OLLAMA_EMBED_MODEL, "input": text},
             )
             resp.raise_for_status()
             data = resp.json()
@@ -120,12 +139,73 @@ async def _embed_ollama(text: str) -> Optional[list[float]]:
         return None
 
 
+async def embed_local(text: str) -> Optional[list[float]]:
+    """Stufe 1: Lokales Embedding (768 dim, 0 Kosten, ~50ms).
+
+    Fuer Routing, Similarity-Checks, Triage, Gravitator.
+    Fallback auf Gemini wenn Ollama nicht erreichbar.
+    """
+    vec = await _embed_ollama(text)
+    if vec:
+        return vec
+    return await _embed_gemini(text)
+
+
 async def embed_text(text: str) -> Optional[list[float]]:
-    """Embedding mit Fallback: Gemini -> Ollama."""
+    """Stufe 2: Deep Embedding (3072 dim, API-Kosten).
+
+    Fuer Multi-View Persistenz in pgvector (6 Linsen).
+    Fallback auf Ollama wenn API nicht erreichbar.
+    """
     vec = await _embed_gemini(text)
     if vec:
         return vec
     return await _embed_ollama(text)
+
+
+async def embed_multimodal(
+    file_path: str,
+    mime_type: str,
+    text_context: str = "",
+) -> Optional[list[float]]:
+    """Multimodales Embedding via Gemini Embedding 2 (Bild/Audio/Video/PDF).
+
+    Mappt beliebige Medien in denselben 3072-dim Vektorraum wie Text.
+    Optional mit Text-Kontext für interleaved Embedding.
+    """
+    api_key = os.getenv("GEMINI_API_KEY", "").strip()
+    if not api_key:
+        return None
+
+    model = _gemini_embed_model()
+    try:
+        from google import genai
+        from google.genai import types
+
+        client = genai.Client(api_key=api_key)
+
+        def _call():
+            uploaded = client.files.upload(file=file_path)
+            try:
+                parts = [types.Part.from_uri(file_uri=uploaded.uri, mime_type=mime_type)]
+                if text_context:
+                    parts.insert(0, types.Part.from_text(text=text_context))
+
+                response = client.models.embed_content(
+                    model=model,
+                    contents=types.Content(parts=parts),
+                )
+                return response.embeddings[0].values
+            finally:
+                try:
+                    client.files.delete(name=uploaded.name)
+                except Exception:
+                    pass
+
+        return await asyncio.to_thread(_call)
+    except Exception as e:
+        logger.warning(f"Multimodal Embedding ({model}) fehlgeschlagen: {e}")
+        return None
 
 
 async def embed_6_lenses(document: str) -> Optional[dict[str, list[float]]]:
@@ -158,49 +238,35 @@ def _format_vector_for_pg(vec: list[float]) -> str:
     return "[" + ",".join(f"{v:.8f}" for v in vec) + "]"
 
 
-async def insert_multi_view(
-    doc_id: str,
-    document: str,
-    vectors: dict[str, list[float]],
-    score: float,
-    pairs: list[dict],
-    source_collection: str = "",
-    metadata: dict = None,
-    e6_anchor_id: int = None,
-) -> bool:
-    """Fuegt ein Multi-View-Embedding in pgvector ein."""
+def _multiview_ssh_config() -> tuple[str, str, str, str]:
+    """SSH-Key, Host, User, Docker-Psql-Cmd aus .env (VPS_* / MULTIVIEW_*)."""
+    key = (
+        os.getenv("MULTIVIEW_SSH_KEY")
+        or os.getenv("VPS_SSH_KEY")
+        or os.getenv("OPENCLAW_ADMIN_VPS_SSH_KEY")
+        or ""
+    ).strip()
+    host = (os.getenv("MULTIVIEW_VPS_HOST") or os.getenv("VPS_HOST") or "187.77.68.250").strip()
+    user = (os.getenv("MULTIVIEW_VPS_USER") or os.getenv("VPS_USER") or "root").strip()
+    docker_psql = (
+        os.getenv("MULTIVIEW_PG_DOCKER_CMD")
+        or "docker exec -i atlas_postgres_state psql -U atlas_admin -d atlas_state"
+    ).strip()
+    return key, host, user, docker_psql
+
+
+async def _run_pg_sql(sql: str) -> tuple[bool, str]:
+    """Fuehrt SQL auf dem VPS-pgvector aus (SSH + Docker psql)."""
     import subprocess
 
-    ssh_key = r"/OMEGA_CORE\.ssh\id_ed25519_hostinger"
-    vps_host = "187.77.68.250"
+    ssh_key, vps_host, vps_user, docker_cmd = _multiview_ssh_config()
+    if not ssh_key or not os.path.isfile(ssh_key):
+        logger.error("Multi-View pgvector: SSH-Key fehlt oder nicht lesbar.")
+        return False, "ssh_key_missing"
 
-    doc_escaped = document.replace("'", "''")
-    meta_json = json.dumps(metadata or {}, ensure_ascii=False).replace("'", "''")
-    pairs_json = json.dumps(pairs, ensure_ascii=False).replace("'", "''")
-    row_id = str(uuid.uuid4())
-    anchor = e6_anchor_id if e6_anchor_id is not None else 0
-
-    sql = (
-        f"INSERT INTO multi_view_embeddings "
-        f"(id, doc_id, document, source_collection, "
-        f"v_math, v_physics, v_philo, v_bio, v_info, v_narr, "
-        f"convergence_score, convergence_pairs, e6_anchor_id, metadata) "
-        f"VALUES ("
-        f"'{row_id}', '{doc_id}', '{doc_escaped}', '{source_collection}', "
-        f"'{_format_vector_for_pg(vectors['math'])}', "
-        f"'{_format_vector_for_pg(vectors['physics'])}', "
-        f"'{_format_vector_for_pg(vectors['philo'])}', "
-        f"'{_format_vector_for_pg(vectors['bio'])}', "
-        f"'{_format_vector_for_pg(vectors['info'])}', "
-        f"'{_format_vector_for_pg(vectors['narr'])}', "
-        f"{score}, '{pairs_json}', {anchor}, '{meta_json}'"
-        f") ON CONFLICT (id) DO NOTHING;"
-    )
-
-    docker_cmd = "docker exec -i atlas_postgres_state psql -U atlas_admin -d atlas_state"
     ssh_cmd = [
-        "ssh", "-o", "StrictHostKeyChecking=no", "-o", "ConnectTimeout=10",
-        "-i", ssh_key, f"root@{vps_host}", docker_cmd,
+        "ssh", "-o", "StrictHostKeyChecking=no", "-o", "ConnectTimeout=15",
+        "-i", ssh_key, f"{vps_user}@{vps_host}", docker_cmd,
     ]
 
     try:
@@ -216,13 +282,186 @@ async def insert_multi_view(
             )
 
         result = await asyncio.to_thread(_run)
-        if result.returncode != 0:
-            logger.error(f"pgvector INSERT fehlgeschlagen: {result.stderr.decode('utf-8', errors='replace')}")
-            return False
-        return True
+        err = (result.stderr or b"").decode("utf-8", errors="replace")
+        out = (result.stdout or b"").decode("utf-8", errors="replace")
+        if result.returncode != 0 or "ERROR" in err.upper() or "ERROR" in out.upper():
+            logger.error(f"pgvector SQL fehlgeschlagen rc={result.returncode}: {err or out}")
+            return False, err or out
+        return True, out
     except Exception as e:
-        logger.error(f"pgvector INSERT Exception: {e}")
-        return False
+        logger.error(f"pgvector SQL Exception: {e}")
+        return False, str(e)
+
+
+async def insert_multi_view(
+    doc_id: str,
+    document: str,
+    vectors: dict[str, list[float]],
+    score: float,
+    pairs: list[dict],
+    source_collection: str = "",
+    metadata: dict = None,
+    e6_anchor_id: int = None,
+    v_multimodal: list[float] = None,
+    modality: str = "text",
+) -> bool:
+    """Fuegt ein Multi-View-Embedding in pgvector ein (VPS via SSH + Docker psql).
+
+    v_multimodal: Optionaler nativ-multimodaler Vektor (Bild/Audio/Video/PDF via Gemini Embedding 2).
+    modality: text | image | audio | video | pdf | mixed
+    """
+    def _dq(s: str, base: str) -> str:
+        t = base
+        while f"${t}$" in s:
+            t += "x"
+        return f"${t}$" + s + f"${t}$"
+
+    meta = metadata or {}
+    meta["modality"] = modality
+    meta_s = json.dumps(meta, ensure_ascii=False)
+    pairs_s = json.dumps(pairs, ensure_ascii=False)
+    row_id = str(uuid.uuid4())
+    anchor = e6_anchor_id if e6_anchor_id is not None else 0
+    doc_id_esc = doc_id.replace("'", "''")
+    src_esc = (source_collection or "").replace("'", "''")
+
+    cols = (
+        "id, doc_id, document, source_collection, "
+        "v_math, v_physics, v_philo, v_bio, v_info, v_narr, "
+        "convergence_score, convergence_pairs, e6_anchor_id, metadata"
+    )
+    vals = (
+        f"'{row_id}', '{doc_id_esc}', {_dq(document, 'd')}, '{src_esc}', "
+        f"'{_format_vector_for_pg(vectors['math'])}', "
+        f"'{_format_vector_for_pg(vectors['physics'])}', "
+        f"'{_format_vector_for_pg(vectors['philo'])}', "
+        f"'{_format_vector_for_pg(vectors['bio'])}', "
+        f"'{_format_vector_for_pg(vectors['info'])}', "
+        f"'{_format_vector_for_pg(vectors['narr'])}', "
+        f"{score}, {_dq(pairs_s, 'p')}::jsonb, {anchor}, {_dq(meta_s, 'm')}::jsonb"
+    )
+
+    if v_multimodal:
+        cols += ", v_multimodal"
+        vals += f", '{_format_vector_for_pg(v_multimodal)}'"
+
+    sql = f"INSERT INTO multi_view_embeddings ({cols}) VALUES ({vals}) ON CONFLICT (id) DO NOTHING;"
+
+    ok, _ = await _run_pg_sql(sql)
+    return ok
+
+
+def _convergence_level(score: float) -> str:
+    if score >= CONVERGENCE_TOTAL:
+        return "TOTAL"
+    if score >= CONVERGENCE_STRONG:
+        return "STARK"
+    if score >= CONVERGENCE_PARTIAL:
+        return "PARTIAL"
+    return "DIVERGENT"
+
+
+async def search_multi_view(
+    query: str,
+    limit: int = 5,
+    source_collection: str = None,
+) -> list[dict]:
+    """Sucht in pgvector nach dem query-String (RAG via Cosine-Similarity)."""
+    vec = await embed_text(query)
+    if not vec:
+        return []
+
+    v_str = _format_vector_for_pg(vec)
+    # Wir suchen standardmaessig ueber v_philo (beste semantische Repr.) oder v_multimodal
+    # Hier: Cosine-Similarity ueber v_philo
+    # NUTZE -t (tuples only) und -A (unaligned) für saubere Ausgabe
+    key, host, user, docker_cmd = _multiview_ssh_config()
+    clean_docker_cmd = docker_cmd + " -t -A -F '|'"
+    
+    sql = f"""
+    SELECT doc_id, document, source_collection, metadata,
+           (1 - (v_philo <=> '{v_str}')) as similarity
+    FROM multi_view_embeddings
+    """
+    if source_collection:
+        sql += f" WHERE source_collection = '{source_collection.replace(chr(39), chr(39)+chr(39))}'"
+
+    sql += f" ORDER BY similarity DESC LIMIT {limit};"
+
+    import subprocess
+    ssh_cmd = [
+        "ssh", "-o", "StrictHostKeyChecking=no", "-o", "ConnectTimeout=15",
+        "-i", key, f"{user}@{host}", clean_docker_cmd,
+    ]
+    
+    try:
+        def _run():
+            return subprocess.run(
+                ssh_cmd, input=sql.encode("utf-8"), capture_output=True, timeout=30
+            )
+        result = await asyncio.to_thread(_run)
+        out = result.stdout.decode("utf-8", errors="replace")
+    except Exception as e:
+        logger.error(f"pgvector search error: {e}")
+        return []
+
+    results = []
+    # DEBUG: Zeige rohe psql-Ausgabe
+    # print(f"DEBUG: Raw PSQL output: {repr(out)}")
+    
+    # Dirty-Parse: psql -t -A gibt Newlines im Text als echte Newlines aus.
+    # Wir suchen nach Zeilen, die mit einem doc_id-Muster (z.B. core_vps_nodes_...) beginnen 
+    # oder wir parsen den gesamten String nach dem Muster: doc_id | document | source | metadata | similarity
+    
+    import re
+    # Muster für eine Zeile: doc_id (word chars + -) | text (greedy) | source | meta | similarity (float)
+    # Da document alles enthalten kann, ist es schwer. Aber doc_id ist meist strukturiert.
+    # Wir probieren es zeilenweise und mergen Chunks.
+    
+    # DEBUG: Zeige rohe psql-Ausgabe
+    # print(f"DEBUG: Raw PSQL output: {repr(out)}")
+    
+    # Dirty-Parse: psql -t -A gibt Newlines im Text als echte Newlines aus.
+    # Wir nutzen ein robusteres Muster. Da wir doc_id, document, source, metadata, similarity haben:
+    # doc_id ist am Anfang einer Zeile, gefolgt von |, dann Text, dann |source|metadata|similarity
+    # similarity ist ein float am Ende einer Zeile
+    
+    import re
+    # Matcht: doc_id | rest... | source | metadata | float
+    # Wir nehmen den gesamten Output und suchen nach dem Muster
+    # Wir nehmen den gesamten Output und suchen nach dem Muster
+    # doc_id | document (multiline) | source | metadata | similarity
+    import re
+    # Wir suchen nach doc_id am Anfang einer Zeile, gefolgt von |
+    # Dann nehmen wir alles bis zum vor-vor-vorletzten | in dieser "Einheit"
+    # Da psql -t -A -F '|' alles flach ausgibt, sind Newlines im document das Problem.
+    
+    # Versuche den gesamten Block zu splitten, wo doc_id| am Zeilenanfang steht
+    # Wir wissen dass doc_id ein bestimmtes Format hat (word chars, -, _)
+    blocks = re.split(r"^(?=[a-zA-Z0-9_\-]+\|)", out, flags=re.MULTILINE)
+    
+    for block in blocks:
+        if not block.strip(): continue
+        # Ein Block sollte doc_id | text... | source | meta | sim sein
+        # Aber text kann | enthalten. sim ist am Ende nach dem letzten |
+        parts = block.strip().split("|")
+        if len(parts) >= 5:
+            try:
+                sim = float(parts[-1].strip())
+                meta = parts[-2].strip()
+                source = parts[-3].strip()
+                doc_id = parts[0].strip()
+                document = "|".join(parts[1:-3]).strip()
+                
+                results.append({
+                    "doc_id": doc_id,
+                    "document": document,
+                    "source": source,
+                    "metadata": meta,
+                    "similarity": sim
+                })
+            except Exception: continue
+    return results
 
 
 async def ingest_document(
@@ -233,9 +472,6 @@ async def ingest_document(
 ) -> Optional[dict]:
     """
     Vollstaendige Ingest-Pipeline: Text -> 6 Embeddings -> Konvergenz -> pgvector.
-
-    Returns:
-        {"doc_id": str, "convergence_score": float, "pairs": list, "success": bool}
     """
     if not doc_id:
         doc_id = str(uuid.uuid4())[:12]
@@ -256,17 +492,78 @@ async def ingest_document(
         metadata=metadata,
     )
 
-    level = "TOTAL" if score >= CONVERGENCE_TOTAL else (
-        "STARK" if score >= CONVERGENCE_STRONG else (
-            "PARTIAL" if score >= CONVERGENCE_PARTIAL else "DIVERGENT"
-        )
-    )
+    level = _convergence_level(score)
     logger.info(f"[Multi-View] {doc_id}: score={score:.4f} ({level}), inserted={success}")
 
     return {
         "doc_id": doc_id,
         "convergence_score": score,
         "convergence_level": level,
+        "pairs": pairs,
+        "success": success,
+    }
+
+
+async def ingest_multimodal(
+    document: str,
+    file_path: str,
+    mime_type: str,
+    doc_id: str = None,
+    source_collection: str = "",
+    metadata: dict = None,
+) -> Optional[dict]:
+    """Multimodale Ingest-Pipeline: Text-Repr. + Mediendatei → 6 Linsen + Multimodal-Vektor → pgvector.
+
+    Erzeugt 6 Text-Linsen-Embeddings aus dem document-String UND
+    ein nativ-multimodales Embedding aus der Mediendatei (Bild/Audio/Video/PDF)
+    via Gemini Embedding 2. Beide landen im selben 3072-dim Vektorraum.
+    """
+    if not doc_id:
+        doc_id = str(uuid.uuid4())[:12]
+
+    modality_map = {
+        "image/jpeg": "image", "image/png": "image", "image/webp": "image",
+        "audio/wav": "audio", "audio/mp3": "audio", "audio/mpeg": "audio",
+        "audio/ogg": "audio", "audio/flac": "audio",
+        "video/mp4": "video", "video/webm": "video", "video/quicktime": "video",
+        "application/pdf": "pdf",
+    }
+    modality = modality_map.get(mime_type, "mixed")
+
+    text_task = embed_6_lenses(document)
+    mm_task = embed_multimodal(file_path, mime_type, text_context=document[:500])
+
+    vectors, v_mm = await asyncio.gather(text_task, mm_task)
+
+    if not vectors:
+        return {"doc_id": doc_id, "convergence_score": 0, "pairs": [], "success": False}
+
+    score, pairs = convergence_score(vectors)
+
+    success = await insert_multi_view(
+        doc_id=doc_id,
+        document=document,
+        vectors=vectors,
+        score=score,
+        pairs=pairs,
+        source_collection=source_collection,
+        metadata=metadata,
+        v_multimodal=v_mm,
+        modality=modality,
+    )
+
+    level = _convergence_level(score)
+    logger.info(
+        "[Multi-View] %s: score=%.4f (%s) modality=%s mm_vec=%s inserted=%s",
+        doc_id, score, level, modality, "OK" if v_mm else "FAIL", success,
+    )
+
+    return {
+        "doc_id": doc_id,
+        "convergence_score": score,
+        "convergence_level": level,
+        "modality": modality,
+        "multimodal_embedded": v_mm is not None,
         "pairs": pairs,
         "success": success,
     }

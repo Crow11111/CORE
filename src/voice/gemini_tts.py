@@ -16,7 +16,8 @@ from loguru import logger
 
 load_dotenv()
 
-TTS_MODEL = "gemini-2.5-flash-preview-tts"
+# Spezialmodell TTS (Flash = schnell/guenstig; Pro = hoehere Qualitaet). Optional .env GEMINI_TTS_MODEL
+TTS_MODEL = os.getenv("GEMINI_TTS_MODEL", "gemini-2.5-flash-preview-tts").strip()
 DEFAULT_VOICE = os.getenv("GEMINI_TTS_VOICE", "Kore").strip()
 DEFAULT_STYLE = os.getenv("GEMINI_TTS_STYLE", "").strip()
 SAMPLE_RATE = 24000

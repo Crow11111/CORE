@@ -7,55 +7,87 @@
 """
 CORE Vision Daemon (The All-Seeing Eye)
 ----------------------------------------
-Observer-Logik: "Sehen ist Handeln." (Quantum Observer Effect)
+go2rtc HTTP-Snapshot Edition — kein cv2/RTSP noetig.
 
-SCOUT-FUSION Update: Ephemeral Agent Integration
-- Bei Symmetriebruch: Ephemeral Agent VISION_ANALYSIS spawnen
-- Output an Vision Analyst weiterleiten
+Holt JPEG-Snapshots via go2rtc HTTP API, vergleicht Frames
+per Pixel-Differenz (PIL/numpy), schickt bei Symmetrie-Bruch
+das Bild an Gemini Vision.
 
-Funktion:
-1. Ueberwacht RTSP-Stream (Brio/Go2RTC).
-2. Erkennt Symmetrie-Brueche (Motion Detection).
-3. Spawnt Ephemeral Agent fuer Gemini Vision Analyse.
-4. Schreibt in ChromaDB context field.
-
-Konstanten:
-- PHI (1.618): Taktgeber für Cooldowns.
-- SYMMETRY_BREAK (0.49): Schwelle für Bewegung.
+Env-Variablen:
+  GO2RTC_BASE_URL  (default http://192.168.178.54:1984)
+  GO2RTC_STREAM_NAME  (default mx_brio)
+  GOOGLE_API_KEY / GEMINI_API_KEY
 """
 
-import cv2
+import sys
+import io
 import time
 import os
-import datetime
 import threading
 import asyncio
 from dotenv import load_dotenv
-import google.generativeai as genai
-from src.network.chroma_client import add_context_observation
-from src.utils.time_metric import asym_sleep_float, asym_sleep_prime, asym_sleep_float_async, asym_sleep_prime_async, get_friction_timeout
 
-# Lade Umgebungsvariablen
+try:
+    import numpy as np
+    from PIL import Image
+except ImportError as _ie:
+    print(f"[VISION] FATAL: {_ie}. Daemon beendet sich sauber.", flush=True)
+    sys.exit(0)
+
+try:
+    import requests
+except ImportError:
+    print("[VISION] FATAL: requests nicht installiert. Daemon beendet sich sauber.", flush=True)
+    sys.exit(0)
+
+try:
+    import google.generativeai as genai
+except ImportError:
+    print("[VISION] FATAL: google-generativeai nicht installiert. Daemon beendet sich sauber.", flush=True)
+    sys.exit(0)
+
 load_dotenv("/OMEGA_CORE/.env")
 
-# Konfiguration
-RTSP_URL = os.getenv("CORE_RTSP_URL", "rtsp://192.168.178.54:8554/mx_brio")
-GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
-MODEL_NAME = "gemini-2.0-flash-exp"  # Schnellstes Modell für Vision
+GO2RTC_BASE = os.getenv("GO2RTC_BASE_URL", "http://192.168.178.54:1984").rstrip("/")
+STREAM_NAME = os.getenv("GO2RTC_STREAM_NAME", "mx_brio")
+SNAPSHOT_URL = f"{GO2RTC_BASE}/api/frame.jpeg?src={STREAM_NAME}"
 
-# Physik-Konstanten
+GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
+MODEL_NAME = "gemini-3-flash"
+
 PHI = 1.6180339887
-SYMMETRY_BREAK_THRESHOLD = 5000  # Pixel-Differenz-Area (angepasst an Brio 4K/1080p)
-COOLDOWN_SECONDS = 5 * PHI  # ca. 8 Sekunden
+SYMMETRY_BREAK_THRESHOLD = 12.0
+COOLDOWN_SECONDS = 5 * PHI
+POLL_INTERVAL = 2.0
+
+
+def _fetch_snapshot() -> Image.Image | None:
+    try:
+        r = requests.get(SNAPSHOT_URL, timeout=5)
+        if r.status_code != 200:
+            return None
+        return Image.open(io.BytesIO(r.content)).convert("RGB")
+    except Exception as e:
+        print(f"[VISION] Snapshot-Fehler: {e}")
+        return None
+
+
+def _frame_diff(a: Image.Image, b: Image.Image) -> float:
+    """Mittlere absolute Pixel-Differenz (0-255 Skala)."""
+    size = (320, 240)
+    a_arr = np.asarray(a.resize(size), dtype=np.float32)
+    b_arr = np.asarray(b.resize(size), dtype=np.float32)
+    return float(np.mean(np.abs(a_arr - b_arr)))
+
 
 class MthoVisionDaemon:
     def __init__(self):
         self.running = False
-        self.cap = None
-        self.last_observation_time = 0
-        self.setup_gemini()
+        self.last_observation_time = 0.0
+        self.model = None
+        self._setup_gemini()
 
-    def setup_gemini(self):
+    def _setup_gemini(self):
         if not GEMINI_API_KEY:
             print("[CRITICAL] GOOGLE_API_KEY fehlt in .env")
             return
@@ -63,170 +95,137 @@ class MthoVisionDaemon:
         self.model = genai.GenerativeModel(MODEL_NAME)
         print(f"[INIT] Gemini {MODEL_NAME} bereit.")
 
-    def analyze_frame(self, frame):
-        """Sendet Frame an Gemini zur Analyse (Legacy, direkt)."""
+    def _analyze_frame(self, img: Image.Image):
+        if self.model is None:
+            return
         try:
-            import PIL.Image
-            color_coverted = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            pil_image = PIL.Image.fromarray(color_coverted)
-
             prompt = (
                 "CORE SYSTEM MESSAGE: Describe what you see in this security feed. "
                 "Focus on movement, changes, or anomalies. Be extremely concise (1 sentence). "
                 "If nothing important is happening, say 'No significant entropy'."
             )
-
-            print("[VISION] Sende Frame an Gemini...")
-            start_t = time.time()
-            response = self.model.generate_content([prompt, pil_image])
-            duration = time.time() - start_t
-
+            t0 = time.time()
+            response = self.model.generate_content([prompt, img])
+            duration = time.time() - t0
             text = response.text.strip()
-            print(f"[VISION] Gemini Output ({duration:.2f}s): {text}")
+            print(f"[VISION] Gemini ({duration:.2f}s): {text}")
 
             if "No significant entropy" not in text:
-                try:
-                    asyncio.run(add_context_observation(text, metadata={"duration_sec": duration, "model": MODEL_NAME}))
-                    print("[CONTEXT] Beobachtung gespeichert.")
-                except Exception as ctx_err:
-                    print(f"[CONTEXT] Persist fehlgeschlagen: {ctx_err}")
-                self._notify_vision_analyst(text, duration)
-                self._forward_to_oc_brain(text, duration)
-
+                self._persist_and_notify(text, duration, img=img)
         except Exception as e:
-            print(f"[ERROR] Vision API Fehler: {e}")
+            print(f"[ERROR] Vision API: {e}")
 
-    def _notify_vision_analyst(self, analysis: str, duration: float):
-        """
-        SCOUT-FUSION: Benachrichtigt Vision Analyst ueber Vision Event.
-        Spawnt optional TTS Worker fuer wichtige Events.
-        """
+    def _persist_and_notify(self, text: str, duration: float, img: Image.Image = None):
         try:
-            keywords_critical = ["person", "motion", "movement", "someone", "intruder"]
-            is_critical = any(kw in analysis.lower() for kw in keywords_critical)
+            import hashlib, tempfile
+            h = hashlib.md5(text[:50].encode()).hexdigest()[:10]
+            doc_id = f"vision_{h}"
+            document = f"[VISION] {text}"
+            meta = {"duration_sec": round(duration, 2), "model": MODEL_NAME, "source": "vision_daemon"}
 
-            if is_critical:
-                print(f"[VISION-ANALYST] Kritisches Event: {analysis[:80]}...")
+            if img is not None:
+                tmp = tempfile.NamedTemporaryFile(suffix=".jpg", delete=False)
+                img.save(tmp, format="JPEG", quality=85)
+                tmp.close()
                 try:
-                    loop = asyncio.get_event_loop()
-                    if loop.is_running():
-                        asyncio.create_task(self._spawn_tts_worker(analysis))
-                    else:
-                        loop.run_until_complete(self._spawn_tts_worker(analysis))
-                except RuntimeError:
-                    asyncio.run(self._spawn_tts_worker(analysis))
+                    from src.db.multi_view_client import ingest_multimodal
+                    asyncio.run(ingest_multimodal(
+                        document=document,
+                        file_path=tmp.name,
+                        mime_type="image/jpeg",
+                        doc_id=doc_id,
+                        source_collection="vision_observations",
+                        metadata=meta,
+                    ))
+                    print("[VISION] Multimodal persist OK (Text + Bild-Vektor)")
+                finally:
+                    try:
+                        os.unlink(tmp.name)
+                    except OSError:
+                        pass
+            else:
+                from src.db.multi_view_client import ingest_document
+                asyncio.run(ingest_document(
+                    document=document,
+                    doc_id=doc_id,
+                    source_collection="vision_observations",
+                    metadata=meta,
+                ))
         except Exception as e:
-            print(f"[VISION-ANALYST] Notification Fehler: {e}")
+            print(f"[VISION] Persist fehlgeschlagen: {e}")
+
+        self._forward_to_oc_brain(text, duration)
+        self._try_tts(text)
 
     def _forward_to_oc_brain(self, analysis: str, duration: float):
-        """Sendet Vision-Analyse (Text, kein Base64) an OC Brain (non-blocking)."""
-        def _do_forward():
+        def _do():
             try:
                 from src.network.openclaw_client import send_event_to_oc_brain
-
-                event_data = {
-                    "analysis": analysis,
-                    "duration_sec": round(duration, 2),
-                    "model": MODEL_NAME,
-                    "source": "vision_daemon",
-                }
-                timeout_friction = get_friction_timeout(10.0)
                 ok, resp = send_event_to_oc_brain(
                     event_type="VISION_ALERT",
-                    data=event_data,
-                    timeout=timeout_friction,
+                    data={"analysis": analysis, "duration_sec": round(duration, 2), "model": MODEL_NAME, "source": "vision_daemon"},
+                    timeout=10.0,
                 )
                 if ok:
-                    print(f"[OC-BRAIN] Vision event forwarded: {resp[:60]}...")
+                    print(f"[OC-BRAIN] Vision forwarded: {resp[:60]}...")
                 else:
                     print(f"[OC-BRAIN] Forward failed: {resp}")
             except Exception as e:
-                print(f"[OC-BRAIN] Forward error: {e}")
+                print(f"[OC-BRAIN] {e}")
+        threading.Thread(target=_do, daemon=True).start()
 
-        threading.Thread(target=_do_forward, daemon=True).start()
-
-    async def _spawn_tts_worker(self, analysis: str):
-        """Spawnt Ephemeral Agent fuer TTS-Ausgabe bei kritischem Vision Event."""
+    def _try_tts(self, analysis: str):
+        keywords = ["person", "motion", "movement", "someone", "intruder"]
+        if not any(kw in analysis.lower() for kw in keywords):
+            return
         try:
             from src.agents.core_agent import IntentType, get_ephemeral_pool
             from src.agents.scout_core_handlers import register_all_handlers
-
             pool = get_ephemeral_pool()
             if not pool._handlers:
                 register_all_handlers(pool)
-
-            tts_text = f"Achtung: {analysis[:100]}"
-            result = await pool.spawn_and_execute(
+            asyncio.run(pool.spawn_and_execute(
                 IntentType.TTS_DISPATCH,
-                {"text": tts_text, "target": "mini"},
-                ttl=15.0
-            )
-            print(f"[EPHEMERAL-TTS] {'OK' if result.success else 'FAIL'}: {result.duration_ms:.0f}ms")
+                {"text": f"Achtung: {analysis[:100]}", "target": "mini"},
+                ttl=15.0,
+            ))
         except Exception as e:
-            print(f"[EPHEMERAL-TTS] Spawn Fehler: {e}")
+            print(f"[VISION-TTS] {e}")
 
     def run(self):
-        print(f"[START] Verbinde zu RTSP: {RTSP_URL}")
-        self.cap = cv2.VideoCapture(RTSP_URL)
+        print(f"[START] Vision via go2rtc: {SNAPSHOT_URL}")
 
-        if not self.cap.isOpened():
-            print("[ERROR] Konnte RTSP Stream nicht oeffnen.")
-            return
+        prev_frame = _fetch_snapshot()
+        if prev_frame is None:
+            print("[ERROR] go2rtc nicht erreichbar oder Stream offline. Warte 30s und versuche erneut...")
+            time.sleep(30)
+            prev_frame = _fetch_snapshot()
+            if prev_frame is None:
+                print("[FATAL] go2rtc nach Retry unerreichbar. Daemon beendet sich.")
+                return
 
         self.running = True
+        print("[RUN] Vision Loop aktiv. Warte auf Symmetrie-Bruch...")
 
-        # Motion Detection Init
-        ret, frame1 = self.cap.read()
-        ret, frame2 = self.cap.read()
+        while self.running:
+            time.sleep(POLL_INTERVAL)
 
-        if not ret:
-            print("[ERROR] Keine Frames empfangen.")
-            return
+            cur_frame = _fetch_snapshot()
+            if cur_frame is None:
+                continue
 
-        print("[RUN] Vision Loop aktiv. Warte auf Symmetrie-Bruch (Bewegung)...")
-
-        while self.running and self.cap.isOpened():
-            # Frame Differenz
-            diff = cv2.absdiff(frame1, frame2)
-            gray = cv2.cvtColor(diff, cv2.COLOR_BGR2GRAY)
-            blur = cv2.GaussianBlur(gray, (5, 5), 0)
-            _, thresh = cv2.threshold(blur, 20, 255, cv2.THRESH_BINARY)
-            dilated = cv2.dilate(thresh, None, iterations=3)
-            contours, _ = cv2.findContours(dilated, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-
-            motion_detected = False
-            for contour in contours:
-                if cv2.contourArea(contour) < SYMMETRY_BREAK_THRESHOLD:
-                    continue
-                motion_detected = True
-                break
-
+            diff = _frame_diff(prev_frame, cur_frame)
             now = time.time()
-            if motion_detected:
-                time_since_last = now - self.last_observation_time
-                if time_since_last > COOLDOWN_SECONDS:
-                    print(f"[EVENT] Bewegung erkannt (Delta > {SYMMETRY_BREAK_THRESHOLD}). Analyse...")
-                    # Wir nehmen frame2 für die Analyse
-                    threading.Thread(target=self.analyze_frame, args=(frame2.copy(),)).start()
+
+            if diff > SYMMETRY_BREAK_THRESHOLD:
+                elapsed = now - self.last_observation_time
+                if elapsed > COOLDOWN_SECONDS:
+                    print(f"[EVENT] Bewegung (diff={diff:.1f} > {SYMMETRY_BREAK_THRESHOLD}). Analyse...")
+                    threading.Thread(target=self._analyze_frame, args=(cur_frame.copy(),), daemon=True).start()
                     self.last_observation_time = now
 
-            # Frame Shift
-            frame1 = frame2
-            ret, frame2 = self.cap.read()
+            prev_frame = cur_frame
 
-            if not ret:
-                print("[WARN] Stream unterbrochen. Reconnect...")
-                self.cap.release()
-                asym_sleep_prime(2)  # Reconnect asymmetrisch verzögern (Primzahl 2)
-                self.cap = cv2.VideoCapture(RTSP_URL)
-                ret, frame1 = self.cap.read()
-                ret, frame2 = self.cap.read()
-
-            # CPU schonen - Asymmetrische Kaskerade
-            asym_sleep_float(0.05)
-
-        self.cap.release()
-        cv2.destroyAllWindows()
 
 if __name__ == "__main__":
     daemon = MthoVisionDaemon()

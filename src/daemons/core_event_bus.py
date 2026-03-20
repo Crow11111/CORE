@@ -63,6 +63,7 @@ class EventSeverity(Enum):
     CRITICAL = "critical"
     WARNING = "warning"
     INFO = "info"
+    ZÜNDUNG = "zündung"  # Neu: Wenn Jarvis/Ollama von aussen Druck macht
 
 
 # ---------------------------------------------------------------------------
@@ -295,6 +296,23 @@ class MthoEventBus:
         entity_id: str = data.get("entity_id", "")
         domain = entity_id.split(".")[0] if "." in entity_id else ""
 
+        # SONDERFALL ZUENDUNG: Ein simuliertes Event vom Jarvis-MRI-Coupler schlägt ein
+        if domain == "mri" and entity_id == "mri.jarvis_zündung":
+            logger.warning("[EVENT-BUS] MAGNETROTATIONSINSTABILITÄT (MRI) DETEKTIERT. ZÜNDUNG ERFOLGT.")
+            self._stats_events_total += 1
+            severity = EventSeverity.ZÜNDUNG
+            summary = "Jarvis MRI Asymmetrie-Impuls (Druck-Injektion)"
+
+            # 1. Sofortige Eskalation an den Kern (Ollama -> OpenClaw / VPS / Core Agents)
+            # Hier bricht der Bus aus dem Ruhetakt aus.
+            asyncio.create_task(self._forward_to_oc_brain(entity_id, data, summary, severity))
+
+            # 2. Agent Pool feuern (Ghost Agent übernimmt den asymmetrischen Kontext)
+            await self._triage_and_spawn(
+                entity_id, "mri", None, data, summary, severity,
+            )
+            return
+
         if domain not in SUBSCRIBE_DOMAINS:
             return
 
@@ -349,29 +367,40 @@ class MthoEventBus:
         summary: str,
         severity: EventSeverity,
     ):
-        try:
-            from src.network.chroma_client import add_event_to_chroma
-            import uuid
+        if severity == EventSeverity.INFO:
+            return
 
-            event_id = f"ha_event_{uuid.uuid4().hex[:12]}"
-            event_doc = {
-                "entity_id": entity_id,
-                "old_state": (old_state or {}).get("state"),
-                "new_state": new_state.get("state"),
-                "summary": summary,
-                "severity": severity.value,
-            }
+        try:
+            from src.db.multi_view_client import ingest_document
+            import uuid as _uuid
+
+            doc_id = f"ha_{severity.value}_{_uuid.uuid4().hex[:10]}"
+            document = (
+                f"[HA {severity.value.upper()}] {entity_id}\n"
+                f"{summary}\n"
+                f"alt={((old_state or {}).get('state', '?'))} neu={new_state.get('state', '?')}"
+            )
             metadata = {
                 "entity_id": entity_id,
                 "domain": entity_id.split(".")[0],
-                "new_state": new_state.get("state", ""),
-                "source": "event_bus",
                 "severity": severity.value,
                 "timestamp": new_state.get("last_changed", ""),
+                "source": "event_bus",
             }
-            await add_event_to_chroma(event_id, event_doc, metadata)
+            result = await ingest_document(
+                document=document,
+                doc_id=doc_id,
+                source_collection="ha_events",
+                metadata=metadata,
+            )
+            ok = result.get("success", False)
+            score = result.get("convergence_score", 0)
+            logger.info(
+                "[EVENT-BUS] Multi-View persist {}: ok={} conv={:.4f}",
+                doc_id, ok, score,
+            )
         except Exception as e:
-            logger.warning("[EVENT-BUS] ChromaDB persist fehlgeschlagen: {}", e)
+            logger.warning("[EVENT-BUS] Multi-View persist fehlgeschlagen: {}", e)
 
     async def _forward_to_oc_brain(
         self,

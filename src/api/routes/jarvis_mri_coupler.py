@@ -6,7 +6,7 @@ from fastapi.responses import JSONResponse
 from loguru import logger
 import httpx
 
-from src.db.multi_view_client import embed_local, ingest_document
+from src.db.multi_view_client import embed_local, ingest_document, search_multi_view
 from src.logic_core.crystal_grid_engine import CrystalGridEngine
 from src.config.core_state import BARYONIC_DELTA
 
@@ -115,20 +115,43 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
         return JSONResponse({"error": "No messages"}, status_code=400)
 
     # Letzten User-Prompt extrahieren
-    latest_prompt = messages[-1].get("content", "")
+    latest_prompt = messages[-1].get("content", "").lower()
     req_model = payload.get("model", "core-local-min")
-    
+
+    # RAG (Chromodaten/System-Wissen) – nur bei Wissen-Fragen
+    rag_context = ""
+    thought_log = ""
+    keywords = ["chromodata", "chromodaten", "vps", "system", "vps", "ossie", "openclaw", "dokument", "wissen"]
+    if any(k in latest_prompt for k in keywords):
+        try:
+            results = await search_multi_view(latest_prompt, limit=3)
+            if results:
+                thought_log = f"[RAG] Suche in Chromodaten erfolgreich. {len(results)} Dokumente gefunden."
+                rag_context = "\n\n### Zusaetzlicher CORE-Kontext (Chromodaten):\n"
+                for r in results:
+                    rag_context += f"- [{r['doc_id']}] {r['document'][:300]}...\n"
+
+                # Context in die erste System-Message injizieren
+                for msg in messages:
+                    if msg["role"] == "system":
+                        msg["content"] += rag_context
+                        break
+        except Exception as e:
+            logger.warning(f"[JARVIS-MRI] RAG-Suche fehlgeschlagen: {e}")
+
     # Fallback
     if req_model not in MODELS:
         req_model = "core-local-min"
-        
+
     config = MODELS[req_model]
     start_time = time.time()
-    
+
     assistant_reply = ""
     usage_data = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
 
     try:
+        # ... (Ollama / Gemini Logik bleibt gleich) ...
+        # [Hier gekuerzt fuer den StrReplace, ich behalte die Logik bei]
         if config["type"] == "ollama":
             ollama_payload = {
                 "model": config["target"],
@@ -149,23 +172,23 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
             api_key = os.getenv("GEMINI_API_KEY")
             if not api_key:
                 return JSONResponse({"error": "GEMINI_API_KEY is missing"}, status_code=500)
-            
+
             # Use raw HTTP for Gemini to avoid SDK differences
             contents = []
             sys_instruct = None
-            
+
             for msg in messages:
                 role = msg["role"]
                 if role == "system":
                     sys_instruct = {"parts": [{"text": msg["content"]}]}
                     continue
-                    
+
                 gemini_role = "user" if role == "user" else "model"
                 contents.append({
                     "role": gemini_role,
                     "parts": [{"text": msg["content"]}]
                 })
-                
+
             gemini_payload = {
                 "contents": contents,
                 "generationConfig": {
@@ -174,7 +197,7 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
             }
             if sys_instruct:
                 gemini_payload["systemInstruction"] = sys_instruct
-                
+
             async with httpx.AsyncClient() as client:
                 resp = await client.post(
                     f"https://generativelanguage.googleapis.com/v1beta/models/{config['target']}:generateContent?key={api_key}",
@@ -183,17 +206,21 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
                 )
                 resp.raise_for_status()
                 gemini_data = resp.json()
-                
+
                 try:
                     assistant_reply = gemini_data["candidates"][0]["content"]["parts"][0]["text"]
                 except (KeyError, IndexError):
                     assistant_reply = ""
                     logger.error(f"[JARVIS-MRI] Gemini parse error: {gemini_data}")
-                    
+
                 usage = gemini_data.get("usageMetadata", {})
                 usage_data["prompt_tokens"] = usage.get("promptTokenCount", 0)
                 usage_data["completion_tokens"] = usage.get("candidatesTokenCount", 0)
                 usage_data["total_tokens"] = usage.get("totalTokenCount", 0)
+
+        # Gedanken einbetten, falls vorhanden
+        if thought_log:
+            assistant_reply = f"<thought>{thought_log}</thought>\n{assistant_reply}"
 
         # OpenAI-kompatibles Format für Jarvis (Plasmoid) zusammenbauen
         openai_response = {

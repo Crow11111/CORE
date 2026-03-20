@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CORE Voice Bridge</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0a0a0a;color:#ddd;font-family:system-ui,sans-serif;min-height:100vh;padding:12px;max-width:720px;margin:0 auto}
+h1{font-size:11px;color:#FFB300;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px}
+.sub{font-size:10px;color:#666;margin-bottom:16px;line-height:1.5}
+section{background:#111;border:1px solid #222;border-radius:8px;padding:14px;margin-bottom:14px}
+h2{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.mic{width:64px;height:64px;border-radius:50%;border:2px solid #333;background:#1a1a1a;color:#888;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;transition:.15s}
+.mic:hover{border-color:#FFB300;color:#FFB300}
+.mic.rec{background:#c62828;border-color:#f44336;color:#fff;animation:p 1.2s infinite}
+.mic.busy{opacity:.5;cursor:wait}
+@keyframes p{50%{transform:scale(1.05)}}
+.status{font-size:11px;color:#666;flex:1}
+.log{min-height:100px;max-height:180px;overflow-y:auto;background:#0d0d0d;border:1px solid #1a1a1a;border-radius:6px;padding:10px;font-size:12px;line-height:1.5;white-space:pre-wrap;margin-top:8px}
+.log .u{color:#81c784}.log .a{color:#64b5f6}
+textarea{width:100%;min-height:72px;background:#0d0d0d;border:1px solid #222;border-radius:6px;color:#ddd;padding:10px;font-size:13px;margin:8px 0;resize:vertical}
+.btn{padding:10px 16px;border-radius:6px;border:1px solid #333;background:#222;color:#ccc;font-size:12px;cursor:pointer;margin-right:8px;margin-top:4px}
+.btn:hover{border-color:#FFB300;color:#FFB300}
+.btn.primary{background:#1b5e20;border-color:#4caf50;color:#fff}
+.btn.primary:hover{background:#2e7d32}
+label{font-size:11px;color:#888;margin-right:12px}
+audio{width:100%;margin-top:8px}
+.err{color:#ef5350;font-size:11px;margin-top:6px}
+</style>
+</head>
+<body>
+<h1>CORE Voice Bridge</h1>
+<p class="sub">Stimme über <strong>diesen Server</strong> (Diktat + TTS). Unabhängig von AI Studio — gleiche Gemini-Keys wie Backend.<br>
+<strong>URL:</strong> <code id="here"></code> — in AI Studio als Link/Browser öffnen oder vom Handy im LAN.</p>
+
+<section>
+<h2>1 · Stimme rein (Diktat)</h2>
+<div class="row">
+<button type="button" class="mic" id="mic" title="Halten oder Klick start/stop">🎤</button>
+<div class="status" id="st1">Klick = Aufnahme start/stop. Oder halten (mousedown/mouseup).</div>
+</div>
+<label><input type="checkbox" id="pro"> Pro-STT (langsamer, schärfer) — sonst Flash</label>
+<div class="log" id="heard"></div>
+</section>
+
+<section>
+<h2>2 · Stimme raus (TTS Kore)</h2>
+<textarea id="say" placeholder="Text zum Vorlesen (oder unten „KI antworten“ füllt das)…"></textarea>
+<div class="row">
+<button type="button" class="btn primary" id="tts">Vorlesen</button>
+<button type="button" class="btn" id="ki">KI kurz antworten</button>
+<label><input type="checkbox" id="autott" checked> Nach KI sofort vorlesen</label>
+</div>
+<audio id="player" controls></audio>
+<p class="err" id="e2"></p>
+</section>
+
+<script>
+document.getElementById('here').textContent = location.origin + '/voice-bridge';
+
+const mic = document.getElementById('mic');
+const st1 = document.getElementById('st1');
+const heard = document.getElementById('heard');
+const pro = document.getElementById('pro');
+const say = document.getElementById('say');
+const tts = document.getElementById('tts');
+const ki = document.getElementById('ki');
+const autott = document.getElementById('autott');
+const player = document.getElementById('player');
+const e2 = document.getElementById('e2');
+
+let rec = null, chunks = [], on = false, busy = false;
+
+function addHeard(role, text) {
+  const d = document.createElement('div');
+  d.className = role === 'du' ? 'u' : 'a';
+  d.textContent = (role === 'du' ? 'Du: ' : 'KI: ') + text;
+  heard.appendChild(d);
+  heard.scrollTop = heard.scrollHeight;
+}
+
+async function transcribe(blob) {
+  busy = true;
+  mic.classList.add('busy');
+  st1.textContent = 'Transkribiere…';
+  try {
+    const q = pro.checked ? '' : '?mode=live';
+    const form = new FormData();
+    form.append('audio', blob, 'v.webm');
+    const r = await fetch('/api/dictate' + q, { method: 'POST', body: form });
+    if (!r.ok) throw new Error('Diktat HTTP ' + r.status);
+    const d = await r.json();
+    if (d.text) {
+      addHeard('du', d.text);
+      say.value = d.text;
+    }
+    st1.textContent = 'Bereit (' + (d.duration_ms || '?') + ' ms, ' + (d.model || '') + ')';
+  } catch (e) {
+    st1.textContent = 'Fehler: ' + e.message;
+  }
+  busy = false;
+  mic.classList.remove('busy');
+}
+
+function startRec() {
+  if (busy) return;
+  navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+    rec = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+    chunks = [];
+    rec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+    rec.onstop = () => {
+      stream.getTracks().forEach(t => t.stop());
+      const b = new Blob(chunks, { type: 'audio/webm' });
+      if (b.size > 800) transcribe(b);
+      else st1.textContent = 'Zu kurz.';
+      on = false;
+      mic.classList.remove('rec');
+    };
+    rec.start(200);
+    on = true;
+    mic.classList.add('rec');
+    st1.textContent = 'Aufnahme…';
+  }).catch(e => { st1.textContent = 'Mikrofon: ' + e.message; });
+}
+
+function stopRec() {
+  if (rec && rec.state === 'recording') rec.stop();
+}
+
+mic.addEventListener('click', () => {
+  if (busy) return;
+  if (on) stopRec(); else startRec();
+});
+mic.addEventListener('mousedown', e => { if (e.button === 0 && !on) startRec(); });
+mic.addEventListener('mouseup', () => { if (on) stopRec(); });
+mic.addEventListener('mouseleave', () => { if (on) stopRec(); });
+
+async function playTts() {
+  e2.textContent = '';
+  const t = say.value.trim();
+  if (!t) { e2.textContent = 'Kein Text.'; return; }
+  tts.disabled = true;
+  try {
+    const r = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: t, voice: 'Kore', style: 'Klar und ruhig sprechen.' }),
+    });
+    if (!r.ok) throw new Error('TTS ' + r.status);
+    const blob = await r.blob();
+    player.src = URL.createObjectURL(blob);
+    await player.play();
+  } catch (e) {
+    e2.textContent = String(e.message);
+  }
+  tts.disabled = false;
+}
+
+tts.addEventListener('click', playTts);
+
+ki.addEventListener('click', async () => {
+  e2.textContent = '';
+  const u = say.value.trim() || (heard.querySelector('.u:last-child')?.textContent?.replace(/^Du:\s*/, '') || '');
+  if (!u) { e2.textContent = 'Erst diktieren oder Text eintragen.'; return; }
+  ki.disabled = true;
+  try {
+    const r = await fetch('/api/voice_bridge_reply', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ user_text: u }),
+    });
+    if (!r.ok) throw new Error('KI ' + r.status);
+    const d = await r.json();
+    say.value = d.text;
+    addHeard('ki', d.text);
+    if (autott.checked) await playTts();
+  } catch (e) {
+    e2.textContent = String(e.message);
+  }
+  ki.disabled = false;
+});
+</script>
+</body>
+</html>

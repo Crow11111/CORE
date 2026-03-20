@@ -46,6 +46,7 @@ except ImportError:
 WATCHDOG_INTERVAL = 61.0  # Sekunden (Herzschlag) - Primzahl für Zikaden-Prinzip
 REMOTE_CHECK_INTERVAL = 300.0 # Alle 5 Min Git Check (teuer)
 TELEMETRY_PATH = os.path.join(os.getenv("CORE_DATA_DIR", "/OMEGA_CORE/data"), "telemetry.json")
+MRI_PRESSURE_FILE = "/tmp/mri_zündung.flag"  # Koppelung zwischen Coupler und Watchdog
 
 # Environment
 env_vars = dotenv_values(".env")
@@ -92,7 +93,7 @@ async def check_connectivity() -> float:
             else:
                 # Fallback: Wall Clock Time (ungenau, aber > 0)
                 val = (end - start) * 1000.0
-            
+
             # Topologische Resonanz-Pruefung der Latenz
             # Wir mappen die Latenz (ms) auf einen Resonanz-Wert [0..1]
             # 10ms -> 0.951 (Lock), 100ms -> 0.49 (Symmetry Break), 500ms -> 0.049 (Delta)
@@ -164,8 +165,11 @@ async def inject_reality_anchor(friction_data: Dict[str, Any]):
     git_status = friction_data.get('git_status', 'UNKNOWN')
     resonance = friction_data.get('resonance', 0.049)
 
-    # Nachricht basierend auf Fakten konstruieren
-    if resonance <= BARYONIC_DELTA:
+        # Nachricht basierend auf Fakten konstruieren
+    if friction_data.get('mri_event', False):
+        thought = "WARNUNG: Magnetrotationsinstabilität (MRI) aus äußerer Schicht (Jarvis) detektiert. Drehimpulsumkehr."
+        context = "MRI_IGNITION_ZÜNDUNG"
+    elif resonance <= BARYONIC_DELTA:
         thought = "WARNUNG: System-Resonanz am Baryonischen Limit (Λ). Kristall-Gitter instabil."
         context = "CRYSTAL_BREACH"
     elif resonance >= 0.951:
@@ -213,6 +217,34 @@ async def watchdog_loop():
 
     while True:
         current_time = time.time()
+
+        # 0. Zündungs-Check (Asymmetrischer Druck von Außen)
+        # Wenn Jarvis die MRI anwirft, durchbricht das den Ruhetakt.
+        # Drehimpulsumkehr: Wir warten nicht mehr stumm auf den Timeout. Wir ziehen sofort an.
+        if os.path.exists(MRI_PRESSURE_FILE):
+            logger.warning("[WATCHDOG] MAGNETROTATIONSINSTABILITÄT (MRI) ERKANNT. DREHIMPULSUMKEHR.")
+            SYSTEM_STATE["last_latency_ms"] = -1.0 # Wir fälschen eine massive Latenz-Anomalie
+            SYSTEM_STATE["last_resonance"] = 0.049 # Baryonisches Limit
+
+            # Reibungsdaten bauen
+            friction_data = {
+                "latency_ms": -1.0,
+                "git_status": SYSTEM_STATE["git_drift"],
+                "resonance": 0.049,
+                "timestamp": current_time,
+                "mri_event": True
+            }
+            # Wir zwingen die Reality-Injection sofort, brechen den Rhythmus und konsumieren das Flag.
+            await inject_reality_anchor(friction_data)
+            try:
+                os.remove(MRI_PRESSURE_FILE)
+            except OSError:
+                pass
+
+            # Wir drehen den Takt asymmetrisch um (Fraktaler Kick)
+            from src.utils.time_metric import asym_sleep_float_async
+            await asym_sleep_float_async(1.049)
+            continue
 
         # 1. Physics Check (Ping)
         latency = await check_connectivity()

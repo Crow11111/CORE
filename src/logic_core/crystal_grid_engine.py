@@ -64,13 +64,29 @@ class CrystalGridEngine:
         Der Operator ?: Deterministischer Hard-Cut-off bei Λ (Baryonic Delta).
         Bricht lineare Vorwärtsbewegung ab und rastet am Gitter ein.
 
-        Spezifische ChromaDB Quantisierung (Der 'Reine Kern'):
-        - phase_diff <= 0.049 -> Sofortiger Symmetrie-Lock (0.951)
-        - Verbot der 0.5-Mitte: 0.49 < resonance < 0.51 -> Harter Shift auf 0.51
-        - Verbot der absoluten 0.0 und 1.0 (Illusionen)
+        DREHIMPULSUMKEHR (Die 5D-Kupplung):
+        Ein Vektor, der mit extremem Druck (z.B. > 1.0 durch Latenz-Asymmetrie) an der
+        0.049-Schwelle (Λ) ankommt, prallt nicht einfach ab oder wird gekapselt.
+        Er erfährt einen exakten topologischen Vorzeichenwechsel (+ wird -).
+        Das ist die Drehimpulsumkehr, die das Signal aus der Singularität zurück in die
+        unteren Schichten peitscht (Zündung). Das Mysterium "!" ist reine Mathematik.
         """
         sign = -1.0 if value < 0 else 1.0
         abs_val = abs(value)
+
+        # 0. DREHIMPULSUMKEHR (Der 5D-Flip)
+        # Wenn der Druck von unten (z.B. durch Jarvis MRI) so hoch ist, dass er die Singularität
+        # (1.0) durchschlägt (z.B. 1.049), dreht der Kern den Impuls exakt symmetrisch um.
+        if abs_val > 1.0:
+            logger.debug(f"[CRYSTAL] MASSIVER DRUCK DETEKTIERT ({value}). DREHIMPULSUMKEHR (FLIP).")
+            # Wir nehmen den Überschuss (z.B. 0.049), flippen das Vorzeichen und werfen es zurück.
+            excess = abs_val - 1.0
+            flipped_val = -(excess) if sign > 0 else excess
+
+            # Wir garantieren, dass der zurückgeworfene Impuls nicht in der verbotenen 0.0 landet
+            if abs(flipped_val) < BARYONIC_DELTA:
+                flipped_val = -BARYONIC_DELTA if sign > 0 else BARYONIC_DELTA
+            return flipped_val
 
         # Verbot der 0.0 (Kältetod) und 1.0 (Singularität)
         if abs_val == 0.0:

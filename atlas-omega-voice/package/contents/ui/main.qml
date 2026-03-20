@@ -12,17 +12,19 @@ PlasmoidItem {
     fullRepresentation: fullRep
     compactRepresentation: compactRep
 
-    readonly property color cyanPrimary:   "#4dc9f6"
-    readonly property color cyanDim:       "#1a5a7a"
-    readonly property color cyanGlow:      "#2aaad4"
-    readonly property color bgDark:        "#060a12"
-    readonly property color bgPanel:       "#0a0e17"
-    readonly property color bgCard:        "#0d1520"
-    readonly property color borderDim:     "#12253a"
-    readonly property color borderMid:     "#1a3a5c"
+    readonly property color corePrimary:   "#D22B2B"
+    readonly property color coreDim:       "#4A0E0E"
+    readonly property color coreGlow:      "#FF4444"
+    readonly property color bgDark:        "#060606"
+    readonly property color bgPanel:       "#0D0D0D"
+    readonly property color bgCard:        "#151515"
+    readonly property color borderDim:     "#2A1010"
+    readonly property color borderMid:     "#4A1515"
+    readonly property color textMain:      "#E0E0E0"
+    readonly property color textDim:       "#888888"
     readonly property color orangeAccent:  "#f0a030"
-    readonly property color redAlert:      "#ff4444"
-    readonly property color greenOk:       "#00ff88"
+    readonly property color redAlert:      "#FF0000"
+    readonly property color greenOk:       "#FFFFFF" // Weiß für OK im neuen Schema
     readonly property string monoFont:     "monospace"
     readonly property string uiFont:       "sans-serif"
 
@@ -60,7 +62,7 @@ PlasmoidItem {
                         var a = phase + i * Math.PI / 2;
                         ctx.beginPath();
                         ctx.arc(cx, cy, r, a, a + 0.9);
-                        ctx.strokeStyle = Qt.rgba(0.3, 0.79, 0.96, 0.5 + 0.3 * Math.sin(phase + i));
+                        ctx.strokeStyle = Qt.rgba(0.82, 0.17, 0.17, 0.5 + 0.3 * Math.sin(phase + i));
                         ctx.lineWidth = 1.5;
                         ctx.stroke();
                     }
@@ -69,15 +71,15 @@ PlasmoidItem {
                         var b = -phase * 1.5 + j * 2 * Math.PI / 3;
                         ctx.beginPath();
                         ctx.arc(cx, cy, r * 0.6, b, b + 0.8);
-                        ctx.strokeStyle = Qt.rgba(0.3, 0.79, 0.96, 0.4);
+                        ctx.strokeStyle = Qt.rgba(0.82, 0.17, 0.17, 0.4);
                         ctx.lineWidth = 1;
                         ctx.stroke();
                     }
                     // Core glow
                     var grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, r * 0.35);
                     grd.addColorStop(0, JarvisBackend.connected ?
-                        Qt.rgba(0.4, 0.95, 1.0, 0.95) : Qt.rgba(1.0, 0.3, 0.2, 0.9));
-                    grd.addColorStop(1, Qt.rgba(0.1, 0.4, 0.6, 0.0));
+                        Qt.rgba(0.82, 0.17, 0.17, 0.95) : Qt.rgba(1.0, 0.3, 0.2, 0.9));
+                    grd.addColorStop(1, Qt.rgba(0.82, 0.17, 0.17, 0.0));
                     ctx.beginPath();
                     ctx.arc(cx, cy, r * 0.35, 0, 2 * Math.PI);
                     ctx.fillStyle = grd;
@@ -107,7 +109,7 @@ PlasmoidItem {
                 opacity: 0.04
                 onPaint: {
                     var ctx = getContext("2d");
-                    ctx.strokeStyle = "#4dc9f6";
+                    ctx.strokeStyle = "#4A1515";
                     ctx.lineWidth = 0.5;
                     for (var x = 0; x < width; x += 20) {
                         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
@@ -125,7 +127,7 @@ PlasmoidItem {
                 gradient: Gradient {
                     orientation: Gradient.Horizontal
                     GradientStop { position: 0.0; color: "transparent" }
-                    GradientStop { position: 0.5; color: cyanPrimary }
+                    GradientStop { position: 0.5; color: corePrimary }
                     GradientStop { position: 1.0; color: "transparent" }
                 }
                 SequentialAnimation on y {
@@ -143,8 +145,8 @@ PlasmoidItem {
                     width: 20; height: 20; color: "transparent"
                     x: (corner % 2 === 0) ? 4 : mainContainer.width - 24
                     y: (corner < 2) ? 4 : mainContainer.height - 24
-                    Rectangle { width: 12; height: 1; color: cyanDim; x: (corner % 2 === 0) ? 0 : parent.width - 12; y: (corner < 2) ? 0 : parent.height - 1 }
-                    Rectangle { width: 1; height: 12; color: cyanDim; x: (corner % 2 === 0) ? 0 : parent.width - 1; y: (corner < 2) ? 0 : parent.height - 12 }
+                    Rectangle { width: 12; height: 1; color: coreDim; x: (corner % 2 === 0) ? 0 : parent.width - 12; y: (corner < 2) ? 0 : parent.height - 1 }
+                    Rectangle { width: 1; height: 12; color: coreDim; x: (corner % 2 === 0) ? 0 : parent.width - 1; y: (corner < 2) ? 0 : parent.height - 12 }
                 }
             }
 
@@ -173,23 +175,23 @@ PlasmoidItem {
                             for (var i = 0; i < 4; i++) {
                                 var a = phase + i * Math.PI / 2;
                                 ctx.beginPath(); ctx.arc(cx, cy, 18, a, a + 1.0);
-                                ctx.strokeStyle = Qt.rgba(0.3, 0.79, 0.96, 0.6); ctx.lineWidth = 2; ctx.stroke();
+                                ctx.strokeStyle = Qt.rgba(0.8, 0.1, 0.1, 0.6); ctx.lineWidth = 2; ctx.stroke();
                             }
                             // Middle ring (counter)
                             for (var j = 0; j < 3; j++) {
                                 var b = -phase * 1.4 + j * 2.094;
                                 ctx.beginPath(); ctx.arc(cx, cy, 12, b, b + 0.8);
-                                ctx.strokeStyle = Qt.rgba(0.3, 0.79, 0.96, 0.4); ctx.lineWidth = 1.5; ctx.stroke();
+                                ctx.strokeStyle = Qt.rgba(0.8, 0.1, 0.1, 0.4); ctx.lineWidth = 1.5; ctx.stroke();
                             }
                             // Inner ring
                             for (var k = 0; k < 6; k++) {
                                 var c = phase * 2 + k * 1.047;
                                 ctx.beginPath(); ctx.arc(cx, cy, 7, c, c + 0.4);
-                                ctx.strokeStyle = Qt.rgba(0.3, 0.79, 0.96, 0.5); ctx.lineWidth = 1; ctx.stroke();
+                                ctx.strokeStyle = Qt.rgba(0.8, 0.1, 0.1, 0.5); ctx.lineWidth = 1; ctx.stroke();
                             }
                             // Core
                             var grd = ctx.createRadialGradient(cx, cy, 0, cx, cy, 5);
-                            grd.addColorStop(0, "#7aeaff"); grd.addColorStop(1, "#1a5a7a00");
+                            grd.addColorStop(0, "#FF4444"); grd.addColorStop(1, "#4A0E0E00");
                             ctx.beginPath(); ctx.arc(cx, cy, 5, 0, 2 * Math.PI);
                             ctx.fillStyle = grd; ctx.fill();
                         }
@@ -199,12 +201,12 @@ PlasmoidItem {
                         spacing: 1
                         Text {
                             text: "ATLAS"
-                            color: cyanPrimary
+                            color: corePrimary
                             font { pixelSize: 20; bold: true; family: uiFont; letterSpacing: 4 }
                         }
                         Text {
                             text: JarvisBackend.greeting
-                            color: cyanDim
+                            color: coreDim
                             font { pixelSize: 10; family: monoFont; letterSpacing: 1 }
                         }
                     }
@@ -216,14 +218,14 @@ PlasmoidItem {
                         spacing: 0
                         Text {
                             text: JarvisBackend.currentTime
-                            color: cyanPrimary
+                            color: corePrimary
                             font { pixelSize: 16; bold: true; family: monoFont }
                             horizontalAlignment: Text.AlignRight
                             Layout.alignment: Qt.AlignRight
                         }
                         Text {
                             text: JarvisBackend.currentDate
-                            color: cyanDim
+                            color: coreDim
                             font { pixelSize: 8; family: monoFont }
                             Layout.alignment: Qt.AlignRight
                         }
@@ -254,8 +256,8 @@ PlasmoidItem {
                         Rectangle {
                             width: 6; height: 6; radius: 3
                             color: JarvisBackend.processing ? orangeAccent :
-                                   JarvisBackend.speaking ? cyanPrimary :
-                                   JarvisBackend.voiceCommandMode ? greenOk : cyanDim
+                                   JarvisBackend.speaking ? corePrimary :
+                                   JarvisBackend.voiceCommandMode ? greenOk : coreDim
                             SequentialAnimation on opacity {
                                 running: JarvisBackend.processing || JarvisBackend.speaking || JarvisBackend.voiceCommandMode
                                 loops: Animation.Infinite
@@ -265,7 +267,7 @@ PlasmoidItem {
                         }
                         Text {
                             text: JarvisBackend.statusText
-                            color: "#3aaabf"
+                            color: "#bf3a3a"
                             font { pixelSize: 9; family: monoFont }
                             elide: Text.ElideRight
                             Layout.fillWidth: true
@@ -284,13 +286,13 @@ PlasmoidItem {
                         ]
                         Rectangle {
                             Layout.fillWidth: true; height: 26; radius: 3
-                            color: currentTab === index ? Qt.rgba(0.3, 0.79, 0.96, 0.12) : "transparent"
-                            border.color: currentTab === index ? cyanPrimary : borderDim
+                            color: currentTab === index ? Qt.rgba(0.82, 0.17, 0.17, 0.12) : "transparent"
+                            border.color: currentTab === index ? corePrimary : borderDim
                             border.width: 1
                             Text {
                                 anchors.centerIn: parent
                                 text: modelData.icon + " " + modelData.label
-                                color: currentTab === index ? cyanPrimary : cyanDim
+                                color: currentTab === index ? corePrimary : coreDim
                                 font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 }
                             }
                             MouseArea {
@@ -328,7 +330,7 @@ PlasmoidItem {
                                           JarvisBackend.speaking ? 0.5 : 0.3;
                                 var level = Math.max(JarvisBackend.audioLevel * 4, 0.05);
                                 var color = JarvisBackend.voiceCommandMode ? "#00ff88" :
-                                            JarvisBackend.speaking ? "#f0a030" : "#4dc9f6";
+                                            JarvisBackend.speaking ? "#f0a030" : "#D22B2B";
 
                                 ctx.strokeStyle = color;
                                 ctx.lineWidth = 1.5;
@@ -400,31 +402,31 @@ PlasmoidItem {
                                         RowLayout {
                                             spacing: 4
                                             Rectangle { width: 3; height: 10; radius: 1
-                                                color: role === "user" ? orangeAccent : cyanPrimary }
+                                                color: role === "user" ? orangeAccent : corePrimary }
                                             Text {
                                                 text: role === "user" ? "DU" : (role === "system" ? "SYSTEM" : "ATLAS")
-                                                color: role === "user" ? orangeAccent : (role === "system" ? "#8899aa" : cyanPrimary)
+                                                color: role === "user" ? orangeAccent : (role === "system" ? "#886666" : corePrimary)
                                                 font { pixelSize: 8; bold: true; family: monoFont; letterSpacing: 2 }
                                             }
                                         }
                                         Rectangle {
                                             Layout.fillWidth: true
                                             Layout.preferredHeight: msgTxt.contentHeight + 14
-                                            color: role === "user" ? "#0c1422" : "#081018"
+                                            color: role === "user" ? "#D22B2B" : (role === "system" ? "#101010" : "#081018")
                                             radius: 4
-                                            border.color: role === "user" ? "#1a2a40" : "#14304a"
+                                            border.color: role === "user" ? "#D22B2B" : (role === "system" ? "#333" : "#D22B2B")
                                             border.width: 1
                                             // Left accent bar
                                             Rectangle {
                                                 width: 2; height: parent.height - 8; y: 4; x: 4; radius: 1
-                                                color: role === "user" ? Qt.rgba(0.94, 0.63, 0.19, 0.3) : Qt.rgba(0.3, 0.79, 0.96, 0.3)
+                                                color: role === "user" ? Qt.rgba(0.82, 0.17, 0.17, 0.3) : (role === "system" ? "#555" : Qt.rgba(0.82, 0.17, 0.17, 0.3))
                                             }
                                             Text {
                                                 id: msgTxt
                                                 anchors { fill: parent; margins: 7; leftMargin: 12 }
                                                 text: msg
-                                                color: role === "user" ? "#b0c4d8" : "#d0eaf4"
-                                                font { pixelSize: 11; family: uiFont }
+                                                color: role === "user" ? "#b0c4d8" : (role === "system" ? "#888" : "#D22B2B")
+                                                font { pixelSize: role === "system" ? 9 : 11; family: uiFont; italic: role === "system" }
                                                 wrapMode: Text.WordWrap; lineHeight: 1.3
                                             }
                                         }
@@ -436,13 +438,13 @@ PlasmoidItem {
                                     anchors.centerIn: parent; visible: chatView.count === 0; spacing: 8
                                     Text {
                                         text: JarvisBackend.greeting
-                                        color: cyanDim; font { pixelSize: 16; family: uiFont }
+                                        color: coreDim; font { pixelSize: 16; family: uiFont }
                                         horizontalAlignment: Text.AlignHCenter
                                         anchors.horizontalCenter: parent.horizontalCenter
                                     }
                                     Text {
                                         text: "Wobei darf ich helfen?"
-                                        color: Qt.rgba(0.1, 0.25, 0.38, 0.8)
+                                        color: Qt.rgba(0.82, 0.17, 0.17, 0.8)
                                         font { pixelSize: 12; italic: true; family: uiFont }
                                         horizontalAlignment: Text.AlignHCenter
                                         anchors.horizontalCenter: parent.horizontalCenter
@@ -460,7 +462,7 @@ PlasmoidItem {
                                 gradient: Gradient {
                                     orientation: Gradient.Horizontal
                                     GradientStop { position: 0; color: "transparent" }
-                                    GradientStop { position: 0.5; color: cyanPrimary }
+                                    GradientStop { position: 0.5; color: corePrimary }
                                     GradientStop { position: 1; color: "transparent" }
                                 }
                                 SequentialAnimation on x { loops: Animation.Infinite
@@ -477,7 +479,7 @@ PlasmoidItem {
                             Rectangle {
                                 width: 34; height: 34; radius: 17
                                 color: JarvisBackend.voiceCommandMode ? Qt.rgba(0, 1, 0.53, 0.15) :
-                                       micArea.containsMouse ? Qt.rgba(0.3, 0.79, 0.96, 0.1) : "transparent"
+                                       micArea.containsMouse ? Qt.rgba(0.82, 0.17, 0.17, 0.1) : "transparent"
                                 border.color: JarvisBackend.voiceCommandMode ? greenOk : borderMid; border.width: 1
                                 Text { anchors.centerIn: parent; text: "🎤"; font.pixelSize: 14 }
                                 MouseArea {
@@ -492,17 +494,17 @@ PlasmoidItem {
                             Rectangle {
                                 Layout.fillWidth: true; height: 34
                                 color: bgDark; radius: 6
-                                border.color: inputField.activeFocus ? cyanPrimary : borderDim; border.width: 1
+                                border.color: inputField.activeFocus ? corePrimary : borderDim; border.width: 1
                                 Behavior on border.color { ColorAnimation { duration: 200 } }
 
                                 TextInput {
                                     id: inputField
                                     anchors { fill: parent; margins: 8 }
-                                    color: "#d0e8f0"; font { pixelSize: 12; family: uiFont }
+                                    color: "#D22B2B"; font { pixelSize: 12; family: uiFont }
                                     clip: true; verticalAlignment: TextInput.AlignVCenter; selectByMouse: true
                                     Text {
                                         anchors.fill: parent; verticalAlignment: Text.AlignVCenter
-                                        text: "Sprich, Operator …"; color: "#1a3a50"
+                                        text: "Sprich, Operator …"; color: "#D22B2B"
                                         font: parent.font; visible: !parent.text && !parent.activeFocus
                                     }
                                     onAccepted: { if (text.trim().length > 0) { JarvisBackend.sendMessage(text.trim()); text = ""; } }
@@ -513,9 +515,9 @@ PlasmoidItem {
                             // Send
                             Rectangle {
                                 width: 34; height: 34; radius: 6
-                                color: sendArea.containsMouse ? Qt.rgba(0.3, 0.79, 0.96, 0.12) : "transparent"
+                                color: sendArea.containsMouse ? Qt.rgba(0.82, 0.17, 0.17, 0.12) : "transparent"
                                 border.color: borderMid; border.width: 1
-                                Text { anchors.centerIn: parent; text: "▶"; color: cyanPrimary; font.pixelSize: 14 }
+                                Text { anchors.centerIn: parent; text: "▶"; color: corePrimary; font.pixelSize: 14 }
                                 MouseArea {
                                     id: sendArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                     onClicked: { if (inputField.text.trim().length > 0) { JarvisBackend.sendMessage(inputField.text.trim()); inputField.text = ""; } }
@@ -535,11 +537,11 @@ PlasmoidItem {
                                 ]
                                 Rectangle {
                                     Layout.fillWidth: true; height: 26; radius: 3
-                                    color: modelData.active ? Qt.rgba(0.3, 0.79, 0.96, 0.1) : "transparent"
-                                    border.color: modelData.active ? cyanPrimary : borderDim; border.width: 1
+                                    color: modelData.active ? Qt.rgba(0.82, 0.17, 0.17, 0.1) : "transparent"
+                                    border.color: modelData.active ? corePrimary : borderDim; border.width: 1
                                     Text {
                                         anchors.centerIn: parent; text: modelData.label
-                                        color: modelData.active ? cyanPrimary : cyanDim
+                                        color: modelData.active ? corePrimary : coreDim
                                         font { pixelSize: 8; bold: true; family: monoFont; letterSpacing: 1 }
                                     }
                                     MouseArea {
@@ -572,7 +574,7 @@ PlasmoidItem {
                             // System header
                             Text {
                                 text: "◈ SYSTEMDIAGNOSE"
-                                color: cyanPrimary
+                                color: corePrimary
                                 font { pixelSize: 11; bold: true; family: monoFont; letterSpacing: 2 }
                             }
 
@@ -585,10 +587,10 @@ PlasmoidItem {
                                 ColumnLayout {
                                     anchors { fill: parent; margins: 10 }
                                     spacing: 4
-                                    Text { text: "RECHNER: " + JarvisBackend.hostname; color: cyanPrimary
+                                    Text { text: "RECHNER: " + JarvisBackend.hostname; color: corePrimary
                                         font { pixelSize: 11; family: monoFont; bold: true } }
                                     Text { text: "KERNEL: " + JarvisBackend.kernelVersion + "  ·  LAUFZEIT: " + JarvisBackend.uptime
-                                        color: cyanDim; font { pixelSize: 9; family: monoFont } }
+                                        color: coreDim; font { pixelSize: 9; family: monoFont } }
                                 }
                             }
 
@@ -601,25 +603,25 @@ PlasmoidItem {
                                     spacing: 6
                                     RowLayout {
                                         Layout.fillWidth: true
-                                        Text { text: "CPU-LAST"; color: cyanDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
+                                        Text { text: "CPU-LAST"; color: coreDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
                                         Item { Layout.fillWidth: true }
-                                        Text { text: JarvisBackend.cpuUsage.toFixed(1) + "%"; color: JarvisBackend.cpuUsage > 80 ? redAlert : cyanPrimary
+                                        Text { text: JarvisBackend.cpuUsage.toFixed(1) + "%"; color: JarvisBackend.cpuUsage > 80 ? redAlert : corePrimary
                                             font { pixelSize: 14; bold: true; family: monoFont } }
                                     }
                                     // Bar
                                     Rectangle {
-                                        Layout.fillWidth: true; height: 6; color: "#0a141e"; radius: 3
+                                        Layout.fillWidth: true; height: 6; color: "#D22B2B"; radius: 3
                                         Rectangle {
                                             width: parent.width * Math.min(JarvisBackend.cpuUsage / 100, 1); height: 6; radius: 3
                                             gradient: Gradient {
                                                 orientation: Gradient.Horizontal
-                                                GradientStop { position: 0; color: "#1a5a7a" }
-                                                GradientStop { position: 0.7; color: JarvisBackend.cpuUsage > 80 ? "#ff4444" : cyanPrimary }
+                                                GradientStop { position: 0; color: "#D22B2B" }
+                                                GradientStop { position: 0.7; color: JarvisBackend.cpuUsage > 80 ? "#ff4444" : corePrimary }
                                             }
                                             Behavior on width { NumberAnimation { duration: 300 } }
                                         }
                                     }
-                                    Text { text: "TEMP: " + JarvisBackend.cpuTemp + " °C"; color: JarvisBackend.cpuTemp > 80 ? redAlert : cyanDim
+                                    Text { text: "TEMP: " + JarvisBackend.cpuTemp + " °C"; color: JarvisBackend.cpuTemp > 80 ? redAlert : coreDim
                                         font { pixelSize: 9; family: monoFont } }
                                 }
                             }
@@ -633,30 +635,100 @@ PlasmoidItem {
                                     spacing: 6
                                     RowLayout {
                                         Layout.fillWidth: true
-                                        Text { text: "RAM"; color: cyanDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
+                                        Text { text: "RAM"; color: coreDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
                                         Item { Layout.fillWidth: true }
                                         Text {
                                             text: (JarvisBackend.memoryUsedGb > 0 ? JarvisBackend.memoryUsedGb.toFixed(1) : "0.0") + " / " + (JarvisBackend.memoryTotalGb > 0 ? JarvisBackend.memoryTotalGb.toFixed(1) : "0.0") + " GB"
-                                            color: cyanPrimary; font { pixelSize: 12; bold: true; family: monoFont }
+                                            color: corePrimary; font { pixelSize: 12; bold: true; family: monoFont }
                                         }
                                     }
                                     RowLayout {
                                         Layout.fillWidth: true
                                         Rectangle {
-                                            Layout.fillWidth: true; height: 6; color: "#0a141e"; radius: 3
+                                            Layout.fillWidth: true; height: 6; color: "#D22B2B"; radius: 3
                                             Rectangle {
                                                 width: parent.width * Math.min(JarvisBackend.memoryUsage / 100, 1); height: 6; radius: 3
                                                 gradient: Gradient {
                                                     orientation: Gradient.Horizontal
-                                                    GradientStop { position: 0; color: "#1a5a7a" }
-                                                    GradientStop { position: 0.7; color: JarvisBackend.memoryUsage > 85 ? redAlert : cyanPrimary }
+                                                    GradientStop { position: 0; color: "#D22B2B" }
+                                                    GradientStop { position: 0.7; color: JarvisBackend.memoryUsage > 85 ? redAlert : corePrimary }
                                                 }
                                                 Behavior on width { NumberAnimation { duration: 300 } }
                                             }
                                         }
                                         Text {
                                             text: JarvisBackend.memoryUsage > 0 ? JarvisBackend.memoryUsage.toFixed(0) + "%" : "0%"
-                                            color: cyanDim; font { pixelSize: 9; family: monoFont }
+                                            color: coreDim; font { pixelSize: 9; family: monoFont }
+                                        }
+                                    }
+                                }
+                            }
+
+                            // OMEGA Daemons
+                            Rectangle {
+                                Layout.fillWidth: true; Layout.preferredHeight: Math.max(120, daemonListView.contentHeight + 35)
+                                color: bgDark; radius: 6; border.color: borderDim; border.width: 1; clip: true
+                                ColumnLayout {
+                                    anchors { fill: parent; margins: 10 }
+                                    spacing: 6
+                                    Text { text: "◈ OMEGA DAEMONS"; color: coreDim
+                                        font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
+                                    Rectangle { Layout.fillWidth: true; height: 1; color: borderDim }
+
+                                    ListView {
+                                        id: daemonListView
+                                        Layout.fillWidth: true; Layout.fillHeight: true; clip: true; spacing: 5
+                                        model: JarvisBackend.daemonStatus
+                                        delegate: RowLayout {
+                                            width: daemonListView.width; spacing: 8
+                                            Rectangle {
+                                                width: 8; height: 8; radius: 4
+                                                color: modelData.active ? greenOk : redAlert
+                                                SequentialAnimation on opacity {
+                                                    running: !modelData.active
+                                                    loops: Animation.Infinite
+                                                    NumberAnimation { from: 1; to: 0.3; duration: 800 }
+                                                    NumberAnimation { from: 0.3; to: 1; duration: 800 }
+                                                }
+                                            }
+                                            Text {
+                                                text: modelData.name.replace("omega-", "").toUpperCase()
+                                                color: corePrimary
+                                                font { pixelSize: 10; family: monoFont; bold: true }
+                                                Layout.fillWidth: true
+                                            }
+                                            Text {
+                                                text: modelData.status
+                                                color: modelData.active ? coreDim : redAlert
+                                                font { pixelSize: 8; family: monoFont }
+                                            }
+
+                                            // Control buttons
+                                            RowLayout {
+                                                spacing: 6
+                                                Rectangle {
+                                                    width: 18; height: 18; radius: 3; color: "transparent"
+                                                    border.color: borderMid; border.width: 1
+                                                    Text { anchors.centerIn: parent; text: "⟳"; color: coreDim; font.pixelSize: 10 }
+                                                    MouseArea {
+                                                        anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+                                                        onClicked: JarvisBackend.controlDaemon(modelData.name, "restart")
+                                                    }
+                                                }
+                                                Rectangle {
+                                                    width: 18; height: 18; radius: 3; color: "transparent"
+                                                    border.color: borderMid; border.width: 1
+                                                    Text {
+                                                        anchors.centerIn: parent
+                                                        text: modelData.active ? "■" : "▶"
+                                                        color: coreDim; font.pixelSize: 8
+                                                    }
+                                                    MouseArea {
+                                                        anchors.fill: parent; cursorShape: Qt.PointingHandCursor
+                                                        onClicked: JarvisBackend.controlDaemon(modelData.name, modelData.active ? "stop" : "start")
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -678,7 +750,7 @@ PlasmoidItem {
                                     }
                                     ColumnLayout {
                                         spacing: 2
-                                        Text { text: "LLM SERVER"; color: cyanDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
+                                        Text { text: "LLM SERVER"; color: coreDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
                                         Text { text: JarvisBackend.connected ? ("CONNECTED — " + JarvisBackend.llmServerUrl) : "OFFLINE — RECONNECTING..."
                                             color: JarvisBackend.connected ? greenOk : redAlert
                                             font { pixelSize: 10; family: monoFont } }
@@ -693,7 +765,7 @@ PlasmoidItem {
                                 ColumnLayout {
                                     anchors { fill: parent; margins: 10 }
                                     spacing: 4
-                                    Text { text: "⏰ AKTIVE ERINNERUNGEN"; color: cyanDim
+                                    Text { text: "⏰ AKTIVE ERINNERUNGEN"; color: coreDim
                                         font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
                                     Rectangle { Layout.fillWidth: true; height: 1; color: borderDim }
 
@@ -712,7 +784,7 @@ PlasmoidItem {
                                             }
                                         }
                                         Text { anchors.centerIn: parent; visible: parent.count === 0
-                                            text: "Keine aktiven Erinnerungen"; color: "#1a3050"
+                                            text: "Keine aktiven Erinnerungen"; color: "#D22B2B"
                                             font { pixelSize: 10; italic: true; family: uiFont } }
                                     }
                                 }
@@ -735,7 +807,7 @@ PlasmoidItem {
 
                             Text {
                                 text: "⚙ SCHNELLZUGRIFF"
-                                color: cyanPrimary
+                                color: corePrimary
                                 font { pixelSize: 11; bold: true; family: monoFont; letterSpacing: 2 }
                             }
 
@@ -749,7 +821,7 @@ PlasmoidItem {
                                     id: statusInfoCol
                                     anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
                                     spacing: 4
-                                    Text { text: "STATUS"; color: cyanDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
+                                    Text { text: "STATUS"; color: coreDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
                                     Text { text: "LLM: " + JarvisBackend.currentModelName; color: "#b0c4d8"; font { pixelSize: 9; family: monoFont } }
                                     Text { text: "Stimme: " + JarvisBackend.currentVoiceName; color: "#b0c4d8"; font { pixelSize: 9; family: monoFont } }
                                     Text { text: "Server: " + JarvisBackend.llmServerUrl; color: "#b0c4d8"; font { pixelSize: 9; family: monoFont } }
@@ -765,58 +837,58 @@ PlasmoidItem {
                                     id: ttsCol
                                     anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
                                     spacing: 10
-                                    Text { text: "STIMM-SYNTHESE"; color: cyanDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
+                                    Text { text: "STIMM-SYNTHESE"; color: coreDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
 
                                     // Rate slider
                                     ColumnLayout {
                                         Layout.fillWidth: true; spacing: 2
                                         RowLayout { Layout.fillWidth: true
-                                            Text { text: "TEMPO"; color: cyanDim; font { pixelSize: 9; family: monoFont } }
+                                            Text { text: "TEMPO"; color: coreDim; font { pixelSize: 9; family: monoFont } }
                                             Item { Layout.fillWidth: true }
-                                            Text { text: rateSlider.value.toFixed(2); color: cyanPrimary; font { pixelSize: 9; family: monoFont } }
+                                            Text { text: rateSlider.value.toFixed(2); color: corePrimary; font { pixelSize: 9; family: monoFont } }
                                         }
                                         Slider { id: rateSlider; Layout.fillWidth: true; Layout.preferredHeight: 24
                                             from: -1.0; to: 1.0; value: 0.05; stepSize: 0.05; onMoved: JarvisBackend.setTtsRate(value)
                                             background: Rectangle { x: rateSlider.leftPadding; width: rateSlider.availableWidth; height: 4; radius: 2
-                                                y: rateSlider.topPadding + rateSlider.availableHeight/2 - 2; color: "#0a141e"
-                                                Rectangle { width: rateSlider.visualPosition * parent.width; height: 4; radius: 2; color: cyanPrimary } }
+                                                y: rateSlider.topPadding + rateSlider.availableHeight/2 - 2; color: "#D22B2B"
+                                                Rectangle { width: rateSlider.visualPosition * parent.width; height: 4; radius: 2; color: corePrimary } }
                                             handle: Rectangle { x: rateSlider.leftPadding + rateSlider.visualPosition*(rateSlider.availableWidth-width)
                                                 y: rateSlider.topPadding + rateSlider.availableHeight/2 - 7; implicitWidth: 14; implicitHeight: 14; radius: 7
-                                                color: rateSlider.pressed ? Qt.lighter(cyanPrimary,1.2) : cyanPrimary; border.color: "#0a141e"; border.width: 2 } }
+                                                color: rateSlider.pressed ? Qt.lighter(corePrimary,1.2) : corePrimary; border.color: "#D22B2B"; border.width: 2 } }
                                     }
                                     // Pitch slider
                                     ColumnLayout {
                                         Layout.fillWidth: true; spacing: 2
                                         RowLayout { Layout.fillWidth: true
-                                            Text { text: "PITCH"; color: cyanDim; font { pixelSize: 9; family: monoFont } }
+                                            Text { text: "TON"; color: coreDim; font { pixelSize: 9; family: monoFont } }
                                             Item { Layout.fillWidth: true }
-                                            Text { text: pitchSlider.value.toFixed(2); color: cyanPrimary; font { pixelSize: 9; family: monoFont } }
+                                            Text { text: pitchSlider.value.toFixed(2); color: corePrimary; font { pixelSize: 9; family: monoFont } }
                                         }
                                         Slider { id: pitchSlider; Layout.fillWidth: true; Layout.preferredHeight: 24
                                             from: -1.0; to: 1.0; value: -0.1; stepSize: 0.05; onMoved: JarvisBackend.setTtsPitch(value)
                                             background: Rectangle { x: pitchSlider.leftPadding; width: pitchSlider.availableWidth; height: 4; radius: 2
-                                                y: pitchSlider.topPadding + pitchSlider.availableHeight/2 - 2; color: "#0a141e"
-                                                Rectangle { width: pitchSlider.visualPosition * parent.width; height: 4; radius: 2; color: cyanPrimary } }
+                                                y: pitchSlider.topPadding + pitchSlider.availableHeight/2 - 2; color: "#D22B2B"
+                                                Rectangle { width: pitchSlider.visualPosition * parent.width; height: 4; radius: 2; color: corePrimary } }
                                             handle: Rectangle { x: pitchSlider.leftPadding + pitchSlider.visualPosition*(pitchSlider.availableWidth-width)
                                                 y: pitchSlider.topPadding + pitchSlider.availableHeight/2 - 7; implicitWidth: 14; implicitHeight: 14; radius: 7
-                                                color: pitchSlider.pressed ? Qt.lighter(cyanPrimary,1.2) : cyanPrimary; border.color: "#0a141e"; border.width: 2 } }
+                                                color: pitchSlider.pressed ? Qt.lighter(corePrimary,1.2) : corePrimary; border.color: "#D22B2B"; border.width: 2 } }
                                     }
                                     // Volume slider
                                     ColumnLayout {
                                         Layout.fillWidth: true; spacing: 2
                                         RowLayout { Layout.fillWidth: true
-                                            Text { text: "VOLUME"; color: cyanDim; font { pixelSize: 9; family: monoFont } }
+                                            Text { text: "LAUT"; color: coreDim; font { pixelSize: 9; family: monoFont } }
                                             Item { Layout.fillWidth: true }
-                                            Text { text: (volSlider.value * 100).toFixed(0) + "%"; color: cyanPrimary; font { pixelSize: 9; family: monoFont } }
+                                            Text { text: (volSlider.value * 100).toFixed(0) + "%"; color: corePrimary; font { pixelSize: 9; family: monoFont } }
                                         }
                                         Slider { id: volSlider; Layout.fillWidth: true; Layout.preferredHeight: 24
                                             from: 0.0; to: 1.0; value: 0.85; stepSize: 0.05; onMoved: JarvisBackend.setTtsVolume(value)
                                             background: Rectangle { x: volSlider.leftPadding; width: volSlider.availableWidth; height: 4; radius: 2
-                                                y: volSlider.topPadding + volSlider.availableHeight/2 - 2; color: "#0a141e"
-                                                Rectangle { width: volSlider.visualPosition * parent.width; height: 4; radius: 2; color: cyanPrimary } }
+                                                y: volSlider.topPadding + volSlider.availableHeight/2 - 2; color: "#D22B2B"
+                                                Rectangle { width: volSlider.visualPosition * parent.width; height: 4; radius: 2; color: corePrimary } }
                                             handle: Rectangle { x: volSlider.leftPadding + volSlider.visualPosition*(volSlider.availableWidth-width)
                                                 y: volSlider.topPadding + volSlider.availableHeight/2 - 7; implicitWidth: 14; implicitHeight: 14; radius: 7
-                                                color: volSlider.pressed ? Qt.lighter(cyanPrimary,1.2) : cyanPrimary; border.color: "#0a141e"; border.width: 2 } }
+                                                color: volSlider.pressed ? Qt.lighter(corePrimary,1.2) : corePrimary; border.color: "#D22B2B"; border.width: 2 } }
                                     }
                                 }
                             }
@@ -829,7 +901,7 @@ PlasmoidItem {
                                     id: timerCol
                                     anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
                                     spacing: 8
-                                    Text { text: "SCHNELL-TIMER"; color: cyanDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
+                                    Text { text: "SCHNELL-TIMER"; color: coreDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
                                     Flow {
                                         Layout.fillWidth: true; spacing: 6
                                         Repeater {
@@ -840,9 +912,9 @@ PlasmoidItem {
                                             ]
                                             Rectangle {
                                                 width: 68; height: 26; radius: 3
-                                                color: timerBtnArea.containsMouse ? Qt.rgba(0.3,0.79,0.96,0.1) : "transparent"
+                                                color: timerBtnArea.containsMouse ? Qt.rgba(0.82, 0.17, 0.17, 0.1) : "transparent"
                                                 border.color: borderMid; border.width: 1
-                                                Text { anchors.centerIn: parent; text: modelData.label; color: cyanDim; font { pixelSize: 9; bold: true; family: monoFont } }
+                                                Text { anchors.centerIn: parent; text: modelData.label; color: coreDim; font { pixelSize: 9; bold: true; family: monoFont } }
                                                 MouseArea { id: timerBtnArea; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor
                                                     onClicked: JarvisBackend.addReminder("Timer: " + modelData.label, modelData.secs) }
                                             }
@@ -859,7 +931,7 @@ PlasmoidItem {
                                     id: hintCol
                                     anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
                                     spacing: 6
-                                    Text { text: "VOLLSTÄNDIGE EINSTELLUNGEN"; color: cyanDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
+                                    Text { text: "VOLLSTÄNDIGE EINSTELLUNGEN"; color: coreDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
                                     Text {
                                         text: "Rechtsklick auf das Plasmoid →\n„ATLAS Ω Voice konfigurieren …“\n(LLM, Stimmen, Sprachbefehle, mehr)."
                                         color: "#b0c4d8"

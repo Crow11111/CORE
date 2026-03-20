@@ -4,6 +4,8 @@
 #include <QDateTime>
 #include <QTime>
 #include <QLocale>
+#include <QProcess>
+#include <QVariantMap>
 
 JarvisSystem::JarvisSystem(QObject *parent)
     : QObject(parent)
@@ -13,7 +15,7 @@ JarvisSystem::JarvisSystem(QObject *parent)
     initSystemMonitor();
 
     connect(m_systemStatsTimer, &QTimer::timeout, this, &JarvisSystem::updateSystemStats);
-    m_systemStatsTimer->start(3000);
+    m_systemStatsTimer->start(5000);
     updateSystemStats();
 
     connect(m_clockTimer, &QTimer::timeout, this, &JarvisSystem::updateClock);
@@ -46,6 +48,31 @@ void JarvisSystem::updateSystemStats()
     readMemoryUsage();
     readCpuTemp();
     readUptime();
+
+    // OMEGA Daemons prüfen
+    m_daemonStatus.clear();
+    QStringList daemons = {
+        QStringLiteral("omega-backend"),
+        QStringLiteral("omega-frontend"),
+        QStringLiteral("omega-event-bus"),
+        QStringLiteral("omega-watchdog"),
+        QStringLiteral("omega-vision"),
+        QStringLiteral("omega-audio")
+    };
+
+    for (const QString &service : daemons) {
+        QProcess proc;
+        proc.start(QStringLiteral("systemctl"), {QStringLiteral("is-active"), service});
+        proc.waitForFinished(500);
+        QString status = QString::fromUtf8(proc.readAllStandardOutput()).trimmed();
+
+        QVariantMap map;
+        map[QStringLiteral("name")] = service;
+        map[QStringLiteral("active")] = (status == QStringLiteral("active"));
+        map[QStringLiteral("status")] = status;
+        m_daemonStatus.append(map);
+    }
+
     emit systemStatsChanged();
 }
 
@@ -183,4 +210,28 @@ QString JarvisSystem::greeting() const
     if (hour < 12) return QStringLiteral("Guten Morgen, Operator.");
     if (hour < 18) return QStringLiteral("Guten Tag, Operator.");
     return QStringLiteral("Guten Abend, Operator.");
+}
+
+void JarvisSystem::controlDaemon(const QString &name, const QString &action)
+{
+    static const QStringList allowedDaemons = {
+        QStringLiteral("omega-backend"),
+        QStringLiteral("omega-frontend"),
+        QStringLiteral("omega-event-bus"),
+        QStringLiteral("omega-watchdog"),
+        QStringLiteral("omega-vision"),
+        QStringLiteral("omega-audio")
+    };
+    static const QStringList allowedActions = {
+        QStringLiteral("start"),
+        QStringLiteral("stop"),
+        QStringLiteral("restart")
+    };
+
+    if (!allowedDaemons.contains(name) || !allowedActions.contains(action)) {
+        return;
+    }
+
+    QProcess::startDetached(QStringLiteral("sudo"), {QStringLiteral("systemctl"), action, name});
+    QTimer::singleShot(1000, this, &JarvisSystem::updateSystemStats);
 }

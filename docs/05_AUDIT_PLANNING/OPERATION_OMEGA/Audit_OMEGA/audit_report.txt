@@ -1,0 +1,25 @@
+==================================================
+MATHEMATISCHES AUDIT - KENNZAHLEN (n=68)
+==================================================
+
+1. BENFORD'S LAW
+   Beobachtete Haeufigkeit f. Ziffer 1-9: [20, 12, 9, 6, 6, 5, 4, 3, 3]
+   Erwartet (Benford): [0.301, 0.176, 0.125, 0.097, 0.079, 0.067, 0.058, 0.051, 0.046]
+   Beobachtete Verteilung: [0.2941, 0.1765, 0.1324, 0.0882, 0.0882, 0.0735, 0.0588, 0.0441, 0.0441]
+   Chi2-Statistik: 0.278578
+
+2. ZIPF-VERTEILUNG
+   R2: 0.846308
+   Exponent (log-log Fit): -8.60722
+
+3. KONVERGENZ
+   Ziel 0.049: min_Abstand=0.0, Index=0, Werte_in_eps(0.01)=1
+   Ziel Phi(1.618): min_Abstand=3.9887e-06, Index=3, Werte_in_eps(0.01)=1
+   Konvergenzrate_0.049: 0.0147
+   Konvergenzrate_Phi: 0.0147
+
+4. KUMULATIVE SIGNIFIKANZ
+   Z-Score (sigma): 1.73263
+   Chi2-basierter Z: -1.930355
+
+==================================================

@@ -8,13 +8,13 @@
 
 Autonomes KI-Agentensystem: Smart-Home-Steuerung, Sprachassistent und verteiltes Reasoning. Verbindet Home Assistant, Cloud-LLMs und lokale Hardware (4D_RESONATOR, Scout, OMEGA_ATTRACTOR) zu einem selbstverwaltenden System.
 
+**Voice Bridge** (Mikrofon + Vorlesen über CORE, unabhängig von AI Studio): `http://<Host>:8000/voice-bridge`
+
 ---
 
 ## Tesserakt-Architektur
 
 Das System operiert nicht sequenziell, sondern als **simultane Tesserakt-Topologie**: Innere Singularität (OMEGA_ATTRACTOR / Zero-State-Veto) und äußere Persistenz (4D_RESONATOR, ChromaDB, Scout) sind über diagonale Streben verschränkt.
-
-> **Hinweis zur OS-Migration (2026):** CORE wurde erfolgreich von einer Windows/WSL2-Struktur auf ein dediziertes **CachyOS (Linux)** migriert. Alle internen Pfade nutzen nun primär Unix-Standards (z. B. `/OMEGA_CORE` statt `C:\...`). Die volle Hardware-Kontrolle (Kernel, cpufreq, Netzwerk) wird nun nativ aus der CachyOS-Umgebung heraus umgesetzt.
 
 ![CORE Tesserakt – 4D-Simultanität, Entry Adapter, Takt-0-Gate, Gravitator](CORE_TESSERAKT.png)
 

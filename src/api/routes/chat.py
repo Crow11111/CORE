@@ -50,15 +50,32 @@ class ChatMessage(BaseModel):
     mode: str = "fast"
 
 
+async def _log_session_turn(user_msg: str, reply: str, mode: str):
+    """Persistiert User+Antwort durch Multi-View in pgvector (session_logs)."""
+    try:
+        from src.db.multi_view_client import ingest_document
+        import hashlib
+        ts = asyncio.get_event_loop().time()
+        h = hashlib.md5(f"{ts}{user_msg[:40]}".encode()).hexdigest()[:10]
+        doc_id = f"session_{h}"
+        document = f"[User] {user_msg}\n\n[CORE] {reply}"
+        await ingest_document(
+            document=document,
+            doc_id=doc_id,
+            source_collection="session_logs",
+            metadata={"mode": mode, "source": "cockpit_chat"},
+        )
+    except Exception as e:
+        logger.warning(f"[SESSION-LOG] Persist fehlgeschlagen: {e}")
+
+
 @router.post("/api/chat", dependencies=[Depends(verify_api_token)])
 async def handle_chat_message(payload: ChatMessage):
-    """
-    Nimmt eine Chat-Nachricht vom Frontend entgegen und verarbeitet sie.
-    """
     try:
-        # Wir rufen die asynchrone Verarbeitungslogik auf
         result = await process_text_async(payload.message)
-        return {"response": result.get("reply", "Fehler bei der Verarbeitung."), "success": result.get("success", False)}
+        reply = result.get("reply", "Fehler bei der Verarbeitung.")
+        asyncio.create_task(_log_session_turn(payload.message, reply, payload.mode))
+        return {"response": reply, "success": result.get("success", False)}
     except Exception as e:
         logger.error(f"Fehler im /api/chat Endpoint: {e}")
         return {"response": f"Ein interner Fehler ist aufgetreten: {e}", "success": False}

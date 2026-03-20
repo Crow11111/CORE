@@ -44,6 +44,9 @@ Alle Docker-Dienste auf dem VPS sind **Teil des geschlossenen Kreises**. Jeder K
 | **Monica** | Dreadnought/Agenten | Kontakte, Aktivitäten | Bei Kontext-Anreicherung (z. B. Anrede, letzte Interaktion). |
 | **GitHub** | VPS | Repo-Inhalt (push-Event) | Webhook `/webhook/github` → `git pull` in GIT_PULL_DIR; Build-Engine/Takt 4. |
 | **MCP (VPS)** | Cursor | Workspace, Tools | Cursor fragt MCP-Server an; Lese/Schreib-Tools. |
+**GitHub-Webhook auf dem VPS:** Der Empfang des Webhooks (POST `/webhook/github`) erfolgt durch die CORE FastAPI-App (`src/api/routes/github_webhook.py`). Damit der VPS den Pull ausführt, muss diese API (oder ein schlanker Dienst mit nur dieser Route) **auf dem VPS** laufen; in GitHub ist die Payload-URL auf `https://<VPS-Host>:<Port>/webhook/github` zu setzen, und auf dem VPS müssen `GIT_PULL_DIR` und `GITHUB_WEBHOOK_SECRET` in der Umgebung gesetzt sein. Alternativ: separater Listener auf dem VPS (manuell konfigurieren).
+
+
 
 ---
 
@@ -83,11 +86,23 @@ Alle Docker-Dienste auf dem VPS sind **Teil des geschlossenen Kreises**. Jeder K
 | kong | `curl http://$VPS_HOST:32773/status` (Kong Admin API) |
 | mcp-server | Cursor MCP „atlas-remote“ starten; Workspace-Zugriff |
 
-Siehe auch: `python -m src.scripts.verify_vps_stack` (erweiterbar um optionale Knoten).
+Siehe auch: `python -m src.scripts.verify_vps_stack` (optionale Knoten Evolution, Monica, Kong werden bereits geprüft: Container + HTTP-Erreichbarkeit).
 
 ---
 
-## 6. Referenzen
+## 6. Soll vs. Ist: WhatsApp-Ausgang (Evolution vs. HA)
+
+| Aspekt | Soll (Ziel) | Ist (Stand) |
+|--------|-------------|-------------|
+| **Bevorzugter Pfad** | Evolution API auf VPS: CORE sendet via `EvolutionClient.send_text()` an Evolution; eingehend via Evolution-Webhook → `/webhook/whatsapp`. | Nur HA-Pfad implementiert: `HAClient.send_whatsapp()`; Webhook-Empfang von HA (rest_command) und (theoretisch) Evolution gleicher Endpoint `/webhook/whatsapp`. |
+| **.env** | `EVOLUTION_API_URL`, `EVOLUTION_INSTANCE`, `EVOLUTION_API_KEY` (siehe §4). | Optionale Platzhalter in `.env`; ungesetzt = Fallback auf VPS_HOST:55775 in `verify_vps_stack.py`. |
+| **Abnahme D** | Verifikation: Evolution, Monica, Kong als optionale Checks lauffähig. | `verify_vps_stack.py` führt optionale Container- und HTTP-Checks für Evolution, Monica, Kong aus; Exit 0 auch wenn optional nicht erreichbar. |
+
+**Fazit:** Für die Vollkreis-Abnahme Bereich D reicht die bestehende Verifikation (optionale Checks). Umschaltung auf Evolution als Sende-Pfad erfordert Implementierung eines Evolution-Clients und Triage im Webhook/Notification-Pfad (wenn Evolution konfiguriert → send_text; sonst HA send_whatsapp).
+
+---
+
+## 7. Referenzen
 
 - VPS_FULL_STACK_SETUP.md (Deploy, Firewall, Ports)
 - WHATSAPP_E2E_HA_SETUP.md (HA-Pfad); Evolution = alternativer/bevorzugter Pfad

@@ -25,7 +25,7 @@ export default function TelemetryHUD({ data, connected }: Props) {
       >
         <span className="flex h-3 w-3 rounded-full bg-[#F44336] animate-pulse" />
         <span className="text-[12px] font-mono text-[#F44336] uppercase font-bold tracking-wider">
-          BACKEND OFFLINE
+          Kern offline
         </span>
       </motion.div>
     );
@@ -50,7 +50,7 @@ export default function TelemetryHUD({ data, connected }: Props) {
           />
         </motion.div>
         <span className="text-[11px] font-mono text-[#A0A0A0]">
-          {latencyOk ? `${watchdog.latency_ms.toFixed(0)}ms` : "VOID"}
+          {latencyOk ? `${watchdog.latency_ms.toFixed(0)}ms` : "—"}
         </span>
       </div>
 

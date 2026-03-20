@@ -10,14 +10,22 @@ import base64
 import os
 
 import httpx
-from fastapi import APIRouter, UploadFile, File, HTTPException
+from loguru import logger
+from fastapi import APIRouter, UploadFile, File, HTTPException, Query
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 router = APIRouter(prefix="/api", tags=["dictate", "tts"])
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
-MODEL = "gemini-2.5-flash"
+
+
+def _stt_model(mode: str | None = None) -> str:
+    """Live = Flash (schnell), sonst Pro (semantisch schaerfer). mode=live -> Flash."""
+    from src.ai.model_registry import get_model_for_role
+    if (mode or "").strip().lower() == "live":
+        return (get_model_for_role("dictate_stt_live") or "gemini-2.5-flash").strip()
+    return (get_model_for_role("dictate_stt") or "gemini-2.5-pro").strip()
 BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models"
 
 CORE_GLOSSARY = (
@@ -49,8 +57,11 @@ class DictateResponse(BaseModel):
 
 
 @router.post("/dictate", response_model=DictateResponse)
-async def dictate(audio: UploadFile = File(...)):
-    """Transkribiert eine Audio-Datei via Gemini mit CORE-Glossar."""
+async def dictate(
+    audio: UploadFile = File(...),
+    mode: str | None = Query(None, description="live = Flash (schnell), fehlt oder pro = Pro (semantisch schaerfer)"),
+):
+    """Transkribiert eine Audio-Datei via Gemini mit CORE-Glossar. mode=live -> 2.5 Flash, sonst 2.5 Pro."""
     if not GEMINI_API_KEY:
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY nicht konfiguriert")
 
@@ -64,7 +75,8 @@ async def dictate(audio: UploadFile = File(...)):
 
     b64_data = base64.b64encode(audio_bytes).decode("utf-8")
 
-    url = f"{BASE_URL}/{MODEL}:generateContent?key={GEMINI_API_KEY}"
+    model = _stt_model(mode)
+    url = f"{BASE_URL}/{model}:generateContent?key={GEMINI_API_KEY}"
     payload = {
         "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},
         "contents": [{
@@ -84,6 +96,7 @@ async def dictate(audio: UploadFile = File(...)):
     duration_ms = int((time.monotonic() - t0) * 1000)
 
     if resp.status_code != 200:
+        logger.error(f"[DIKTAT] Gemini API Fehler {resp.status_code}: {resp.text}")
         raise HTTPException(status_code=502, detail=f"Gemini API: {resp.status_code}")
 
     data = resp.json()
@@ -94,7 +107,7 @@ async def dictate(audio: UploadFile = File(...)):
     parts = candidates[0].get("content", {}).get("parts", [])
     text = "\n".join(p.get("text", "") for p in parts if "text" in p).strip()
 
-    return DictateResponse(text=text, duration_ms=duration_ms, model=MODEL)
+    return DictateResponse(text=text, duration_ms=duration_ms, model=model)
 
 
 class TTSRequest(BaseModel):

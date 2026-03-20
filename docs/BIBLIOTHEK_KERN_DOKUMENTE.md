@@ -68,7 +68,8 @@
 | **Duale Topologie & Vektor-Härtung** | `@docs/02_ARCHITECTURE/DUALE_TOPOLOGIE_UND_VEKTOR_HAERTUNG.md` | G-Atlas-Soll (ChromaDB nur float, PG Text); Ist-Zustand; RAG-Einheitlichkeit; Härtungsstatus. |
 | **AI Studio Prompt** | `@docs/02_ARCHITECTURE/AI_STUDIO_PROMPT.md` bzw. CORE_EICHUNG.md Anhang B | Copy-Paste-Prompt für Google AI Studio (Schnittstellen, Live=Flash, Pro=vertieft). |
 | **Gedanken / Antwort Kennzeichen** | `@docs/02_ARCHITECTURE/OPERATOR_MARKIERUNG_GEDANKEN_ANTWORT.md` | `<<<GEDANKEN>>>` / `<<<ANTWORT>>>` — Trennung für Cursor und Health Board. |
-| **Jarvis ↔ OMEGA LLM** | `@docs/02_ARCHITECTURE/JARVIS_OMEGA_LLM_VERBINDUNG.md` | KDE-Jarvis-Plasmoid: Basis-URL, `/health` vs. `/v1/chat/completions`, Kompat-Route, Build-Hinweise. |
+| **ATLAS Ω Voice (Plasmoid)** | `@docs/02_ARCHITECTURE/ATLAS_OMEGA_VOICE_PLASMOID.md` | KDE-Plasmoid im Repo (`atlas-omega-voice/`): OMEGA-Backend, `.env`-Schlüssel `CORE_API_URL` / `CORE_HOST_IP` nur per Umgebung, Build, Einbindung. |
+| **Jarvis ↔ OMEGA LLM (techn.)** | `@docs/02_ARCHITECTURE/JARVIS_OMEGA_LLM_VERBINDUNG.md` | Health-URL, `/v1/chat/completions`, Kompat-Route; technische Details zur API-Anbindung. |
 
 ---
 
@@ -117,6 +118,7 @@
 
 ## Was wurde gemacht (Changelog Kern)
 
+- **2026-03-20 (ATLAS Plasmoid UI Deutsch):** `atlas-omega-voice/`: Nutzersichtbare Texte QML + C++ Status/Gruß/Systemprompt auf **Deutsch**; Chat-Rolle `atlas`; Wake-Word-Hinweis Atlas/Jarvis; `metadata.json` OMEGA; About-Fork-Hinweis. Technischer QML-Modulname bleibt `org.kde.plasma.jarvis`.
 - **2026-03-20 (sudoers OMEGA):** Neues Prozess-Dokument `docs/04_PROCESSES/SUDOERS_OMEGA_DAEMONS.md` — Vorlage für `/etc/sudoers.d/` (NOPASSWD nur für `systemctl` auf `omega-*` Units). `CLAUDE.md` Sudo-Abschnitt: optional `.env` vs. empfohlenes Fragment.
 - **2026-03-18 (Eichung, AI Studio, Diktat, Indexierung):** CORE_EICHUNG Anhang geteilt: **A** = System-/Handlungsanweisungen für CORE (Kennfeld, Schwingung, duale Topologie – was wir umsetzen), **B** = Prompt für Google AI Studio (Schnittstellen, Backends, Live=Flash/Pro). Neues Doc AI_STUDIO_PROMPT.md. Dictate: Default STT = 2.5 Pro, mode=live = 2.5 Flash (model_registry + Query-Parameter). Ingest: ingest_core_documents mit OS-Pfaden und erweiterter Doc-Liste (BIBLIOTHEK, Inventory, AI Models, Duale Topologie, Orchestrierung, Axiom0, Vollkreis, CORE_EICHUNG). DUALE_TOPOLOGIE: RAG-Einheitlichkeit (alles über Registry/Multi-View) festgehalten.
 - **2026-03-18 (Eichung & Duale Topologie):** CORE_EICHUNG.md um **Optimierungsanweisung für Studio AI** ergänzt (Copy-Paste-Block: 5D→2D, Kennfeld, duale DB, Veto, 0.049, YAML ohne Metapher). AI_MODEL_CAPABILITIES: Token-/Kostenschätzung Sprachschnittstelle (2.5 Flash, Beispiel Monat). Neues Doc DUALE_TOPOLOGIE_UND_VEKTOR_HAERTUNG.md: G-Atlas-Soll vs. Ist (Multi-View PG ok; ChromaDB-Collections teils noch mit Text); Vektor-Härtung noch nicht initial abgeschlossen; Chunking/6-Linsen gerechtfertigt.

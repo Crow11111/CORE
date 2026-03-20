@@ -206,8 +206,8 @@ bool JarvisAudio::detectWakeWord(const QByteArray &audioData)
     params.print_timestamps = false;
     params.single_segment   = true;
     params.no_context       = true;
-    // Mehrsprachiges ggml-tiny.bin: Auto — „Atlas“ auf Deutsch/Englisch erkennbar
-    params.language         = nullptr;
+    // Fest Deutsch: weniger Sprach-Zappen (nn/zh/…) und weniger Halluzinationen bei Rauschen/Video.
+    params.language         = "de";
     params.n_threads        = 2;
     params.audio_ctx        = 512;
 
@@ -256,7 +256,7 @@ QString JarvisAudio::transcribeAudio(const QByteArray &audioData)
     params.print_timestamps = false;
     params.single_segment   = false;
     params.no_context       = true;
-    params.language         = nullptr; // auto-detect language
+    params.language         = "de"; // Operator-Default: deutsch (Sprachbefehl nach Wake-Wort)
     params.n_threads        = 2;
 
     const int ret = whisper_full(m_whisperCtx, params,

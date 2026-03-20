@@ -65,7 +65,7 @@ Widget in der Leiste hinzufügen (Name in Plasma: **ATLAS Ω Voice (OMEGA)**).
 bash /OMEGA_CORE/atlas-omega-voice/scripts/install_whisper_modell.sh
 ```
 
-**Wake-Wort:** Sage **„Atlas“** (nicht mehr „Jarvis“). Erkennung nutzt das mehrsprachige `ggml-tiny.bin`.
+**Wake-Wort:** Sage **„Atlas“** (nicht mehr „Jarvis“). Whisper ist im Code auf **Sprache `de`** gesetzt (Wake-Wort + Sprachbefehl), damit nicht ständig andere Sprachen „erraten“ werden.
 
 ---
 

@@ -43,6 +43,8 @@ Widget in der Leiste hinzufügen (Name in Plasma: **ATLAS Ω Voice (OMEGA)**).
 
 Das QML-Modul heißt weiterhin `org.kde.plasma.jarvis` (Binärkompatibilität, Installationspfad). Die **sichtbare** Marke ist ATLAS; Chat-Rollen im Verlauf: `user` / `atlas` / `system`.
 
+**Build (GCC / Qt 6):** `QStringLiteral(u8"…")` führt zu *widersprüchlichen Kodierungspräfixen* beim Verketten — im Fork wird **`QStringLiteral("…")`** mit UTF-8-Quelldateien genutzt. Signal **`availableLlmModelsChanged`** muss in `jarvissettings.h` deklariert sein, wenn `populateModelList()` es emittiert.
+
 ---
 
 ## Siehe auch

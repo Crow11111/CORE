@@ -97,6 +97,7 @@
 | **GitHub Setup** | `@docs/04_PROCESSES/GITHUB_SETUP.md` | Git, Remote, Webhooks. |
 | **Commit & Refactor** | `@docs/04_PROCESSES/COMMIT_UND_REFACTOR.md` | Commit-Disziplin, Vor-Refactor committen. |
 | **Takt 0** | `@docs/04_PROCESSES/TAKT_0_VOR_DELEGATION.md` | Hard-Gate vor kritischen Calls. |
+| **sudoers OMEGA-Daemons** | `@docs/04_PROCESSES/SUDOERS_OMEGA_DAEMONS.md` | NOPASSWD-Fragment für `systemctl` (omega-*) ohne Passwort in Skripten/.env-Abhängigkeit. |
 | **VPS Sync** | `@docs/04_PROCESSES/VPS_SYNC_CORE_DIRECTIVES.md` | Sync-Direktiven VPS. |
 
 ---
@@ -116,6 +117,7 @@
 
 ## Was wurde gemacht (Changelog Kern)
 
+- **2026-03-20 (sudoers OMEGA):** Neues Prozess-Dokument `docs/04_PROCESSES/SUDOERS_OMEGA_DAEMONS.md` — Vorlage für `/etc/sudoers.d/` (NOPASSWD nur für `systemctl` auf `omega-*` Units). `CLAUDE.md` Sudo-Abschnitt: optional `.env` vs. empfohlenes Fragment.
 - **2026-03-18 (Eichung, AI Studio, Diktat, Indexierung):** CORE_EICHUNG Anhang geteilt: **A** = System-/Handlungsanweisungen für CORE (Kennfeld, Schwingung, duale Topologie – was wir umsetzen), **B** = Prompt für Google AI Studio (Schnittstellen, Backends, Live=Flash/Pro). Neues Doc AI_STUDIO_PROMPT.md. Dictate: Default STT = 2.5 Pro, mode=live = 2.5 Flash (model_registry + Query-Parameter). Ingest: ingest_core_documents mit OS-Pfaden und erweiterter Doc-Liste (BIBLIOTHEK, Inventory, AI Models, Duale Topologie, Orchestrierung, Axiom0, Vollkreis, CORE_EICHUNG). DUALE_TOPOLOGIE: RAG-Einheitlichkeit (alles über Registry/Multi-View) festgehalten.
 - **2026-03-18 (Eichung & Duale Topologie):** CORE_EICHUNG.md um **Optimierungsanweisung für Studio AI** ergänzt (Copy-Paste-Block: 5D→2D, Kennfeld, duale DB, Veto, 0.049, YAML ohne Metapher). AI_MODEL_CAPABILITIES: Token-/Kostenschätzung Sprachschnittstelle (2.5 Flash, Beispiel Monat). Neues Doc DUALE_TOPOLOGIE_UND_VEKTOR_HAERTUNG.md: G-Atlas-Soll vs. Ist (Multi-View PG ok; ChromaDB-Collections teils noch mit Text); Vektor-Härtung noch nicht initial abgeschlossen; Chunking/6-Linsen gerechtfertigt.
 - **2026-03-18 (Deep Research & Computer Use):** AI_MODEL_CAPABILITIES um Kosten 2.5 Flash vs Pro und §4 Deep Research & Computer Use ergänzt. Neues Doc DEEP_RESEARCH_UND_COMPUTER_USE.md: Checkliste Verifikation (Textverarbeitung, Vektorisierung, DB-Abgleich, ChromaDB, Vektor-Abgleich); Computer Use für Linux-Integration. OMEGA_VOLLKREIS_PLAN um optionalen Deep-Research-Verifikationsschritt ergänzt.

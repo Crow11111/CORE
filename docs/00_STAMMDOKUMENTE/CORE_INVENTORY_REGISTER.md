@@ -27,6 +27,7 @@
 | **Ollama VPS (Strang B)** | `docs/03_INFRASTRUCTURE/VPS_OLLAMA_SETUP.md` | Ollama auf Hostinger-VPS, Port 11434, Modell, Firewall. |
 | **Vollkreis-Plan** | `docs/05_AUDIT_PLANNING/OMEGA_VOLLKREIS_PLAN.md` | Geschlossene Kette, Team-Arbeitspakete A–G, Linux-Auswirkungen. |
 | **Prozesse** | `docs/04_PROCESSES/` | Workflows, Sicherheitsrat, Deployment-Regeln. |
+| **sudoers OMEGA** | `docs/04_PROCESSES/SUDOERS_OMEGA_DAEMONS.md` | Vorlage `/etc/sudoers.d/` für NOPASSWD `systemctl` auf omega-* Units. |
 | **Audit & Planung** | `docs/05_AUDIT_PLANNING/` | Session Logs, technische Schulden, Roadmaps. |
 | **OC Brain Plan** | `docs/05_AUDIT_PLANNING/OC_BRAIN_REAKTIVIERUNG_PLAN.md` | Vollständiger Plan Stränge A–E, Abnahme A1–A7. |
 | **OC Brain Auftrag** | `docs/05_AUDIT_PLANNING/OC_BRAIN_AUFTRAG_AUSFUEHRUNG.md` | Ausführungsauftrag an Team (alles umsetzen lassen). |

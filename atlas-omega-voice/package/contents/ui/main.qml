@@ -771,7 +771,7 @@ PlasmoidItem {
                                     ColumnLayout {
                                         Layout.fillWidth: true; spacing: 2
                                         RowLayout { Layout.fillWidth: true
-                                            Text { text: "RATE"; color: cyanDim; font { pixelSize: 9; family: monoFont } }
+                                            Text { text: "TEMPO"; color: cyanDim; font { pixelSize: 9; family: monoFont } }
                                             Item { Layout.fillWidth: true }
                                             Text { text: rateSlider.value.toFixed(2); color: cyanPrimary; font { pixelSize: 9; family: monoFont } }
                                         }

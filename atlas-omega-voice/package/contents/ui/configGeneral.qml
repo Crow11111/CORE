@@ -321,17 +321,25 @@ Item {
 
             Kirigami.Separator {
                 Kirigami.FormData.isSection: true
-                Kirigami.FormData.label: i18n("Wake-Word & Audio")
+                Kirigami.FormData.label: i18n("Sprache & optional Wake-Wort")
+            }
+
+            Label {
+                text: i18n("Standard: Spracheingabe über den Mikrofon-Knopf im Widget — kein Dauer-Hören, kein Terminal-Spam.")
+                wrapMode: Text.Wrap
+                Layout.fillWidth: true
+                color: Kirigami.Theme.disabledTextColor
+                font.pointSize: Kirigami.Theme.smallFont.pointSize
             }
 
             CheckBox {
-                Kirigami.FormData.label: i18n("Wake-Word automatisch starten:")
+                Kirigami.FormData.label: i18n("Wake-Wort „Atlas“ im Hintergrund (optional):")
                 checked: JarvisBackend.autoStartWakeWord
                 onToggled: JarvisBackend.setAutoStartWakeWord(checked)
             }
 
             Label {
-                text: i18n("Sage „Atlas“, um Sprachbefehle ohne Klick zu starten (Wake-Wort).")
+                text: i18n("Nur aktivieren, wenn du ohne Knopf „Atlas“ sagen willst. Sonst aus lassen.")
                 wrapMode: Text.Wrap
                 Layout.fillWidth: true
                 color: Kirigami.Theme.disabledTextColor

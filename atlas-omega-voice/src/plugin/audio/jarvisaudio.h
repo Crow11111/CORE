@@ -30,6 +30,8 @@ public:
     [[nodiscard]] QString lastTranscription() const { return m_lastTranscription; }
 
     void toggleWakeWord();
+    /** Entspricht QSettings „autoStartWakeWord“: aus = Wake sofort aus, kein Mikro außer Sprachbefehl. */
+    void applyAutoStartWakeWordSetting(bool enabled);
     void startVoiceCommand();
     void stopVoiceCommand();
 

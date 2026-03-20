@@ -124,7 +124,10 @@ void JarvisBackend::connectModuleSignals()
         m_audio->updateVoiceCmdTimeout(m_settings->voiceCmdMaxSeconds());
         emit voiceCmdMaxSecondsChanged();
     });
-    connect(m_settings, &JarvisSettings::autoStartWakeWordChanged, this, &JarvisBackend::autoStartWakeWordChanged);
+    connect(m_settings, &JarvisSettings::autoStartWakeWordChanged, this, [this]() {
+        m_audio->applyAutoStartWakeWordSetting(m_settings->autoStartWakeWord());
+        emit autoStartWakeWordChanged();
+    });
     connect(m_settings, &JarvisSettings::personalityPromptChanged, this, &JarvisBackend::personalityPromptChanged);
     connect(m_settings, &JarvisSettings::ttsRateChanged, this, [this]() { m_tts->onTtsRateChanged(); });
     connect(m_settings, &JarvisSettings::ttsPitchChanged, this, [this]() { m_tts->onTtsPitchChanged(); });

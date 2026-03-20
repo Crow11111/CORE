@@ -68,7 +68,7 @@ void JarvisSettings::loadSettings()
     m_maxHistoryPairs = m_settings.value(QStringLiteral("chat/maxHistoryPairs"), 20).toInt();
     m_wakeBufferSeconds = m_settings.value(QStringLiteral("audio/wakeBufferSeconds"), 2).toInt();
     m_voiceCmdMaxSeconds = m_settings.value(QStringLiteral("audio/voiceCmdMaxSeconds"), 8).toInt();
-    m_autoStartWakeWord = m_settings.value(QStringLiteral("audio/autoStartWakeWord"), true).toBool();
+    m_autoStartWakeWord = m_settings.value(QStringLiteral("audio/autoStartWakeWord"), false).toBool();
     m_ttsRate = m_settings.value(QStringLiteral("tts/rate"), 0.05).toDouble();
     m_ttsPitch = m_settings.value(QStringLiteral("tts/pitch"), -0.1).toDouble();
     m_ttsVolume = m_settings.value(QStringLiteral("tts/volume"), 0.85).toDouble();

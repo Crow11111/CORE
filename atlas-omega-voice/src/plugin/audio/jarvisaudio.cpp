@@ -384,7 +384,14 @@ void JarvisAudio::processVoiceCommand()
         m_audioBuffer.clear();
     }
 
+    const auto stopMicUnlessWake = [this]() {
+        if (!m_wakeWordActive.load()) {
+            stopListening();
+        }
+    };
+
     if (audioData.size() < JARVIS_SAMPLE_RATE * 2) {
+        stopMicUnlessWake();
         emit voiceCommandTranscribed(QString());
         return;
     }
@@ -393,6 +400,8 @@ void JarvisAudio::processVoiceCommand()
     if (audioData.size() > voiceCmdBufferSize) {
         audioData = audioData.right(voiceCmdBufferSize);
     }
+
+    stopMicUnlessWake();
 
     [[maybe_unused]] auto f = QtConcurrent::run([this, audioData]() {
         const QString text = transcribeAudio(audioData);
@@ -412,8 +421,27 @@ void JarvisAudio::toggleWakeWord()
 
     if (m_wakeWordActive) {
         startListening();
-    } else {
+    } else if (!m_voiceCommandMode.load()) {
         stopListening();
+    }
+}
+
+void JarvisAudio::applyAutoStartWakeWordSetting(bool enabled)
+{
+    if (!enabled) {
+        m_wakeWordActive = false;
+        emit wakeWordActiveChanged();
+        if (!m_voiceCommandMode.load()) {
+            stopListening();
+        }
+        return;
+    }
+    if (m_whisperCtx && m_audioSource && !m_voiceCommandMode.load()) {
+        m_wakeWordActive = true;
+        emit wakeWordActiveChanged();
+        if (!m_listening.load()) {
+            startListening();
+        }
     }
 }
 

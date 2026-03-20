@@ -100,7 +100,7 @@ private:
     int m_maxHistoryPairs{20};
     int m_wakeBufferSeconds{2};
     int m_voiceCmdMaxSeconds{8};
-    bool m_autoStartWakeWord{true};
+    bool m_autoStartWakeWord{false};
     QString m_personalityPrompt;
     double m_ttsRate{0.05};
     double m_ttsPitch{-0.1};

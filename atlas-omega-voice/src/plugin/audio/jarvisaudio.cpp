@@ -30,7 +30,7 @@ JarvisAudio::JarvisAudio(JarvisSettings *settings, QObject *parent)
         m_wakeWordActive = true;
         emit wakeWordActiveChanged();
         startListening();
-        qDebug() << "[JARVIS] Wake word detection auto-started.";
+        qDebug() << "[ATLAS] Wake-Wort-Überwachung ist aktiv (automatisch gestartet).";
     }
 }
 
@@ -69,9 +69,10 @@ void JarvisAudio::initAudioCapture()
         if (!defaultDevice.isNull() && defaultDevice.isFormatSupported(format)) {
             m_audioSource = new QAudioSource(defaultDevice, format, this);
             m_audioSource->setVolume(1.0);
-            qDebug() << "[JARVIS] Audio capture initialized on:" << defaultDevice.description();
+            qDebug() << "[ATLAS] Mikrofon verbunden:" << defaultDevice.description();
         } else {
-            qWarning() << "[JARVIS] Default audio input not available or format unsupported.";
+            qWarning() << "[ATLAS] Kein Standard-Mikrofon oder Format wird nicht unterstützt. "
+                          "Bitte unter KDE/Systemeinstellungen → Sound → Eingabe prüfen.";
         }
 
         if (wasListening && m_audioSource) {
@@ -86,7 +87,7 @@ void JarvisAudio::initAudioCapture()
 void JarvisAudio::startListening()
 {
     if (!m_audioSource) {
-        qWarning() << "[JARVIS] Cannot start listening: no audio source";
+        qWarning() << "[ATLAS] Kann nicht zuhören: kein Mikrofon verfügbar.";
         return;
     }
 
@@ -120,9 +121,9 @@ void JarvisAudio::startListening()
             emit audioLevelChanged();
         });
         m_audioProcessTimer->start();
-        qDebug() << "[JARVIS] Listening started, audio process timer active";
+        qDebug() << "[ATLAS] Hört zu (Audio-Timer aktiv).";
     } else {
-        qWarning() << "[JARVIS] Failed to start audio device";
+        qWarning() << "[ATLAS] Mikrofon ließ sich nicht starten.";
     }
 
     m_listening = true;
@@ -213,7 +214,7 @@ bool JarvisAudio::detectWakeWord(const QByteArray &audioData)
                                  floatSamples.data(),
                                  static_cast<int>(floatSamples.size()));
     if (ret != 0) {
-        qWarning() << "[JARVIS] Whisper inference failed with code:" << ret;
+        qWarning() << "[ATLAS] Spracherkennung (Whisper) Fehler, Code:" << ret;
         return false;
     }
 
@@ -223,7 +224,7 @@ bool JarvisAudio::detectWakeWord(const QByteArray &audioData)
         if (!text) continue;
 
         QString transcript = QString::fromUtf8(text).toLower().trimmed();
-        qDebug() << "[ATLAS] Whisper heard:" << transcript;
+        qDebug() << "[ATLAS] Spracherkennung Text:" << transcript;
 
         if (transcript.contains(QStringLiteral("atlas")) ||
             transcript.contains(QStringLiteral("a.t.l.a.s")) ||
@@ -279,13 +280,17 @@ void JarvisAudio::initWhisper()
 {
     const QString modelPath = findWhisperModel();
     if (modelPath.isEmpty()) {
-        qWarning() << "[JARVIS] Whisper model not found. Wake word detection unavailable.";
-        qWarning() << "[JARVIS] Download ggml-tiny.bin from: https://huggingface.co/ggerganov/whisper.cpp/tree/main";
-        qWarning() << "[ATLAS] Place whisper model in ~/.local/share/jarvis/ or /usr/share/jarvis/";
+        qWarning() << "[ATLAS] Problem: Die Datei für die Spracherkennung fehlt (ggml-tiny.bin).";
+        qWarning() << "[ATLAS] Folge: Du kannst das Widget nicht per Wake-Wort per Stimme aufwecken.";
+        qWarning() << "[ATLAS] Lösung: Im Repo ausführen: atlas-omega-voice/scripts/install_whisper_modell.sh"
+                      "  (legt die Datei nach ~/.local/share/jarvis/). Dann Plasma neu starten "
+                      "(plasmashell --replace oder neu einloggen).";
+        qWarning() << "[ATLAS] Hinweis: Chat/Tastatur und Anbindung an OMEGA funktionieren trotzdem — nur "
+                      "die automatische Sprach-Aktivierung fehlt.";
         return;
     }
 
-    qDebug() << "[JARVIS] Loading whisper model from:" << modelPath;
+    qDebug() << "[ATLAS] Lade Sprachmodell von:" << modelPath;
 
     whisper_context_params cparams = whisper_context_default_params();
     cparams.use_gpu = false;
@@ -294,9 +299,9 @@ void JarvisAudio::initWhisper()
         modelPath.toUtf8().constData(), cparams);
 
     if (!m_whisperCtx) {
-        qWarning() << "[JARVIS] Failed to initialize whisper context from:" << modelPath;
+        qWarning() << "[ATLAS] Sprachmodell defekt oder nicht lesbar:" << modelPath;
     } else {
-        qDebug() << "[JARVIS] Whisper model loaded successfully (tiny).";
+        qDebug() << "[ATLAS] Sprachmodell geladen — Wake-Wort möglich.";
     }
 }
 

@@ -12,6 +12,30 @@ Lokales **Sprach- und Chat-Plasmoid** für KDE Plasma 6, angebunden an das **OME
 
 ---
 
+## Probleme und Lösungen (in normaler Sprache)
+
+### 1) Im Terminal steht viel Kram mit „Plasma.Flex.Hub“
+
+| Was los ist | Das ist **nicht** ATLAS. Ein **anderes** Plasma-Widget auf deinem Rechner ist kaputt oder zu alt. |
+| Was du tun kannst | Dieses Widget von der Leiste **entfernen**, oder den Ordner `~/.local/share/plasma/plasmoids/Plasma.Flex.Hub` löschen (vorher ggf. sichern). Danach `plasmashell --replace`. |
+
+### 2) ATLAS schreibt: Sprachmodell fehlt / kein Wake-Wort
+
+| Was los ist | Für **Wake-Wort** (per Stimme „aufwecken“) braucht ATLAS **eine Datei** auf der Festplatte: `ggml-tiny.bin`. Ohne diese Datei: **kein** automatisches Zuhören aufs Wach-Wort — **Chat und OMEGA** können trotzdem gehen, wenn du anders auslöst. |
+| Was du tun kannst | Einmal ausführen (Internet nötig): `bash /OMEGA_CORE/atlas-omega-voice/scripts/install_whisper_modell.sh` — dann **Plasma neu starten** (`plasmashell --replace` oder neu einloggen). |
+
+### 3) Kein Mikrofon / ATLAS hört nichts
+
+| Was los ist | KDE findet kein Eingabegerät oder das Format passt nicht. |
+| Was du tun kannst | **Systemeinstellungen → Sound → Eingabe:** Standard-Mikro wählen, Pegel testen. |
+
+### 4) ATLAS redet mit OMEGA nicht
+
+| Was los ist | Backend läuft nicht oder die **Basis-URL** ist falsch (kein `/v1/...` an die URL hängen). |
+| Was du tun kannst | OMEGA-Backend starten (Port **8000**). Im Widget nur z. B. `http://127.0.0.1:8000`. Optional `CORE_API_URL` in `~/.config/plasma-workspace/env/atlas-omega.sh` — siehe unten. Details: `JARVIS_OMEGA_LLM_VERBINDUNG.md`. |
+
+---
+
 ## Konfiguration (ohne Secrets im Git)
 
 - **Server-Basis-URL:** nur Origin, z. B. `http://127.0.0.1:8000` oder die in `.env` gesetzte **`CORE_API_URL`** (wird vom Plasmoid als **Umgebungsvariable** gelesen, wenn noch kein gespeicherter Wert in QSettings existiert).
@@ -19,8 +43,6 @@ Lokales **Sprach- und Chat-Plasmoid** für KDE Plasma 6, angebunden an das **OME
   - `export CORE_API_URL=http://<CORE_HOST_IP>:<CORE_API_PORT>`  
   Werte aus lokaler `.env` übernehmen — **nicht** ins Repository schreiben.
 - **QSettings-Gruppe:** `OMEGA` / `AtlasOmegaVoice` (getrennt vom Original-Jarvis).
-
-Details zur Health-URL und Normalisierung: `JARVIS_OMEGA_LLM_VERBINDUNG.md`.
 
 ---
 
@@ -37,13 +59,18 @@ sudo make install
 
 Widget in der Leiste hinzufügen (Name in Plasma: **ATLAS Ω Voice (OMEGA)**).
 
+**Wake-Wort-Modell (einmalig):**
+
+```bash
+bash /OMEGA_CORE/atlas-omega-voice/scripts/install_whisper_modell.sh
+```
+
 ---
 
-## Technischer Hinweis
+## Für Entwickler (kurz)
 
-Das QML-Modul heißt weiterhin `org.kde.plasma.jarvis` (Binärkompatibilität, Installationspfad). Die **sichtbare** Marke ist ATLAS; Chat-Rollen im Verlauf: `user` / `atlas` / `system`.
-
-**Build (GCC / Qt 6):** `QStringLiteral(u8"…")` führt zu *widersprüchlichen Kodierungspräfixen* beim Verketten — im Fork wird **`QStringLiteral("…")`** mit UTF-8-Quelldateien genutzt. Signal **`availableLlmModelsChanged`** muss in `jarvissettings.h` deklariert sein, wenn `populateModelList()` es emittiert.
+- QML-Modul intern: `org.kde.plasma.jarvis` (Installationspfad). Sichtbar: **ATLAS**; Chat-Rollen: `user` / `atlas` / `system`.
+- **GCC/Qt 6:** Kein `QStringLiteral(u8"…")` — nur `QStringLiteral("…")` mit UTF-8-Quellen; Signal `availableLlmModelsChanged` in `jarvissettings.h` deklarieren, wenn emittiert.
 
 ---
 
@@ -55,4 +82,4 @@ Das QML-Modul heißt weiterhin `org.kde.plasma.jarvis` (Binärkompatibilität, I
 
 ---
 
-*Stand: 2026-03-20*
+*Stand: 2026-03-19*

@@ -73,7 +73,7 @@ JarvisBackend::JarvisBackend(QObject *parent)
     connect(m_reminderTimer, &QTimer::timeout, this, &JarvisBackend::checkReminders);
     m_reminderTimer->start(1000);
 
-    setStatus(QStringLiteral(u8"ATLAS online. OMEGA-Backend verbunden. Systeme nominal."));
+    setStatus(QStringLiteral("ATLAS online. OMEGA-Backend verbunden. Systeme nominal."));
 }
 
 JarvisBackend::~JarvisBackend() = default;
@@ -88,7 +88,7 @@ void JarvisBackend::connectModuleSignals()
     connect(m_audio, &JarvisAudio::lastTranscriptionChanged, this, &JarvisBackend::lastTranscriptionChanged);
     connect(m_audio, &JarvisAudio::wakeWordDetected, this, [this]() {
         emit wakeWordDetected();
-        setStatus(QStringLiteral(u8"Wake-Word erkannt. Ich höre zu …"));
+        setStatus(QStringLiteral("Wake-Word erkannt. Ich höre zu …"));
     });
     connect(m_audio, &JarvisAudio::voiceCommandTranscribed, this, &JarvisBackend::onVoiceCommandTranscribed);
 
@@ -106,11 +106,11 @@ void JarvisBackend::connectModuleSignals()
     });
     connect(m_settings, &JarvisSettings::currentModelNameChanged, this, [this]() {
         emit currentModelNameChanged();
-        setStatus(QStringLiteral(u8"LLM-Modell: ") + m_settings->currentModelName());
+        setStatus(QStringLiteral("LLM-Modell: ") + m_settings->currentModelName());
     });
     connect(m_settings, &JarvisSettings::currentVoiceNameChanged, this, [this]() {
         emit currentVoiceNameChanged();
-        setStatus(QStringLiteral(u8"Stimme gewechselt: ") + m_settings->currentVoiceName());
+        setStatus(QStringLiteral("Stimme gewechselt: ") + m_settings->currentVoiceName());
     });
     connect(m_settings, &JarvisSettings::downloadProgressChanged, this, &JarvisBackend::downloadProgressChanged);
     connect(m_settings, &JarvisSettings::downloadingChanged, this, &JarvisBackend::downloadingChanged);
@@ -136,8 +136,8 @@ void JarvisBackend::connectModuleSignals()
     connect(m_commands, &JarvisCommands::commandMappingsChanged, this, &JarvisBackend::commandMappingsChanged);
     connect(m_commands, &JarvisCommands::commandExecuted, this, [this](const QString &phrase, const QString &action) {
         Q_UNUSED(action)
-        setStatus(QStringLiteral(u8"Führe aus: ") + phrase);
-        addToChatHistory(QStringLiteral("atlas"), QStringLiteral(u8"Befehl ausgeführt: %1").arg(phrase));
+        setStatus(QStringLiteral("Führe aus: ") + phrase);
+        addToChatHistory(QStringLiteral("atlas"), QStringLiteral("Befehl ausgeführt: %1").arg(phrase));
     });
     connect(m_commands, &JarvisCommands::commandOutput, this, [this](const QString &output) {
         addToChatHistory(QStringLiteral("atlas"), output);
@@ -284,7 +284,7 @@ void JarvisBackend::openUrl(const QString &url)
 void JarvisBackend::onVoiceCommandTranscribed(const QString &text)
 {
     if (text.isEmpty()) {
-        setStatus(QStringLiteral(u8"Ich habe dich nicht verstanden, Operator."));
+        setStatus(QStringLiteral("Ich habe dich nicht verstanden, Operator."));
         return;
     }
 
@@ -299,14 +299,14 @@ void JarvisBackend::onVoiceCommandTranscribed(const QString &text)
     command = command.trimmed();
 
     if (command.isEmpty()) {
-        setStatus(QStringLiteral(u8"Ja, Operator? Ich höre."));
-        speak(QStringLiteral(u8"Ja, Operator?"));
+        setStatus(QStringLiteral("Ja, Operator? Ich höre."));
+        speak(QStringLiteral("Ja, Operator?"));
         return;
     }
 
     // Try system commands first
     if (m_commands->tryExecuteVoiceCommand(command)) {
-        speak(QStringLiteral(u8"Wird erledigt."));
+        speak(QStringLiteral("Wird erledigt."));
         return;
     }
 
@@ -330,7 +330,7 @@ void JarvisBackend::sendToLlm(const QString &userMessage)
 {
     m_processing = true;
     emit processingChanged();
-    setStatus(QStringLiteral(u8"Verarbeite deine Anfrage …"));
+    setStatus(QStringLiteral("Verarbeite deine Anfrage …"));
 
     m_conversationHistory.push_back({QStringLiteral("user"), userMessage});
 
@@ -365,19 +365,19 @@ QJsonArray JarvisBackend::buildConversationContext() const
 
     QString systemPrompt = m_settings->personalityPrompt().isEmpty()
         ? QString::fromUtf8(kAtlasSystemPromptDe) : m_settings->personalityPrompt();
-    systemPrompt += QStringLiteral(u8"\n\nAktueller Systemstatus:\n");
-    systemPrompt += QStringLiteral(u8"- CPU-Auslastung: %1 %\n").arg(m_system->cpuUsage(), 0, 'f', 1);
-    systemPrompt += QStringLiteral(u8"- Arbeitsspeicher: %1 / %2 GB (%3 %)\n")
+    systemPrompt += QStringLiteral("\n\nAktueller Systemstatus:\n");
+    systemPrompt += QStringLiteral("- CPU-Auslastung: %1 %\n").arg(m_system->cpuUsage(), 0, 'f', 1);
+    systemPrompt += QStringLiteral("- Arbeitsspeicher: %1 / %2 GB (%3 %)\n")
                         .arg(m_system->memoryUsedGb(), 0, 'f', 1)
                         .arg(m_system->memoryTotalGb(), 0, 'f', 1)
                         .arg(m_system->memoryUsage(), 0, 'f', 1);
-    systemPrompt += QStringLiteral(u8"- CPU-Temperatur: %1 °C\n").arg(m_system->cpuTemp());
-    systemPrompt += QStringLiteral(u8"- Laufzeit: %1\n").arg(m_system->uptime());
-    systemPrompt += QStringLiteral(u8"- Rechnername: %1\n").arg(m_system->hostname());
-    systemPrompt += QStringLiteral(u8"- Uhrzeit / Datum: %1 %2\n").arg(m_system->currentTime(), m_system->currentDate());
+    systemPrompt += QStringLiteral("- CPU-Temperatur: %1 °C\n").arg(m_system->cpuTemp());
+    systemPrompt += QStringLiteral("- Laufzeit: %1\n").arg(m_system->uptime());
+    systemPrompt += QStringLiteral("- Rechnername: %1\n").arg(m_system->hostname());
+    systemPrompt += QStringLiteral("- Uhrzeit / Datum: %1 %2\n").arg(m_system->currentTime(), m_system->currentDate());
 
     if (!m_reminders.empty()) {
-        systemPrompt += QStringLiteral(u8"- Aktive Erinnerungen: %1\n").arg(m_reminders.size());
+        systemPrompt += QStringLiteral("- Aktive Erinnerungen: %1\n").arg(m_reminders.size());
     }
 
     QJsonObject systemMsg;
@@ -402,7 +402,7 @@ void JarvisBackend::onLlmReplyFinished(QNetworkReply *reply)
     emit processingChanged();
 
     if (reply->error() != QNetworkReply::NoError) {
-        const auto errorMsg = QStringLiteral(u8"Verbindungsproblem zum LLM: %1")
+        const auto errorMsg = QStringLiteral("Verbindungsproblem zum LLM: %1")
                                   .arg(reply->errorString());
         setStatus(errorMsg);
         emit errorOccurred(errorMsg);
@@ -426,7 +426,7 @@ void JarvisBackend::onLlmReplyFinished(QNetworkReply *reply)
     }
 
     if (responseText.isEmpty()) {
-        responseText = QStringLiteral(u8"Entschuldigung, Operator. Ich konnte keine Antwort formulieren.");
+        responseText = QStringLiteral("Entschuldigung, Operator. Ich konnte keine Antwort formulieren.");
     }
 
     m_conversationHistory.push_back({QStringLiteral("assistant"), responseText});
@@ -438,7 +438,7 @@ void JarvisBackend::onLlmReplyFinished(QNetworkReply *reply)
     emit lastResponseChanged();
 
     addToChatHistory(QStringLiteral("atlas"), spokenText);
-    setStatus(QStringLiteral(u8"Bereit."));
+    setStatus(QStringLiteral("Bereit."));
 
     emit responseReceived(spokenText);
     speak(spokenText);
@@ -469,9 +469,9 @@ void JarvisBackend::onHealthCheckFinished(QNetworkReply *reply)
     if (m_connected != wasConnected) {
         emit connectedChanged();
         if (m_connected) {
-            setStatus(QStringLiteral(u8"LLM-Server verbunden. OMEGA betriebsbereit."));
+            setStatus(QStringLiteral("LLM-Server verbunden. OMEGA betriebsbereit."));
         } else {
-            setStatus(QStringLiteral(u8"LLM-Server offline. Versuche erneut zu verbinden …"));
+            setStatus(QStringLiteral("LLM-Server offline. Versuche erneut zu verbinden …"));
         }
     }
 }
@@ -493,7 +493,7 @@ void JarvisBackend::addReminder(const QString &text, int secondsFromNow)
     m_activeReminders.append(map);
     emit remindersChanged();
 
-    setStatus(QStringLiteral(u8"Erinnerung gesetzt. Ich melde mich um %1.")
+    setStatus(QStringLiteral("Erinnerung gesetzt. Ich melde mich um %1.")
                   .arg(r.triggerTime.toString(QStringLiteral("HH:mm"))));
 }
 
@@ -517,8 +517,8 @@ void JarvisBackend::checkReminders()
         if (now >= it->triggerTime) {
             const QString text = it->text;
             emit reminderTriggered(text);
-            speak(QStringLiteral(u8"Entschuldigung, Operator. Erinnerung: %1").arg(text));
-            addToChatHistory(QStringLiteral("atlas"), QStringLiteral(u8"⏰ Erinnerung: %1").arg(text));
+            speak(QStringLiteral("Entschuldigung, Operator. Erinnerung: %1").arg(text));
+            addToChatHistory(QStringLiteral("atlas"), QStringLiteral("⏰ Erinnerung: %1").arg(text));
 
             it = m_reminders.erase(it);
             if (idx < m_activeReminders.size()) {
@@ -547,7 +547,7 @@ void JarvisBackend::clearHistory()
     m_lastResponse.clear();
     emit chatHistoryChanged();
     emit lastResponseChanged();
-    setStatus(QStringLiteral(u8"Gedächtnis geleert. Neustart."));
+    setStatus(QStringLiteral("Gedächtnis geleert. Neustart."));
 }
 
 void JarvisBackend::setStatus(const QString &status)
@@ -666,10 +666,10 @@ void JarvisBackend::executeRunCommand(const QString &command)
         const QString out = QString::fromUtf8(proc->readAllStandardOutput()).trimmed();
         const QString err = QString::fromUtf8(proc->readAllStandardError()).trimmed();
         if (!out.isEmpty()) {
-            addToChatHistory(QStringLiteral("system"), QStringLiteral(u8"Befehlsausgabe: %1").arg(out));
+            addToChatHistory(QStringLiteral("system"), QStringLiteral("Befehlsausgabe: %1").arg(out));
         }
         if (exitCode != 0 && !err.isEmpty()) {
-            addToChatHistory(QStringLiteral("system"), QStringLiteral(u8"Befehlsfehler: %1").arg(err));
+            addToChatHistory(QStringLiteral("system"), QStringLiteral("Befehlsfehler: %1").arg(err));
         }
         proc->deleteLater();
     });
@@ -712,7 +712,7 @@ void JarvisBackend::executeOpenTerminal(const QString &command)
             } else {
                 QProcess::startDetached(term, {QStringLiteral("-e"), QStringLiteral("/bin/sh"), QStringLiteral("-c"), expanded + QStringLiteral("; exec $SHELL")});
             }
-            addToChatHistory(QStringLiteral("system"), QStringLiteral(u8"Terminal geöffnet: %1").arg(command));
+            addToChatHistory(QStringLiteral("system"), QStringLiteral("Terminal geöffnet: %1").arg(command));
             return;
         }
         delete which;
@@ -733,10 +733,10 @@ void JarvisBackend::executeWriteFile(const QString &path, const QString &content
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         file.write(content.toUtf8());
         file.close();
-        addToChatHistory(QStringLiteral("system"), QStringLiteral(u8"Datei geschrieben: %1 (%2 Bytes)").arg(expanded).arg(content.size()));
+        addToChatHistory(QStringLiteral("system"), QStringLiteral("Datei geschrieben: %1 (%2 Bytes)").arg(expanded).arg(content.size()));
         qDebug() << "[ATLAS] File written successfully:" << expanded;
     } else {
-        const QString err = QStringLiteral(u8"Datei konnte nicht geschrieben werden: %1 — %2").arg(expanded, file.errorString());
+        const QString err = QStringLiteral("Datei konnte nicht geschrieben werden: %1 — %2").arg(expanded, file.errorString());
         addToChatHistory(QStringLiteral("system"), err);
         qWarning() << "[ATLAS]" << err;
     }
@@ -751,7 +751,7 @@ void JarvisBackend::executeOpenApp(const QString &app)
     if (app.contains(QStringLiteral("/")) || app.contains(QStringLiteral("~"))) {
         const QString expanded = expandPath(app);
         QProcess::startDetached(QStringLiteral("xdg-open"), {expanded});
-        addToChatHistory(QStringLiteral("system"), QStringLiteral(u8"Geöffnet: %1").arg(expanded));
+        addToChatHistory(QStringLiteral("system"), QStringLiteral("Geöffnet: %1").arg(expanded));
         return;
     }
 
@@ -771,12 +771,12 @@ void JarvisBackend::executeOpenApp(const QString &app)
     if (which->exitCode() == 0) {
         delete which;
         QProcess::startDetached(bin, args);
-        addToChatHistory(QStringLiteral("system"), QStringLiteral(u8"Gestartet: %1").arg(app));
+        addToChatHistory(QStringLiteral("system"), QStringLiteral("Gestartet: %1").arg(app));
     } else {
         delete which;
         // Try with xdg-open as fallback
         QProcess::startDetached(QStringLiteral("xdg-open"), {app});
-        addToChatHistory(QStringLiteral("system"), QStringLiteral(u8"Öffnen versucht: %1").arg(app));
+        addToChatHistory(QStringLiteral("system"), QStringLiteral("Öffnen versucht: %1").arg(app));
     }
 }
 

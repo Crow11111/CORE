@@ -63,6 +63,7 @@ public:
     void fetchMoreVoices();
 
 signals:
+    void availableLlmModelsChanged();
     void llmServerUrlChanged();
     void currentModelNameChanged();
     void currentVoiceNameChanged();

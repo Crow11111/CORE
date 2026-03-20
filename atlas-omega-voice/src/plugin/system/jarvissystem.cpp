@@ -179,8 +179,8 @@ void JarvisSystem::updateClock()
 QString JarvisSystem::greeting() const
 {
     const int hour = QTime::currentTime().hour();
-    if (hour < 6)  return QStringLiteral(u8"Gute Nacht, Operator.");
-    if (hour < 12) return QStringLiteral(u8"Guten Morgen, Operator.");
-    if (hour < 18) return QStringLiteral(u8"Guten Tag, Operator.");
-    return QStringLiteral(u8"Guten Abend, Operator.");
+    if (hour < 6)  return QStringLiteral("Gute Nacht, Operator.");
+    if (hour < 12) return QStringLiteral("Guten Morgen, Operator.");
+    if (hour < 18) return QStringLiteral("Guten Tag, Operator.");
+    return QStringLiteral("Guten Abend, Operator.");
 }

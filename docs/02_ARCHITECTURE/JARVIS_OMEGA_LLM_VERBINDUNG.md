@@ -43,6 +43,11 @@ Chat und TTS hängen dagegen an:
 - **Häufige Ursache:** `jarvis_mri_coupler` leitete **nur** `OLLAMA_LOCAL_HOST` (localhost:11434) an. Auf Dreadnought läuft Ollama oft **nicht** lokal, sondern unter **`OLLAMA_HOST`** (z. B. LAN-Pi). Dann fehlt dort das Modell für `core-local-min` (`llama3.2:1b`) → **404** von Ollama → **500** am Plasmoid. **TTS** kommt erst nach einer gültigen LLM-Antwort — wirkt dann wie „es spricht gar nicht“.
 - **Fix (Code):** `OLLAMA_API_BASE` = `JARVIS_OLLAMA_URL` **oder** `OLLAMA_HOST` **oder** `OLLAMA_LOCAL_HOST` (siehe `jarvis_mri_coupler.py`). Nach Änderung: **Backend neu starten**.
 
+### Symptom: „Operation timed out“ bei CORE Local (Deep) / 14B
+
+- Das Plasmoid hatte **`setTransferTimeout(60000)`** (60 s) auf `POST /v1/chat/completions`. **Qwen 14B** lokal braucht oft **länger** → Qt bricht ab, obwohl Ollama noch rechnet.
+- **Fix:** Timeout im Widget auf **600000 ms** (10 min) für Chat; TTS **`/v1/audio/speech`** mit **180000 ms** (3 min). Nach `sudo make install`: `plasmashell --replace`.
+
 ---
 
 ## 3. Umgesetzte / geplante Fixes

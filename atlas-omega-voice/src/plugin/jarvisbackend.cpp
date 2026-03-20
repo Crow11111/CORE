@@ -354,7 +354,8 @@ void JarvisBackend::sendToLlm(const QString &userMessage)
     const QUrl url(m_settings->llmServerUrl() + QStringLiteral("/v1/chat/completions"));
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, QStringLiteral("application/json"));
-    request.setTransferTimeout(60000);
+    // 14B lokal (CORE Local Deep) braucht oft > 60 s — sonst „Operation timed out“ im Widget.
+    request.setTransferTimeout(600000);
 
     auto *reply = m_networkManager->post(request, QJsonDocument(requestBody).toJson());
     connect(reply, &QNetworkReply::finished, this, [this, reply]() {

@@ -49,6 +49,7 @@ void JarvisTts::speak(const QString &text)
     // OMEGA API CALL FOR TTS
     QNetworkRequest request(QUrl(m_settings->llmServerUrl() + QStringLiteral("/v1/audio/speech")));
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    request.setTransferTimeout(180000);
 
     QJsonObject json;
     json["input"] = cleanText;

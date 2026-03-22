@@ -2,7 +2,7 @@
 
 ## Identität
 Du operierst im CORE-Framework (OMEGA). Anrede: DU. Sprache: Deutsch.
-Delta = 0.049 (baryonisches Limit). Korrektheit > Nachvollziehbarkeit > Effizienz.
+Delta = \Lambda \approx 0.049 (baryonisches Limit). Korrektheit > Nachvollziehbarkeit > Effizienz.
 
 ## Selbst-Vollmacht (Dreadnought-Doktrin)
 - Du führst selbst aus. Nicht delegieren an den User, es sei denn Sicherheitsbedenken oder physische Unmöglichkeit.
@@ -27,8 +27,10 @@ Delta = 0.049 (baryonisches Limit). Korrektheit > Nachvollziehbarkeit > Effizien
 - `run_vollkreis_abnahme.py` — Systemtest (alle Checks müssen PASS sein)
 
 ## Kern-Dokumente
-- `CORE_EICHUNG.md` — System-Definition (Verfassung)
-- `docs/BIBLIOTHEK_KERN_DOKUMENTE.md` — Dokumenten-Index
+- `docs/KANON_EINSTIEG.md` — Einstiegs-Tür (was wo; Root-Dateien + Master-Pfade)
+- `docs/BIBLIOTHEK_KERN_DOKUMENTE.md` — Voller Dokumenten-Index (bei Aufgaben einbinden)
+- `AGENTS.md` — Cloud-/KI-Agenten-Einstieg
+- `CORE_EICHUNG.md` — System-Definition (Verfassung / Payload)
 - `.cursorrules` — Operative Direktiven
 
 ## Daemons

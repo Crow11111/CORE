@@ -9,6 +9,22 @@
 
 **Hinweis:** Die Komponente auf Port 8049 heißt in Code und Doku einheitlich **Sync Relay** (`core_sync_relay.py`). Ältere Bezeichnung „Cradle“ ist obsolet.
 
+## Topologie-Bilder vs. ausführbarer Anker (Ω_b-Knoten)
+
+Die **5D-Torus-/Informationsgravitation-Grafiken** sind **Landkarte und Theorie** (Design/NotebookLM) — **kein** laufender Simulator der gesamten Geometrie im Backend.
+
+**Prüfbar im Repo** (Schwelle → Operator `?` vs. Kontrolle, **Messwerte** `schleifen_wall_ms` / `process_cpu_ms`, **JSONL**):
+
+| Artefakt | Pfad |
+|----------|------|
+| Kardan-Mini-Engine | `omega_core.py` (Root) |
+| Paar-Benchmark mit/ohne | `src/scripts/benchmark_whitepaper_anchors.py` |
+| Log-Auswertung | `src/scripts/evaluate_whitepaper_benchmark_log.py` |
+| Theorie-Verknüpfung | `docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION_VOLLSTANDIG.md` (Abschnitt Empirie) |
+| Abnahme-Kette | `run_vollkreis_abnahme.py` Block **Gk** |
+
+Dieser **Knoten** ist absichtlich **klein und deterministisch**; der **Sync Circle** hier oben ist der **operative** Git/Chroma-Kreis — beides ergänzt sich, ersetzt sich nicht.
+
 ## Ring-Architektur (2026-03-06)
 
 ```mermaid

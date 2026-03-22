@@ -81,6 +81,6 @@ Diese asymmetrische Bandbreite – der Zwang, Daten über Git zu speichern, vom 
 |-------|--------|
 | Entry Adapter (F13) | `docs/02_ARCHITECTURE/ENTRY_ADAPTER_SPEC.md` |
 | Gravitator (F5) | `docs/02_ARCHITECTURE/GRAVITATOR_SPEC.md` |
-| Tesserakt-Modell (Genesis) | `docs/CORE_GENESIS_FINAL_ARCHIVE.md` (§4) |
+| Tesserakt-Modell (visuell + Spec) | `CORE_TESSERAKT.png` (Root), dieser Abschnitt; Legacy-Text: `docs/01_CORE_DNA/_archive/CORE_GENESIS_TESSERAKT_ABSCHNITT_LEGACY.md` |
 | G-CORE Sync Circle | `docs/02_ARCHITECTURE/G_CORE_CIRCLE.md` |
 | Code-Sicherheitsrat | `docs/04_PROCESSES/CODE_SICHERHEITSRAT.md` |

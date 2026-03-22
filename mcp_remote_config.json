@@ -1,5 +1,10 @@
 {
   "mcpServers": {
+    "core-chromadb": {
+      "command": "/OMEGA_CORE/.venv/bin/python",
+      "args": ["-m", "src.scripts.mcp_core_chroma_stdio"],
+      "cwd": "/OMEGA_CORE"
+    },
     "atlas-remote": {
       "command": "ssh",
       "args": [

@@ -9,8 +9,8 @@
 
 **Zweck:** Einheitliches mTLS-Schema für alle Service-to-Service-Kommunikation in CORE. Ersetzt den Wildcard-Token-Ansatz durch Zertifikats-basierte gegenseitige Authentifizierung.
 
-**Stand:** 2026-03  
-**Status:** Konzept / Planung  
+**Stand:** 2026-03
+**Status:** Konzept / Planung
 **Geschützte Module:** Auth/Credentials (Stufe 1) – Umsetzung nur nach Freigabe durch Code-Sicherheitsrat.
 
 ---
@@ -25,7 +25,7 @@
 | `verify_ha_auth` | Bearer Token | `HA_WEBHOOK_TOKEN` | Bearer für /webhook/ha_action, /webhook/inject_text |
 | `verify_oc_auth` | API-Key / Bearer | `OPENCLAW_GATEWAY_TOKEN` | X-API-Key oder Bearer für /api/oc/* |
 
-**Positiv:** Constant-time Vergleich (`secrets.compare_digest`), keine Secrets im Code.  
+**Positiv:** Constant-time Vergleich (`secrets.compare_digest`), keine Secrets im Code.
 **Risiko:** Token in .env; Rotation manuell; kein Identitätsnachweis (jeder mit Token = gleichberechtigt).
 
 ### 1.2 Weitere Token-Verbindungen
@@ -35,9 +35,24 @@
 | CORE → OpenClaw Gateway | HTTP/HTTPS | Bearer | OPENCLAW_GATEWAY_TOKEN |
 | Scout/HA → OpenClaw | HTTP POST | Bearer | OPENCLAW_GATEWAY_TOKEN |
 | Scout → 4D_RESONATOR (CORE) (SSH) | SSH | Passwort/Key | HA_SSH_USER, HA_SSH_PASSWORD, SSH_KEY_PATH |
-| Cursor → VPS (MCP) | HTTP/SSH | (nicht dokumentiert) | MCP-Server auf VPS:8001 |
+| Cursor → VPS (MCP) | SSH + Docker (stdio), optional TCP :8001 | SSH-Key | `mcp_remote_config.json` (z. B. `atlas-remote` → `docker exec -i mcp-server`); Details **§1.2b** |
 | 4D_RESONATOR (CORE) → ChromaDB (VPS) | HTTP | Keine | CHROMA_HOST, CHROMA_PORT |
 | VPS SSH | SSH | Passwort/Key | VPS_USER, VPS_PASSWORD, VPS_SSH_KEY |
+
+### 1.2b Cursor-IDE vs. MCP-Toolset (Abgrenzung)
+
+**Häufiges Missverständnis:** Der Agent in Cursor nutzt standardmäßig **eingebaute IDE-Werkzeuge** (Terminal auf dem lokalen Rechner, Dateien im Workspace, Suche). Das sind **keine** MCP-Tools — die IDE führt sie direkt aus. Dadurch wirkt vieles „wie MCP“, läuft aber **lokal auf Dreadnought**, nicht „auf dem MCP-Server“.
+
+| Klasse | Wo läuft es? | Rolle | Gehört zum MCP-Toolsatz (VPS/Remote)? |
+|--------|----------------|-------|----------------------------------------|
+| **Cursor Built-ins** | Lokal (Dreadnought), im Agent | Shell, Repo-Dateien, semantische Suche | **Nein** |
+| **Registrierte MCP-Server** | Wie in Cursor (*Settings → MCP*) bzw. `mcp_remote_config.json` | Nur diese **Tool-Namen** sieht das Modell explizit (z. B. Filesystem auf VPS-`/workspace` via `ssh`/`docker exec`) | **Ja** |
+| **CORE FastAPI / Daemons** | z. B. :8000 | REST, Webhooks, Gravitator, interne RAG-Pfade | **Nein** (HTTP-API; kein MCP, außer ein MCP-Tool ruft sie auf) |
+| **Backend → Chroma (VPS)** | Dreadnought → `CHROMA_HOST` | `chroma_client`, Skripte, Produktivpfad | **Nein** — korrekt für Betrieb; für **KI in Cursor** kann dieselbe Fähigkeit **zusätzlich** als MCP-Tool (z. B. `query_chromadb`) angeboten werden, damit sie nicht nur per Ad-hoc-Terminal vergessen wird |
+
+**Port 8001 auf dem VPS:** Kann eine **socat/TCP-Brücke** zum Filesystem-MCP sein; viele Setups nutzen für Cursor parallel **stdio** per `docker exec -i` (ohne dass jedes Tool über :8001 geht). Maßgeblich ist die **MCP-Client-Konfiguration**, nicht allein „Port offen = MCP erledigt“.
+
+**Zielbild:** VPS-nahe, wiederkehrende Fakten- und Zugriffsoperationen (Chroma-Query, Server-Workspace, definierte Checks) als **stabile MCP-Tools** pflegen; lokale Shell im Agent für Entwicklung und **messbare** Verifikation (`curl`, `pytest`, `verify_*`-Skripte).
 
 ---
 
@@ -77,10 +92,10 @@
 └─────────┘ └─────────┘
 ```
 
-**Prinzip:**  
-- **Root CA:** Eine zentrale CA pro CORE-Installation (oder pro Mandant).  
-- **Server CA:** Signiert Server-Zertifikate (CORE API, MCP Server, OpenClaw Gateway).  
-- **Client CA:** Signiert Client-Zertifikate (Cursor, Scout, OMEGA_ATTRACTOR, HA).  
+**Prinzip:**
+- **Root CA:** Eine zentrale CA pro CORE-Installation (oder pro Mandant).
+- **Server CA:** Signiert Server-Zertifikate (CORE API, MCP Server, OpenClaw Gateway).
+- **Client CA:** Signiert Client-Zertifikate (Cursor, Scout, OMEGA_ATTRACTOR, HA).
 - **Trennung:** Server- und Client-CA getrennt → Revocation pro Rolle möglich.
 
 ### 2.2 Zertifikats-Mapping pro Verbindung
@@ -115,21 +130,21 @@
 
 ### Phase 1: Vorbereitung (ohne Produktionsänderung)
 
-1. **CA und Zertifikate generieren**  
-   - Skript: `src/scripts/generate_mtls_certs.py` (siehe Abschnitt 6)  
+1. **CA und Zertifikate generieren**
+   - Skript: `src/scripts/generate_mtls_certs.py` (siehe Abschnitt 6)
    - Ausgabe: `data/certs/` (nicht versionieren, .gitignore)
 
-2. **Zertifikats-Pfade in .env dokumentieren**  
-   - Neue Variablen: `MTLS_CA_CERT`, `MTLS_SERVER_CERT`, `MTLS_SERVER_KEY`, `MTLS_CLIENT_CERT`, `MTLS_CLIENT_KEY`  
+2. **Zertifikats-Pfade in .env dokumentieren**
+   - Neue Variablen: `MTLS_CA_CERT`, `MTLS_SERVER_CERT`, `MTLS_SERVER_KEY`, `MTLS_CLIENT_CERT`, `MTLS_CLIENT_KEY`
    - Noch nicht aktiv nutzen
 
-3. **Fallback-Logik in auth_webhook.py vorbereiten**  
+3. **Fallback-Logik in auth_webhook.py vorbereiten**
    - Neue Funktion `verify_mtls_or_token()`: Zuerst mTLS prüfen, bei fehlendem Client-Cert → Token-Fallback
 
 ### Phase 2: Dual-Mode (mTLS + Token parallel)
 
-4. **CORE API:** TLS aktivieren (uvicorn mit ssl_context), mTLS optional  
-   - Client-Cert-Validierung: Nur wenn Request Client-Cert mitschickt  
+4. **CORE API:** TLS aktivieren (uvicorn mit ssl_context), mTLS optional
+   - Client-Cert-Validierung: Nur wenn Request Client-Cert mitschickt
    - Token weiterhin akzeptiert für Legacy-Clients
 
 5. **OpenClaw Gateway:** mTLS als zusätzliche Auth-Option (wenn OpenClaw das unterstützt; sonst Nginx vor Gateway)
@@ -138,15 +153,15 @@
 
 ### Phase 3: Migration pro Client
 
-7. **Scout/HA:** Client-Cert auf Raspi deployen, HA Automation auf HTTPS+mTLS umstellen  
-8. **OMEGA_ATTRACTOR:** Client-Cert in OpenClaw-Container, Requests mit Cert  
-9. **Cursor:** MCP-Client mit Client-Cert konfigurieren  
+7. **Scout/HA:** Client-Cert auf Raspi deployen, HA Automation auf HTTPS+mTLS umstellen
+8. **OMEGA_ATTRACTOR:** Client-Cert in OpenClaw-Container, Requests mit Cert
+9. **Cursor:** MCP-Client mit Client-Cert konfigurieren
 10. **CORE → OpenClaw:** openclaw_client.py auf mTLS umstellen
 
 ### Phase 4: Token-Deprecation
 
-11. **Token-Fallback deaktivieren** (konfigurierbar: `MTLS_LEGACY_TOKEN_FALLBACK=0`)  
-12. **Alte Token aus .env entfernen** (nach Bestätigung aller Clients migriert)  
+11. **Token-Fallback deaktivieren** (konfigurierbar: `MTLS_LEGACY_TOKEN_FALLBACK=0`)
+12. **Alte Token aus .env entfernen** (nach Bestätigung aller Clients migriert)
 13. **rotate_tokens.py** anpassen oder obsolet
 
 ---
@@ -208,7 +223,7 @@ Skript: `src/scripts/generate_mtls_certs.py`
 python -m src.scripts.generate_mtls_certs [--output data/certs] [--days 365]
 ```
 
-Erzeugt CA, Server- und Client-Zertifikate für Entwicklung und erste Tests.  
+Erzeugt CA, Server- und Client-Zertifikate für Entwicklung und erste Tests.
 **Produktion:** CA-Key separat, ideal mit HSM oder Vault.
 
 ### 6.1 Ausgabe-Struktur

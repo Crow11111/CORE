@@ -11,10 +11,11 @@ Zentrale Übersicht der Projekt-Struktur.
 
 ---
 
-## 0. Indices (Einstieg)
-- **`docs/DOCS_INDEX.md`** (Diese Datei)
-- **`docs/00_STAMMDOKUMENTE/CORE_INVENTORY_REGISTER.md`** (Zentrales Inventar aller Komponenten - **PFLICHT**)
-- **`docs/BIBLIOTHEK_KERN_DOKUMENTE.md`** (Detail-Bibliothek der wichtigsten Files)
+## 0. Indices (Einstieg — Kanon)
+1. **`docs/KANON_EINSTIEG.md`** — **Eine Tür:** welche Frage → welche Datei (Root-Dateien, Master, keine Megadatei-Pflicht).
+2. **`docs/BIBLIOTHEK_KERN_DOKUMENTE.md`** — **Voller Index** aller Themengebiete; bei Arbeit **immer einbinden** (`@docs/BIBLIOTHEK_KERN_DOKUMENTE.md`).
+3. **`docs/00_STAMMDOKUMENTE/CORE_INVENTORY_REGISTER.md`** — Inventar **PFLICHT** bei neuen/entfallenen Dateien.
+4. **`docs/DOCS_INDEX.md`** — Diese thematische Ordner-Übersicht (ergänzend, nicht Ersatz für Bibliothek).
 
 ---
 

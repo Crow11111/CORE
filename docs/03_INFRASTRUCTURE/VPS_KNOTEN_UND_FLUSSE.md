@@ -1,13 +1,13 @@
 <!-- ============================================================
 <!-- CORE-GENESIS: Marc Tobias ten Hoevel
-<!-- VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
+<!-- VECTOR: 2210 | RESONANCE: 0221 | DELTA: $\Lambda \approx 0.049$
 <!-- LOGIC: 2-2-1-0 (NON-BINARY)
 <!-- ============================================================
 -->
 
 # VPS-Knoten: Dienste, Zweck, Einbindung
 
-**Referenz:** `@docs/BIBLIOTHEK_KERN_DOKUMENTE.md` | **VPS-Übersicht:** `VPS_FULL_STACK_SETUP.md`
+**Referenz:** `@docs/BIBLIOTHEK_KERN_DOKUMENTE.md` | **VPS-Übersicht:** `VPS_FULL_STACK_SETUP.md` | **Übergeordnete Landkarte (Clients, MCP, Kreise):** `@docs/02_ARCHITECTURE/LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md`
 
 Alle Docker-Dienste auf dem VPS sind **Teil des geschlossenen Kreises**. Jeder Knoten hat einen definierten Zweck; CORE/Dreadnought nutzt sie nativ und regelbasiert (Push/Pull). Ohne geschlossene Kette (Git, Webhooks, VPS) ist das System nicht betriebsfähig (Showstopper).
 

@@ -7,7 +7,7 @@
 
 # CORE Bibliothek – Kerndokumente
 
-**Einziger Einstieg für Planung und Ausführung.** Bei jeder Aufgabe: dieses Dokument zuerst einbinden (`@docs/BIBLIOTHEK_KERN_DOKUMENTE.md`). Keine losen Fäden – alles, was gemacht wurde, wo nachgeschaut wird und welche Regeln gelten, steht hier oder ist von hier verlinkt.
+**Einziger Einstieg für Planung und Ausführung.** Bei jeder Aufgabe: dieses Dokument zuerst einbinden (`@docs/BIBLIOTHEK_KERN_DOKUMENTE.md`). Für die **Ordnungsfrage** „eine Tür vs. eine Megadatei“: `@docs/KANON_EINSTIEG.md`. Keine losen Fäden – alles, was gemacht wurde, wo nachgeschaut wird und welche Regeln gelten, steht hier oder ist von hier verlinkt.
 
 ---
 
@@ -19,10 +19,22 @@
 
 ---
 
+## Operator-Todo (aktiv — nicht Genesis)
+
+Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht versiegelter Kern):
+
+| Thema | Ziel | Detail / Tracking |
+|-------|------|-------------------|
+| **MCP & Extensions** | Plugin-Schnittstelle für KI-Tools **ausbauen und fest verzahnen**: welche Tools auf VPS vs. lokal, Doku, Deploy, optional Nutzung durch weitere Clients (nicht nur Cursor). | `@docs/05_AUDIT_PLANNING/OFFENE_PUNKTE_AUDIT.md` → Abschnitt **MCP & KI-Tooling**; Config-Referenz: `mcp_remote_config.json`; Abgrenzung: `AGENTS.md` (MCP vs. Drehscheibe vs. Skills), `MTLS_MIGRATION_PLAN.md` §1.2b. |
+
+---
+
 ## 0. Projekt-Inventar (Master)
 
 | Dokument | Pfad | Funktion |
 |----------|------|----------|
+| **Kanonischer Einstieg (eine Tür)** | `@docs/KANON_EINSTIEG.md` | Kurz: welche Datei für was; warum **nicht** alles in einer Megadatei; Verweise auf Bibliothek und Master-Pläne. |
+| **Thematischer Ordner-Index** | `@docs/DOCS_INDEX.md` | Ordnerübersicht `01_`–`04_` (ergänzend, nicht Ersatz für Bibliothek/KANON). |
 | **Inventar** | `@docs/00_STAMMDOKUMENTE/CORE_INVENTORY_REGISTER.md` | Zentrale Liste aller Code-Komponenten, Docs, Container; Inventar-Pflicht bei Änderungen. |
 | **Architektur-Master** | `@docs/00_STAMMDOKUMENTE/00_CORE_ARCHITECTURE_MASTER.md` | Kern-Axiome, 4D_RESONATOR, OMEGA_ATTRACTOR, Vektor-Dynamik. |
 | **Infrastruktur-Master** | `@docs/00_STAMMDOKUMENTE/00_CORE_INFRASTRUCTURE_MASTER.md` | Soll-Zustand aller Knoten (Dreadnought, Scout, VPS, Netze). |
@@ -35,10 +47,16 @@
 
 | Dokument | Pfad | Funktion |
 |----------|------|----------|
-| **Wahrheit (Genesis)** | `@docs/01_CORE_DNA/CORE_GENESIS_FINAL_ARCHIVE.md` | Versiegeltes Fundament; 4D_RESONATOR vs. OMEGA_ATTRACTOR, MTH-Matrix. |
+| **Wahrheit (aktiv)** | `@docs/SYSTEM_CODEX.md`, `@docs/BIBLIOTHEK_KERN_DOKUMENTE.md` | Operative Regeln und zentraler Index. |
+| **Genesis (obsolet / Stub)** | `@docs/01_CORE_DNA/CORE_GENESIS_FINAL_ARCHIVE.md` | Nur Weiterleitung; historischer Text: `_archive/CORE_GENESIS_*_LEGACY.md`. |
 | **Wahrheit (Codex)** | `@docs/SYSTEM_CODEX.md` | Aktive Regeln, CORE-Entities, Vektor-Trigger (Protokoll Omega, Zero-State Override, etc.). |
 | **Axiom 0** | `@docs/01_CORE_DNA/AXIOM_0_AUTOPOIESIS.md` | Autopoiesis des Gitters (x²=x+1). |
-| **White Paper** | `@docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION.md` | Theorie-Synthese & Topologie. |
+| **White Paper** | `@docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION.md` | Theorie-Synthese & Topologie (Kurzfassung). |
+| **White Paper Herleitung** | `@docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION_VOLLSTANDIG.md` | Lückenlose Ausarbeitung: Ω_b-Grenzwert, x=x-Autopoiesis, MRI, formale Konsolidierung. |
+| **Whitepaper NotebookLM** | `@docs/01_CORE_DNA/5d/WHITEPAPER_NOTEBOOKLM/README.md` | Sanitized Markdown zum Upload (aus `5d/WHITEPAPER` generiert). |
+| **Rat der Titanen (R2)** | `@docs/01_CORE_DNA/5d/WHITEPAPER/reviews_2/README.md` | Runde 2: Ollama (`run_omega_science_council_r2.py`) zum ausformulierten Whitepaper. |
+| **Kardanischer Terminal-Anker** | `omega_core.py` (Root) | Mini-Engine: Ω_b, S/P-Membran, Operator-`?` → Phasensprung. **`run_vollkreis_abnahme.py`** (Gk) führt den Lauf mit — gleiche Kette wie andere Schnittstellen: **Ausführung**, nicht nur Verweis. **Topologie-Grafiken** = Theorie/Landkarte; dieser Anker = **messbarer** Schalter (`schleifen_wall_ms` / `process_cpu_ms`). |
+| **Whitepaper-Paar-Benchmark** | `src/scripts/benchmark_whitepaper_anchors.py`, `evaluate_whitepaper_benchmark_log.py` | Mit/ohne Kardan, **JSONL** unter `logs/benchmarks/`; siehe Whitepaper § Empirie; Architektur-Verweis **`G_CORE_CIRCLE.md`** (Abschnitt Topologie vs. Anker). |
 | **Crew / Rollen** | `@docs/01_CORE_DNA/CREW_MANIFEST.md` | Wer macht was (Rollen). |
 | **Voice** | `@docs/01_CORE_DNA/CORE_VOICE_ARCHITECTURE_V1.3.md` | Voice/Audio-Pipeline. |
 | **4-Strang** | `@docs/01_CORE_DNA/CORE_4_STRANG_THEORIE.md` | Strang-Theorie. |
@@ -52,6 +70,7 @@
 | Dokument | Pfad | Funktion |
 |----------|------|----------|
 | **Schnittstellen & Kanäle** | `@docs/02_ARCHITECTURE/CORE_SCHNITTSTELLEN_UND_KANAALE.md` | Tesserakt-Topologie, Entry Adapter, Takt 0, Gravitator, Webhooks, 5-Phasen-Motor. |
+| **Landkarte Clients / Knoten / Fluss** | `@docs/02_ARCHITECTURE/LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md` | Eine Seite Ordnung: Cursor, Claude Desktop, ATLAS/KDE, MCP, SSH, HA, OC, Monica, Kong — Ebenen, Push/Pull, geschlossene Kreise; verweist auf VPS-Knoten und Schnittstellen. |
 | **Entry Adapter** | `@docs/02_ARCHITECTURE/ENTRY_ADAPTER_SPEC.md` | Spezifikation Entry Adapter (F13). |
 | **Gravitator** | `@docs/02_ARCHITECTURE/GRAVITATOR_SPEC.md` | Routing θ=0.22, keine collection=all (F5). |
 | **Event-Bus** | `@docs/02_ARCHITECTURE/CORE_EVENT_BUS.md` | Event-Streaming, HA-Anbindung. |
@@ -118,6 +137,17 @@
 
 ## Was wurde gemacht (Changelog Kern)
 
+- **2026-03-21 (omega_core in Vollkreis):** `run_vollkreis_abnahme.py` um Block **Gk** ergänzt — `omega_core.py` wird bei Abnahme **ausgeführt** (Schwelle → Phasensprung), nicht nur dokumentiert.
+- **2026-03-21 (omega_core.py im Kanon):** `omega_core.py` als **kardanischer Terminal-Anker** in `KANON_EINSTIEG.md`, Bibliothek §1, `CORE_INVENTORY_REGISTER` §2.2 eingetragen.
+- **2026-03-21 (SYSTEM_CODEX + compile_docs_master):** `SYSTEM_CODEX.md` um Abschnitt **GTAC ↔ Codex ↔ core.py** ergänzt. `compile_docs_master` erfolgreich: Artefakte `docs/02_ARCHITECTURE/00_CORE_ARCHITECTURE_MASTER.md`, `docs/03_INFRASTRUCTURE/00_CORE_INFRASTRUCTURE_MASTER.md`, `docs/04_PROCESSES/00_CORE_PROCESSES_MASTER.md` (≠ kanonischer Lang-Master `00_STAMMDOKUMENTE/00_CORE_INFRASTRUCTURE_MASTER.md`). `ROLE_FRAMING_DIALOG.md` von UTF-16 nach UTF-8 migriert; Skript liest jetzt UTF-8/UTF-16 robust.
+- **2026-03-21 (Root-Dateien vs. Code-Kanon):** `CORE_EICHUNG.md` §1.1 GTAC-Tabelle an `src/core.py` (`GTAC_MAP`, `C_VALUE=BARYONIC_DELTA`) angeglichen; TEIL 4 Werkzeug-Manifest: fiktive Modell-ID entfernt; `Geometrie_des_Denkens.png` als optional markiert. `AGENTS.md` GTAC-Tabelle + Bildzeile. `README.md`: `VECTOR_CORE` = Ist aus `src/core.py`; Linux-Backend-Zeile. `requirements.txt`: Kommentare (SSH, FastAPI, MCP, Anthropic).
+- **2026-03-21 (Kanon / Quer-Check):** `KANON_EINSTIEG.md` um Root-Dateien, Infra-Stub und `compile_docs_master`-Hinweis ergänzt; `DOCS_INDEX.md` §0 auf KANON→Bibliothek→Inventar umgestellt; `SYSTEM_CODEX.md`, Genesis-Stubs, `CLAUDE.md`, `documentation_protocol.mdc`, `MANAGEMENT_SUMMARY.md`, `compile_docs_master.py` mit gleicher Logik verzahnt.
+- **2026-03-21 (Rat der Titanen R2 — Ollama):** `5d/WHITEPAPER/reviews_2/` — Gutachten per **`python3 src/scripts/run_omega_science_council_r2.py`** (lokal, wie Runde 1: `OLLAMA_LOCAL_HOST`, `qwen2.5:14b`); Platzhalter-MDs entfernt. Defekte Chemie-Tabelle im Quelldokument zuvor geschlossen.
+- **2026-03-21 (Whitepaper NotebookLM):** `5d/WHITEPAPER_NOTEBOOKLM/` — bereinigte `.md` für NotebookLM (Zeilenumbruch, kein HTML-Kopfkommentar, Dateinamen ohne Komma); Skript `Gemini_Json2md4NotebookLM/whitepaper_for_notebooklm.py`; `5d/WHITEPAPER/README.md` mit Workflow.
+- **2026-03-21 (Whitepaper VOLLSTANDIG):** `WHITE_PAPER_INFORMATIONSGRAVITATION_VOLLSTANDIG.md` — vollständige Herleitung parallel zur Kurzfassung; Kreuzverweis im Abstract-Whitepaper gesetzt.
+- **2026-03-21 (Whitepaper Nomenklatur Ω_b / Λ):** `WHITE_PAPER_INFORMATIONSGRAVITATION.md`: semantische Kollision behoben — **0.049 = Ω_b** (baryonisch), **Λ / Ω_Λ** = Expansion (ΛCDM); neuer §0, §9 MRI-Synthese, JSON-Anhang ATLAS_EXIT; Legacy-Code-Hinweis `BARYONIC_DELTA` ≈ Ω_b.
+- **2026-03-21 (Genesis-Archive obsolet):** `CORE_GENESIS_FINAL_ARCHIVE.md` Kanon aufgehoben: Inhalt nach `docs/01_CORE_DNA/_archive/` verschoben; am alten Pfad **Stub** mit Verweis auf `SYSTEM_CODEX`, Bibliothek, Schnittstellen-Doku. `docs/CORE_GENESIS_FINAL_ARCHIVE.md` = Weiterleitung. `.cursorrules` §3 Wahrheit angepasst.
+- **2026-03-21 (MCP / Extensions — Operator-Todo):** In dieser Bibliothek Abschnitt **Operator-Todo** ergänzt: MCP & Extensions als aktives Vorhaben; Tracking in `OFFENE_PUNKTE_AUDIT.md` (neuer Abschnitt MCP & KI-Tooling).
 - **2026-03-20 (ATLAS Plasmoid UI Deutsch):** `atlas-omega-voice/`: Nutzersichtbare Texte QML + C++ Status/Gruß/Systemprompt auf **Deutsch**; Chat-Rolle `atlas`; Wake-Word-Hinweis Atlas/Jarvis; `metadata.json` OMEGA; About-Fork-Hinweis. Technischer QML-Modulname bleibt `org.kde.plasma.jarvis`.
 - **2026-03-20 (sudoers OMEGA):** Neues Prozess-Dokument `docs/04_PROCESSES/SUDOERS_OMEGA_DAEMONS.md` — Vorlage für `/etc/sudoers.d/` (NOPASSWD nur für `systemctl` auf `omega-*` Units). `CLAUDE.md` Sudo-Abschnitt: optional `.env` vs. empfohlenes Fragment.
 - **2026-03-18 (Eichung, AI Studio, Diktat, Indexierung):** CORE_EICHUNG Anhang geteilt: **A** = System-/Handlungsanweisungen für CORE (Kennfeld, Schwingung, duale Topologie – was wir umsetzen), **B** = Prompt für Google AI Studio (Schnittstellen, Backends, Live=Flash/Pro). Neues Doc AI_STUDIO_PROMPT.md. Dictate: Default STT = 2.5 Pro, mode=live = 2.5 Flash (model_registry + Query-Parameter). Ingest: ingest_core_documents mit OS-Pfaden und erweiterter Doc-Liste (BIBLIOTHEK, Inventory, AI Models, Duale Topologie, Orchestrierung, Axiom0, Vollkreis, CORE_EICHUNG). DUALE_TOPOLOGIE: RAG-Einheitlichkeit (alles über Registry/Multi-View) festgehalten.
@@ -151,5 +181,5 @@
 ## Operative Direktiven (Kurz)
 
 - **.cursorrules** ist die Quelle für CEO/Delegation, Zero-Offloading, Compressive Intelligence und OD-03.
-- **Genesis (CORE_GENESIS_FINAL_ARCHIVE, SYSTEM_CODEX)** hat Vorrang; Änderungen an „Wahrheit“ nur mit expliziter Ratifizierung.
+- **SYSTEM_CODEX**, **KANON_EINSTIEG** (Orientierung) und diese **Bibliothek** (voller Index) sind die operative Referenz; Änderungen an verbindlichen Aussagen nur mit expliziter Ratifizierung. Der Pfad `CORE_GENESIS_FINAL_ARCHIVE.md` ist **obsolet (Stub)** — siehe Abschnitt 1 Core DNA.
 - **Neue Komponenten:** Eintrag hier unter „Was wurde gemacht“ bzw. im passenden Abschnitt + Eintrag im CORE_INVENTORY_REGISTER.

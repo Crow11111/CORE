@@ -54,6 +54,21 @@ Vaultwarden-Entities sind in HA sichtbar (z. B. `binary_sensor.vaultwarden_bitwa
 
 ---
 
+## MCP & KI-Tooling (Plugin-Schnittstelle / Extensions)
+
+**Hintergrund:** MCP ist ein **offenes** Protokoll (nicht Cursor-exklusiv): Clients können Tool-Server listen und aufrufen. Im Repo: `mcp_remote_config.json`, Doku in `AGENTS.md`, Abgrenzung VPS-Drehscheibe in `MTLS_MIGRATION_PLAN.md` §1.2b.
+
+| Punkt | Beschreibung | Offen / nächste Schritte |
+|-------|--------------|---------------------------|
+| **Tool-Katalog** | Soll-Liste: welche wiederkehrenden Aktionen **als MCP-Tools** (VPS und/oder lokal) statt nur Ad-hoc-Terminal laufen sollen. | Mit CEO/Architect abnicken; in Architektur-Doku kurz festhalten. |
+| **VPS-Deploy** | Chroma-/Resonator-Tools konsistent auf dem VPS bereitstellen (Container/Skripte), nicht nur lokaler Python-Pfad. | Deploy-Pfad mit `deploy_mcp.py` / Full-Stack abgleichen; Secrets nur über .env/Host. |
+| **Weitere Clients** | Prüfen, ob **OpenClaw / OC Brain** (oder andere Agenten) MCP-Client nutzen können oder sollen — parallel zu HTTP-Gateway. | Produkt-Doku OpenClaw; keine Annahme ohne Config-Nachweis. |
+| **Cursor / IDE** | Extensions & MCP-Einträge in Team-Setup dokumentieren (wer merged `mcp_remote_config` in Cursor Settings). | Onboarding-Zeile in Prozess-Doku oder Management Summary. |
+
+**Tracking:** Eintrag auch in `@docs/BIBLIOTHEK_KERN_DOKUMENTE.md` → **Operator-Todo**.
+
+---
+
 ## Optional / mittelfristig
 
 - **healthchecks.io:** Optional in .env als `HEALTHCHECK_URL` – bei Erfolg wird die URL von `daily_backup.py` aufgerufen (Dead-Man’s-Switch bei ausbleibendem Backup).

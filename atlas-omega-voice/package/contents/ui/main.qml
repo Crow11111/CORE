@@ -12,6 +12,8 @@ PlasmoidItem {
     fullRepresentation: fullRep
     compactRepresentation: compactRep
 
+    Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground | PlasmaCore.Types.ConfigurableBackground
+
     readonly property color corePrimary:   "#D22B2B"
     readonly property color coreDim:       "#4A0E0E"
     readonly property color coreGlow:      "#FF4444"
@@ -329,7 +331,7 @@ PlasmoidItem {
                                 var amp = JarvisBackend.voiceCommandMode ? 0.8 :
                                           JarvisBackend.speaking ? 0.5 : 0.3;
                                 var level = Math.max(JarvisBackend.audioLevel * 4, 0.05);
-                                var color = JarvisBackend.voiceCommandMode ? "#00ff88" :
+                                var color = JarvisBackend.voiceCommandMode ? "#D22B2B" :
                                             JarvisBackend.speaking ? "#f0a030" : "#D22B2B";
 
                                 ctx.strokeStyle = color;
@@ -360,7 +362,7 @@ PlasmoidItem {
                         Rectangle {
                             Layout.fillWidth: true; height: 28
                             visible: JarvisBackend.voiceCommandMode
-                            color: Qt.rgba(0, 1, 0.53, 0.08); radius: 4
+                            color: Qt.rgba(0.82, 0.17, 0.17, 0.08); radius: 4
                             border.color: greenOk; border.width: 1
                             RowLayout {
                                 anchors.centerIn: parent; spacing: 8
@@ -412,7 +414,7 @@ PlasmoidItem {
                                         Rectangle {
                                             Layout.fillWidth: true
                                             Layout.preferredHeight: msgTxt.contentHeight + 14
-                                            color: role === "user" ? "#D22B2B" : (role === "system" ? "#101010" : "#081018")
+                                            color: role === "user" ? "#D22B2B" : (role === "system" ? "#101010" : "#151515")
                                             radius: 4
                                             border.color: role === "user" ? "#D22B2B" : (role === "system" ? "#333" : "#D22B2B")
                                             border.width: 1
@@ -425,7 +427,7 @@ PlasmoidItem {
                                                 id: msgTxt
                                                 anchors { fill: parent; margins: 7; leftMargin: 12 }
                                                 text: msg
-                                                color: role === "user" ? "#b0c4d8" : (role === "system" ? "#888" : "#D22B2B")
+                                                color: role === "user" ? "#E0E0E0" : (role === "system" ? "#888" : "#D22B2B")
                                                 font { pixelSize: role === "system" ? 9 : 11; family: uiFont; italic: role === "system" }
                                                 wrapMode: Text.WordWrap; lineHeight: 1.3
                                             }
@@ -478,7 +480,7 @@ PlasmoidItem {
                             // Mic button
                             Rectangle {
                                 width: 34; height: 34; radius: 17
-                                color: JarvisBackend.voiceCommandMode ? Qt.rgba(0, 1, 0.53, 0.15) :
+                                color: JarvisBackend.voiceCommandMode ? Qt.rgba(0.82, 0.17, 0.17, 0.15) :
                                        micArea.containsMouse ? Qt.rgba(0.82, 0.17, 0.17, 0.1) : "transparent"
                                 border.color: JarvisBackend.voiceCommandMode ? greenOk : borderMid; border.width: 1
                                 Text { anchors.centerIn: parent; text: "🎤"; font.pixelSize: 14 }
@@ -530,14 +532,14 @@ PlasmoidItem {
                             Layout.fillWidth: true; spacing: 4
                             Repeater {
                                 model: [
-                                    { label: JarvisBackend.wakeWordActive ? "◉ WACH" : "○ WACH", active: JarvisBackend.wakeWordActive, action: "wake" },
-                                    { label: "■ STOPP", active: false, action: "stop" },
-                                    { label: JarvisBackend.ttsMuted ? "🔇 STUMM" : "🔊 STIMME", active: JarvisBackend.ttsMuted, action: "mute" },
+                                    { label: "⚡ LIVE", active: !JarvisBackend.dictateModeDeep, action: "live" },
+                                    { label: "🧠 DEEP", active: JarvisBackend.dictateModeDeep, action: "deep" },
+                                    { label: "■ STOPP", active: JarvisBackend.speaking, action: "stop" },
                                     { label: "✕ LEEREN", active: false, action: "clear" }
                                 ]
                                 Rectangle {
                                     Layout.fillWidth: true; height: 26; radius: 3
-                                    color: modelData.active ? Qt.rgba(0.82, 0.17, 0.17, 0.1) : "transparent"
+                                    color: modelData.active ? Qt.rgba(0.82, 0.17, 0.17, 0.15) : "transparent"
                                     border.color: modelData.active ? corePrimary : borderDim; border.width: 1
                                     Text {
                                         anchors.centerIn: parent; text: modelData.label
@@ -547,9 +549,15 @@ PlasmoidItem {
                                     MouseArea {
                                         anchors.fill: parent; cursorShape: Qt.PointingHandCursor
                                         onClicked: {
-                                            if (modelData.action === "wake") JarvisBackend.toggleWakeWord();
+                                            if (modelData.action === "live") {
+                                                JarvisBackend.setDictateMode(false);
+                                                JarvisBackend.executeRunCommand("python3 ~/OMEGA_CORE/src/scripts/core_dictate_clipboard.py toggle live");
+                                            }
+                                            else if (modelData.action === "deep") {
+                                                JarvisBackend.setDictateMode(true);
+                                                JarvisBackend.executeRunCommand("python3 ~/OMEGA_CORE/src/scripts/core_dictate_clipboard.py toggle deep");
+                                            }
                                             else if (modelData.action === "stop") JarvisBackend.stopSpeaking();
-                                            else if (modelData.action === "mute") JarvisBackend.toggleTtsMute();
                                             else if (modelData.action === "clear") JarvisBackend.clearHistory();
                                         }
                                     }
@@ -557,6 +565,8 @@ PlasmoidItem {
                             }
                         }
                     }
+
+                    // (property bool m_deepMode removed, using JarvisBackend.dictateModeDeep)
 
                     // ──────────── TAB 1: SYSTEMS ────────────
                     Flickable {
@@ -776,7 +786,7 @@ PlasmoidItem {
                                         delegate: RowLayout {
                                             width: parent ? parent.width : 0; spacing: 8
                                             Text { text: modelData.time; color: orangeAccent; font { pixelSize: 10; family: monoFont } }
-                                            Text { text: modelData.text; color: "#b0c4d8"; font { pixelSize: 10; family: uiFont }
+                                            Text { text: modelData.text; color: "#E0E0E0"; font { pixelSize: 10; family: uiFont }
                                                 Layout.fillWidth: true; elide: Text.ElideRight }
                                             Text { text: "✕"; color: redAlert; font { pixelSize: 10; bold: true }
                                                 MouseArea { anchors.fill: parent; cursorShape: Qt.PointingHandCursor
@@ -822,9 +832,9 @@ PlasmoidItem {
                                     anchors { left: parent.left; right: parent.right; top: parent.top; margins: 10 }
                                     spacing: 4
                                     Text { text: "STATUS"; color: coreDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
-                                    Text { text: "LLM: " + JarvisBackend.currentModelName; color: "#b0c4d8"; font { pixelSize: 9; family: monoFont } }
-                                    Text { text: "Stimme: " + JarvisBackend.currentVoiceName; color: "#b0c4d8"; font { pixelSize: 9; family: monoFont } }
-                                    Text { text: "Server: " + JarvisBackend.llmServerUrl; color: "#b0c4d8"; font { pixelSize: 9; family: monoFont } }
+                                    Text { text: "LLM: " + JarvisBackend.currentModelName; color: "#E0E0E0"; font { pixelSize: 9; family: monoFont } }
+                                    Text { text: "Stimme: " + JarvisBackend.currentVoiceName; color: "#E0E0E0"; font { pixelSize: 9; family: monoFont } }
+                                    Text { text: "Server: " + JarvisBackend.llmServerUrl; color: "#E0E0E0"; font { pixelSize: 9; family: monoFont } }
                                     Text { text: "Verbindung: " + (JarvisBackend.connected ? "Online" : "Offline"); color: JarvisBackend.connected ? greenOk : redAlert; font { pixelSize: 9; bold: true; family: monoFont } }
                                 }
                             }
@@ -934,7 +944,7 @@ PlasmoidItem {
                                     Text { text: "VOLLSTÄNDIGE EINSTELLUNGEN"; color: coreDim; font { pixelSize: 9; bold: true; family: monoFont; letterSpacing: 1 } }
                                     Text {
                                         text: "Rechtsklick auf das Plasmoid →\n„ATLAS Ω Voice konfigurieren …“\n(LLM, Stimmen, Sprachbefehle, mehr)."
-                                        color: "#b0c4d8"
+                                        color: "#E0E0E0"
                                         font { pixelSize: 9; family: uiFont }
                                         lineHeight: 1.3
                                     }

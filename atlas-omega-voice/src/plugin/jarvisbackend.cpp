@@ -36,6 +36,15 @@ Du bist NICHT isoliert. Du bist der direkte Zugang zum gesamten System-Stack:
 
 **System-Aktionen (Linux):**
 Du kannst Hardware-Aktionen auf Dreadnought (lokal) oder via SSH (remote) auslösen.
+
+*   **run_command:** Bevorzugt für fast alle Aufgaben. Führt den Befehl im Hintergrund aus.
+    Der Operator sieht die Ausgabe (stdout/stderr) direkt im Chat-Fenster.
+    WICHTIG: Nur durch `run_command` kannst du das Ergebnis einer Aktion sehen und darauf reagieren!
+    Nutze dies für: systemctl, curl, grep, cat, Abfragen von Zuständen, Informationen etc.
+*   **open_terminal:** NUR nutzen, wenn der Operator explizit nach einem Terminal fragt
+    oder der Befehl eine dauerhafte, interaktive Benutzeroberfläche (wie htop, nano, vim) benötigt.
+    WICHTIG: Du kannst die Ausgabe in einem geöffneten Terminal NICHT sehen! Nutze es nicht für Informationsbeschaffung.
+
 Format (exakt eine Aktion pro Zeile am Ende deiner Antwort):
 
 [ACTION:run_command] befehl
@@ -47,6 +56,7 @@ Format (exakt eine Aktion pro Zeile am Ende deiner Antwort):
 **WICHTIG für Arch Linux:**
 - Nutze `systemctl` für lokale Dienste.
 - Nutze `ssh vps_user@vps_ip 'befehl'` für Aktionen auf dem VPS.
+- Wenn ein Befehl Administratorrechte benötigt, nutze `pkexec` anstelle von `sudo` für grafische Password-Abfragen (nur wenn nötig).
 - Antworte ERST textuell, dann die ACTION-Zeile.
 )";
 } // namespace
@@ -200,6 +210,15 @@ QVariantList JarvisBackend::commandMappings() const { return m_commands->command
 void JarvisBackend::speak(const QString &text) { m_tts->speak(text); }
 void JarvisBackend::stopSpeaking() { m_tts->stop(); }
 void JarvisBackend::toggleTtsMute() { m_tts->toggleMute(); }
+
+void JarvisBackend::setDictateMode(bool deep)
+{
+    if (m_dictateModeDeep != deep) {
+        m_dictateModeDeep = deep;
+        emit dictateModeDeepChanged();
+        setStatus(QStringLiteral("Diktat-Modus: %1").arg(deep ? "DEEP" : "LIVE"));
+    }
+}
 void JarvisBackend::toggleWakeWord() { m_audio->toggleWakeWord(); }
 void JarvisBackend::startVoiceCommand() { m_audio->startVoiceCommand(); }
 void JarvisBackend::stopVoiceCommand() { m_audio->stopVoiceCommand(); }
@@ -683,6 +702,8 @@ void JarvisBackend::parseAndExecuteActions(const QString &responseText)
             openUrl(arg);
         } else if (actionType == QStringLiteral("type_text")) {
             executeTypeText(arg);
+        } else if (actionType == QStringLiteral("set_dictate_mode")) {
+            setDictateMode(arg.toLower() == QStringLiteral("deep"));
         } else {
             qWarning() << "[ATLAS] Unbekannter ACTION-Typ:" << actionType;
         }
@@ -695,6 +716,7 @@ void JarvisBackend::executeRunCommand(const QString &command)
     qDebug() << "[ATLAS] Executing command:" << command;
 
     auto *proc = new QProcess(this);
+    proc->setProcessEnvironment(QProcessEnvironment::systemEnvironment());
     connect(proc, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             this, [this, proc, command](int exitCode, QProcess::ExitStatus) {
         const QString out = QString::fromUtf8(proc->readAllStandardOutput()).trimmed();

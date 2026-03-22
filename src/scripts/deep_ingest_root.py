@@ -15,16 +15,15 @@ from src.db.multi_view_client import ingest_document, search_multi_view
 from loguru import logger
 
 # Constants
-COLLECTION_NAME = "omega_root_fs"
-CHUNK_SIZE = 2000
-EXCLUDE_DIRS = {".git", "node_modules", "__pycache__", ".venv", "dist", "build"}
+COLLECTION_NAME = "omega_core_funnel"
+CHUNK_SIZE = 1500 # Etwas kleiner fuer praezisere Linsen
+EXCLUDE_DIRS = {".git", "node_modules", "__pycache__", ".venv", "dist", "build", "mcps", "terminals", "backups"}
 ALLOWED_EXTENSIONS = {
     ".md", ".py", ".js", ".ts", ".tsx", ".jsx", 
-    ".json", ".txt", ".yaml", ".yml", ".mdc", ".sty"
+    ".json", ".yaml", ".yml", ".mdc", ".sty", ".sql"
 }
-# Engine Pattern: prime interval or fibonacci? 
-# Wir nutzen 0.1s fuer Speed, aber throttlen bei Bedarf.
-DELAY_BETWEEN_CHUNKS = 0.1  
+PRIORITY_KEYWORDS = ["Dreadnought", "Scout", "Monica", "Kong", "OC Brain", "OpenClaw"]
+DELAY_BETWEEN_CHUNKS = 0.2
 
 def get_file_metadata(file_path: Path) -> Dict:
     stat = file_path.stat()
@@ -48,7 +47,6 @@ def chunk_text(text: str, size: int) -> List[str]:
             chunks.append(text[start:])
             break
         
-        # Try to find a newline to split more cleanly
         last_newline = text.rfind("\n", start, end)
         if last_newline != -1 and last_newline > start + (size // 2):
             end = last_newline
@@ -60,24 +58,29 @@ def chunk_text(text: str, size: int) -> List[str]:
 
 async def process_file(file_path: Path) -> int:
     try:
+        metadata_base = get_file_metadata(file_path)
+        is_priority = any(kw.lower() in str(file_path).lower() for kw in PRIORITY_KEYWORDS)
+        
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
         
         if not content.strip():
             return 0
-        
-        metadata_base = get_file_metadata(file_path)
+            
+        if any(kw.lower() in content.lower() for kw in PRIORITY_KEYWORDS):
+            is_priority = True
+            
         chunks = chunk_text(content, CHUNK_SIZE)
-        
         indexed_count = 0
         for i, chunk_content in enumerate(chunks):
-            # Create a stable ID based on path and index
             path_hash = hashlib.md5(metadata_base["file_path"].encode()).hexdigest()[:8]
-            chunk_id = f"{path_hash}_{i}"
+            chunk_id = f"core_{path_hash}_{i}"
             
             metadata = metadata_base.copy()
             metadata["chunk_index"] = i
             metadata["total_chunks"] = len(chunks)
+            metadata["is_priority"] = is_priority
+            metadata["ingest_time"] = datetime.now().isoformat()
             
             result = await ingest_document(
                 document=chunk_content,
@@ -89,7 +92,7 @@ async def process_file(file_path: Path) -> int:
             if result and result.get("success"):
                 indexed_count += 1
             
-            await asyncio.sleep(DELAY_BETWEEN_CHUNKS)
+            await asyncio.sleep(DELAY_BETWEEN_CHUNKS) 
             
         return indexed_count
     except Exception as e:
@@ -97,27 +100,29 @@ async def process_file(file_path: Path) -> int:
         return 0
 
 async def main():
-    logger.info(f"Starting deep ingest of {WORKSPACE_ROOT} into {COLLECTION_NAME}...")
+    logger.info(f"Starting TRICHTER (Funnel) deep root ingest of {WORKSPACE_ROOT}...")
     
     total_files = 0
     total_indexed_documents = 0
     
     files_to_process = []
     for root, dirs, files in os.walk(WORKSPACE_ROOT):
-        # Filter directories in-place
         dirs[:] = [d for d in dirs if d not in EXCLUDE_DIRS]
-        
         for file in files:
             file_path = Path(root) / file
             if file_path.suffix.lower() in ALLOWED_EXTENSIONS:
                 files_to_process.append(file_path)
     
-    logger.info(f"Found {len(files_to_process)} candidate files.")
-    
-    # Process sequentially to avoid API rate limits (1500 RPM for Gemini)
-    # 6 lenses per chunk = 6 API calls. 
-    # 1500 RPM / 6 = 250 chunks per minute.
-    # DELAY_BETWEEN_CHUNKS = 0.1 -> ~10 chunks/sec = 600 RPM. (Safely within 1500 RPM)
+    def sort_key(p: Path):
+        score = 0
+        if any(kw.lower() in str(p).lower() for kw in PRIORITY_KEYWORDS):
+            score -= 1000
+        if "docs" in str(p):
+            score -= 500
+        return score
+
+    files_to_process.sort(key=sort_key)
+    logger.info(f"Found {len(files_to_process)} candidate files. Priority first.")
     
     for i, file_path in enumerate(files_to_process):
         rel_path = file_path.relative_to(WORKSPACE_ROOT)
@@ -129,9 +134,8 @@ async def main():
             
     logger.info(f"Deep Ingest finished. Files: {total_files}, Total Chunks: {total_indexed_documents}")
     
-    # Verification
     logger.info("Running verification query: 'What is Monica?'")
-    results = await search_multi_view("What is Monica?", limit=5, source_collection=COLLECTION_NAME)
+    results = await search_multi_view("What is Monica?", limit=5, source_collection=COLLECTION_NAME, use_3072=True)
     
     print("\n" + "="*60)
     print("VERIFICATION RESULTS: 'What is Monica?'")

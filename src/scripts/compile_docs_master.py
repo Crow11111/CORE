@@ -10,6 +10,20 @@ import re
 from datetime import datetime
 import sys
 
+def _read_markdown_utf8_or_utf16(path: str) -> str:
+    """Liest .md als UTF-8; bei BOM UTF-16 oder Decode-Fehler UTF-16-LE (Legacy-Dateien)."""
+    with open(path, "rb") as f:
+        raw = f.read()
+    if raw.startswith(b"\xff\xfe"):
+        return raw[2:].decode("utf-16-le")
+    if raw.startswith(b"\xfe\xff"):
+        return raw[2:].decode("utf-16-be")
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return raw.decode("utf-16-le", errors="replace")
+
+
 def generate_anchor(text):
     """Generates a GitHub-style anchor for a given header text."""
     anchor = text.lower()
@@ -51,13 +65,12 @@ def compile_master(source_dir, output_filename, title, image_path=None):
 
         toc.append(f"- [{display_name}](#{anchor})")
 
-        with open(file_path, 'r', encoding='utf-8') as f:
-            content = f.read()
+        content = _read_markdown_utf8_or_utf16(file_path)
 
-            # Adjust headers: Shift all headers down by one level if they start with #
-            content = re.sub(r'^(#+)', r'#\1', content, flags=re.MULTILINE)
+        # Adjust headers: Shift all headers down by one level if they start with #
+        content = re.sub(r'^(#+)', r'#\1', content, flags=re.MULTILINE)
 
-            sections.append(f"\n<a name=\"{anchor}\"></a>\n# {display_name}\n\n{content}\n\n---\n")
+        sections.append(f"\n<a name=\"{anchor}\"></a>\n# {display_name}\n\n{content}\n\n---\n")
 
     # Merge everything
     master_content.extend(toc)
@@ -73,7 +86,12 @@ def compile_master(source_dir, output_filename, title, image_path=None):
         print(f"[ERROR] Fehler beim Schreiben des Master-Dokuments: {e}")
 
 if __name__ == "__main__":
-    # Standard targets for CORE
+    # Standard targets for CORE.
+    # WICHTIG (Kanon): Der zusammengefügte Infra-Output landet unter docs/03_INFRASTRUCTURE/.
+    # Der verbindliche Lang-Master für Gesamt-Infrastruktur-Soll ist separat:
+    #   docs/00_STAMMDOKUMENTE/00_CORE_INFRASTRUCTURE_MASTER.md
+    # docs/00_CORE_INFRASTRUCTURE_MASTER.md (Root) ist nur Stub → Stammdokumente.
+    # Bei Konflikt: Stammdokumente pflegen, Kompilat nur als Spiegel/Artefakt behandeln.
     targets = [
         ("docs/02_ARCHITECTURE", "00_CORE_ARCHITECTURE_MASTER.md", "CORE ARCHITECTURE MASTER PLAN", "../../CORE.png"),
         ("docs/03_INFRASTRUCTURE", "00_CORE_INFRASTRUCTURE_MASTER.md", "CORE INFRASTRUCTURE MASTER PLAN", "../../CORE.png"),

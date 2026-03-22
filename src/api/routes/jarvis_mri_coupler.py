@@ -6,11 +6,59 @@ from fastapi.responses import JSONResponse
 from loguru import logger
 import httpx
 
-from src.db.multi_view_client import embed_local, ingest_document, search_multi_view
+from src.db.multi_view_client import embed_local, ingest_document, search_multi_view, _run_pg_sql
 from src.logic_core.crystal_grid_engine import CrystalGridEngine
 from src.config.core_state import BARYONIC_DELTA
 
 router = APIRouter()
+
+
+async def _search_sql_infra(query: str) -> str:
+    """Suche in der core_infrastructure Tabelle auf dem VPS (2D-Fakten)."""
+    q_clean = query.replace("'", "''").strip()
+    if not q_clean:
+        return ""
+
+    # Extrahiere Keywords (Worte > 3 Zeichen)
+    words = [w for w in q_clean.split() if len(w) > 3]
+    if not words:
+        words = [q_clean]
+
+    conditions = []
+    for w in words:
+        conditions.append(f"node_name ILIKE '%{w}%'")
+        conditions.append(f"service_name ILIKE '%{w}%'")
+        conditions.append(f"CAST(port AS TEXT) = '{w}'")
+    
+    where_clause = " OR ".join(conditions)
+
+    sql = f"""
+    SELECT node_name, service_name, port, status, purpose 
+    FROM core_infrastructure 
+    WHERE {where_clause}
+    LIMIT 10;
+    """
+    logger.debug(f"[JARVIS-MRI] SQL Search: {sql}")
+    ok, out = await _run_pg_sql(sql)
+    if not ok or not out.strip():
+        return ""
+
+    lines = out.strip().split("\n")
+    # psql -t -A gibt keine Header/Trenner aus, wenn direkt aufgerufen. 
+    # Aber _run_pg_sql nutzt psql ohne -t -A standardmäßig (siehe multi_view_client.py _multiview_ssh_config)
+    # Halt: search_multi_view überschreibt das. Aber _run_pg_sql nutzt den Standard.
+    
+    res = "### CORE-Infrastruktur Fakten (SQL):\n"
+    found = False
+    for line in lines:
+        if "|" in line and "node_name" not in line and "-----" not in line:
+            parts = [p.strip() for p in line.split("|")]
+            if len(parts) >= 5:
+                node, service, port, status, purpose = parts[:5]
+                res += f"- {service}@{node} (Port: {port or 'N/A'}, Status: {status}) - {purpose}\n"
+                found = True
+    
+    return res if found else ""
 
 
 def _strip_env(s: str) -> str:
@@ -118,26 +166,39 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
     latest_prompt = messages[-1].get("content", "").lower()
     req_model = payload.get("model", "core-local-min")
 
-    # RAG (Chromodaten/System-Wissen) – nur bei Wissen-Fragen
+    # DUAL-SEARCH (SQL-Fakten + Vektor-Funnel)
     rag_context = ""
     thought_log = ""
-    keywords = ["chromodata", "chromodaten", "vps", "system", "vps", "ossie", "openclaw", "dokument", "wissen"]
-    if any(k in latest_prompt for k in keywords):
-        try:
-            results = await search_multi_view(latest_prompt, limit=3)
-            if results:
-                thought_log = f"[RAG] Suche in Chromodaten erfolgreich. {len(results)} Dokumente gefunden."
-                rag_context = "\n\n### Zusaetzlicher CORE-Kontext (Chromodaten):\n"
-                for r in results:
-                    rag_context += f"- [{r['doc_id']}] {r['document'][:300]}...\n"
+    
+    # 1. SQL-Search (2D-Fakten)
+    sql_facts = await _search_sql_infra(latest_prompt)
+    if sql_facts:
+        rag_context += f"\n{sql_facts}\n"
+        thought_log += f"[MRI:SQL] Fakten zur Infrastruktur gefunden. "
 
-                # Context in die erste System-Message injizieren
-                for msg in messages:
-                    if msg["role"] == "system":
-                        msg["content"] += rag_context
-                        break
+    # 2. Vector-Search (5D-Vektoren) – Immer für Kontext, außer bei trivialen Prompts
+    if len(latest_prompt.split()) > 1:
+        try:
+            # 768 (Fast) + 3072 (Deep) Funnel
+            results = await search_multi_view(latest_prompt, limit=3, use_3072=True)
+            if results:
+                thought_log += f"[MRI:VECTOR] {len(results)} Dokumente im Funnel (3072 dim) gefunden."
+                rag_context += "\n\n### Zusätzlicher CORE-Kontext (Multi-View Vector Funnel):\n"
+                for r in results:
+                    rag_context += f"- [{r['doc_id']}] {r['document'][:400]}...\n"
         except Exception as e:
-            logger.warning(f"[JARVIS-MRI] RAG-Suche fehlgeschlagen: {e}")
+            logger.warning(f"[JARVIS-MRI] Vektor-Suche fehlgeschlagen: {e}")
+
+    # Kontext in die erste System-Message injizieren (falls vorhanden)
+    if rag_context:
+        system_msg_found = False
+        for msg in messages:
+            if msg["role"] == "system":
+                msg["content"] += "\n\n[HINWEIS: Nutze die folgenden Fakten für deine Antwort!]\n" + rag_context
+                system_msg_found = True
+                break
+        if not system_msg_found:
+            messages.insert(0, {"role": "system", "content": "Du bist OMEGA, das Core-System.\n\n" + rag_context})
 
     # Fallback
     if req_model not in MODELS:
@@ -150,8 +211,7 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
     usage_data = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
 
     try:
-        # ... (Ollama / Gemini Logik bleibt gleich) ...
-        # [Hier gekuerzt fuer den StrReplace, ich behalte die Logik bei]
+        # --- OLLAMA / GEMINI CALLS ---
         if config["type"] == "ollama":
             ollama_payload = {
                 "model": config["target"],
@@ -173,7 +233,6 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
             if not api_key:
                 return JSONResponse({"error": "GEMINI_API_KEY is missing"}, status_code=500)
 
-            # Use raw HTTP for Gemini to avoid SDK differences
             contents = []
             sys_instruct = None
 
@@ -217,6 +276,35 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
                 usage_data["prompt_tokens"] = usage.get("promptTokenCount", 0)
                 usage_data["completion_tokens"] = usage.get("candidatesTokenCount", 0)
                 usage_data["total_tokens"] = usage.get("totalTokenCount", 0)
+
+        # --- PROACTIVE ACTION PROPOSALS ---
+        # Logik zur Erkennung von Aktionen basierend auf Prompt und Fakten
+        action_proposal = ""
+        prompt_low = latest_prompt.lower()
+        
+        # 1. Status-Checks (Dienste)
+        if "status" in prompt_low:
+            # Wenn SQL-Fakten einen Dienst gefunden haben:
+            for line in sql_facts.split("\n"):
+                if "-" in line:
+                    service = line.split("@")[0].replace("-", "").strip()
+                    if service and service.lower() in prompt_low:
+                        action_proposal = f"\n\n[ACTION:run_command(ssh vps 'docker exec atlas_postgres_state psql -c \"SELECT status FROM core_infrastructure WHERE service_name = ''{service}''\"')]"
+                        break
+
+        # 2. Licht (Home Assistant)
+        if "licht" in prompt_low or "light" in prompt_low:
+            # Generischer Toggle oder Status
+            if " an" in prompt_low or " on" in prompt_low:
+                action_proposal = "\n\n[ACTION:call_service(light.turn_on)]"
+            elif " aus" in prompt_low or " off" in prompt_low:
+                action_proposal = "\n\n[ACTION:call_service(light.turn_off)]"
+            else:
+                action_proposal = "\n\n[ACTION:call_service(homeassistant.status)]"
+
+        if action_proposal:
+            assistant_reply += action_proposal
+            thought_log += f" [ACTION] Vorschlag generiert."
 
         # Gedanken einbetten, falls vorhanden
         if thought_log:

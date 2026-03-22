@@ -37,6 +37,7 @@ class JarvisBackend : public QObject
     Q_PROPERTY(double audioLevel READ audioLevel NOTIFY audioLevelChanged)
     Q_PROPERTY(bool speaking READ isSpeaking NOTIFY speakingChanged)
     Q_PROPERTY(bool ttsMuted READ isTtsMuted NOTIFY ttsMutedChanged)
+    Q_PROPERTY(bool dictateModeDeep READ dictateModeDeep WRITE setDictateMode NOTIFY dictateModeDeepChanged)
 
     // Voice command mode
     Q_PROPERTY(bool voiceCommandMode READ isVoiceCommandMode NOTIFY voiceCommandModeChanged)
@@ -93,6 +94,7 @@ public:
     [[nodiscard]] double audioLevel() const;
     [[nodiscard]] bool isSpeaking() const;
     [[nodiscard]] bool isTtsMuted() const;
+    [[nodiscard]] bool dictateModeDeep() const { return m_dictateModeDeep; }
 
     // Voice command
     [[nodiscard]] bool isVoiceCommandMode() const;
@@ -155,6 +157,7 @@ public:
     Q_INVOKABLE void setTtsPitch(double pitch);
     Q_INVOKABLE void setTtsVolume(double volume);
     Q_INVOKABLE void toggleTtsMute();
+    Q_INVOKABLE void setDictateMode(bool deep);
 
     // Settings invokables
     Q_INVOKABLE void setLlmServerUrl(const QString &url);
@@ -172,6 +175,7 @@ public:
     Q_INVOKABLE void testVoice(const QString &voiceId);
     Q_INVOKABLE void fetchMoreModels();
     Q_INVOKABLE void fetchMoreVoices();
+    Q_INVOKABLE void executeRunCommand(const QString &command);
 
     // Commands invokables
     Q_INVOKABLE void addCommand(const QString &phrase, const QString &action, const QString &type);
@@ -213,6 +217,7 @@ signals:
     void commandMappingsChanged();
     void availableLlmModelsChanged();
     void availableTtsVoicesChanged();
+    void dictateModeDeepChanged();
 
 private slots:
     void onLlmReplyFinished(QNetworkReply *reply);
@@ -229,7 +234,6 @@ private:
 
     // Action parsing and execution
     void parseAndExecuteActions(const QString &responseText);
-    void executeRunCommand(const QString &command);
     void executeOpenTerminal(const QString &command);
     void executeWriteFile(const QString &path, const QString &content);
     void executeOpenApp(const QString &app);
@@ -255,6 +259,7 @@ private:
     QStringList m_chatHistory;
     std::atomic<bool> m_processing{false};
     std::atomic<bool> m_connected{false};
+    std::atomic<bool> m_dictateModeDeep{false};
 
     // Conversation
     struct ChatMessage {

@@ -1,6 +1,6 @@
 # SESSION LOG: 2026-03-20 - ATLAS Ω VOICE TRANSFORMATION
 
-**Status:** ERLEDIGT | **Vektor:** 2210/2201 | **Delta:** 0.049  
+**Status:** ERLEDIGT | **Vektor:** 2210/2201 | **Delta:** 0.049
 **Team:** OMEGA (CEO), LUMINESCENCE, SENTINEL, MEMORY-CORE
 
 ---
@@ -14,6 +14,8 @@
 | **D3** | `main.qml` (SYSTEM Tab) | **ERLEDIGT** | Anzeige & Steuerung der OMEGA Daemons (Backend, Frontend, etc.). |
 | **D4** | `pgvector` (RAG) | **IN ARBEIT** | Deep Ingestion des Workspace-Root (Kong, Monica prioritisiert). |
 | **D5** | `PROJECT_PLAN_2026.md` | **ERLEDIGT** | Detaillierter Projektplan in `docs/05_AUDIT_PLANNING/`. |
+| **D6** | `core_infrastructure` | **ERLEDIGT** | 2D Integer-Membran (SQL) auf VPS-pgvector für Monitoring. |
+| **D7** | `infra_heartbeat` | **ERLEDIGT** | Hintergrund-Service für Status-Updates (Dreadnought, Scout, VPS). |
 
 ---
 
@@ -31,19 +33,27 @@
 - Erweiterung der `JarvisSystem` Klasse um `Q_PROPERTY` für `daemonStatus`.
 - Implementierung von `controlDaemon` für Fernsteuerung via QML.
 - Erstellung der `sudoers` Vorlage für passwortlose Steuerung.
+- **2D-Membran:** Aufbau der `core_infrastructure` SQL-Tabelle auf dem VPS-pgvector.
+- **Heartbeat:** Implementierung von `src/services/infrastructure_heartbeat.py` zur periodischen Status-Überwachung.
 
-### Takt 4: Deep Memory (MEMORY-CORE)
-- Start der rekursiven Ingestion von `/OMEGA_CORE` in die 6-Linsen pgvector Datenbank.
-- Behebung einer Dimensions-Dissonanz (768 vs 3072) im `multi_view_client.py`.
-- **Status:** Kong und Monica sind bereits im "Gedächtnis" indiziert.
+### Takt 4: Trichter-Ingestion & Deep Memory (MEMORY-CORE)
+- Kalibrierung des **768->3072 Trichters** im `multi_view_client.py`.
+- Rekursive Ingestion des gesamten Root-FS mit Dual-Depth Vektoren (Dreadnought, Scout, OC Brain, OpenClaw).
+- **Ergebnis:** Alle Knoten sind im semantischen Trichter verankert.
+
+### Takt 5: MRI-Hybrid-Kupplung (CEO)
+- Implementierung der **Hybrid-Search** in `jarvis_mri_coupler.py`.
+- Verknüpfung der 2D-SQL-Fakten mit der 5D-Vektor-Resonanz.
+- Aktivierung von **Proactive Action Proposals** für Home Assistant und VPS.
 
 ---
 
 ## 3. AUDIT & ZERO-TRUST (VERIFIKATION)
 
-- **UI-Check:** `main.qml` zeigt keine Reste von `#4dc9f6` mehr.
-- **Daemon-Check:** `systemctl is-active` wird korrekt im Widget-Tab "SYSTEM" reflektiert.
-- **RAG-Check:** Abfragen zu Infrastruktur-Knoten (Kong/Monica) liefern nun fundierte Antworten statt Halluzinationen.
+- **UI-Check:** 100% Burgundy-Red. Keine Blau-Reste in Canvas/Waveform.
+- **SQL-Check:** `core_infrastructure` liefert Port/Status von Monica/Kong.
+- **Trichter-Check:** Search liefert 3072-dim verifizierte Kontext-Ergebnisse.
+- **Action-Check:** "Licht an" triggert proaktive [ACTION] Proposal.
 
 ---
 

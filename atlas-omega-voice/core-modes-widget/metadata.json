@@ -1,0 +1,21 @@
+{
+  "KPlugin": {
+    "Id": "org.omega.core.modes",
+    "Name": "CORE Modes",
+    "Description": "OMEGA Mode Selection (Zap/Brain)",
+    "Icon": "preferences-desktop-keyboard",
+    "Authors": [
+      {
+        "Name": "OMEGA CORE",
+        "Email": "mth@omega.core"
+      }
+    ],
+    "Category": "Utilities",
+    "License": "GPL",
+    "Version": "1.0.0"
+  },
+  "KPackageStructure": "Plasma/Applet",
+  "X-Plasma-API": "declarativeappletscript",
+  "X-Plasma-API-Minimum-Version": "6.0",
+  "X-Plasma-MainScript": "ui/main.qml"
+}

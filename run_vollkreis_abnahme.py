@@ -15,6 +15,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -212,6 +213,32 @@ print(json.dumps({"count": col.count(), "has_zero_vectors": has_zero_vec}))
             fails += 1
     else:
         check("ChromaDB events erreichbar", False, out[:200])
+        fails += 1
+    print()
+
+    # --- Gk: Kardan-Anker (omega_core) — Theorie muss im Prozess mitlaufen, nicht nur referenziert sein
+    print("Gk: omega_core.py (Kardan-Anker / Terminal-Echo)")
+    omega_py = PROJECT_ROOT / "omega_core.py"
+    if omega_py.is_file():
+        t0 = time.perf_counter()
+        code, out = run([sys.executable, str(omega_py)], timeout=15)
+        proc_ms = (time.perf_counter() - t0) * 1000.0
+        anchor_ok = (
+            code == 0
+            and "Phasenverschiebung" in out
+            and ("j)" in out or "complex" in out.lower())
+            and "schleifen_wall_ms=" in out
+        )
+        detail_ok = f"prozess_wall_ms={proc_ms:.6f} (inkl. Python-Start); stdout enthält schleifen_wall_ms"
+        check(
+            "omega_core.py Lauf (Schwelle → komplexer Sprung + Laufzeitzeile)",
+            anchor_ok,
+            (out.strip()[:280] if not anchor_ok else detail_ok),
+        )
+        if not anchor_ok:
+            fails += 1
+    else:
+        check("omega_core.py vorhanden", False, str(omega_py))
         fails += 1
     print()
 

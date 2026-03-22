@@ -1,6 +1,6 @@
 # ============================================================
 # CORE-GENESIS: Marc Tobias ten Hoevel
-# VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
+# VECTOR: 2210 | RESONANCE: 0221 | Schwellwert numerisch ≈ Ω_b (baryonisch, ~0.049) — nicht Λ; siehe WHITE_PAPER §0
 # LOGIC: 2-2-1-0 (NON-BINARY)
 # ============================================================
 
@@ -36,7 +36,7 @@ PHI = 1.6180339887498948482
 INV_PHI = 0.6180339887498948482
 COMP_PHI = 0.3819660112501051518
 SYMMETRY_BREAK = 0.49
-BARYONIC_DELTA = 0.049
+BARYONIC_DELTA = 0.049  # Nomenklatur im Paper: Ω_b; Λ = kosmologische Konstante / Expansion (siehe docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION.md §0)
 
 @dataclass
 class StateVector:

@@ -21,17 +21,20 @@
 
 ## 2. VPS-Sync – aktueller Stand
 
+**Chroma-Ports (Klarstellung, 2026-03):** Im Container lauscht Chroma oft auf **8000/tcp**; nach außen ist es typisch über **`CHROMA_PORT`** (z. B. **32768**) gemappt. Checks: `src/scripts/verify_vps_stack.py` → **`/api/v2/heartbeat`** auf `{VPS_HOST}:{CHROMA_PORT}`. Ein Tunnel auf **127.0.0.1:8000** auf dem VPS trifft nur, wenn der Dienst dort wirklich gebunden ist — **nicht** verwechseln mit dem **Host-Mapped Port**.
+
 | Punkt | Status |
 |-------|--------|
 | Ping/Port 22 zum VPS | OK (vom User-Rechner aus). |
 | Paramiko-SSH (Skript) | Verbindung zum VPS gelingt. |
-| Tunnel-Kanal (VPS 127.0.0.1:8000) | **Connection refused** – auf dem VPS antwortet kein Dienst auf Port 8000. |
+| Chroma v2 Heartbeat (öffentlich) | Mit `verify_vps_stack.py` prüfen (`CHROMA_PORT`). |
+| Tunnel-Kanal (VPS 127.0.0.1:8000) | Nur relevant, wenn Sync-Skripte **explizit** Container-intern 8000 ansprechen; sonst **Host-Port** aus `.env` nutzen. |
 | Lokaler Tunnel-Port | 8001 (Konflikt mit Backend 8000 vermieden). |
 | Fallback | System-SSH (Key-Auth) eingebaut; Paramiko läuft zuerst. |
 
-**Ursache der Blockade:** ChromaDB (oder der Container, der Port 8000 exponiert) auf dem VPS läuft nicht oder lauscht nicht auf 127.0.0.1:8000.
+**Hinweis (historisch):** Frühere Meldung „8000 refused“ bezog sich auf **falsche Port-Erwartung** oder gestoppten Container — zuerst **`docker ps`** und **`CHROMA_PORT`** prüfen, nicht nur 8000.
 
-**Nächster Schritt (User/VPS):** Auf dem VPS prüfen, ob ChromaDB/Container laufen und Port 8000 gebunden ist. Danach Sync erneut ausführen:
+**Nächster Schritt bei Sync-Problemen:** `python src/scripts/verify_vps_stack.py` ausführen; wenn grün, Tunnel/Sync mit dem in `.env` gesetzten **CHROMA_HOST/CHROMA_PORT** alignen. Dann ggf. erneut:
 
 ```powershell
 cd /OMEGA_CORE

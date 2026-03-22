@@ -16,16 +16,20 @@ GQA F2 - oc-webhook-push: OC Brain pusht Einreichungen per POST statt SFTP-Polli
 from __future__ import annotations
 
 import json
+import os
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from pydantic import BaseModel, Field
+from loguru import logger
 
 from src.api.auth_webhook import verify_oc_auth
+from src.network.evolution_client import EvolutionClient
 
 router = APIRouter(prefix="/api/oc", tags=["oc-channel"])
+evolution_client = EvolutionClient()
 
 
 class SendBody(BaseModel):
@@ -40,6 +44,7 @@ class OCSubmissionPayload(BaseModel):
     type: str = Field(default="rat_submission")  # rat_submission | info | question
     created: str | None = None
     payload: dict = Field(default_factory=dict)
+    trace_id: str | None = None
 
     model_config = {"populate_by_name": True}
 
@@ -50,25 +55,54 @@ def _get_rat_submissions_dir() -> Path:
 
 
 @router.post("/webhook")
-def oc_webhook_push(body: OCSubmissionPayload, _auth: None = Depends(verify_oc_auth)):
+async def oc_webhook_push(
+    body: OCSubmissionPayload, 
+    background_tasks: BackgroundTasks,
+    _auth: None = Depends(verify_oc_auth)
+):
     """
     GQA F2 - oc-webhook-push: OC Brain pusht Einreichungen direkt an CORE.
     Ersetzt SFTP-Polling durch sofortige Verarbeitung.
+    
+    NEU: Schließt den Vollkreis (Push OC -> WhatsApp), wenn es eine Rat-Einreichung ist.
     Auth: X-API-Key oder Bearer (OPENCLAW_GATEWAY_TOKEN).
     """
+    trace_id = body.trace_id or f"TRC-{uuid.uuid4().hex[:6].upper()}"
+    logger.info(f"[OC-WEBHOOK|{trace_id}] [TAKT 1] Einreichung erhalten von {body.from_} (Typ: {body.type})")
+
     local_dir = _get_rat_submissions_dir()
     local_dir.mkdir(parents=True, exist_ok=True)
     ts = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
     short_id = uuid.uuid4().hex[:8]
     filename = f"oc_webhook_{ts}_{short_id}.json"
     local_path = local_dir / filename
+    
     data = body.model_dump(by_alias=True)
     if not data.get("created"):
         data["created"] = datetime.now(timezone.utc).isoformat()
+    data["trace_id"] = trace_id
+
     with open(local_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+    
     topic = (body.payload or {}).get("topic", body.type)
-    return {"ok": True, "file": filename, "topic": str(topic)[:200]}
+    content = (body.payload or {}).get("body", "") or (body.payload or {}).get("text", "")
+    
+    # ── VOLLKREIS-PUSH ────────────────────────────────────────────────────────
+    # Wenn es eine Einreichung für den Rat ist oder explizit markiert, an WhatsApp senden
+    if body.type == "rat_submission" or topic == "WhatsApp-Push":
+        target = os.getenv("WHATSAPP_TARGET_ID", "").strip().strip('"')
+        if target and evolution_client.is_configured():
+            msg = f"🤖 [OC|{topic}] {content}"
+            if len(msg) > 1000:
+                msg = msg[:997] + "..."
+            
+            logger.info(f"[OC-WEBHOOK|{trace_id}] [TAKT 3] Initiiere WhatsApp-Push an {target}")
+            background_tasks.add_task(evolution_client.send_whatsapp_async, target, msg, trace_id)
+        else:
+            logger.warning(f"[OC-WEBHOOK|{trace_id}] WhatsApp-Push übersprungen (Target oder Client nicht konf.)")
+
+    return {"ok": True, "file": filename, "topic": str(topic)[:200], "trace_id": trace_id}
 
 
 @router.get("/status")
@@ -173,8 +207,13 @@ def oc_trigger_whatsapp_plan(_auth: None = Depends(verify_oc_auth)):
             _sent = False
             if _target and _os.environ.get("HASS_URL") and _os.environ.get("HASS_TOKEN"):
                 try:
+                    from src.network.evolution_client import EvolutionClient
                     from src.network.ha_client import HAClient
-                    _sent = HAClient().send_whatsapp(to_number=_target, text=_wa_msg)
+                    evo = EvolutionClient()
+                    if evo.is_configured():
+                        _sent = evo.send_whatsapp_sync(to_number=_target, text=_wa_msg)
+                    else:
+                        _sent = HAClient().send_whatsapp(to_number=_target, text=_wa_msg)
                 except Exception:
                     pass
             return {

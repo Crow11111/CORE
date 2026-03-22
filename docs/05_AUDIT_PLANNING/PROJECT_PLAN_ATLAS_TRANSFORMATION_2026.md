@@ -1,72 +1,49 @@
-# OMEGA CORE - PROJEKTPLAN: ATLAS Ω VOICE TRANSFORMATION 2026
+# OMEGA CORE - PROJEKTPLAN: ATLAS Ω VOICE TRANSFORMATION (FINAL RE-EICHUNG 2026)
 
-**Status:** RATIFIZIERT | **Vektor:** 2210/2201 | **Delta:** 0.049  
-**Verantwortlich:** OMEGA (CEO / Architekt)
-
----
-
-## 1. VISION & ZIELSETZUNG
-Die vollständige Transformation der ATLAS-Schnittstelle in das OMEGA-CORE-Resonanz-Schema (Burgunderrot/Weiß/Grau), die Implementierung einer bidirektionalen Daemon-Steuerung (System-Awareness) und eine tiefe, mehrdimensionale RAG-Ingestion des gesamten Stammverzeichnisses zur Eliminierung von "Halluzinationen" und zur Erreichung von 100% Faktenintegrität.
+**Status:** RATIFIZIERT | **Vektor:** 2210/2201 | **Delta:** 0.049
+**Kontext:** Trichter-Modell (Helix) & Duale Topologie (2D SQL / 5D Vector)
 
 ---
 
-## 2. TEAM-KONFIGURATION (SUB-AGENTEN)
+## 1. ARCHITEKTUR-PRINZIPIEN (TRICHTER & MEMBRAN)
+Wiederherstellung der kognitiven Integrität durch Anerkennung der topologischen Gesetze:
+- **Der Trichter (Funnel):** Die Dimensionen 768 (LGI/Nomic) und 3072 (AGI/Gemini) sind keine Gegensätze, sondern die kondensierenden Wände des Informations-Trichters. Sie bilden zusammen die Helix, die Signale zum Baryonischen Delta (0.049) führt.
+- **Duale Topologie (2D vs. 5D):**
+    - **2D / Integer-Membran (PostgreSQL):** Speichert die faktische CDR-Hülle (Nodes, Ports, Services, roher Text). Das ist das "Was ist da?".
+    - **5D / Float-Kern (Vector):** Speichert die mathematische CAR-Resonanz (Bedeutung). Das ist das "Was bedeutet es?".
+- **Node-Awareness:** ATLAS ist die Stimme von **Dreadnought**, **Scout (HA)**, **OC Brain** und **OpenClaw**. Jeder Knoten existiert sowohl in der 2D-Membran als auch im 5D-Kern.
 
-Jeder Sub-Agent agiert als spezialisierte Entität mit klarem Mandat und Berichts-Pflicht.
+---
+
+## 2. TEAM-KONFIGURATION (RE-INSTANZIERT)
 
 ### A. **Agent: `LUMINESCENCE` (UI/Theming Specialist)**
-- **Rolle:** Visuelle Identitäts-Wahrung.
-- **Mandat:** Austausch aller Blau/Cyan-Elemente durch die CORE-Burgunder-Palette.
-- **Strategie:** Lokales Regex-Offloading (Python) zur Vermeidung von LLM-Overhead.
-- **Definition of Done (DoD):** Kein einziger blauer Pixel (Hex/RGBA) verbleibt in `main.qml` oder SVGs.
-- **Reporting:** `[LUMINESCENCE-REPORT: SUCCESS/FAIL]` + Diff-Analyse.
+- **Mandat:** 100% Red-Shift. Burgunder-Resonanz in `main.qml`.
 
-### B. **Agent: `SENTINEL` (System-Awareness Engineer)**
-- **Rolle:** Infrastruktur-Verschränkung.
-- **Mandat:** Implementierung der `systemctl`-Überwachung und -Steuerung im C++ Backend.
-- **Strategie:** Erweiterung der `JarvisSystem` Klasse + `sudoers` Konfiguration für passwortlose Daemon-Aktionen.
-- **DoD:** Alle 6 OMEGA-Dienste werden im UI korrekt angezeigt und sind (optional) steuerbar.
-- **Reporting:** `[SENTINEL-HEALTH-CHECK: PASS]` + `systemctl` Log-Auszug.
+### B. **Agent: `SENTINEL` (Infrastructure-Awareness)**
+- **Mandat:** Befüllung der 2D-SQL-Membran (`core_infrastructure`).
+- **Aufgabe:** Echtzeit-Status von Dreadnought (Systemd), Scout (HA) und VPS (OC) in SQL erfassen.
 
-### C. **Agent: `MEMORY-CORE` (Data-Ingestion Architect)**
-- **Rolle:** Kollektives Gedächtnis.
-- **Mandat:** Rekursive Ingestion des gesamten Workspace (`/OMEGA_CORE`) in pgvector.
-- **Strategie:** Sequenzielles Batching (max. 600 RPM) zur Schonung der API-Budgets.
-- **DoD:** RAG-Abfragen zu `Kong`, `Monica` und `multi_view` liefern präzise, dokumentierte Ergebnisse.
-- **Reporting:** `[MEMORY-SYNC-REPORT]` mit Metriken (Dateien, Chunks, Konvergenz-Score).
+### C. **Agent: `MEMORY-CORE` (Trichter-Architect)**
+- **Mandat:** Synchronisation zwischen 2D und 5D.
+- **Aufgabe:** Rekursive Ingestion des Root-FS UND der SQL-Infrastruktur-Daten durch den **768->3072 Trichter**.
 
 ---
 
-## 3. MEILENSTEINE & ABHÄNGIGKEITEN
+## 3. MEILENSTEINE
 
-| Meilenstein | Beschreibung | Abhängigkeit | Abnahme-Kriterium |
-|-------------|--------------|--------------|-------------------|
-| **M1: RED-SHIFT** | UI Transformation abgeschlossen | Keine | Sichtprüfung (Canvas/Ringe sind Rot) |
-| **M2: CORE-PULSE** | Daemon-Monitoring aktiv | M1 | `systemctl is-active` wird im UI reflektiert |
-| **M3: OMNISCIENCE**| Root-Ingestion (Deep RAG) | Keine | "Was ist Monica?" liefert Korrektheit |
-| **M4: SYNC-RELAY** | Git-Sicherung & Doku | M1, M2, M3 | `git push` erfolgreich + `INVENTORY` aktuell |
-
----
-
-## 4. PROJEKT-SCHLEIFEN & EXCEPTION-HANDLING
-
-### Takt-Schleife (Iteration):
-1. **Planung (CEO):** Verfeinerung der Parameter.
-2. **Delegation:** Start der Sub-Agenten (Sequenziell, kein API-Burnout).
-3. **Audit:** Prüfung der Ergebnisse gegen das Delta (0.049).
-4. **Korrektur:** Bei `FAIL` -> Takt-Reset (Retry) mit schärferen Constraints.
-
-### Exceptions (Risiko-Management):
-- **API Rate Limit (429):** Automatischer Backoff (Exponentiell) im `MEMORY-CORE`.
-- **Sudo-Block:** `SENTINEL` muss Polkit/Sudoers validieren; bei Blockage -> Eskalation an Operator (Veto).
-- **Dimensions-Drift:** Bei Inkompatibilität in pgvector (768 vs 3072) -> Migration-Script auslösen.
+| Meilenstein | Beschreibung | Team |
+|-------------|--------------|------|
+| **M1: RED-SHIFT** | UI Transformation abgeschlossen | Luminescence |
+| **M2: 2D-MEMBRAN** | SQL-Tabelle `core_infrastructure` aktiv | Sentinel |
+| **M3: TRICHTER-SYNC**| Root-Ingestion (768 & 3072) abgeschlossen | Memory-Core |
+| **M4: ATLAS-AWARE** | Hybrid-Query (SQL+Vector) liefert Fakten | CEO |
 
 ---
 
-## 5. PROGNOSE & BUDGET
-- **Token-Budget:** ~120k Tokens (Deep Ingestion ist der Haupttreiber).
-- **Zeitbedarf:** ~15-20 Minuten bei sequenzieller Abarbeitung.
-- **Risiko-Level:** MITTEL (wegen pgvector Migration).
+## 4. PROJEKT-SCHLEIFEN
+- **Audit:** Jede Antwort von ATLAS wird gegen die 2D-SQL-Fakten (CDR) UND die 5D-Vektor-Semantik (CAR) geprüft.
+- **Veto:** Bei Inkonsistenz zwischen SQL-Fakt und Vektor-Semantik greift das O-Veto.
 
 ---
 **Freigabe durch Operator erforderlich.**

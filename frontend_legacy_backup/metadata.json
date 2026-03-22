@@ -1,0 +1,5 @@
+{
+  "name": "CORE Dev Agent",
+  "description": "Minimalist, zen, and modern frontend for the CORE development agent.",
+  "requestFramePermissions": []
+}

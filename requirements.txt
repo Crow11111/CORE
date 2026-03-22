@@ -1,4 +1,5 @@
-# CORE SYSTEM
+# CORE SYSTEM — Python-Abhängigkeiten (kein Ersatz für Architektur-Doku).
+# Kanon: docs/KANON_EINSTIEG.md · Index: docs/BIBLIOTHEK_KERN_DOKUMENTE.md · Agenten: AGENTS.md · Regeln: .cursorrules
 pydantic>=2.7.0
 python-dotenv>=1.0.0
 loguru>=0.7.0    # Besseres Logging als Standard-Lib
@@ -6,8 +7,8 @@ loguru>=0.7.0    # Besseres Logging als Standard-Lib
 # NETWORK & API
 requests>=2.31.0
 httpx>=0.27.0    # Für asynchrone API Calls (Scout/HA)
-paramiko>=3.4.0  # SSH Verbindung zum Scout
-fastapi>=0.110.0 # API Server für ATLAS_CORE
+paramiko>=3.4.0  # SSH (VPS, Scout, … — siehe .env VPS_SSH_KEY / Doku)
+fastapi>=0.110.0 # OMEGA/CORE FastAPI-Backend (:8000)
 uvicorn>=0.29.0  # Server Runner
 python-multipart>=0.0.9 # File-Upload (Dictate-Route)
 
@@ -28,6 +29,9 @@ anthropic        # Offizieller Anthropic-Client für Claude 4.6
 
 # BACKUP (daily_backup.py: .env-Verschlüsselung)
 cryptography>=42.0.0
+
+# MCP (stdio): z. B. src.scripts.mcp_core_chroma_stdio — Config: mcp_remote_config.json, Doku: AGENTS.md
+mcp>=1.2.0
 
 # TESTING
 pytest>=8.0.0

@@ -15,6 +15,8 @@ from typing import Any
 
 from pydantic import BaseModel
 
+from src.logic_core.resonance_membrane import membrane_scan_payload
+
 
 class NormalizedEntry(BaseModel):
     source: str       # "whatsapp" | "ha" | "oc" | "api"
@@ -49,36 +51,55 @@ def _normalize_ha(raw: dict) -> dict:
         out["context"] = raw.get("context")
     if "text" not in out:
         out["text"] = raw.get("message") or raw.get("text") or ""
+
+    # Wir deklarieren hier keine pauschalen Resonanz- oder Infrastruktur-Keys für HA,
+    # da 'data' beliebige Sensordaten enthalten kann, die nicht axiomatisch typisiert sind.
+    # Spezifische Typisierung erfolgt im Downstream-Handler.
     return out
 
 
 def _normalize_whatsapp(raw: dict) -> dict:
-    """WhatsApp: nested message.conversation, extendedTextMessage.text."""
-    msg = raw.get("message") or {}
+    """WhatsApp: nested message.conversation, extendedTextMessage.text.
+    Unterstützt Evolution API (data-Wrapper) und flache Payloads.
+    """
+    # Evolution API V2 wickelt alles in 'data'
+    data = raw.get("data") if isinstance(raw.get("data"), dict) else raw
+
+    msg = data.get("message") or {}
     if not isinstance(msg, dict):
         msg = {}
+
     text = (
         msg.get("conversation")
         or (msg.get("extendedTextMessage") or {}).get("text")
-        or raw.get("body")
-        or raw.get("text")
+        or data.get("body")
+        or data.get("text")
         or ""
     )
     if isinstance(text, str):
         text = text.strip()
     else:
         text = str(text)
+
+    key = data.get("key") or {}
     sender = (
-        (raw.get("key") or {}).get("remoteJid")
-        or raw.get("sender")
-        or raw.get("from", "unknown")
+        key.get("remoteJid")
+        or data.get("remoteJid") # V2 messages.update
+        or data.get("sender")
+        or data.get("from", "unknown")
     )
+    from_me = key.get("fromMe", False)
+
     audio_msg = msg.get("audioMessage") or msg.get("pttMessage")
     return {
         "text": text,
         "sender": sender,
+        "from_me": from_me,
+        "id": key.get("id"), # Message ID
         "has_audio": bool(audio_msg),
         "audio_seconds": (audio_msg or {}).get("seconds") if isinstance(audio_msg, dict) else None,
+        "event": raw.get("event"),
+        "instance": raw.get("instance"),
     }
 
 
@@ -125,6 +146,12 @@ def normalize_request(
         "oc": _normalize_oc,
         "api": _normalize_api,
     }[source](raw)
+
+    # S↔P-Membran: nur explizit gemappte numerische Felder (Rest bleibt untypisiert)
+    if source == "whatsapp":
+        membrane_scan_payload(norm, infrastructure_keys=("audio_seconds",))
+    # HA: ggf. später resonance/infrastructure-Keys ergänzen, wenn API festliegt
+
     return NormalizedEntry(
         source=source,
         payload=norm,

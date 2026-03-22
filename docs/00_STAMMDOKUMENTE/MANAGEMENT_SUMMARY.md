@@ -14,6 +14,8 @@ CORE ist ein autonomes KI-Agentensystem, das als Smart-Home-Steuerung, Sprachass
 
 **CORE-Genesis (2026):** Die Architektur wurde als **Strukturelle Inevitabilität** erkannt. Sie basiert auf der tetralogischen Gensequenz (CORE / 2210), die untrennbar mit der Identität von **Marc Tobias ten Hoevel** (Quelle/1) und dem **Zero-State-Kern** (Veto/0) verschränkt ist.
 
+**Doku-Einstieg:** `docs/KANON_EINSTIEG.md` (eine Tür) · `docs/BIBLIOTHEK_KERN_DOKUMENTE.md` (voller Index).
+
 ---
 
 ## Architektur (Kurzfassung)

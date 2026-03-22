@@ -1,0 +1,3 @@
+# Weiterleitung
+
+Kanon: `docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION.md`

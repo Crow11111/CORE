@@ -29,12 +29,12 @@ async def _search_sql_infra(query: str) -> str:
         conditions.append(f"node_name ILIKE '%{w}%'")
         conditions.append(f"service_name ILIKE '%{w}%'")
         conditions.append(f"CAST(port AS TEXT) = '{w}'")
-    
+
     where_clause = " OR ".join(conditions)
 
     sql = f"""
-    SELECT node_name, service_name, port, status, purpose 
-    FROM core_infrastructure 
+    SELECT node_name, service_name, port, status, purpose
+    FROM core_infrastructure
     WHERE {where_clause}
     LIMIT 10;
     """
@@ -44,10 +44,10 @@ async def _search_sql_infra(query: str) -> str:
         return ""
 
     lines = out.strip().split("\n")
-    # psql -t -A gibt keine Header/Trenner aus, wenn direkt aufgerufen. 
+    # psql -t -A gibt keine Header/Trenner aus, wenn direkt aufgerufen.
     # Aber _run_pg_sql nutzt psql ohne -t -A standardmäßig (siehe multi_view_client.py _multiview_ssh_config)
     # Halt: search_multi_view überschreibt das. Aber _run_pg_sql nutzt den Standard.
-    
+
     res = "### CORE-Infrastruktur Fakten (SQL):\n"
     found = False
     for line in lines:
@@ -57,7 +57,7 @@ async def _search_sql_infra(query: str) -> str:
                 node, service, port, status, purpose = parts[:5]
                 res += f"- {service}@{node} (Port: {port or 'N/A'}, Status: {status}) - {purpose}\n"
                 found = True
-    
+
     return res if found else ""
 
 
@@ -77,10 +77,10 @@ OLLAMA_API_BASE = (
 
 # Die 4 Dimensionen der Drehscheibe (MRI Coupler Matrix)
 MODELS = {
-    "core-local-min": {"type": "ollama", "target": "llama3.2:1b"}, # Oder qwen2.5:0.5b
-    "core-local-max": {"type": "ollama", "target": "qwen2.5:14b"},
-    "core-api-min": {"type": "gemini", "target": "gemini-2.5-flash"},
-    "core-api-max": {"type": "gemini", "target": "gemini-2.5-pro"},
+    "core-local-min": {"type": "ollama", "target": os.getenv("OLLAMA_MODEL", "qwen2.5-coder:7b")},
+    "core-local-max": {"type": "ollama", "target": os.getenv("OLLAMA_HEAVY_MODEL", "qwen2.5-coder:7b")},
+    "core-api-min": {"type": "gemini", "target": os.getenv("GEMINI_API_MODEL_MIN", "gemini-1.5-flash")},
+    "core-api-max": {"type": "gemini", "target": os.getenv("GEMINI_API_MODEL_MAX", "gemini-1.5-pro")},
 }
 
 async def _inject_mri_pressure(prompt: str, response_text: str, start_time: float, model_id: str):
@@ -104,7 +104,7 @@ async def _inject_mri_pressure(prompt: str, response_text: str, start_time: floa
         doc_id = f"jarvis_mri_{h}"
         document = f"[JARVIS-MRI-IN ({model_id})] {prompt}\n\n[JARVIS-MRI-OUT] {response_text}"
 
-        pressure_factor = 1.0 + (latency * BARYONIC_DELTA)
+        pressure_factor = (1.0 - BARYONIC_DELTA) + (latency * BARYONIC_DELTA)
         snapped_pressure = CrystalGridEngine.apply_operator_query(pressure_factor)
 
         await ingest_document(
@@ -164,12 +164,13 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
 
     # Letzten User-Prompt extrahieren
     latest_prompt = messages[-1].get("content", "").lower()
-    req_model = payload.get("model", "core-local-min")
+    default_model = os.getenv("ATLAS_DEFAULT_MODEL", "core-api-min")
+    req_model = payload.get("model", default_model)
 
     # DUAL-SEARCH (SQL-Fakten + Vektor-Funnel)
     rag_context = ""
     thought_log = ""
-    
+
     # 1. SQL-Search (2D-Fakten)
     sql_facts = await _search_sql_infra(latest_prompt)
     if sql_facts:
@@ -190,15 +191,22 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
             logger.warning(f"[JARVIS-MRI] Vektor-Suche fehlgeschlagen: {e}")
 
     # Kontext in die erste System-Message injizieren (falls vorhanden)
+    system_framing = (
+        "Du bist ATLAS, die kognitive Sprachschnittstelle von OMEGA CORE. Du hast Zugriff auf lokale System-Tools und Home Assistant. "
+        "WICHTIG: Die Entity-ID für das Licht in der Küche ist 'light.led_kuche'. Rufe bei 'Küche' immer 'light.led_kuche' auf. "
+        "Nutze die bereitgestellten Tools, um Aktionen direkt auszuführen, anstatt sie nur vorzuschlagen."
+    )
     if rag_context:
-        system_msg_found = False
-        for msg in messages:
-            if msg["role"] == "system":
-                msg["content"] += "\n\n[HINWEIS: Nutze die folgenden Fakten für deine Antwort!]\n" + rag_context
-                system_msg_found = True
-                break
-        if not system_msg_found:
-            messages.insert(0, {"role": "system", "content": "Du bist OMEGA, das Core-System.\n\n" + rag_context})
+        system_framing += "\n\n[HINWEIS: Nutze die folgenden Fakten für deine Antwort!]\n" + rag_context
+
+    system_msg_found = False
+    for msg in messages:
+        if msg["role"] == "system":
+            msg["content"] = system_framing + "\n\n" + msg.get("content", "")
+            system_msg_found = True
+            break
+    if not system_msg_found:
+        messages.insert(0, {"role": "system", "content": system_framing})
 
     # Fallback
     if req_model not in MODELS:
@@ -210,101 +218,174 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
     assistant_reply = ""
     usage_data = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
 
+    from src.connectors.local_executor import registry
+    schemas = registry.get_schemas()
+
     try:
         # --- OLLAMA / GEMINI CALLS ---
         if config["type"] == "ollama":
-            ollama_payload = {
-                "model": config["target"],
-                "messages": messages,
-                "stream": False,
-                "temperature": payload.get("temperature", 0.7)
-            }
-            async with httpx.AsyncClient() as client:
-                resp = await client.post(f"{OLLAMA_API_BASE}/api/chat", json=ollama_payload, timeout=300.0)
-                resp.raise_for_status()
-                ollama_data = resp.json()
-                assistant_reply = ollama_data.get("message", {}).get("content", "")
-                usage_data["prompt_tokens"] = ollama_data.get("prompt_eval_count", 0)
-                usage_data["completion_tokens"] = ollama_data.get("eval_count", 0)
-                usage_data["total_tokens"] = usage_data["prompt_tokens"] + usage_data["completion_tokens"]
+            ollama_tools = [{"type": "function", "function": schema} for schema in schemas]
+
+            async def _call_ollama(msgs):
+                ollama_payload = {
+                    "model": config["target"],
+                    "messages": msgs,
+                    "stream": False,
+                    "temperature": payload.get("temperature", 0.7),
+                    "tools": ollama_tools
+                }
+                async with httpx.AsyncClient() as client:
+                    resp = await client.post(f"{OLLAMA_API_BASE}/api/chat", json=ollama_payload, timeout=300.0)
+                    resp.raise_for_status()
+                    return resp.json()
+
+            ollama_data = await _call_ollama(messages)
+            msg_data = ollama_data.get("message", {})
+
+            # Tool Call Loop
+            while msg_data.get("tool_calls"):
+                tool_calls = msg_data.get("tool_calls")
+                # Assistant msg anfügen
+                messages.append(msg_data)
+
+                for tc in tool_calls:
+                    func_name = tc["function"]["name"]
+                    args = tc["function"].get("arguments", {})
+                    logger.info(f"[JARVIS-MRI] Ollama Tool Call: {func_name}({args})")
+                    try:
+                        result = await registry.execute(func_name, **args)
+                    except Exception as e:
+                        result = f"Error: {e}"
+                    logger.info(f"[JARVIS-MRI] Tool Result: {result}")
+                    messages.append({
+                        "role": "tool",
+                        "content": str(result)
+                    })
+
+                # Erneuter Call nach Ausführung
+                ollama_data = await _call_ollama(messages)
+                msg_data = ollama_data.get("message", {})
+
+            assistant_reply = msg_data.get("content", "")
+            usage_data["prompt_tokens"] = ollama_data.get("prompt_eval_count", 0)
+            usage_data["completion_tokens"] = ollama_data.get("eval_count", 0)
+            usage_data["total_tokens"] = usage_data["prompt_tokens"] + usage_data["completion_tokens"]
 
         elif config["type"] == "gemini":
             api_key = os.getenv("GEMINI_API_KEY")
             if not api_key:
                 return JSONResponse({"error": "GEMINI_API_KEY is missing"}, status_code=500)
 
-            contents = []
-            sys_instruct = None
+            gemini_tools = [{"functionDeclarations": schemas}]
 
-            for msg in messages:
-                role = msg["role"]
-                if role == "system":
-                    sys_instruct = {"parts": [{"text": msg["content"]}]}
-                    continue
+            async def _call_gemini(msgs):
+                contents = []
+                sys_instruct = None
 
-                gemini_role = "user" if role == "user" else "model"
-                contents.append({
-                    "role": gemini_role,
-                    "parts": [{"text": msg["content"]}]
+                for m in msgs:
+                    role = m["role"]
+                    if role == "system":
+                        sys_instruct = {"parts": [{"text": m["content"]}]}
+                        continue
+                    if role == "tool":
+                        contents.append({
+                            "role": "function",
+                            "parts": [{"functionResponse": {"name": m.get("name", "tool"), "response": {"result": m["content"]}}}]
+                        })
+                        continue
+
+                    # Ollama assistant responses can have tool_calls, mapping to Gemini functionCall
+                    if role == "assistant" and m.get("tool_calls"):
+                        parts = []
+                        if m.get("content"):
+                            parts.append({"text": m["content"]})
+                        for tc in m["tool_calls"]:
+                            parts.append({
+                                "functionCall": {
+                                    "name": tc["function"]["name"],
+                                    "args": tc["function"].get("arguments", {})
+                                }
+                            })
+                        contents.append({"role": "model", "parts": parts})
+                        continue
+
+                    gemini_role = "user" if role == "user" else "model"
+                    contents.append({
+                        "role": gemini_role,
+                        "parts": [{"text": m["content"]}]
+                    })
+
+                gemini_payload = {
+                    "contents": contents,
+                    "tools": gemini_tools,
+                    "generationConfig": {
+                        "temperature": payload.get("temperature", 0.7)
+                    }
+                }
+                if sys_instruct:
+                    gemini_payload["systemInstruction"] = sys_instruct
+
+                async with httpx.AsyncClient() as client:
+                    resp = await client.post(
+                        f"https://generativelanguage.googleapis.com/v1beta/models/{config['target']}:generateContent?key={api_key}",
+                        json=gemini_payload,
+                        timeout=60.0
+                    )
+                    resp.raise_for_status()
+                    return resp.json()
+
+            gemini_data = await _call_gemini(messages)
+
+            while gemini_data.get("candidates") and gemini_data["candidates"][0]["content"].get("parts", [{}])[0].get("functionCall"):
+                parts = gemini_data["candidates"][0]["content"]["parts"]
+
+                # Gemini returns function calls, we format it as an assistant message with tool_calls for our internal message list
+                tool_calls_for_msg = []
+                for p in parts:
+                    if "functionCall" in p:
+                        fc = p["functionCall"]
+                        tool_calls_for_msg.append({
+                            "function": {
+                                "name": fc["name"],
+                                "arguments": fc.get("args", {})
+                            }
+                        })
+
+                messages.append({
+                    "role": "assistant",
+                    "content": parts[0].get("text", "") if "text" in parts[0] else "",
+                    "tool_calls": tool_calls_for_msg
                 })
 
-            gemini_payload = {
-                "contents": contents,
-                "generationConfig": {
-                    "temperature": payload.get("temperature", 0.7)
-                }
-            }
-            if sys_instruct:
-                gemini_payload["systemInstruction"] = sys_instruct
+                for p in parts:
+                    if "functionCall" in p:
+                        fc = p["functionCall"]
+                        func_name = fc["name"]
+                        args = fc.get("args", {})
+                        logger.info(f"[JARVIS-MRI] Gemini Tool Call: {func_name}({args})")
+                        try:
+                            result = await registry.execute(func_name, **args)
+                        except Exception as e:
+                            result = f"Error: {e}"
+                        logger.info(f"[JARVIS-MRI] Tool Result: {result}")
+                        messages.append({
+                            "role": "tool",
+                            "name": func_name,
+                            "content": str(result)
+                        })
 
-            async with httpx.AsyncClient() as client:
-                resp = await client.post(
-                    f"https://generativelanguage.googleapis.com/v1beta/models/{config['target']}:generateContent?key={api_key}",
-                    json=gemini_payload,
-                    timeout=60.0
-                )
-                resp.raise_for_status()
-                gemini_data = resp.json()
+                gemini_data = await _call_gemini(messages)
 
-                try:
-                    assistant_reply = gemini_data["candidates"][0]["content"]["parts"][0]["text"]
-                except (KeyError, IndexError):
-                    assistant_reply = ""
-                    logger.error(f"[JARVIS-MRI] Gemini parse error: {gemini_data}")
+            try:
+                assistant_reply = gemini_data["candidates"][0]["content"]["parts"][0]["text"]
+            except (KeyError, IndexError):
+                assistant_reply = ""
+                logger.error(f"[JARVIS-MRI] Gemini parse error: {gemini_data}")
 
-                usage = gemini_data.get("usageMetadata", {})
-                usage_data["prompt_tokens"] = usage.get("promptTokenCount", 0)
-                usage_data["completion_tokens"] = usage.get("candidatesTokenCount", 0)
-                usage_data["total_tokens"] = usage.get("totalTokenCount", 0)
-
-        # --- PROACTIVE ACTION PROPOSALS ---
-        # Logik zur Erkennung von Aktionen basierend auf Prompt und Fakten
-        action_proposal = ""
-        prompt_low = latest_prompt.lower()
-        
-        # 1. Status-Checks (Dienste)
-        if "status" in prompt_low:
-            # Wenn SQL-Fakten einen Dienst gefunden haben:
-            for line in sql_facts.split("\n"):
-                if "-" in line:
-                    service = line.split("@")[0].replace("-", "").strip()
-                    if service and service.lower() in prompt_low:
-                        action_proposal = f"\n\n[ACTION:run_command(ssh vps 'docker exec atlas_postgres_state psql -c \"SELECT status FROM core_infrastructure WHERE service_name = ''{service}''\"')]"
-                        break
-
-        # 2. Licht (Home Assistant)
-        if "licht" in prompt_low or "light" in prompt_low:
-            # Generischer Toggle oder Status
-            if " an" in prompt_low or " on" in prompt_low:
-                action_proposal = "\n\n[ACTION:call_service(light.turn_on)]"
-            elif " aus" in prompt_low or " off" in prompt_low:
-                action_proposal = "\n\n[ACTION:call_service(light.turn_off)]"
-            else:
-                action_proposal = "\n\n[ACTION:call_service(homeassistant.status)]"
-
-        if action_proposal:
-            assistant_reply += action_proposal
-            thought_log += f" [ACTION] Vorschlag generiert."
+            usage = gemini_data.get("usageMetadata", {})
+            usage_data["prompt_tokens"] = usage.get("promptTokenCount", 0)
+            usage_data["completion_tokens"] = usage.get("candidatesTokenCount", 0)
+            usage_data["total_tokens"] = usage.get("totalTokenCount", 0)
 
         # Gedanken einbetten, falls vorhanden
         if thought_log:

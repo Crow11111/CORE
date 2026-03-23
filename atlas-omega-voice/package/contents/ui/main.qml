@@ -551,11 +551,11 @@ PlasmoidItem {
                                         onClicked: {
                                             if (modelData.action === "live") {
                                                 JarvisBackend.setDictateMode(false);
-                                                JarvisBackend.executeRunCommand("python3 ~/OMEGA_CORE/src/scripts/core_dictate_clipboard.py toggle live");
+                                                JarvisBackend.executeRunCommand("python3 /OMEGA_CORE/src/scripts/core_dictate_clipboard.py toggle live");
                                             }
                                             else if (modelData.action === "deep") {
                                                 JarvisBackend.setDictateMode(true);
-                                                JarvisBackend.executeRunCommand("python3 ~/OMEGA_CORE/src/scripts/core_dictate_clipboard.py toggle deep");
+                                                JarvisBackend.executeRunCommand("python3 /OMEGA_CORE/src/scripts/core_dictate_clipboard.py toggle deep");
                                             }
                                             else if (modelData.action === "stop") JarvisBackend.stopSpeaking();
                                             else if (modelData.action === "clear") JarvisBackend.clearHistory();

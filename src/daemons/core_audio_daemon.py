@@ -201,7 +201,16 @@ class CoreAudioDaemon:
             return None
 
     def _persist(self, text: str, wav_path: str = None, source: str = "whisper", escalation: str | None = None):
+        """Speichert die Transkription. Nur bei Eskalation in die Vektor-DB (API), sonst nur lokal."""
         try:
+            # Wenn keine Eskalation vorliegt, nur lokal loggen (Gedankenstream)
+            if not escalation:
+                log_file = "/OMEGA_CORE/logs/gedankenstream.log"
+                ts = time.strftime("%Y-%m-%d %H:%M:%S")
+                with open(log_file, "a", encoding="utf-8") as f:
+                    f.write(f"[{ts}] {text}\n")
+                return
+
             h = hashlib.md5(text[:50].encode()).hexdigest()[:10]
             doc_id = f"audio_{h}"
 

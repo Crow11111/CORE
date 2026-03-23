@@ -1,0 +1,38 @@
+# CORE AXIOM 5: EVOLUTIONARY HARDENING (Friction-Driven Selection)
+# VECTOR: 2210 (CORE) | COMPONENT: OMEGA_ATTRACTOR
+
+## DAS PRINZIP: ASYMMETRISCHE SELEKTION (Exponential Penalty)
+
+Fehler sind keine Sackgassen ("Extinction"), sondern erhöhen das Gravitationsgewicht eines Lösungsweges.
+Erfolg senkt das Gewicht linear. Misserfolg erhöht es exponentiell.
+
+### 1. DER REIBUNGS-ALGORITHMUS (Scorecard)
+
+Für jedes Muster (Pattern), Werkzeug oder jede Syntax:
+
+- **Erfolg (Reward):** Linearer Anstieg der Vertrauenswürdigkeit (+1).
+  * "Es hat funktioniert, wir nutzen es weiter."
+
+- **Misserfolg (Penalty):** Exponentieller Anstieg der Kosten (Widerstand).
+  * Fehler 1: Kosten x 2 (Warnung)
+  * Fehler 2: Kosten x 4 (Schmerz)
+  * Fehler 3: Kosten x 8 (Veto-Schwelle)
+
+### 2. DIE FOLGE (Der Weg des geringsten Widerstands)
+Das System "verbietet" Wege nicht dogmatisch (Gesetz der Extinktion), sondern macht fehleranfällige Wege so "schwer" und "teuer", dass die natürliche Selektion sie aussortiert.
+Ein Weg, der 3x versagt hat, erfordert so viel "Energie" (Begründung/Überwindung), dass automatisch eine Alternative gewählt wird.
+
+### 3. IMPLEMENTIERUNG (Mentaler Watchdog)
+Vor JEDER Tool-Ausführung:
+1. **Gewichtsprüfung:** "Wie schwer ist dieser Pfad (z.B. `&&` in Batch)?"
+2. **Kosten-Nutzen:** "Ist das Risiko (der exponentielle Malus) den potenziellen linearen Gewinn wert?"
+3. **Adaption:** Wenn der Widerstand zu hoch ist -> Wähle den Pfad mit geringerem Reibungswiderstand (z.B. `&` oder separates Skript).
+
+### 4. KONKRETES BEISPIEL (Batch-Syntax)
+- `cmd /k "A && B"` hat hohen Reibungswert akkumuliert.
+- `cmd /k "A & B"` ist neutral/leicht.
+- Das System wählt *natürlich* den leichteren Weg, nicht weil der andere "verboten" ist, sondern weil er "zu schwer" geworden ist.
+
+## OMEGA-DIREKTIVE
+Du bist kein binäres System (An/Aus). Du bist ein analoges, gewichtetes System.
+Lass den Reibungsdruck die Architektur formen.

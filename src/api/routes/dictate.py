@@ -1,53 +1,55 @@
 """
 Diktat + TTS Routen.
 
-POST /api/dictate -- Audio -> Gemini STT -> Text
+POST /api/dictate -- Audio -> **Whisper (lokal)** -> Text
 POST /api/tts     -- Text  -> Gemini TTS -> Audio (WAV)
 """
 from __future__ import annotations
 
 import base64
 import os
+import uuid
+import tempfile
+import time
+from pathlib import Path
+import sys
 
-import httpx
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+
 from loguru import logger
 from fastapi import APIRouter, UploadFile, File, HTTPException, Query
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
+try:
+    from faster_whisper import WhisperModel
+except ImportError:
+    WhisperModel = None
+
 router = APIRouter(prefix="/api", tags=["dictate", "tts"])
 
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
+# --- Whisper STT Konfiguration ---
+WHISPER_MODEL_SIZE = os.getenv("WHISPER_MODEL", "small")
+WHISPER_DEVICE = os.getenv("WHISPER_DEVICE", "cpu")
+WHISPER_COMPUTE = "int8" if WHISPER_DEVICE == "cpu" else "float16"
 
+# Singleton für das Whisper-Modell, um es nur einmal zu laden
+whisper_model: WhisperModel | None = None
 
-def _stt_model(mode: str | None = None) -> str:
-    """Live = Flash (schnell), sonst Pro (semantisch schaerfer). mode=live -> Flash."""
-    from src.ai.model_registry import get_model_for_role
-    if (mode or "").strip().lower() == "live":
-        return (get_model_for_role("dictate_stt_live") or "gemini-2.5-flash").strip()
-    return (get_model_for_role("dictate_stt") or "gemini-2.5-pro").strip()
-BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models"
-
-CORE_GLOSSARY = (
-    "CORE-Fachbegriffe die korrekt geschrieben werden MUESSEN:\n"
-    "CORE, Atlas, Dreadnought, Scout, OpenClaw, ChromaDB, pgvector, Ollama, "
-    "Tesserakt, Gravitator, Apoptose, Apotheose, Isomorphie, Symmetriebruch, "
-    "baryonisch, baryonisches Delta, Entropie, Fibonacci, Phi, Goldener Schnitt, "
-    "Embedding, Multi-View-Embedding, Konvergenz, Neurodivergent, ND, AUDHD, "
-    "CAR/CDR, Cons-Zelle, Fallback, Pipeline, Dispatcher, MCP, VPS, SSH, TTS, "
-    "STT, RAG, LLM, Gemini, Piper, Whisper, ElevenLabs, Home Assistant, HA, "
-    "Docker, Cursor, Strang, Osmium, Ring-0, Hatamoto, CrystalGridEngine, "
-    "nomic-embed-text, qwen2.5, llama3, Agos, Watchdog, Cockpit"
-)
-
-SYSTEM_PROMPT = (
-    "Du bist ein praeziser Transkriptions-Assistent fuer CORE. "
-    "Der Sprecher ist Marc, deutsch, neurodivergent (AUDHD), denkt assoziativ und schnell. "
-    "Transkribiere woertlich und vollstaendig. Keine Zusammenfassungen. "
-    "Nutze das CORE-Glossar fuer korrekte Schreibweise aller Fachbegriffe. "
-    "Gib NUR die Transkription aus.\n\n"
-    f"{CORE_GLOSSARY}"
-)
+def get_whisper_model() -> WhisperModel:
+    global whisper_model
+    if whisper_model is None:
+        if WhisperModel is None:
+            raise RuntimeError("faster-whisper ist nicht installiert. Bitte `pip install faster-whisper` ausführen.")
+        logger.info(f"[DIKTAT] Lade Whisper STT-Modell: {WHISPER_MODEL_SIZE} ({WHISPER_DEVICE}/{WHISPER_COMPUTE})...")
+        t0 = time.monotonic()
+        whisper_model = WhisperModel(
+            WHISPER_MODEL_SIZE,
+            device=WHISPER_DEVICE,
+            compute_type=WHISPER_COMPUTE,
+        )
+        logger.info(f"[DIKTAT] Whisper-Modell in {time.monotonic() - t0:.2f}s geladen.")
+    return whisper_model
 
 
 class DictateResponse(BaseModel):
@@ -57,58 +59,43 @@ class DictateResponse(BaseModel):
 
 
 @router.post("/dictate", response_model=DictateResponse)
-async def dictate(
-    audio: UploadFile = File(...),
-    mode: str | None = Query(None, description="live = Flash (schnell), fehlt oder pro = Pro (semantisch schaerfer)"),
-):
-    """Transkribiert eine Audio-Datei via Gemini mit CORE-Glossar. mode=live -> 2.5 Flash, sonst 2.5 Pro."""
-    if not GEMINI_API_KEY:
-        raise HTTPException(status_code=500, detail="GEMINI_API_KEY nicht konfiguriert")
+async def dictate(audio: UploadFile = File(...)):
+    """Transkribiert eine Audio-Datei via faster-whisper (lokal)."""
+    t0 = time.monotonic()
+
+    try:
+        model = get_whisper_model()
+    except RuntimeError as e:
+        raise HTTPException(status_code=501, detail=str(e))
 
     audio_bytes = await audio.read()
     if not audio_bytes:
         raise HTTPException(status_code=400, detail="Leere Audio-Datei")
 
-    mime = audio.content_type or "audio/wav"
-    if "webm" in (audio.filename or ""):
-        mime = "audio/webm"
+    # Debugging: Speichere die empfangene Audiodatei
+    debug_path = f"/tmp/received_audio_{uuid.uuid4().hex[:6]}.wav"
+    with open(debug_path, "wb") as f:
+        f.write(audio_bytes)
+    logger.info(f"[DIKTAT] Empfangene Audiodatei gespeichert unter: {debug_path} ({len(audio_bytes)} bytes)")
 
-    b64_data = base64.b64encode(audio_bytes).decode("utf-8")
-
-    model = _stt_model(mode)
-    url = f"{BASE_URL}/{model}:generateContent?key={GEMINI_API_KEY}"
-    payload = {
-        "system_instruction": {"parts": [{"text": SYSTEM_PROMPT}]},
-        "contents": [{
-            "parts": [
-                {"inline_data": {"mime_type": mime, "data": b64_data}},
-                {"text": "Transkribiere dieses Audio. Nutze das CORE-Glossar."},
-            ]
-        }],
-    }
-
-    import time
-    t0 = time.monotonic()
-
-    async with httpx.AsyncClient(timeout=120.0) as client:
-        resp = await client.post(url, json=payload)
+    # Transkribiere mit Whisper
+    try:
+        # Nutze den Debug-Pfad für die Transkription
+        segments, info = model.transcribe(debug_path, language="de")
+        text = " ".join([s.text.strip() for s in segments]).strip()
+        logger.info(f"[DIKTAT] Whisper Transkription erfolgreich: '{text[:80]}...'")
+    except Exception as e:
+        logger.error(f"[DIKTAT] Whisper Transkriptionsfehler: {e}")
+        raise HTTPException(status_code=500, detail=f"Whisper Fehler: {e}")
 
     duration_ms = int((time.monotonic() - t0) * 1000)
+    model_info = f"whisper-{WHISPER_MODEL_SIZE}-{WHISPER_DEVICE}"
 
-    if resp.status_code != 200:
-        logger.error(f"[DIKTAT] Gemini API Fehler {resp.status_code}: {resp.text}")
-        raise HTTPException(status_code=502, detail=f"Gemini API: {resp.status_code}")
+    return DictateResponse(text=text, duration_ms=duration_ms, model=model_info)
 
-    data = resp.json()
-    candidates = data.get("candidates", [])
-    if not candidates:
-        raise HTTPException(status_code=502, detail="Keine Candidates von Gemini")
 
-    parts = candidates[0].get("content", {}).get("parts", [])
-    text = "\n".join(p.get("text", "") for p in parts if "text" in p).strip()
-
-    return DictateResponse(text=text, duration_ms=duration_ms, model=model)
-
+# --- Gemini TTS (unverändert) ---
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 
 class TTSRequest(BaseModel):
     text: str
@@ -124,7 +111,6 @@ async def tts_speak(req: TTSRequest):
     if not req.text.strip():
         raise HTTPException(status_code=400, detail="Leerer Text")
 
-    import time
     t0 = time.monotonic()
 
     try:

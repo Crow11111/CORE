@@ -24,6 +24,7 @@
 | **Colab Guide** | `docs/01_CORE_DNA/5d/WHITEPAPER/reviews_2/COLAB_SCIENCE_COUNCIL.md` | Schritt-für-Schritt Anleitung für Colab. |
 | **Whitepaper NotebookLM** | `docs/01_CORE_DNA/5d/WHITEPAPER_NOTEBOOKLM/` | Sanitized Markdown für NotebookLM (`whitepaper_for_notebooklm.py`). |
 | **Architektur** | `docs/02_ARCHITECTURE/` | System-Design, Schnittstellen, Flow-Diagramme. |
+| **OpenClaw Membran** | `docs/02_ARCHITECTURE/OPENCLAW_MEMBRAN_TESSERAKT.md` | Blueprint: Facetten-Atomisierung, isolierte Räume, kreuz-modale Konvergenz, Entkopplung. |
 | **Landkarte Clients / Knoten** | `docs/02_ARCHITECTURE/LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md` | Überblick: KI-Clients vs. CORE-Backend vs. VPS; Push/Pull; geschlossene Kreise; Verweise auf VPS_KNOTEN, SCHNITTSTELLEN, G_CORE_CIRCLE. |
 | **AI-Modelle** | `docs/02_ARCHITECTURE/AI_MODEL_CAPABILITIES.md` | Modell-IDs, Rollen-Mapping, Kosten 2.5 Flash vs Pro, Token-Richtwerte, Deep Research & Computer Use. |
 | **Deep Research & Computer Use** | `docs/02_ARCHITECTURE/DEEP_RESEARCH_UND_COMPUTER_USE.md` | Deep Research: Projekt-Omega-Verifikation (Vektorisierung, ChromaDB, Abgleich). Computer Use: Linux-Integration. |
@@ -101,7 +102,8 @@
 | **Science Council R2 (Ollama)** | `src/scripts/run_omega_science_council_r2.py` | Rat der Titanen: ausformuliertes Whitepaper → `5d/WHITEPAPER/reviews_2/` (lokal qwen2.5:14b). |
 | **Science Council (Ollama)** | `src/scripts/run_omega_science_council.py` | Rat der Titanen: `--paper` / `--out`, Standard Kurzfassung → `OPERATION_OMEGA/REVIEWS/`. |
 | **Science Council Profile** | `src/scripts/omega_science_council_profiles.py` | Titanen: `profil` + `kern_anker` (Formel/Prinzip); `num_ctx` Default 65536. |
-| **Science Council Dossiers** | `docs/05_AUDIT_PLANNING/SCIENCE_COUNCIL_DOSSIERS_FLAT/` | Flache Ordnerstruktur mit detaillierten Dossiers (Biografie, Werke, Interviews, Visuals) für alle 22 Titanen; Dateinamen = Namen der Personen. |
+| **Science Council Dossiers** | `docs/00_STAMMDOKUMENTE/SCIENCE_COUNCIL_DOSSIERS_FLAT/` | Flache Ordnerstruktur mit detaillierten Dossiers (Biografie, Werke, Interviews, Visuals) für alle 22 Titanen; Dateinamen = Namen der Personen. |
+| **Science Council Gesamt** | `docs/00_STAMMDOKUMENTE/SCIENCE_COUNCIL_DOSSIERS_FLAT/SCIENCE_COUNCIL_DOSSIERS_GESAMT.md` | Konsolidierte Gesamt-Datei aller Titanen-Dossiers. |
 | **MCP stdio** | `src/scripts/mcp_core_chroma_stdio.py` | Cursor/MCP: Tool `query_chromadb` (CORE_EICHUNG) → ChromaDB über `chroma_client`; Eintrag `core-chromadb` in `mcp_remote_config.json`. |
 | **Database** | `src/db/core_infrastructure.sql` | 2D Integer-Membran (SQL-Schema) für CORE-Infrastruktur-Monitoring. |
 | **Database** | `src/db/init_infrastructure.py` | Initialisierungs-Skript für die CORE-Infrastruktur-Tabelle auf VPS. |

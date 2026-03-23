@@ -4,7 +4,7 @@ import asyncio
 from fastapi import APIRouter, Request, BackgroundTasks
 from fastapi.responses import Response, JSONResponse
 from loguru import logger
-from src.voice.tts_dispatcher import _gemini_speak
+from src.voice.tts_dispatcher import dispatch_tts
 
 router = APIRouter()
 
@@ -22,10 +22,17 @@ async def generate_speech(request: Request):
         if not text:
             return JSONResponse({"error": "No text provided"}, status_code=400)
 
-        # Wir nutzen die bereits existierende Gemini TTS Implementierung (Kore) aus OMEGA.
-        # play=False verhindert, dass es lokal am Server-PC (Dreadnought) abgespielt wird.
-        # stattdessen fangen wir die Datei ab und schicken sie ueber HTTP an Jarvis.
-        output_path = await _gemini_speak(text, play=False)
+        # Wir nutzen den zentralen dispatch_tts aus OMEGA, um Konsistenz zu garantieren.
+        # Er nutzt die Fallback-Kette: Gemini -> ElevenLabs -> Piper -> HA.
+        # play=False ist hier implizit, da wir den Stream abfangen wollen,
+        # aber dispatch_tts spielt normalerweise ab. Wir brauchen eine Version, die nur die Datei liefert.
+
+        # Wir nutzen hier direkt die Fallback-Chain von dispatch_tts, aber ohne 'play'.
+        from src.voice.tts_dispatcher import _gemini_speak, _elevenlabs_speak
+
+        output_path = await _elevenlabs_speak(text, play=False)
+        if not output_path:
+            output_path = await _gemini_speak(text, play=False)
 
         if not output_path or not os.path.isfile(output_path):
             return JSONResponse({"error": "TTS Generierung fehlgeschlagen"}, status_code=500)

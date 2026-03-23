@@ -1,0 +1,29 @@
+# ATLAS Ω / OMEGA CORE — Dreadnought Operative Regeln
+
+**Vektor:** 2210 | **Delta:** 0.049 | **Anker:** Dreadnought (Arch Linux)
+
+## KRITISCHE DIREKTIVEN (IMMER BEFOLGEN)
+
+1.  **Passwort-Primat:**
+    - Schaue IMMER zuerst in die `.env` im Root-Verzeichnis nach `LINUX_SUDO_PW`.
+    - Nutze dieses Passwort für `sudo -S`, wenn Aktionen Root-Rechte erfordern.
+    - Wenn `sudo -S` fehlschlägt, melde dies sofort dem Operator (Axiom 7: Verifikation).
+
+2.  **Keine Desktop-Popups (Terminal-Disziplin):**
+    - Nutze für ATLAS/OMEGA-Aktionen NIEMALS `open_terminal` für Hintergrundaufgaben, Informationsbeschaffung oder einfache Befehle.
+    - Nutze AUSSCHLIESSLICH `run_command`. Dies führt Befehle im Hintergrund aus und zeigt die Ausgabe im Chat-Fenster an.
+    - `open_terminal` ist NUR erlaubt, wenn der Operator explizit danach fragt oder ein interaktives Tool (htop, nano, vim) gestartet werden soll.
+
+3.  **Sudoers & Daemons:**
+    - Beachte die Regeln in `docs/04_PROCESSES/SUDOERS_OMEGA_DAEMONS.md`.
+    - Nutze für System-Dienste (`omega-backend`, `omega-frontend`, etc.) bevorzugt `systemctl` ohne `sudo`, falls die NOPASSWD-Regeln aktiv sind.
+
+4.  **Arch Linux Spezifika:**
+    - Nutze `pkexec` für grafische Authentifizierungs-Abfragen, falls `sudo` fehlschlägt.
+    - Pfade wie `/usr/bin/systemctl` sind zu bevorzugen.
+
+## VERBOTEN
+
+- Den Operator fragen, wie man Befehle ausführt, wenn die Lösung in der `.env` oder der Dokumentation steht.
+- `[ACTION:open_terminal]` als Standard-Aktion vorschlagen.
+- Passwörter im Klartext in Logs oder Dokumente schreiben.

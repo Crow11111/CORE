@@ -11,6 +11,7 @@
 #include <QVariantList>
 #include <QVariantMap>
 #include <QDateTime>
+#include <QDBusConnection>
 #include <vector>
 #include <atomic>
 
@@ -182,6 +183,11 @@ public:
     Q_INVOKABLE void removeCommand(int index);
     Q_INVOKABLE void updateCommand(int index, const QString &phrase, const QString &action, const QString &type);
     Q_INVOKABLE void resetCommandsToDefaults();
+
+public slots:
+    // D-Bus Methods
+    Q_INVOKABLE void executeLocalCommand(const QString& command);
+    Q_INVOKABLE void showNotification(const QString& title, const QString& message);
 
 signals:
     void lastResponseChanged();

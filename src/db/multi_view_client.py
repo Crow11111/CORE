@@ -26,6 +26,8 @@ from typing import Optional
 from dotenv import load_dotenv
 from loguru import logger
 
+from src.network import chroma_client
+
 load_dotenv()
 
 LENS_PREFIXES = {
@@ -35,6 +37,26 @@ LENS_PREFIXES = {
     "bio": "Living system, evolution, self-organization, metabolism: ",
     "info": "Information entropy, compression, signal, channel capacity: ",
     "narr": "Mythological archetype, narrative meaning, theological frame: ",
+}
+
+# --- 3 DYNAMISCHE FACETTEN (Keywords, Semantics, Media Descriptors) ---
+# Asynchrone Entkopplung: Die neuen Facetten ersetzen kuenftig die 6 starren Linsen.
+# Sie werden in isolierten Vektor-Raeumen (ChromaDB Collections) gespeichert.
+FACET_PREFIXES = {
+    "keywords": "Extract exact keywords, domain terminology, core entities, and literal identifiers: ",
+    "semantics": "Analyze underlying meaning, contextual intent, abstract concepts, and latent relationships: ",
+    "media_descriptors": "Describe modal properties, structural format, visual/auditory characteristics, and stylistic traits: ",
+}
+
+# ChromaDB Collections fuer isolierte Raeume (float-Kern)
+COLLECTION_MV_KEYWORDS = "mv_keywords"
+COLLECTION_MV_SEMANTICS = "mv_semantics"
+COLLECTION_MV_MEDIA = "mv_media"
+
+FACET_TO_COLLECTION = {
+    "keywords": COLLECTION_MV_KEYWORDS,
+    "semantics": COLLECTION_MV_SEMANTICS,
+    "media_descriptors": COLLECTION_MV_MEDIA,
 }
 
 # Gemini text-embedding / aktuelle API: typisch 3072 (Legacy 768 — Tabelle muss passen)
@@ -225,6 +247,43 @@ async def embed_multimodal(
         return None
 
 
+async def embed_3_facets(document: str) -> Optional[dict[str, dict[str, list[float]]]]:
+    """
+    Erzeugt 3 Facetten-Embeddings fuer ein Dokument (Keywords, Semantics, Media Descriptors).
+    Asynchrone Entkopplung: Die Generierung der 3 Facetten x 2 Dimensionen erfolgt parallel.
+
+    Returns:
+        {"keywords": {"768": [...], "3072": [...]}, ...} oder None
+    """
+    tasks_768 = {}
+    tasks_3072 = {}
+    for facet_name, prefix in FACET_PREFIXES.items():
+        full_text = prefix + document
+        # Parallel fuer 3 Facetten x 2 Dimensionen
+        tasks_768[facet_name] = _embed_ollama(full_text)
+        tasks_3072[facet_name] = _embed_gemini(full_text)
+
+    # 6 Embeddings simultan / asynchron abarbeiten
+    results_768 = await asyncio.gather(*tasks_768.values())
+    results_3072 = await asyncio.gather(*tasks_3072.values())
+
+    vectors = {}
+    for i, facet_name in enumerate(tasks_768.keys()):
+        v768 = results_768[i]
+        v3072 = results_3072[i]
+
+        if v768 is None and v3072 is None:
+            logger.error(f"Embedding fuer Facette '{facet_name}' (768 & 3072) fehlgeschlagen.")
+            return None
+
+        vectors[facet_name] = {
+            "768": v768,
+            "3072": v3072
+        }
+
+    return vectors
+
+
 async def embed_6_lenses(document: str) -> Optional[dict[str, dict[str, list[float]]]]:
     """
     Erzeugt 6 Perspektiv-Embeddings fuer ein Dokument (Funnel-Ansatz: 768 & 3072 dim).
@@ -334,17 +393,15 @@ async def insert_multi_view(
     v_multimodal: list[float] = None,
     modality: str = "text",
 ) -> bool:
-    """Fuegt ein Multi-View-Embedding in pgvector ein (VPS via SSH + Docker psql).
-    Speichert dual-depth Vektoren (768 & 3072) fuer jede Linse.
-
-    v_multimodal: Optionaler nativ-multimodaler Vektor (Bild/Audio/Video/PDF via Gemini Embedding 2).
-    modality: text | image | audio | video | pdf | mixed
+    """Fuegt ein Multi-View-Embedding ein.
+    Duale Topologie: Text/Meta in PostgreSQL, Vektoren in ChromaDB (isolierte Raeume).
     """
     from src.logic_core.resonance_membrane import assert_resonance_float, assert_infrastructure_int
 
     assert_resonance_float("score", score)
     if e6_anchor_id is not None:
         assert_infrastructure_int("e6_anchor_id", e6_anchor_id)
+
     def _dq(s: str, base: str) -> str:
         t = base
         while f"${t}$" in s:
@@ -360,42 +417,68 @@ async def insert_multi_view(
     doc_id_esc = doc_id.replace("'", "''")
     src_esc = (source_collection or "").replace("'", "''")
 
-    # Spalten fuer 768 (Fast) und 3072 (Deep)
-    # v_math, ... sind bereits 3072 (laut psql \d)
-    fast_cols = "v_math_768, v_physics_768, v_philo_768, v_bio_768, v_info_768, v_narr_768"
-    deep_cols = "v_math, v_physics, v_philo, v_bio, v_info, v_narr"
+    # --- 1. ASYNC INGEST IN CHROMADB (Isolierte Vektor-Raeume) ---
+    is_3_facets = "keywords" in vectors
+    if is_3_facets:
+        chroma_tasks = []
+        for facet, v_data in vectors.items():
+            collection_name = FACET_TO_COLLECTION.get(facet)
+            if not collection_name: continue
 
-    cols = (
-        f"id, doc_id, document, source_collection, "
-        f"{fast_cols}, {deep_cols}, "
-        f"convergence_score, convergence_pairs, e6_anchor_id, metadata"
-    )
+            # Wir nutzen 3072 dim (Deep) fuer die primäre Vektor-Suche
+            emb = v_data.get("3072")
+            if not emb: continue
 
-    # Vektoren vorbereiten (768)
-    v768 = {k: _format_vector_for_pg(v["768"]) if v["768"] else "NULL" for k, v in vectors.items()}
-    # Vektoren vorbereiten (3072)
-    v3072 = {k: _format_vector_for_pg(v["3072"]) if v["3072"] else "NULL" for k, v in vectors.items()}
+            async def _add_to_chroma(c_name=collection_name, v=emb):
+                try:
+                    col = await chroma_client.get_collection(c_name)
+                    await asyncio.to_thread(
+                        col.add,
+                        ids=[row_id],
+                        embeddings=[v],
+                        metadatas=[{"doc_id": doc_id, "source": source_collection}]
+                    )
+                except Exception as e:
+                    logger.error(f"[Multi-View] Chroma Ingest ({c_name}) fehlgeschlagen: {e}")
 
-    vals = (
-        f"'{row_id}', '{doc_id_esc}', {_dq(document, 'd')}, '{src_esc}', "
-        f"'{v768['math']}', '{v768['physics']}', '{v768['philo']}', '{v768['bio']}', '{v768['info']}', '{v768['narr']}', "
-        f"'{v3072['math']}', '{v3072['physics']}', '{v3072['philo']}', '{v3072['bio']}', '{v3072['info']}', '{v3072['narr']}', "
-        f"{score}, {_dq(pairs_s, 'p')}::jsonb, {anchor}, {_dq(meta_s, 'm')}::jsonb"
-    )
+            chroma_tasks.append(_add_to_chroma())
 
-    # NULL-Handling (Vermeidung von 'NULL' in Strings)
-    for k in v768:
-        if v768[k] == "NULL": vals = vals.replace(f"'{v768[k]}'", "NULL")
-    for k in v3072:
-        if v3072[k] == "NULL": vals = vals.replace(f"'{v3072[k]}'", "NULL")
+        if chroma_tasks:
+            await asyncio.gather(*chroma_tasks)
 
-    # Finales SQL
+    # --- 2. INGEST IN POSTGRESQL (Kausal-Archiv / int-Domäne) ---
+    # Wir behalten die Spalten-Struktur bei, mappen aber die 3 Facetten auf die ersten 3 Lens-Spalten
+    # oder nutzen NULL falls nicht 3-facet.
+    # Perspektivisch sollte die PG-Tabelle auf v_keywords etc. migriert werden.
+
+    if is_3_facets:
+        # Mapping: keywords -> v_math, semantics -> v_physics, media -> v_philo
+        v_k = _format_vector_for_pg(vectors["keywords"]["3072"]) if vectors.get("keywords", {}).get("3072") else "NULL"
+        v_s = _format_vector_for_pg(vectors["semantics"]["3072"]) if vectors.get("semantics", {}).get("3072") else "NULL"
+        v_m = _format_vector_for_pg(vectors["media_descriptors"]["3072"]) if vectors.get("media_descriptors", {}).get("3072") else "NULL"
+
+        cols = "id, doc_id, document, source_collection, v_math, v_physics, v_philo, convergence_score, convergence_pairs, e6_anchor_id, metadata"
+        vals = f"'{row_id}', '{doc_id_esc}', {_dq(document, 'd')}, '{src_esc}', '{v_k}', '{v_s}', '{v_m}', {score}, {_dq(pairs_s, 'p')}::jsonb, {anchor}, {_dq(meta_s, 'm')}::jsonb"
+    else:
+        # Legacy 6-Lenses Pfad
+        fast_cols = "v_math_768, v_physics_768, v_philo_768, v_bio_768, v_info_768, v_narr_768"
+        deep_cols = "v_math, v_physics, v_philo, v_bio, v_info, v_narr"
+        cols = f"id, doc_id, document, source_collection, {fast_cols}, {deep_cols}, convergence_score, convergence_pairs, e6_anchor_id, metadata"
+        v768 = {k: _format_vector_for_pg(v["768"]) if v["768"] else "NULL" for k, v in vectors.items()}
+        v3072 = {k: _format_vector_for_pg(v["3072"]) if v["3072"] else "NULL" for k, v in vectors.items()}
+        vals = (
+            f"'{row_id}', '{doc_id_esc}', {_dq(document, 'd')}, '{src_esc}', "
+            f"'{v768['math']}', '{v768['physics']}', '{v768['philo']}', '{v768['bio']}', '{v768['info']}', '{v768['narr']}', "
+            f"'{v3072['math']}', '{v3072['physics']}', '{v3072['philo']}', '{v3072['bio']}', '{v3072['info']}', '{v3072['narr']}', "
+            f"{score}, {_dq(pairs_s, 'p')}::jsonb, {anchor}, {_dq(meta_s, 'm')}::jsonb"
+        )
+
+    vals = vals.replace("'NULL'", "NULL")
     if v_multimodal:
         cols += ", v_multimodal"
         vals += f", '{_format_vector_for_pg(v_multimodal)}'"
 
     sql = f"INSERT INTO multi_view_embeddings ({cols}) VALUES ({vals}) ON CONFLICT (id) DO NOTHING;"
-
     ok, _ = await _run_pg_sql(sql)
     return ok
 
@@ -415,97 +498,95 @@ async def search_multi_view(
     limit: int = 5,
     source_collection: str = None,
     use_3072: bool = True,
+    use_3_facets: bool = False,
 ) -> list[dict]:
-    """Sucht in pgvector nach dem query-String (RAG via Cosine-Similarity).
-    Standardmaessig ueber 3072-dim Vektoren (Deep Resonance).
+    """Sucht nach Dokumenten.
+    Duale Topologie: Vektor-Suche in ChromaDB (float), Hydrierung via PostgreSQL (int).
     """
-    # Wenn use_3072, nutzen wir Gemini Embedding (API)
-    # Wenn False, nutzen wir Ollama (lokal)
+    # 1. Vektorisierung
     vec = await (embed_text(query) if use_3072 else embed_local(query))
     if not vec:
         return []
 
-    # v_philo ist 3072 (Deep), v_philo_768 ist 768 (Fast)
-    col_to_use = "v_philo" if (use_3072 and len(vec) == 3072) else "v_philo_768"
+    results_map = {} # row_id -> {similarity, count}
 
-    # NUTZE -t (tuples only) und -A (unaligned) für saubere Ausgabe
-    key, host, user, docker_cmd = _multiview_ssh_config()
-    clean_docker_cmd = docker_cmd + " -t -A -F '|'"
+    # --- 2. ASYNC VEKTOR-SUCHE IN CHROMADB ---
+    if use_3_facets:
+        # Tesserakt-Suche: Simultan gegen alle Facetten
+        async def _query_facet(facet_name):
+            try:
+                col_name = FACET_TO_COLLECTION[facet_name]
+                col = await chroma_client.get_collection(col_name)
+                # Chroma query liefert Distanzen (kleiner = besser)
+                res = await asyncio.to_thread(
+                    col.query,
+                    query_embeddings=[vec],
+                    n_results=limit * 2
+                )
+                if res["ids"] and res["ids"][0]:
+                    for i, row_id in enumerate(res["ids"][0]):
+                        dist = res["distances"][0][i]
+                        sim = 1.0 - dist # Umwandlung in Aehnlichkeit
+                        if row_id not in results_map:
+                            results_map[row_id] = {"sim": sim, "hits": 1}
+                        else:
+                            results_map[row_id]["sim"] += sim
+                            results_map[row_id]["hits"] += 1
+            except Exception as e:
+                logger.error(f"[Multi-View] Search Facet {facet_name} failed: {e}")
 
-    sql = f"""
-    SELECT doc_id, document, source_collection, metadata,
-           (1 - ({col_to_use} <=> '{v_str}')) as similarity
-    FROM multi_view_embeddings
-    """
-    if source_collection:
-        sql += f" WHERE source_collection = '{source_collection.replace(chr(39), chr(39)+chr(39))}'"
+        await asyncio.gather(*[_query_facet(f) for f in FACET_PREFIXES])
 
-    sql += f" ORDER BY similarity DESC LIMIT {limit};"
+        # Sortieren nach akkumulierter Simularitaet / Hits (Konvergenz)
+        sorted_ids = sorted(results_map.keys(), key=lambda x: results_map[x]["sim"], reverse=True)[:limit]
+        if not sorted_ids: return []
 
-    import subprocess
-    ssh_cmd = [
-        "ssh", "-o", "StrictHostKeyChecking=no", "-o", "ConnectTimeout=15",
-        "-i", key, f"{user}@{host}", clean_docker_cmd,
-    ]
+        # Hydrierung aus PG
+        id_list = ", ".join(f"'{sid}'" for sid in sorted_ids)
+        sql = f"SELECT id, doc_id, document, source_collection, metadata FROM multi_view_embeddings WHERE id IN ({id_list});"
 
-    try:
-        def _run():
-            return subprocess.run(
-                ssh_cmd, input=sql.encode("utf-8"), capture_output=True, timeout=30
-            )
-        result = await asyncio.to_thread(_run)
-        out = result.stdout.decode("utf-8", errors="replace")
-    except Exception as e:
-        logger.error(f"pgvector search error: {e}")
-        return []
+    else:
+        # Legacy Pfad: Suche direkt in PG (pgvector)
+        v_str = _format_vector_for_pg(vec)
+        col_to_use = "v_philo" if (use_3072 and len(vec) == 3072) else "v_philo_768"
+        sql = f"""
+        SELECT id, doc_id, document, source_collection, metadata,
+               (1 - ({col_to_use} <=> '{v_str}')) as similarity
+        FROM multi_view_embeddings
+        """
+        if source_collection:
+            sql += f" WHERE source_collection = '{source_collection.replace(chr(39), chr(39)+chr(39))}'"
+        sql += f" ORDER BY similarity DESC LIMIT {limit};"
+
+    # --- 3. DATEN ABHOLEN & PARSEN ---
+    ok, out = await _run_pg_sql(sql)
+    if not ok: return []
 
     results = []
-    # DEBUG: Zeige rohe psql-Ausgabe
-    # print(f"DEBUG: Raw PSQL output: {repr(out)}")
-
-    # Dirty-Parse: psql -t -A gibt Newlines im Text als echte Newlines aus.
-    # Wir suchen nach Zeilen, die mit einem doc_id-Muster (z.B. core_vps_nodes_...) beginnen
-    # oder wir parsen den gesamten String nach dem Muster: doc_id | document | source | metadata | similarity
-
+    # Parsing (analog zu bestehendem Code, aber flexibler)
     import re
-    # Muster für eine Zeile: doc_id (word chars + -) | text (greedy) | source | meta | similarity (float)
-    # Da document alles enthalten kann, ist es schwer. Aber doc_id ist meist strukturiert.
-    # Wir probieren es zeilenweise und mergen Chunks.
-
-    # DEBUG: Zeige rohe psql-Ausgabe
-    # print(f"DEBUG: Raw PSQL output: {repr(out)}")
-
-    # Dirty-Parse: psql -t -A gibt Newlines im Text als echte Newlines aus.
-    # Wir nutzen ein robusteres Muster. Da wir doc_id, document, source, metadata, similarity haben:
-    # doc_id ist am Anfang einer Zeile, gefolgt von |, dann Text, dann |source|metadata|similarity
-    # similarity ist ein float am Ende einer Zeile
-
-    import re
-    # Matcht: doc_id | rest... | source | metadata | float
-    # Wir nehmen den gesamten Output und suchen nach dem Muster
-    # Wir nehmen den gesamten Output und suchen nach dem Muster
-    # doc_id | document (multiline) | source | metadata | similarity
-    import re
-    # Wir suchen nach doc_id am Anfang einer Zeile, gefolgt von |
-    # Dann nehmen wir alles bis zum vor-vor-vorletzten | in dieser "Einheit"
-    # Da psql -t -A -F '|' alles flach ausgibt, sind Newlines im document das Problem.
-
-    # Versuche den gesamten Block zu splitten, wo doc_id| am Zeilenanfang steht
-    # Wir wissen dass doc_id ein bestimmtes Format hat (word chars, -, _)
-    blocks = re.split(r"^(?=[a-zA-Z0-9_\-]+\|)", out, flags=re.MULTILINE)
+    # Matcht row_id (UUID) am Zeilenanfang
+    blocks = re.split(r"^(?=[a-f0-9-]{36}\|)", out, flags=re.MULTILINE)
 
     for block in blocks:
         if not block.strip(): continue
-        # Ein Block sollte doc_id | text... | source | meta | sim sein
-        # Aber text kann | enthalten. sim ist am Ende nach dem letzten |
         parts = block.strip().split("|")
-        if len(parts) >= 5:
+        if len(parts) >= 4:
             try:
-                sim = float(parts[-1].strip())
-                meta = parts[-2].strip()
-                source = parts[-3].strip()
-                doc_id = parts[0].strip()
-                document = "|".join(parts[1:-3]).strip()
+                row_id = parts[0].strip()
+                doc_id = parts[1].strip()
+                # document kann multiline sein
+                sim = 0.0
+                if not use_3_facets:
+                    sim = float(parts[-1].strip())
+                    meta = parts[-2].strip()
+                    source = parts[-3].strip()
+                    document = "|".join(parts[2:-3]).strip()
+                else:
+                    sim = results_map.get(row_id, {}).get("sim", 0.0)
+                    meta = parts[-1].strip()
+                    source = parts[-2].strip()
+                    document = "|".join(parts[2:-2]).strip()
 
                 results.append({
                     "doc_id": doc_id,
@@ -515,6 +596,11 @@ async def search_multi_view(
                     "similarity": sim
                 })
             except Exception: continue
+
+    # Nochmals sortieren falls aus Chroma (da PG-Abfrage unsortiert sein koennte)
+    if use_3_facets:
+        results = sorted(results, key=lambda x: x["similarity"], reverse=True)
+
     return results
 
 
@@ -523,14 +609,16 @@ async def ingest_document(
     doc_id: str = None,
     source_collection: str = "",
     metadata: dict = None,
+    use_3_facets: bool = False,
 ) -> Optional[dict]:
     """
-    Vollstaendige Ingest-Pipeline: Text -> 6 Embeddings -> Konvergenz -> pgvector.
+    Vollstaendige Ingest-Pipeline: Text -> 6 Linsen ODER 3 Facetten -> Konvergenz -> pgvector.
+    Asynchrone Entkopplung: Mittels 'use_3_facets' kann dynamisch auf die neue Struktur gewechselt werden.
     """
     if not doc_id:
         doc_id = str(uuid.uuid4())[:12]
 
-    vectors = await embed_6_lenses(document)
+    vectors = await (embed_3_facets(document) if use_3_facets else embed_6_lenses(document))
     if not vectors:
         return {"doc_id": doc_id, "convergence_score": 0, "pairs": [], "success": False}
 
@@ -565,12 +653,13 @@ async def ingest_multimodal(
     doc_id: str = None,
     source_collection: str = "",
     metadata: dict = None,
+    use_3_facets: bool = False,
 ) -> Optional[dict]:
-    """Multimodale Ingest-Pipeline: Text-Repr. + Mediendatei → 6 Linsen + Multimodal-Vektor → pgvector.
+    """Multimodale Ingest-Pipeline: Text-Repr. + Mediendatei → 6 Linsen ODER 3 Facetten + Multimodal-Vektor → pgvector.
 
-    Erzeugt 6 Text-Linsen-Embeddings aus dem document-String UND
-    ein nativ-multimodales Embedding aus der Mediendatei (Bild/Audio/Video/PDF)
-    via Gemini Embedding 2. Beide landen im selben 3072-dim Vektorraum.
+    Asynchrone Entkopplung: Parameter 'use_3_facets' wechselt dynamisch auf die neuen Spalten,
+    waehrend das nativ-multimodale Embedding aus der Mediendatei (Bild/Audio/Video/PDF)
+    unveraendert in den 3072-dim Vektorraum ueberfuehrt wird.
     """
     if not doc_id:
         doc_id = str(uuid.uuid4())[:12]
@@ -584,7 +673,12 @@ async def ingest_multimodal(
     }
     modality = modality_map.get(mime_type, "mixed")
 
-    text_task = embed_6_lenses(document)
+    # Asynchrone Entkopplung: Wahl zwischen altem und neuem Embedding-Schema
+    if use_3_facets:
+        text_task = embed_3_facets(document)
+    else:
+        text_task = embed_6_lenses(document)
+
     mm_task = embed_multimodal(file_path, mime_type, text_context=document[:500])
 
     vectors, v_mm = await asyncio.gather(text_task, mm_task)

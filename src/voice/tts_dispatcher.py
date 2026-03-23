@@ -38,7 +38,7 @@ load_dotenv()
 DEFAULT_ENTITY = "media_player.schreibtisch"
 DEFAULT_STREAM_PORT = 8002
 # CORE-Default-Stimme (core_dialog aus voice_config)
-DEFAULT_CORE_VOICE_ID = "0ISBUrWf7OGBgepl5lu2"
+DEFAULT_CORE_VOICE_ID = "NE7AIW5DoJ7lUosXV2KR"
 
 
 def _gemini_tts_available() -> bool:

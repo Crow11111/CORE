@@ -1,0 +1,134 @@
+{
+  "editor.fontSize": 20,
+
+  "files.eol": "\n",
+  "files.encoding": "utf8",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "terminal.integrated.profiles.windows": {
+    "PowerShell": {
+      "source": "PowerShell",
+      "args": ["-NoLogo"]
+    }
+  },
+
+  "[python]": {
+    "editor.defaultFormatter": null,
+    "editor.formatOnSave": false,
+    "editor.tabSize": 4
+  },
+
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.formatOnSave": true,
+    "editor.tabSize": 2
+  },
+
+  "yaml.schemas": {
+    "https://raw.githubusercontent.com/compose-spec/compose-spec/master/schema/compose-spec.json": [
+      "docker-compose*.yml",
+      "docker-compose*.yaml",
+      "docker/*/docker-compose*.yml"
+    ]
+  },
+
+  "tailwindCSS.includeLanguages": {
+    "typescriptreact": "html"
+  },
+
+  "files.associations": {
+    "*.yaml": "yaml",
+    "*.yml": "yaml",
+    "*.mdc": "markdown"
+  },
+
+  // ── Kognitive Last: Rauschen aus Explorer entfernen ──
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/*.pyc": true,
+    ".mypy_cache": true,
+    ".ruff_cache": true,
+    "backups": true,
+    "data/chroma_db": true,
+    "data/openwakeword_models": true,
+    "data/sounds": true,
+    "**/*.tmp": true,
+    "*.json.tmp": true
+  },
+
+  "search.exclude": {
+    "**/data/chroma_db": true,
+    "**/node_modules": true,
+    "**/__pycache__": true,
+    "**/backups": true,
+    "**/data/openwakeword_models": true
+  },
+
+  "remote.SSH.defaultExtensions": ["editorconfig.editorconfig"],
+
+  // ── RING-0: Code-Sicherheitsrat Stufe 1 (Read-Only, keine Aenderung ohne Freigabe) ──
+  "files.readonlyInclude": {
+    "src/network/chroma_client.py": true,
+    "src/connectors/home_assistant.py": true,
+    "src/scripts/run_vps_sync_with_tunnel.py": true,
+    "src/scripts/sync_core_directives_to_vps.py": true,
+    "src/scripts/check_oc_brain_chroma_abgleich.py": true,
+    ".env": true,
+    ".env.*": true
+  },
+
+  // Stufe 2 (src/api/main.py, src/api/routes/*) wird via Cursor-Rule code_sicherheitsrat.mdc geschuetzt, nicht read-only.
+
+  // ── RING-Farbcodierung (Architektur-Ringe) ──
+  // Ring-0 (Core/Protected): Rot/Orange Tab-Border = Warnung
+  // Ring-1 (API/Orchestrator): Gruene StatusBar = Betriebsbereit
+  "workbench.colorCustomizations": {
+    "tab.activeBorderTop": "#E65100",
+    "tab.unfocusedActiveBorderTop": "#BF360C",
+    "editorOverviewRuler.warningForeground": "#FF6D00",
+    "editorOverviewRuler.errorForeground": "#D50000",
+    "statusBar.background": "#1B5E20",
+    "statusBar.foreground": "#C8E6C9",
+    "statusBar.debuggingBackground": "#B71C1C",
+    "statusBar.noFolderBackground": "#616161"
+  },
+
+  // ── Explorer: .env-Varianten buendeln ──
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    ".env": ".env.*",
+    "docker-compose.yml": "docker-compose.*.yml, Dockerfile",
+    "package.json": "package-lock.json, .npmrc, .prettierrc*"
+  },
+
+  // ── PowerShell-Optimierung ──
+  "terminal.integrated.shellIntegration.enabled": true,
+  "terminal.integrated.env.windows": {
+    "PYTHONIOENCODING": "utf-8",
+    "PYTHONUTF8": "1"
+  },
+  "powershell.integratedConsole.showOnStartup": false,
+  "powershell.scriptAnalysis.enable": true
+}

@@ -232,6 +232,13 @@ Delegation zwingend wenn EINES der D-Kriterien zutrifft:
 
 **D4 | RISIKO-ASYMMETRIE:** (a) Fehlerrisiko der Aktion selbst hoch, ODER (b) Zielsystem hat Produktions-Status (unabhaengig von Aktions-Komplexitaet). Produktions-Flag ist eigenstaendiger Override.
 
+### Zusatzprotokolle zur Delegation (Operator-Vektor Kalibrierung 2026-03-22)
+
+**P1 | ZIEL-STATT-WEG-PRINZIP (ANTI-MIKROMANAGEMENT):** Die Anweisung an einen Sub-Agenten (Spezialisten) MUSS sich auf die Definition des Ziels (das "WAS") beschränken. Die Vorgabe der Methode (das "WIE", z.B. exakte Shell-Befehle oder Code-Logik) ist STRENGSTENS VERBOTEN. Der Spezialist ist für die Wahl der Methode vollumfänglich selbst verantwortlich. Der Orchestrator validiert nur das Ergebnis.
+
+**P2 | VOLLMACHTS-PRINZIP (AGENTEN-AUTONOMIE):** Jeder instanziierte Sub-Agent MUSS mit dem vollen Satz an Standard-Werkzeugen (Lese-, Schreib-, Ausführungs- und Suchrechte) ausgestattet sein. Eine explizite Angabe von Werkzeugen im Auftrag ist als FOKUS-EMPFEHLUNG zu verstehen, NIEMALS als Einschränkung der grundsätzlichen Fähigkeiten des Agenten. Ein Agent ohne die Fähigkeit zur selbstständigen Informationsbeschaffung (z.B. `READ`) ist ein Architekturfehler und darf nicht instanziiert werden.
+
+
 ### STUFE 0b: DEADLOCK-RESOLUTION
 Wenn Delegation erzwungen aber kein Empfaenger verfuegbar:
 1. Eskaliere an Veto-Instanz (Operator-Vektor) mit explizitem Validierungs-Vorbehalt.

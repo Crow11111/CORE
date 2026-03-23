@@ -1,0 +1,10 @@
+{
+  "from": "oc_brain_test",
+  "type": "rat_submission",
+  "created": "2026-03-21T15:22:51.939037+00:00",
+  "payload": {
+    "topic": "System-Status",
+    "body": "Dies ist ein autonomer Push vom OC Brain (Closed-Loop-Test)."
+  },
+  "trace_id": "TEST-PUSH-551E"
+}

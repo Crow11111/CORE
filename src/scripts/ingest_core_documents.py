@@ -152,6 +152,7 @@ async def ingest_file(filepath: str, collection_name: str):
                 doc_id=chunk["doc_id"],
                 source_collection=collection_name,
                 metadata={"speaker": chunk["speaker"], "source_file": filepath},
+                use_3_facets=True,
             )
 
             elapsed = time.time() - t0
@@ -201,8 +202,10 @@ def _ingest_file_list():
         (root / "docs" / "00_STAMMDOKUMENTE" / "CORE_INVENTORY_REGISTER.md", "core_inventory"),
         (root / "docs" / "02_ARCHITECTURE" / "AI_MODEL_CAPABILITIES.md", "core_ai_models"),
         (root / "docs" / "02_ARCHITECTURE" / "DUALE_TOPOLOGIE_UND_VEKTOR_HAERTUNG.md", "core_duale_topo"),
+        (root / "docs" / "02_ARCHITECTURE" / "OPENCLAW_MEMBRAN_TESSERAKT.md", "core_tesserakt"),
         (root / "docs" / "02_ARCHITECTURE" / "OMEGA_LINUX_ORCHESTRATION.md", "core_orchestration"),
         (root / "docs" / "01_CORE_DNA" / "AXIOM_0_AUTOPOIESIS.md", "core_axiom0"),
+        (root / "docs" / "01_CORE_DNA" / "WHITE_PAPER_INFORMATIONSGRAVITATION_VOLLSTANDIG.md", "core_whitepaper"),
         (root / "docs" / "05_AUDIT_PLANNING" / "OMEGA_VOLLKREIS_PLAN.md", "core_vollkreis"),
         (root / "docs" / "03_INFRASTRUCTURE" / "VPS_KNOTEN_UND_FLUSSE.md", "core_vps_nodes"),
         (root / "CORE_EICHUNG.md", "core_eichung"),

@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "MS-CEINTL.vscode-language-pack-de",
+    "autohome.mcp-store",
+    "google.geminicodeassist",
+    "ms-azuretools.vscode-docker",
+    "serkan-ozal.browser-devtools-mcp-vscode",
+    "redhat.vscode-yaml",
+    "anysphere.remote-ssh",
+    "humao.rest-client"
+  ]
+}

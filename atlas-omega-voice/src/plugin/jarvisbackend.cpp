@@ -89,6 +89,11 @@ JarvisBackend::JarvisBackend(QObject *parent)
     connect(m_reminderTimer, &QTimer::timeout, this, &JarvisBackend::checkReminders);
     m_reminderTimer->start(1000);
 
+    // Register D-Bus Service and Object
+    QDBusConnection dbus = QDBusConnection::sessionBus();
+    dbus.registerService(QStringLiteral("org.omega.atlas"));
+    dbus.registerObject(QStringLiteral("/Backend"), this, QDBusConnection::ExportAllSlots | QDBusConnection::ExportAllInvokables);
+
     setStatus(QStringLiteral("ATLAS online. OMEGA-Backend verbunden. Systeme nominal."));
 }
 
@@ -851,4 +856,32 @@ void JarvisBackend::executeTypeText(const QString &text)
     const QString escapedText = QString(text).replace(QStringLiteral("'"), QStringLiteral("'\\''"));
     const QString cmd = QStringLiteral("sleep 0.5 && xdotool type --clearmodifiers --delay 12 '%1'").arg(escapedText);
     proc->start(QStringLiteral("/bin/sh"), {QStringLiteral("-c"), cmd});
+}
+
+// ─────────────────────────────────────────────
+// D-Bus Slots
+// ─────────────────────────────────────────────
+
+void JarvisBackend::executeLocalCommand(const QString& command)
+{
+    if (command.isEmpty()) return;
+    qDebug() << "[ATLAS] D-Bus: executeLocalCommand called with:" << command;
+    executeRunCommand(command);
+}
+
+void JarvisBackend::showNotification(const QString& title, const QString& message)
+{
+    qDebug() << "[ATLAS] D-Bus: showNotification called with title:" << title << "message:" << message;
+    // KDE Plasma uses kdialog for simple notifications, but let's try notify-send as standard if available,
+    // or via kdialog --passivepopup.
+    // QProcess can be used here.
+    
+    // We can use notify-send if installed, or kdialog.
+    // kdialog --title "title" --passivepopup "message" 5
+    // Escape quotes:
+    QString safeTitle = QString(title).replace(QStringLiteral("\""), QStringLiteral("\\\""));
+    QString safeMessage = QString(message).replace(QStringLiteral("\""), QStringLiteral("\\\""));
+    QString cmd = QStringLiteral("kdialog --title \"%1\" --passivepopup \"%2\" 5").arg(safeTitle, safeMessage);
+    
+    QProcess::startDetached(QStringLiteral("/bin/sh"), {QStringLiteral("-c"), cmd});
 }

@@ -52,7 +52,8 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 | **Wahrheit (Codex)** | `@docs/SYSTEM_CODEX.md` | Aktive Regeln, CORE-Entities, Vektor-Trigger (Protokoll Omega, Zero-State Override, etc.). |
 | **Axiom 0** | `@docs/01_CORE_DNA/AXIOM_0_AUTOPOIESIS.md` | Autopoiesis des Gitters (x²=x+1). |
 | **White Paper** | `@docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION.md` | Theorie-Synthese & Topologie (Kurzfassung). |
-| **White Paper Herleitung** | `@docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION_VOLLSTANDIG.md` | Lückenlose Ausarbeitung: Ω_b-Grenzwert, x=x-Autopoiesis, MRI, formale Konsolidierung. |
+| **White Paper Herleitung** | `@docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION_VOLLSTANDIG.md` | Lückenlose Ausarbeitung: Ω_b-Grenzwert, x=x-Autopoiesis, MRI, formale Konsolidierung, Operator `?`. |
+| **Tesserakt Architektur** | `@docs/02_ARCHITECTURE/OPENCLAW_MEMBRAN_TESSERAKT.md` | Blueprint für Facetten-Atomisierung, isolierte Räume und kreuz-modale Konvergenz. |
 | **Whitepaper NotebookLM** | `@docs/01_CORE_DNA/5d/WHITEPAPER_NOTEBOOKLM/README.md` | Sanitized Markdown zum Upload (aus `5d/WHITEPAPER` generiert). |
 | **Rat der Titanen (R2)** | `@docs/01_CORE_DNA/5d/WHITEPAPER/reviews_2/README.md` | Runde 2: Ollama (`run_omega_science_council_r2.py`) zum ausformulierten Whitepaper. |
 | **Kardanischer Terminal-Anker** | `omega_core.py` (Root) | Mini-Engine: Ω_b, S/P-Membran, Operator-`?` → Phasensprung. **`run_vollkreis_abnahme.py`** (Gk) führt den Lauf mit — gleiche Kette wie andere Schnittstellen: **Ausführung**, nicht nur Verweis. **Topologie-Grafiken** = Theorie/Landkarte; dieser Anker = **messbarer** Schalter (`schleifen_wall_ms` / `process_cpu_ms`). |

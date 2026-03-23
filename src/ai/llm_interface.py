@@ -51,25 +51,25 @@ class ResilientLLMInterface:
         import math
         from src.api.middleware.friction_guard import FRICTION_STATE
         from src.config.core_state import BARYONIC_DELTA
-        
+
         # --- Fraktales Padding (Die Helix - Hardware Bridge) ---
         # Wir berechnen das Padding basierend auf der ECHTEN physikalischen CPU-Auslastung (Transistor-Hitze)
         import psutil
         from src.logic_core.crystal_grid_engine import CrystalGridEngine
-        
+
         cpu_load_percent = psutil.cpu_percent(interval=0.1)
         cpu_load_norm = cpu_load_percent / 100.0
-        
+
         # Mappe Load auf Resonanz (0.951 bis BARYONIC_DELTA)
         real_resonance = 0.951 - (cpu_load_norm * (0.951 - BARYONIC_DELTA))
         snapped_resonance = CrystalGridEngine.apply_operator_query(real_resonance)
-        
+
         phase_shift = 1.0 - snapped_resonance # Naeher an 1.0 = entspannt, tief = gestresst/hohes Padding
-        
+
         base_delay_sec = 0.049
         k = 3.58
         padding_sec = base_delay_sec * math.exp(k * phase_shift)
-        
+
         logger.info(f"[HARDWARE-BRUECKE] Echte CPU-Last: {cpu_load_percent:.1f}% -> Snapped Vektor: {snapped_resonance:.3f} -> Latenz: {padding_sec:.2f}s")
         await asyncio.sleep(padding_sec)
 
@@ -86,7 +86,7 @@ class ResilientLLMInterface:
                     send_message_to_agent_async(full_prompt, agent_id="main", timeout=5.0),
                     timeout=5.5
                 )
-                
+
                 if success and "LLM error" not in response and "expired" not in response.lower():
                     logger.info("[LLM-Resilience] L1 erfolgreich.")
                     return response
@@ -150,9 +150,10 @@ class LLMInterface:
         fast_path_entities = {
             "bad": "light.bad",
             "badezimmer": "light.bad",
-            "küche": "light.kueche",
-            "kuche": "light.kueche",
-            "kueche": "light.kueche",
+            "küche": "light.led_kuche",
+            "kuche": "light.led_kuche",
+            "kueche": "light.led_kuche",
+            "küchenlicht": "light.led_kuche",
             "flur": "light.flur",
             "deckenlampe": "light.deckenlampe",
             "wohnzimmer decke": "light.deckenlampe",
@@ -193,7 +194,7 @@ class LLMInterface:
                 "3. If 'command', the 'action' MUST be one of: 'turn_on', 'turn_off', 'toggle'.\n"
                 "4. If 'command', the 'target_entity' MUST be EXACTLY chosen from this list:\n"
                 "   - Bad / Badezimmer -> light.bad\n"
-                "   - Küche / Kuche / Kueche -> light.kueche\n"
+                "   - Küche / Kuche / Kueche -> light.led_kuche\n"
                 "   - Deckenlampe / Wohnzimmer Decke -> light.deckenlampe\n"
                 "   - Stehlampe -> light.stehlampe\n"
                 "   - Flur -> light.flur\n"
@@ -227,7 +228,7 @@ class LLMInterface:
                 SystemMessage(content=system_prompt),
                 HumanMessage(content=user_input)
             ]
-            
+
             # Nutzt das resiliente Interface
             result = await self.heavy_layer.ainvoke(messages)
 

@@ -1,0 +1,152 @@
+[25.02.2026 13:47:10,52] Batch started 
+ffmpeg version 8.0.1-essentials_build-www.gyan.dev Copyright (c) 2000-2025 the FFmpeg developers
+  built with gcc 15.2.0 (Rev8, Built by MSYS2 project)
+  configuration: --enable-gpl --enable-version3 --enable-static --disable-w32threads --disable-autodetect --enable-fontconfig --enable-iconv --enable-gnutls --enable-libxml2 --enable-gmp --enable-bzlib --enable-lzma --enable-zlib --enable-libsrt --enable-libssh --enable-libzmq --enable-avisynth --enable-sdl2 --enable-libwebp --enable-libx264 --enable-libx265 --enable-libxvid --enable-libaom --enable-libopenjpeg --enable-libvpx --enable-mediafoundation --enable-libass --enable-libfreetype --enable-libfribidi --enable-libharfbuzz --enable-libvidstab --enable-libvmaf --enable-libzimg --enable-amf --enable-cuda-llvm --enable-cuvid --enable-dxva2 --enable-d3d11va --enable-d3d12va --enable-ffnvcodec --enable-libvpl --enable-nvdec --enable-nvenc --enable-vaapi --enable-openal --enable-libgme --enable-libopenmpt --enable-libopencore-amrwb --enable-libmp3lame --enable-libtheora --enable-libvo-amrwbenc --enable-libgsm --enable-libopencore-amrnb --enable-libopus --enable-libspeex --enable-libvorbis --enable-librubberband
+  libavutil      60.  8.100 / 60.  8.100
+  libavcodec     62. 11.100 / 62. 11.100
+  libavformat    62.  3.100 / 62.  3.100
+  libavdevice    62.  1.100 / 62.  1.100
+  libavfilter    11.  4.100 / 11.  4.100
+  libswscale      9.  1.100 /  9.  1.100
+  libswresample   6.  1.100 /  6.  1.100
+Input #0, dshow, from 'video=Logitech BRIO':
+  Duration: N/A, start: 10512.512780, bitrate: N/A
+  Stream #0:0: Video: rawvideo (YUY2 / 0x32595559), yuyv422(tv, bt470bg/bt709/unknown), 640x480, 30 fps, 30 tbr, 10000k tbn, start 10512.512780
+Stream mapping:
+  Stream #0:0 -> #0:0 (rawvideo (native) -> h264 (libx264))
+Press [q] to stop, [?] for help
+[libx264 @ 000001deb3927980] using cpu capabilities: MMX2 SSE2Fast SSSE3 SSE4.2 AVX FMA3 BMI2 AVX2
+[libx264 @ 000001deb3927980] profile High 4:2:2, level 3.0, 4:2:2, 8-bit
+Output #0, mpegts, to 'pipe:':
+  Metadata:
+    encoder         : Lavf62.3.100
+  Stream #0:0: Video: h264, yuv422p(tv, bt470bg/bt709/unknown, progressive), 640x480, q=2-31, 30 fps, 90k tbn
+    Metadata:
+      encoder         : Lavc62.11.100 libx264
+    Side data:
+      cpb: bitrate max/min/avg: 0/0/0 buffer size: 0 vbv_delay: N/A
+frame=    4 fps=0.0 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.79x elapsed=0:00:00.50    frame=    4 fps=3.9 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.391x elapsed=0:00:01.02    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (80% of size: 3041280 [rtbufsize parameter])! frame dropped!
+[dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+frame=    4 fps=2.6 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.26x elapsed=0:00:01.53    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=1.9 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.195x elapsed=0:00:02.05    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=1.6 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.156x elapsed=0:00:02.56    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=1.3 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.13x elapsed=0:00:03.08    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=1.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.111x elapsed=0:00:03.59    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=1.0 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0972x elapsed=0:00:04.11    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.9 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0864x elapsed=0:00:04.63    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.8 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0777x elapsed=0:00:05.14    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.7 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0706x elapsed=0:00:05.66    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.6 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0647x elapsed=0:00:06.17    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.6 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0598x elapsed=0:00:06.69    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.6 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0555x elapsed=0:00:07.20    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.5 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0518x elapsed=0:00:07.72    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.5 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0485x elapsed=0:00:08.24    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.5 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0457x elapsed=0:00:08.75    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.4 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0431x elapsed=0:00:09.27    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.4 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0409x elapsed=0:00:09.78    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.4 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0388x elapsed=0:00:10.30    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.4 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.037x elapsed=0:00:10.81    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.4 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0353x elapsed=0:00:11.33    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.3 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0338x elapsed=0:00:11.85    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.3 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0323x elapsed=0:00:12.36    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.3 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0311x elapsed=0:00:12.88    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.3 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0299x elapsed=0:00:13.39    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.3 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0288x elapsed=0:00:13.91    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.3 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0277x elapsed=0:00:14.42    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.3 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0268x elapsed=0:00:14.94    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.3 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0259x elapsed=0:00:15.45    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.3 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.025x elapsed=0:00:15.97    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0243x elapsed=0:00:16.49    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0235x elapsed=0:00:17.00    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0228x elapsed=0:00:17.52    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0222x elapsed=0:00:18.03    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0216x elapsed=0:00:18.55    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.021x elapsed=0:00:19.06    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0204x elapsed=0:00:19.58    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0199x elapsed=0:00:20.10    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0194x elapsed=0:00:20.61    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0189x elapsed=0:00:21.13    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0185x elapsed=0:00:21.64    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.018x elapsed=0:00:22.16    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0176x elapsed=0:00:22.67    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0172x elapsed=0:00:23.19    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0169x elapsed=0:00:23.70    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0165x elapsed=0:00:24.22    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0162x elapsed=0:00:24.74    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0158x elapsed=0:00:25.25    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0155x elapsed=0:00:25.77    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.2 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0152x elapsed=0:00:26.28    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0149x elapsed=0:00:26.80    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0146x elapsed=0:00:27.31    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0144x elapsed=0:00:27.83    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0141x elapsed=0:00:28.34    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0139x elapsed=0:00:28.86    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0136x elapsed=0:00:29.38    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0134x elapsed=0:00:29.89    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0132x elapsed=0:00:30.41    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0129x elapsed=0:00:30.92    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0127x elapsed=0:00:31.44    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0125x elapsed=0:00:31.95    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 15 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0123x elapsed=0:00:32.47    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!
+    Last message repeated 14 times
+frame=    4 fps=0.1 q=20.0 size=      37KiB time=00:00:00.40 bitrate= 752.0kbits/s speed=0.0121x elapsed=0:00:32.99    [dshow @ 000001deae583dc0] real-time buffer [Logitech BRIO] [video input] too full or near too full (101% of size: 3041280 [rtbufsize parameter])! frame dropped!

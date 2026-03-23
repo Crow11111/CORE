@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>CORE Total Genesis</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <style>
+        body { background: #050507; color: #e0e0e6; font-family: sans-serif; padding: 20px; }
+        #content { max-width: 800px; margin: auto; }
+        img { max-width: 100%; display: block; margin: 20px auto; border: 1px solid #333; }
+        h1 { color: #00f2ff; border-bottom: 2px solid #00f2ff; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #444; padding: 8px; text-align: left; }
+    </style>
+</head>
+<body>
+    <div id="content">Rendere Dokument...</div>
+    <script id="md" type="text/markdown">
+# Test Render
+![Synthesis](assets/synthesis_matrix.png)
+    </script>
+    <script>
+        document.getElementById('content').innerHTML = marked.parse(document.getElementById('md').textContent);
+    </script>
+</body>
+</html>

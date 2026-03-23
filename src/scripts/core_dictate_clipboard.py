@@ -26,16 +26,16 @@ def check_audio_level(file_path):
 
         cmd = ["ffmpeg", "-i", file_path, "-af", "volumedetect", "-f", "null", "/dev/null"]
         res = subprocess.run(cmd, capture_output=True, text=True, timeout=5)
-        
+
         max_vol = -91.0
         mean_vol = -91.0
-        
+
         for line in res.stderr.splitlines():
             if "max_volume" in line:
                 max_vol = float(line.split(":")[-1].replace("dB", "").strip())
             if "mean_volume" in line:
                 mean_vol = float(line.split(":")[-1].replace("dB", "").strip())
-                
+
         return max_vol, mean_vol
     except Exception as e:
         print(f"Level check error: {e}")
@@ -110,6 +110,17 @@ def stop_recording():
 
     os.remove(PID_FILE)
 
+    # Robustes Warten: Stelle sicher, dass die Datei fertig geschrieben ist.
+    time.sleep(0.2) # Kurze initiale Pause
+    try:
+        initial_size = os.path.getsize(WAV_FILE)
+        time.sleep(0.2)
+        if os.path.getsize(WAV_FILE) != initial_size:
+             time.sleep(0.3) # Gib dem Prozess mehr Zeit
+    except FileNotFoundError:
+        show_notification("❌ Aufnahmedatei nicht gefunden.", "critical")
+        return
+
     max_vol, mean_vol = check_audio_level(WAV_FILE)
     if mean_vol < -55.0:
         show_notification(f"❌ KEIN SIGNAL (Mean: {mean_vol} dB).", "critical")
@@ -128,6 +139,7 @@ def stop_recording():
                     if mode == "live":
                         url += "?mode=live"
 
+                    f.seek(0) # WICHTIG: Dateizeiger für jeden Versuch zurücksetzen
                     files = {"audio": ("dictate.wav", f, "audio/wav")}
                     resp = requests.post(url, files=files, timeout=60)
 

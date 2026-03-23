@@ -73,11 +73,53 @@ class HomeAssistantClient:
         """Fetch detailed script configuration."""
         return await self._get_request("config/script/config/")
 
+    async def get_entity_state(self, entity_id: str) -> str:
+        """Deterministic method to get a single entity state."""
+        try:
+            client = await self._get_client()
+            timeout = get_friction_timeout(5.0)
+            timeout = max(1.0, abs(timeout))
+            response = await client.get(
+                f"/api/states/{entity_id}", timeout=httpx.Timeout(timeout)
+            )
+            response.raise_for_status()
+            data = response.json()
+            return str(data.get("state", "unknown"))
+        except httpx.HTTPError as e:
+            logger.error(f"HTTP error fetching state for {entity_id}: {e}")
+            return "error"
+        except Exception as e:
+            logger.error(f"Error fetching state for {entity_id}: {e}")
+            return "error"
+
+    async def call_ha_service(self, domain: str, service: str, entity_id: str) -> bool:
+        """Deterministic method to call a service for a specific entity."""
+        try:
+            client = await self._get_client()
+            timeout = get_friction_timeout(10.0)
+            timeout = max(1.0, abs(timeout))
+            service_data = {"entity_id": entity_id}
+            response = await client.post(
+                f"/api/services/{domain}/{service}",
+                json=service_data,
+                timeout=httpx.Timeout(timeout),
+            )
+            response.raise_for_status()
+            logger.info(f"Service call {domain}.{service} on {entity_id} successful.")
+            return True
+        except httpx.HTTPError as e:
+            logger.error(f"HTTP error calling service {domain}.{service} on {entity_id}: {e}")
+            return False
+        except Exception as e:
+            logger.error(f"Error calling service {domain}.{service} on {entity_id}: {e}")
+            return False
+
     async def call_service(self, domain, service, service_data=None):
         """Call a Home Assistant service."""
         try:
             client = await self._get_client()
             timeout = get_friction_timeout(10.0)
+            timeout = max(1.0, abs(timeout))
             response = await client.post(
                 f"/api/services/{domain}/{service}",
                 json=service_data or {},
@@ -109,7 +151,9 @@ class HomeAssistantClient:
 
         last_error = None
         client = await self._get_client()
-        fallback_timeout = httpx.Timeout(get_friction_timeout(5.0))
+        timeout_val = get_friction_timeout(5.0)
+        timeout_val = max(1.0, abs(timeout_val))
+        fallback_timeout = httpx.Timeout(timeout_val)
         for service_call in tts_services_to_try:
             domain, service = service_call.split('.')
             try:
@@ -140,16 +184,17 @@ class HomeAssistantClient:
         try:
             client = await self._get_client()
             timeout = get_friction_timeout(10.0)
+            timeout = max(1.0, abs(timeout))
             response = await client.get(
                 f"/api/{endpoint}", timeout=httpx.Timeout(timeout)
             )
             response.raise_for_status()
             return response.json()
         except httpx.HTTPError as e:
-            logger.error(f"HTTP error fetching {endpoint}: {e}")
+            logger.error(f"HTTP error fetching {endpoint}: {type(e).__name__} - {e} (Response: {getattr(e, 'response', None)})")
             return None
         except Exception as e:
-            logger.error(f"Error fetching {endpoint}: {e}")
+            logger.error(f"Error fetching {endpoint}: {type(e).__name__} - {e}")
             return None
 
     async def check_connection(self) -> bool:

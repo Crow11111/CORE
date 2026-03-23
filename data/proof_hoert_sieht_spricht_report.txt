@@ -1,0 +1,11 @@
+Report 2026-03-05T16:02:25.202446+00:00
+--- Proof: CORE hört / sieht / spricht ---
+
+[Sehen]
+  OK: /OMEGA_CORE\data\mx_test\proof_mx_20260305_160227.jpg | Quelle: scout_mx
+
+[Sprechen]
+  OK: /OMEGA_CORE\media\proof_tts.mp3 + WhatsApp gesendet
+
+[Hören]
+  OK: Audio-Event an OC Brain gesendet (/OMEGA_CORE\media\proof_voice_1772726553.wav) | Verifizierung: max_amp=3

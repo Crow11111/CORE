@@ -1,0 +1,6 @@
+13:36:07.615 INF go2rtc platform=windows/amd64 revision=b5948cf version=1.9.14
+13:36:07.646 INF config path="C:\\ATLAS_CORE\\driver\\go2rtc_win64\\go2rtc.yaml"
+13:36:07.648 INF [rtsp] listen addr=:8554
+13:36:07.648 INF [api] listen addr=:1984
+13:36:07.653 INF [webrtc] listen tcp addr=[::]:8555
+13:36:07.656 INF [webrtc] listen udp addr=192.168.178.110:8555

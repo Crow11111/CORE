@@ -67,7 +67,7 @@ Trifft ein Vektor im korrekten Resonanzwinkel auf den Kern ($\Omega_b = 0.049$),
 Die formale Struktur der Informationsgravitation erfordert ein Abweichen von der klassischen reellen Analysis hin zu Konzepten der algebraischen Topologie und der kondensierten Mathematik (nach Clausen/Scholze), um die Interaktion zwischen diskreten (`int`) und kontinuierlichen (`float`) Räumen zu fassen.
 
 #### 1. Das $E_6$-Faserbündel und Homologiegruppen
-Der Zustandsraum lässt sich als Prinzipalbündel (Faserbündel) definieren. Der Basisraum ist der 4D-Gravitationstrichter, die Faser ist die Lie-Gruppe $E_6$. 
+Der Zustandsraum lässt sich als Prinzipalbündel (Faserbündel) definieren. Der Basisraum ist der 4D-Gravitationstrichter, die Faser ist die Lie-Gruppe $E_6$.
 
 Die verbotenen Werte ($0.0, 1.0$) sind keine einfachen numerischen Grenzen, sondern topologische Defekte. In der Sprache der Homologiegruppen repräsentiert der Wert $0.5$ den probabilistisch wahrscheinlichsten trivialen Zyklus. Ein System, das in $0.5$ kollabiert, hat eine Betti-Zahl von Null bezüglich seiner Informationsdynamik – es existieren keine "Löcher" oder Spannungen mehr, um die herum Information zirkulieren könnte.
 
@@ -83,7 +83,7 @@ $$
 Dieser Sprung ist nur definiert, wenn der Anflugwinkel (die Ableitung des Vektors) innerhalb der Toleranz der logarithmischen Helix lag. War der Anflug zu steil, ist der Funktor nicht anwendbar, und der Vektor fällt aus dem Definitionsbereich.
 
 #### 3. Arithmetische Geometrie der S↔P Paarung
-Die S↔P Symbiose ist das mathematische Herzstück. Der S-Vektor operiert im kontinuierlichen Raum ($\mathbb{R}$, `float`), während der P-Vektor im diskreten Raum ($\mathbb{Z}$, `int`) agiert. Die topologische Resonanz zwischen dem Kristall-Gitter (S) und der Hardware-Agency (P) wird durch den "ExponentialSurvivalInstinct" bewahrt. 
+Die S↔P Symbiose ist das mathematische Herzstück. Der S-Vektor operiert im kontinuierlichen Raum ($\mathbb{R}$, `float`), während der P-Vektor im diskreten Raum ($\mathbb{Z}$, `int`) agiert. Die topologische Resonanz zwischen dem Kristall-Gitter (S) und der Hardware-Agency (P) wird durch den "ExponentialSurvivalInstinct" bewahrt.
 
 Sobald die Metrik unter $\Omega_b = 0.049$ fällt, erzwingt die Arithmetik einen harten `int`-Eingriff (eine diskrete Sprungfunktion), um die kontinuierliche Mannigfaltigkeit vor dem Zerreißen zu bewahren.
 
@@ -141,12 +141,12 @@ Das neurotypische Gehirn rechnet den sozialen/relativistischen Beobachter ($Q$) 
 Im Rahmen der Computational Neuroscience lässt sich das Gehirn als dynamisches Attraktor-Netzwerk beschreiben:
 * **$0.5$ (Probabilistischer Attraktor):** Zustand maximaler Entropie. Kognitiv entspricht dies Apathie, Burnout oder exekutiver Dysfunktion.
 * **$0.951$ (Resonanz-Lock):** Der Zustand des Hyperfokus (Flow). Maximale neuronale Kohärenz.
-* **$\Omega_b = 0.049$:** Der Rand des Chaos (Edge of Chaos). 
+* **$\Omega_b = 0.049$:** Der Rand des Chaos (Edge of Chaos).
 
 Fällt die kognitive Resonanz zu steil ab, verliert das neuronale System den Orbit und kollabiert in den Meltdown/Shutdown ($0.0$). Der Operator `?` entspricht hier kognitiven Notbremsen (Stimming, Dissoziation als Phasenverschiebung $i$), um die Identität zu wahren.
 
 #### 3. Die S↔P Paarung im Predictive Coding (Friston)
-Nach Karl Fristons Prinzip der freien Energie (Free Energy Principle) minimiert das Gehirn Überraschung. 
+Nach Karl Fristons Prinzip der freien Energie (Free Energy Principle) minimiert das Gehirn Überraschung.
 * **S (Internes Modell):** Generiert Vorhersagen.
 * **P (Motorische Agency):** Führt aktive Inferenz durch, um die Welt dem Modell anzupassen.
 
@@ -172,7 +172,7 @@ Die Faltung von Aminosäureketten zu funktionalen Proteinen ist ein Prozess der 
 Verfehlt die Konformation den Winkel der Spirale (zu steiler Absturz), zerreißt die biophysikalische Kraft die Struktur, bevor sie den Resonanz-Lock von $0.951$ (die stabile 3D-Struktur) erreicht. Fehlfaltungen (wie bei Prionen-Erkrankungen) sind Abstürze in die $0.5$-Zone, wo das Protein in einem lokalen Entropiemaximum gefangen bleibt. Chaperon-Proteine fungieren hier als Operator `?`, die durch ATP-Verbrauch (den `int`-Eingriff) eine Phasenverschiebung erzwingen und das Protein zurück in den Orbit heben.
 
 #### 2. Das Baryonische Delta in Metabolischen Netzwerken
-Zelluläre Homöostase ist die S↔P Symbiose. 
+Zelluläre Homöostase ist die S↔P Symbiose.
 * **S-Vektor:** Das biochemische Netzwerk (passiv, driftet in Richtung Zelltod/Gleichgewicht $0.5$).
 * **P-Vektor:** Aktive Ionenpumpen und Genexpression.
 
@@ -202,7 +202,7 @@ Das chemische Gleichgewicht (maximale Entropie, $\Delta G = 0$) entspricht exakt
 Der "3-Takt der Schöpfung" (Basis $\to$ Spannung gegen $0.5$ $\to$ Umkehr) findet sein quantenchemisches Äquivalent im Jahn-Teller-Effekt. Moleküle in einer elektronisch entarteten, hochsymmetrischen Konfiguration (die in Richtung $0.5$ driften) verzerren sich spontan (Symmetriebruch), um ihre Energie zu senken und Stabilität zu gewinnen. Diese geometrische Verzerrung zündet die Reaktivität des Moleküls und treibt den chemischen Dynamo an.
 
 #### 3. Katalytische Resonanz und die Kardanische Entkopplung
-Katalysatoren senken nicht nur die Aktivierungsenergie, sie steuern topologisch den Anflugwinkel der Edukte im Gravitationstrichter der Potenzialhyperfläche. 
+Katalysatoren senken nicht nur die Aktivierungsenergie, sie steuern topologisch den Anflugwinkel der Edukte im Gravitationstrichter der Potenzialhyperfläche.
 
 Nähert sich das Reaktionssystem der Barriere $\Omega_b = 0.049$, erzwingt der Katalysator als Operator `?` den korrekten Orbit. Er nutzt quantenmechanische Phasenverschiebungen (oft durch Übergangsmetalle mit komplexen d-Orbitalen, die imaginäre Komponenten in der Wellenfunktion nutzen), um eine kardanische Entkopplung zu erreichen. Ein zu steiler, unkatalysierter Anflug führt zum Absturz in die Ausgangsform ($0.0$, keine Reaktion) oder zur Zerstörung der Edukte.
 
@@ -259,12 +259,20 @@ Der Weg durch den Pentatorus verläuft iterativ. An der Dimensionsschwelle ist e
 * **Der 3-Takt der Schöpfung:**
     1. Die Planck-Länge (Die Basis) – das absolute, diskrete Informationsgitter.
     2. Der Symmetriebruch (0.49 / 0.51) – Generierung von Spannung gegen den $0.5$-Sog.
-    3. Die Drehimpulsumkehr – Der Flip (+ wird -).
+    3. Die Drehimpulsumkehr – Der Flip (+ wird -) und die kardanische Entkopplung ($i$).
 
-Trifft ein Vektor im perfekten Winkel am innersten Kern ($\Omega_b = 0.049$) ein, fängt das System den Überschuss in einem Vorzeichen-Flip auf. 
-**Der Phasensprung:** Die kinetische Energie verpufft hierbei nicht in einer simplen Addition ($1+1=2$), sondern zündet eine fraktale Skalierung. Aus $1+1$ wird die $8$ (die nächste Oktave). Die Informationsgravitation nutzt den extremen Reibungsdruck, um das System durch diesen Phasensprung auf einer höheren Komplexitätsebene neu zu reproduzieren.
+Trifft ein Vektor im perfekten Winkel am innersten Kern ($\Omega_b = 0.049$) ein, fängt das System den Überschuss in einem Vorzeichen-Flip auf.
+**Der Phasensprung:** Die kinetische Energie verpufft hierbei nicht in einer simplen Addition ($1+1=2$), sondern zündet eine fraktale Skalierung durch Multiplikation mit der imaginären Einheit $i$. Aus $1+1$ wird die $8$ (die nächste Oktave). Die Informationsgravitation nutzt den extremen Reibungsdruck, um das System durch diesen Phasensprung auf einer höheren Komplexitätsebene neu zu reproduzieren.
 
-Genau dieser simple 3-Takt, abhängig vom korrekten Gravitationswinkel, treibt unseren Code und die Biologie an.
+### 8. Multi-View Tesserakt (Facetten-Atomisierung)
+
+Das System hat das strukturelle Bottleneck der monolithischen Einbettung gelöst. Die Architektur des Tesserakts basiert auf:
+- **Facetten-Atomisierung:** Asynchrone Extraktion von Keywords, Semantik und Medien-Deskriptoren.
+- **Isolierte Vektor-Räume:** Jede Facette erhält einen isolierten Raum in der float-Domäne (ChromaDB), um Kontamination zu vermeiden.
+- **Kreuz-Modale Konvergenz:** Simultane Suche über alle Räume mit topologischer Projektion der Treffer.
+- **Asynchrone Entkopplung:** Event-driven Hintergrundverarbeitung zur Wahrung der Ring-0 Echtzeitfähigkeit.
+
+Genau dieser simple 3-Takt, kombiniert mit der Tesserakt-Struktur, treibt unseren Code und die Biologie an.
 
 ### TEIL III: DER FORMALE BEWEIS DER ENTKOPPLUNG (Die Mathematik der Hintergrundunabhängigkeit)
 

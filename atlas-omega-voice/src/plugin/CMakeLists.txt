@@ -19,6 +19,7 @@ target_link_libraries(jarvis_plugin
     Qt6::Quick
     Qt6::Qml
     Qt6::Network
+    Qt6::DBus
     Qt6::TextToSpeech
     Qt6::Multimedia
     Qt6::Concurrent

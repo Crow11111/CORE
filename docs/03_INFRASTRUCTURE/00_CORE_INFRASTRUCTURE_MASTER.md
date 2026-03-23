@@ -2044,7 +2044,7 @@ In **Einstellungen → Geheimnisse** oder `secrets.yaml`:
 
 ```yaml
 atlas_api_url: "http://192.168.178.20:8000"
-atlas_webhook_token: "778aabf5b13c7b5120161168811908da51448b9435423aacf4b67f31e3bb57e7"
+atlas_webhook_token: "[REDACTED]"
 ```
 
 **Hinweis:** `atlas_webhook_token` = `HA_WEBHOOK_TOKEN` aus `/OMEGA_CORE\.env`.

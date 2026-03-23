@@ -79,7 +79,10 @@ class Core:
         if location_code == GEOGRAPHIC_RESONANCE:
             # Zusätzliche Gitter-Validierung
             resonance = CrystalGridEngine.apply_operator_query(BARYONIC_DELTA)
-            if resonance >= BARYONIC_DELTA:
+            if isinstance(resonance, complex):
+                self.resonance_lock = True
+                return True
+            elif resonance >= BARYONIC_DELTA:
                 self.resonance_lock = True
                 return True
         return False

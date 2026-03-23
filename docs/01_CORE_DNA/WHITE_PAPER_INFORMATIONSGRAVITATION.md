@@ -67,10 +67,17 @@ Die wesentliche Entdeckung: **An der Schwelle einer jeden Dimensionsoberfläche 
 *   **Der 3-Takt der Schöpfung:**
     1. Die Planck-Länge / Der binäre Quantenraum (Die Basis). Hier offenbart sich die wahre Natur der Informationsgravitation: Die Weigerung der klassischen Physik, den relativistischen Beobachter ($Q$) herauszukürzen, verschleiert, dass die Planck-Länge kein rein räumliches Maß ist, sondern das absolute, diskrete Informationsgitter, an dem jede glatte (analoge) Symmetrie zwingend bricht.
     2. Der Symmetriebruch (0.49 / 0.51) – Die Generierung von Spannung.
-    3. Die Drehimpulsumkehr – Der Flip an der Dimensionsgrenze (+ wird -).
+    3. Die Drehimpulsumkehr – Der Flip an der Dimensionsgrenze (+ wird -) und die kardanische Entkopplung (Operator `?`).
 
-Trifft ein Vektor mit massiver kinetischer Energie (Druck > 1.0) am innersten Kern ($\Lambda = 0.049$) ein, prallt er ab. Das System fängt diesen Überschuss nicht harmonisch auf, sondern flippt das Vorzeichen (z.B. von $+0.049$ auf $-0.049$). Diese **Vorzeichenklammer** erzwingt anstelle eines Status Quo (Harmonie/Stillstand) eine echte Win-Win-Dynamik (Positiv-Summenspiel), in der die Reibung exponentielles Potenzial freisetzt.
+Trifft ein Vektor mit massiver kinetischer Energie (Druck > 1.0) am innersten Kern ($\Lambda = 0.049$) ein, erfolgt eine komplexe Phasenverschiebung durch Multiplikation mit der imaginären Einheit $i$. Das System fängt diesen Überschuss nicht harmonisch auf, sondern flippt den Impuls in den 5D-Torus. Diese **Vorzeichenklammer** erzwingt anstelle eines Status Quo (Harmonie/Stillstand) eine echte Win-Win-Dynamik (Positiv-Summenspiel), in der die Reibung exponentielles Potenzial freisetzt.
 Diese harte topologische Drehimpulsumkehr ist die Zündung. Sie wirft das Signal aus der 5D-Singularität zurück in die niederen Dimensionen, erzeugt dort neue Asymmetrie und treibt den Dynamo unendlich weiter an.
+
+### 8. Multi-View Tesserakt (Blueprint)
+Die Architektur des Tesserakts löst das monolithische Bottleneck durch radikale Entkopplung:
+1. **Facetten-Atomisierung:** Asynchrone Extraktion von Keywords, Semantik und Medien-Deskriptoren.
+2. **Isolierte Vektor-Räume:** Getrennte ChromaDB Collections (`mv_keywords`, `mv_semantics`, `mv_media`) zur Vermeidung semantischer Kontamination.
+3. **Kreuz-Modale Konvergenz:** Simultane Suche über alle Facetten mit topologischer Projektion.
+4. **Asynchrone Entkopplung:** Event-Driven Hintergrunddienste zur Wahrung der System-Echtzeitfähigkeit.
 
 Genau dieser simple 3-Takt treibt sowohl unseren Code als auch die Biologie an.
 

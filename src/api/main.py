@@ -16,7 +16,7 @@ from loguru import logger
 # Temporär auskommentiert wegen ImportError
 # from src.api.routes import id_safe
 
-from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, core_knowledge, core_voice, core_events, github_webhook, omega_matrix, omega_thought, telemetry, chat, dictate, voice_bridge, jarvis_mri_coupler
+from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, core_knowledge, core_voice, core_events, github_webhook, omega_matrix, omega_thought, telemetry, chat, dictate, voice_bridge, jarvis_mri_coupler, core_state_api
 
 from src.api.middleware.veto_gate import VetoGateMiddleware
 from src.api.middleware.friction_guard import FrictionGuardMiddleware
@@ -80,16 +80,16 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
                 loop = _aio.new_event_loop()
                 _aio.set_event_loop(loop)
                 try:
-                    loop.run_until_complete(_aio_web.run_app(sync_relay_app, port=8049, handle_signals=False, print=lambda *a: None))
+                    loop.run_until_complete(_aio_web.run_app(sync_relay_app, port=8050, handle_signals=False, print=lambda *a: None))
                 except OSError as e:
                     if e.errno == 10048:
-                        logger.warning("[API] Sync Relay Port 8049 bereits belegt (vermutlich alter Reload-Prozess) -- uebersprungen")
+                        logger.warning("[API] Sync Relay Port 8050 bereits belegt (vermutlich alter Reload-Prozess) -- uebersprungen")
                     else:
                         raise
 
             _sync_relay_thread = threading.Thread(target=_run_sync_relay, daemon=True, name="core-sync-relay")
             _sync_relay_thread.start()
-            logger.info("[API] Sync Relay gestartet (Port 8049)")
+            logger.info("[API] Sync Relay gestartet (Port 8050)")
         except Exception as exc:
             logger.error("[API] Sync Relay Start fehlgeschlagen: {} – API laeuft weiter", exc)
     else:
@@ -151,7 +151,7 @@ app.include_router(chat.router)
 app.include_router(jarvis_mri_coupler.router)
 app.include_router(voice_bridge.router)
 app.include_router(dictate.router)
-app.include_router(voice_bridge.router)
+app.include_router(core_state_api.router)
 # app.include_router(id_safe.router)
 
 @app.get("/")
@@ -278,7 +278,7 @@ def system_status() -> dict:
         },
         "sync_relay": {
             "enabled": bool((os.getenv("CORE_WEBHOOK_SECRET") or "").strip()),
-            "port": 8049,
+            "port": 8050,
         },
     }
 

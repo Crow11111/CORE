@@ -5,6 +5,11 @@
       "args": ["-m", "src.scripts.mcp_core_chroma_stdio"],
       "cwd": "/OMEGA_CORE"
     },
+    "omega-state-mcp": {
+      "command": "/OMEGA_CORE/.venv/bin/python",
+      "args": ["src/scripts/mcp_omega_state.py"],
+      "cwd": "/OMEGA_CORE"
+    },
     "atlas-remote": {
       "command": "ssh",
       "args": [

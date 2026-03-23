@@ -1,0 +1,75 @@
+# -*- coding: utf-8 -*-
+"""
+OMEGA STATE MCP Server - Proxy Client zu localhost:8049
+Verhindert Context-Window-Kollaps durch asynchrone State-Injektion via FastMCP.
+Delegiert die eigentliche Arbeit an den lokalen mTLS-Proxy (state_mtls_proxy.py).
+"""
+from __future__ import annotations
+
+import json
+import os
+import sys
+import httpx
+
+os.environ.setdefault("PYTHONIOENCODING", "utf-8")
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stderr, "reconfigure"):
+    sys.stderr.reconfigure(encoding="utf-8")
+
+_REPO = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+if _REPO not in sys.path:
+    sys.path.insert(0, _REPO)
+
+from mcp.server.fastmcp import FastMCP
+
+mcp = FastMCP("OMEGA_STATE_NEXUS")
+PROXY_URL = "http://localhost:8049"
+
+@mcp.tool()
+async def read_core_state() -> str:
+    """
+    Liest den aktuellen 4D CORE State Vector (S * P Symbiose) vom VPS via Proxy.
+    Jeder Sub-Agent sollte dies als erstes tun, um seine physikalische/logische Dichte zu messen.
+    """
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(f"{PROXY_URL}/state")
+            resp.raise_for_status()
+            return resp.text
+    except Exception as e:
+        return json.dumps({"error": str(e), "message": "Proxy auf Port 8049 nicht erreichbar oder VPS Offline"})
+
+@mcp.tool()
+async def read_handbook(role: str) -> str:
+    """
+    Liest das persistente Gedächtnis (Handbuch) für eine spezifische Rolle (z.B. 'system-architect') vom VPS via Proxy.
+    """
+    try:
+        async with httpx.AsyncClient() as client:
+            resp = await client.get(f"{PROXY_URL}/handbook/{role}")
+            resp.raise_for_status()
+            return resp.text
+    except Exception as e:
+        return f"Fehler beim Lesen des Handbuchs via Proxy: {e}"
+
+@mcp.tool()
+async def update_handbook(role: str, content: str) -> str:
+    """
+    Überschreibt das persistente Gedächtnis (Handbuch) für die angegebene Rolle auf dem VPS.
+    PFLICHT für jeden Sub-Agenten vor seiner Terminierung, falls neue Erkenntnisse gewonnen wurden.
+    """
+    try:
+        async with httpx.AsyncClient() as client:
+            payload = {"content": content, "reason": "MCP-Update"}
+            resp = await client.post(f"{PROXY_URL}/handbook/{role}", json=payload)
+            resp.raise_for_status()
+            return f"[SUCCESS] Handbuch für {role} wurde via Proxy erfolgreich aktualisiert."
+    except Exception as e:
+        return f"[FAIL] Fehler beim Aktualisieren des Handbuchs via Proxy: {e}"
+
+def main() -> None:
+    mcp.run(transport="stdio")
+
+if __name__ == "__main__":
+    main()

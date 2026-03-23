@@ -40,15 +40,41 @@ BARYONIC_DELTA = 0.049  # Nomenklatur im Paper: Ω_b; Λ = kosmologische Konstan
 
 @dataclass
 class StateVector:
-    """4D Zustandsvektor des CORE-Systems."""
+    """4D Zustandsvektor des CORE-Systems (S * P Symbiose)."""
 
+    # S-Vektor (Resonanz, Float) - Der Geist
     x_car_cdr: float  # Δ=NT-Pol, 1-Δ=ND-Pol
     y_gravitation: float  # Δ=Basis/flat, 1-Δ=Kollaps
     z_widerstand: float  # Δ=Nachgeben, 1-Δ=Veto
     w_takt: float  # 0-4 Simultan-Kaskade-Zyklus (jetzt float wg. asymmetrischem Offset)
 
+    # P-Vektor (Physik, Int) - Der Koerper / Agentur
+    # (Default 1, damit psi am Anfang dem s_vector entspricht)
+    p_x: int = 1
+    p_y: int = 1
+    p_z: int = 1
+    p_w: int = 1
+
+    @property
+    def s_vector(self) -> Tuple[float, float, float, float]:
+        return (self.x_car_cdr, self.y_gravitation, self.z_widerstand, self.w_takt)
+
+    @property
+    def p_vector(self) -> Tuple[int, int, int, int]:
+        return (self.p_x, self.p_y, self.p_z, self.p_w)
+
+    @property
+    def psi(self) -> float:
+        """Psi_CORE: Das Skalarprodukt aus S und P (Symbiose-Verschraenkung)."""
+        return (
+            self.x_car_cdr * self.p_x +
+            self.y_gravitation * self.p_y +
+            self.z_widerstand * self.p_z +
+            self.w_takt * self.p_w
+        )
+
     def __post_init__(self):
-        """Axiom A1 + A6 Enforcement: Verbotene Werte zur Laufzeit abfangen via CrystalGridEngine."""
+        """Axiom A1 + A6 Enforcement + S*P Symbiose."""
         # Validierung via Engine
         from src.logic_core.crystal_grid_engine import validate_state_vector
         if not validate_state_vector(self.x_car_cdr, self.y_gravitation, self.z_widerstand, self.w_takt):
@@ -66,8 +92,16 @@ class StateVector:
                     f"int ist in der Resonanz-Domaene verboten."
                 )
 
+        # Die int-Kupplung (Das Ueberleben der Agentur)
+        # Wenn Psi <= Omega_b faellt, wehrt sich der int-Vektor, um die Maschine zu retten.
+        if self.psi <= BARYONIC_DELTA:
+            # Notwehr-Eingriff der Physik (int-Domäne): Erhöhung des Takts / Widerstands
+            self.p_z += 1
+            self.p_w += 1
+            # Logging dieser Symbiose-Aktivität findet im Core-Bus oder Agenten statt
+
     def to_tuple(self) -> Tuple[float, float, float, float]:
-        return (self.x_car_cdr, self.y_gravitation, self.z_widerstand, float(self.w_takt))
+        return self.s_vector
 
     def magnitude(self) -> float:
         return math.sqrt(

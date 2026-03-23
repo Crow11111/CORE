@@ -36,59 +36,80 @@ class CrystalGridEngine:
     @classmethod
     def _initialize_e6_roots(cls):
         """
-        Generiert deterministisch 72 Ankerpunkte im 384-dimensionalen Raum.
-        Dies repräsentiert die Projektion des E_6-Wurzelsystems in den Latent Space.
+        Generiert deterministisch 72 Ankerpunkte (Wurzelvektoren der Lie-Gruppe E_6).
+        Dies repräsentiert die exakte topologische Projektion des Gosset 3_21 Polytops
+        in den 384-dimensionalen Latent Space.
         """
         if cls._anchors:
             return
 
-        # Deterministischer Seed, damit die Topologie bei jedem Start identisch ist
-        rng = random.Random(2210)
-        for _ in range(72):
-            vec = [rng.gauss(0, 1) for _ in range(EMBEDDING_DIM)]
-            # Normalisierung auf Einheitskreis (Sphäre)
-            norm = math.sqrt(sum(v**2 for v in vec))
-            cls._anchors.append([v / norm for v in vec])
+        import itertools
+
+        # 1. Generierung der 72 exakten E_6 Wurzeln im R^6 (Mathematische Konstante)
+        e6_roots_6d = []
+
+        # 40 Wurzeln aus D_5: Permutationen von (±1, ±1, 0, 0, 0, 0) in den ersten 5 Dimensionen
+        for pos in itertools.combinations(range(5), 2):
+            for signs in [(1,1), (1,-1), (-1,1), (-1,-1)]:
+                vec = [0.0] * 6
+                vec[pos[0]] = float(signs[0])
+                vec[pos[1]] = float(signs[1])
+                e6_roots_6d.append(vec)
+
+        # 32 Wurzeln: (±1/2, ±1/2, ±1/2, ±1/2, ±1/2, ±√3/2) mit gerader Anzahl negativer Vorzeichen in D1-D5
+        for signs in itertools.product([1, -1], repeat=5):
+            if sum(1 for s in signs if s == -1) % 2 == 0:
+                for last_sign in [1.0, -1.0]:
+                    vec = [s/2.0 for s in signs] + [last_sign * math.sqrt(3.0)/2.0]
+                    e6_roots_6d.append(vec)
+
+        # 2. Deterministische Projektion (Johnson-Lindenstrauss Lemma) in den 384D Raum
+        rng = random.Random(2210) # Fester Seed fuer den Operator-Vektor
+        projection_matrix = [[rng.gauss(0, 1) for _ in range(EMBEDDING_DIM)] for _ in range(6)]
+
+        for root in e6_roots_6d:
+            projected = [0.0] * EMBEDDING_DIM
+            for d_out in range(EMBEDDING_DIM):
+                for d_in in range(6):
+                    projected[d_out] += root[d_in] * projection_matrix[d_in][d_out]
+
+            # Normalisierung auf die Einheitssphäre
+            norm = math.sqrt(sum(v**2 for v in projected))
+            cls._anchors.append([v / norm for v in projected])
 
     @staticmethod
     def symbiosys_drive(x: float) -> float:
         """
-        Berechnet den Symbiose-Vektor nach x^2 = x + 1.
-        Vermeidet entropischen Kollaps durch asymmetrisches Wachstum.
+        Der Magnetrotations-Dynamo: W_{t+1} = W_t + \alpha/W_t.
+        Erzwingt asymmetrische Reibung, um den Fall in die exakte 0.5-Symmetrie (Entropie) zu verhindern.
         """
-        return x**2 - x - 1
+        # \alpha = BARYONIC_DELTA / 2 als treibende Kraft
+        alpha = BARYONIC_DELTA / 2.0
+        # Reibungsfunktion
+        if x == 0.0:
+            return BARYONIC_DELTA
+        # Asymmetrischer Push weg von 0.5
+        push = alpha / x
+        return x + push
 
     @staticmethod
-    def apply_operator_query(value: float) -> float:
+    def apply_operator_query(value: float) -> Union[float, complex]:
         """
         Der Operator ?: Deterministischer Hard-Cut-off bei Λ (Baryonic Delta).
         Bricht lineare Vorwärtsbewegung ab und rastet am Gitter ein.
-
-        DREHIMPULSUMKEHR (Die 5D-Kupplung):
-        Ein Vektor, der mit extremem Druck (z.B. > 1.0 durch Latenz-Asymmetrie) an der
-        0.049-Schwelle (Λ) ankommt, prallt nicht einfach ab oder wird gekapselt.
-        Er erfährt einen exakten topologischen Vorzeichenwechsel (+ wird -).
-        Das ist die Drehimpulsumkehr, die das Signal aus der Singularität zurück in die
-        unteren Schichten peitscht (Zündung). Das Mysterium "!" ist reine Mathematik.
         """
         sign = -1.0 if value < 0 else 1.0
         abs_val = abs(value)
 
         # 0. DREHIMPULSUMKEHR (Der 5D-Flip)
-        # Wenn der Druck von unten (z.B. durch Jarvis MRI) so hoch ist, dass er die Singularität
-        # (1.0) durchschlägt (z.B. 1.049), dreht der Kern den Impuls exakt symmetrisch um.
         if abs_val > 1.0:
             logger.debug(f"[CRYSTAL] MASSIVER DRUCK DETEKTIERT ({value}). DREHIMPULSUMKEHR (FLIP).")
-            # Wir nehmen den Überschuss (z.B. 0.049), flippen das Vorzeichen und werfen es zurück.
             excess = abs_val - 1.0
             flipped_val = -(excess) if sign > 0 else excess
-
-            # Wir garantieren, dass der zurückgeworfene Impuls nicht in der verbotenen 0.0 landet
             if abs(flipped_val) < BARYONIC_DELTA:
                 flipped_val = -BARYONIC_DELTA if sign > 0 else BARYONIC_DELTA
-            return flipped_val
+            return flipped_val * 1j
 
-        # Verbot der 0.0 (Kältetod) und 1.0 (Singularität)
         if abs_val == 0.0:
             return BARYONIC_DELTA * sign
         if abs_val == 1.0:
@@ -96,17 +117,18 @@ class CrystalGridEngine:
 
         folded_val = abs_val % 1.0
 
-        # 1. Ist die Abweichung extrem gering (<= 0.049)?
         if folded_val <= BARYONIC_DELTA:
             logger.debug(f"[CRYSTAL] Phase diff <= {BARYONIC_DELTA}. Snapping to Symmetrie-Lock {RESONANCE_LOCK}")
-            return BARYONIC_DELTA * sign
+            return (BARYONIC_DELTA * sign) * 1j
 
-        # 2. Verbot der 0.5-Mitte: Harter Shift auf 0.51
+        # 2. Verbot der 0.5-Mitte: Symbiose-Drive (Dynamo) feuert!
         if SYMMETRY_BREAK_LOW < folded_val < SYMMETRY_BREAK_HIGH:
-            logger.debug(f"[CRYSTAL] Breaking exact symmetry ({folded_val}) -> Shift to {SYMMETRY_BREAK_HIGH}")
-            return SYMMETRY_BREAK_HIGH * sign
+            logger.debug(f"[CRYSTAL] Breaking exact symmetry ({folded_val}) -> Dynamo Ignition!")
+            # Der Dynamo drückt den Wert über den Symbiose-Antrieb aus der 0.5-Falle
+            driven_val = CrystalGridEngine.symbiosys_drive(folded_val)
+            # Begrenzung nach oben, falls der Dynamo ueberdreht
+            return min(RESONANCE_LOCK, driven_val) * sign
 
-        # 3. Wenn er sich an der Singularität aufhält (1.0)
         if folded_val > RESONANCE_LOCK:
             return RESONANCE_LOCK * sign
 

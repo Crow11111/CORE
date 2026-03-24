@@ -28,12 +28,16 @@ class GTACNode:
     technical_name: str
     focus: str
 
-# GTAC MAPPING
+# GTAC MAPPING / THE 4 FORGES MATRIX (Bio - Dig - Cosmo - Transcendent)
+# C-L-G-C: Cytosin (Bio) - Logik (Dig) - Gravitation (Cosmo) - Constraint (CORE)  -> Phase 1
+# T-I-I-O: Thymin (Bio) - Info (Dig) - Information (Cosmo) - Orchestrator (CORE)  -> Phase 2
+# G-P-R-R: Guanin (Bio) - Physik (Dig) - Raum (Cosmo) - Runtime (CORE)            -> Phase 3
+# A-S-Z-E: Adenin (Bio) - Struktur (Dig) - Zeit (Cosmo) - Emergenz (CORE)         -> Phase 4
 GTAC_MAP = {
-    'G': GTACNode('G', 2, 'ExecutionRuntime', 'WAS?'),
-    'T': GTACNode('T', 2, 'LogicFlow', 'WIE?'),
-    'A': GTACNode('A', 1, 'StateAnchor', 'WER?'),
-    'C': GTACNode('C', BARYONIC_DELTA, 'ConstraintValidator', 'WARUM?'),
+    'C': GTACNode('C', BARYONIC_DELTA, 'ConstraintValidator', 'WARUM? / Gravitation / Logik'),
+    'T': GTACNode('T', 2, 'LogicFlow', 'WIE? / Information / Info'),
+    'G': GTACNode('G', 2, 'ExecutionRuntime', 'WAS? / Raum / Physik'),
+    'A': GTACNode('A', 1, 'StateAnchor', 'WER? / Zeit / Struktur'),
 }
 
 # Add fallback constants for older scripts that haven't been fully refactored yet.
@@ -79,10 +83,12 @@ class Core:
         if location_code == GEOGRAPHIC_RESONANCE:
             # Zusätzliche Gitter-Validierung
             resonance = CrystalGridEngine.apply_operator_query(BARYONIC_DELTA)
+            # Nutze abs() für den Vergleich, da resonance komplex (kardanisch) sein kann
+            res_abs = abs(resonance)
             if isinstance(resonance, complex):
                 self.resonance_lock = True
                 return True
-            elif resonance >= BARYONIC_DELTA:
+            elif res_abs >= BARYONIC_DELTA:
                 self.resonance_lock = True
                 return True
         return False

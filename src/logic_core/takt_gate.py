@@ -34,8 +34,8 @@ async def check_takt_zero() -> bool:
         # Takt 0 Baryonic Check (Gitter-Validierung)
         # Snapping-Pruefung fuer Λ (0.049)
         resonance = CrystalGridEngine.apply_operator_query(z_vector)
-        if resonance < 0.049:
-            print(f"[TAKT 0 VETO] Baryonic Limit Breach: {resonance} < 0.049")
+        if abs(resonance) < 0.049:
+            print(f"[TAKT 0 VETO] Baryonic Limit Breach: {abs(resonance)} < 0.049")
             return False
 
         # Takt 0 is idle state (Silence/Potential).

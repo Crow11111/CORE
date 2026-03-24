@@ -114,8 +114,11 @@ class VetoGateMiddleware(BaseHTTPMiddleware):
         z = _get_z_widerstand()
         # Kristall-Gitter Validierung
         z_snapped = CrystalGridEngine.apply_operator_query(z)
+        # Nutze abs() für Vergleiche und Formatierung
+        z_abs = abs(z)
+        z_snapped_abs = abs(z_snapped)
 
-        in_veto_mode = z_snapped >= VETO_THRESHOLD
+        in_veto_mode = z_snapped_abs >= VETO_THRESHOLD
         has_confirm = _has_confirmation(request)
 
         # Audit-Log (immer bei kritischen Operationen)
@@ -123,8 +126,8 @@ class VetoGateMiddleware(BaseHTTPMiddleware):
             "veto_gate|critical|method=%s path=%s z_widerstand=%.3f z_snapped=%.3f veto_mode=%s confirm=%s",
             request.method,
             request.url.path,
-            z,
-            z_snapped,
+            z_abs,
+            z_snapped_abs,
             in_veto_mode,
             has_confirm,
             extra={"audit": "veto_gate"},

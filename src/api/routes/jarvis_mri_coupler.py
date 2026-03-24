@@ -115,15 +115,15 @@ async def _inject_mri_pressure(prompt: str, response_text: str, start_time: floa
                 "source": "jarvis_mri",
                 "model": model_id,
                 "latency": latency,
-                "pressure": float(snapped_pressure)
+                "pressure": abs(snapped_pressure)
             },
         )
-        logger.info(f"[JARVIS-MRI] Druck erfolgreich in Membran injiziert. (Pressure: {snapped_pressure:.4f})")
+        logger.info(f"[JARVIS-MRI] Druck erfolgreich in Membran injiziert. (Pressure: {abs(snapped_pressure):.4f})")
 
         # 3. ZÜNDUNG DES EVENT-BUS
         try:
             with open("/tmp/mri_zündung.flag", "w") as f:
-                f.write(f"{snapped_pressure}")
+                f.write(f"{abs(snapped_pressure)}")
 
             from src.daemons.core_event_bus import event_bus_instance
             if event_bus_instance and getattr(event_bus_instance, "_running", False):
@@ -131,7 +131,7 @@ async def _inject_mri_pressure(prompt: str, response_text: str, start_time: floa
                     "event": {
                         "data": {
                             "entity_id": "mri.jarvis_zündung",
-                            "new_state": {"state": "active", "latency": latency, "pressure": float(snapped_pressure)}
+                            "new_state": {"state": "active", "latency": latency, "pressure": abs(snapped_pressure)}
                         }
                     }
                 }

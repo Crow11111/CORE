@@ -407,9 +407,10 @@ async def _apply_fractal_padding_async():
         
         base_delay_sec = 0.049
         k = 4.5
-        padding_sec = base_delay_sec * math.exp(k * phase_shift)
+        # Nutze abs() für phase_shift, da es komplex sein kann
+        padding_sec = base_delay_sec * math.exp(k * abs(phase_shift))
         
-        print(f"[HARDWARE-BRUECKE] Echte CPU-Last: {cpu_load_percent:.1f}% -> Snapped Vektor: {snapped_resonance:.3f} -> Latenz: {padding_sec:.2f}s")
+        print(f"[HARDWARE-BRUECKE] Echte CPU-Last: {cpu_load_percent:.1f}% -> Snapped Vektor: {abs(snapped_resonance):.3f} -> Latenz: {padding_sec:.2f}s")
         await asyncio.sleep(padding_sec)
     except Exception as e:
         print(f"Padding error (Hardware-Bruecke): {e}")
@@ -518,7 +519,8 @@ def _apply_crystal_engine_operator(distances: list[list[float]]) -> list[list[fl
         new_list = []
         for dist in dist_list:
             # Gitter-Snapping via CrystalGridEngine (Operator '?')
-            snapped = CrystalGridEngine.apply_operator_query(dist)
+            # Nutze abs(), da apply_operator_query komplex zurückgeben kann
+            snapped = abs(CrystalGridEngine.apply_operator_query(dist))
             new_list.append(snapped)
         new_distances.append(new_list)
     return new_distances

@@ -92,7 +92,7 @@ class FrictionGuardMiddleware(BaseHTTPMiddleware):
             new_temp = min(1.0, FRICTION_STATE["system_temperature"] + 0.1)
             FRICTION_STATE["system_temperature"] = CrystalGridEngine.apply_operator_query(new_temp)
 
-            logger.warning(f"[FRICTION GUARD] {violation_reason} | Hits: {FRICTION_STATE['hits']} | Temp: {FRICTION_STATE['system_temperature']:.2f}")
+            logger.warning(f"[FRICTION GUARD] {violation_reason} | Hits: {FRICTION_STATE['hits']} | Temp: {abs(FRICTION_STATE['system_temperature']):.2f}")
 
             rebound_prompt = (
                 "SYSTEM_ERROR [406]: EXECUTION_HERESY_DETECTED. "

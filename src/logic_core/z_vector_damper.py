@@ -136,7 +136,7 @@ class RuntimeMonitor:
         snapped_z = CrystalGridEngine.apply_operator_query(raw_z)
         self._state.z_vector_escalation = snapped_z
 
-        os.environ["CORE_Z_WIDERSTAND"] = str(self._state.z_vector_escalation)
+        os.environ["CORE_Z_WIDERSTAND"] = str(abs(self._state.z_vector_escalation))
         return self._state.z_vector_escalation
 
     def request_execution(self, estimated_tokens: int = 0) -> None:
@@ -144,10 +144,12 @@ class RuntimeMonitor:
         self._state.call_count += 1
         self._state.last_call_time = time.time()
         z = self._calculate_z_vector()
+        # Nutze abs() für den Vergleich, da z komplex sein kann
+        z_abs = abs(z)
 
-        if z >= 0.9:
+        if z_abs >= 0.9:
             raise RuntimeVetoException(
-                f"[Z-VETO] Z={z:.3f} kritisch. "
+                f"[Z-VETO] Z={z_abs:.3f} kritisch. "
                 f"Window: {len(self._state.call_window)} Calls, "
                 f"Errors: {self._state.consecutive_errors}. "
                 "Warte oder rotiere Session."

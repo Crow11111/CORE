@@ -165,14 +165,17 @@ async def inject_reality_anchor(friction_data: Dict[str, Any]):
     git_status = friction_data.get('git_status', 'UNKNOWN')
     resonance = friction_data.get('resonance', 0.049)
 
-        # Nachricht basierend auf Fakten konstruieren
+    # Nachricht basierend auf Fakten konstruieren
+    # Nutze abs() für den Vergleich, da resonance komplex (kardanisch) sein kann
+    res_abs = abs(resonance)
+
     if friction_data.get('mri_event', False):
         thought = "WARNUNG: Magnetrotationsinstabilität (MRI) aus äußerer Schicht (Jarvis) detektiert. Drehimpulsumkehr."
         context = "MRI_IGNITION_ZÜNDUNG"
-    elif resonance <= BARYONIC_DELTA:
+    elif res_abs <= BARYONIC_DELTA:
         thought = "WARNUNG: System-Resonanz am Baryonischen Limit (Λ). Kristall-Gitter instabil."
         context = "CRYSTAL_BREACH"
-    elif resonance >= 0.951:
+    elif res_abs >= 0.951:
         thought = f"Resonanz-Lock (0.951) erreicht. Gitter stabil. Latenz: {latency:.1f}ms."
         context = "RESONANCE_LOCK"
     elif git_status == "DESYNC":

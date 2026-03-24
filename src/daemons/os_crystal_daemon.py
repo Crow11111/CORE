@@ -92,18 +92,20 @@ class OSCrystalDaemon:
                 
                 # Snapping am topologischen Gitter
                 snapped_temp_vector = CrystalGridEngine.apply_operator_query(norm_temp)
+                # Nutze abs() für den Vergleich, da snapped_temp_vector komplex sein kann
+                res_abs = abs(snapped_temp_vector)
                 
-                if snapped_temp_vector >= RESONANCE_LOCK:
+                if res_abs >= RESONANCE_LOCK:
                     logger.critical(f"[OS-CRYSTAL] THERMAL VETO! Temperatur {temp}°C -> Lock {RESONANCE_LOCK} erreicht. Drossele Execution.")
                     if not self.dry_run:
                         # Eskalation: Reduziere CPU Frequenz oder setze renice
                         # subprocess.run("cpufreq-set -g powersave", shell=True)
                         pass
                         
-                elif snapped_temp_vector == SYMMETRY_BREAK:
+                elif res_abs == SYMMETRY_BREAK:
                     logger.debug(f"[OS-CRYSTAL] Symmetriebruch bei {temp}°C initiiert.")
 
-                logger.debug(f"OS-Tick. Temp: {temp}°C | Vector: {snapped_temp_vector:.3f}")
+                logger.debug(f"OS-Tick. Temp: {temp}°C | Vector: {res_abs:.3f}")
                 
                 # --- 2. Netzwerk-Friction ---
                 # Fuer den Proof-of-Concept triggern wir Friction, wenn die Temperatur EXAKT das Baryonic Delta unterschreitet

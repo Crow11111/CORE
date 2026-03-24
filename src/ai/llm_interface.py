@@ -68,9 +68,10 @@ class ResilientLLMInterface:
 
         base_delay_sec = 0.049
         k = 3.58
-        padding_sec = base_delay_sec * math.exp(k * phase_shift)
+        # Nutze abs() für phase_shift, da es komplex sein kann
+        padding_sec = base_delay_sec * math.exp(k * abs(phase_shift))
 
-        logger.info(f"[HARDWARE-BRUECKE] Echte CPU-Last: {cpu_load_percent:.1f}% -> Snapped Vektor: {snapped_resonance:.3f} -> Latenz: {padding_sec:.2f}s")
+        logger.info(f"[HARDWARE-BRUECKE] Echte CPU-Last: {cpu_load_percent:.1f}% -> Snapped Vektor: {abs(snapped_resonance):.3f} -> Latenz: {padding_sec:.2f}s")
         await asyncio.sleep(padding_sec)
 
         # Formatiere Prompt für OpenClaw

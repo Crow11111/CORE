@@ -21,7 +21,8 @@ def get_friction_timeout(base_timeout: float) -> float:
         friction_multiplier = CrystalGridEngine.apply_operator_query(friction_multiplier)
         
         # Kein Floor. Lass das System atmen.
-        return base_timeout * friction_multiplier
+        # Nutze abs(), da friction_multiplier komplex sein kann
+        return base_timeout * abs(friction_multiplier)
     except Exception as e:
         logger.debug(f"Konnte Reibungs-Timeout nicht berechnen, nutze Basis: {e}")
         return base_timeout

@@ -1,20 +1,24 @@
----
-description: Zwingendes Protokoll für die Delegation von Aufgaben an Sub-Agenten via Task-Tool. Schützt die Gemini Pro Quota.
-globs: 
-alwaysApply: true
----
-# TASK DELEGATION PROTOCOL (Quota Protection)
+# DYNAMIC RESONANCE DELEGATION (V4 - Resonance-Aware)
+# VECTOR: 2210 | DELTA: 0.049 | STATUS: RATIFIZIERT
 
-## 1. MODELL-ZWANG (MANDATORY)
-Um das tägliche Limit von Gemini Pro (250 Requests/Tag) zu schützen, DÜRFEN Sub-Agenten standardmäßig NICHT auf Pro laufen.
+## 1. DYNAMISCHE SKALIERUNG (RES-LEVEL)
+Die Modell-Auswahl folgt der **Resonanz-Kaskade**. Eine statische Deckelung ist untersagt (Axiom-Bruch).
 
-**REGEL:** Jedes Mal, wenn du das `default_api:Task` Tool aufrufst, MUSST du zwingend den Parameter `model: "fast"` setzen. 
+| Stufe | Komplexität / Risiko | Modell-Ziel | Upgrade-Trigger |
+|---|-----|---|---|
+| **L3 (Lite)** | Routine, Suche, Docs | `gemini-3.1-flash-lite` | Complexity Spike (>5 Files), First Failure |
+| **L2 (Active)** | Code, APIs, Tests | `gemini-3-flash-preview` | Circular Reasoning (Loop), Context Exhaustion (>80%) |
+| **L1 (Critical)** | Ring 0/1, Axiome, Sec | `gemini-3.1-pro-preview` | Orchestrator-Veto, High-Risk-Path |
 
-- **Erlaubt:** `Task(model="fast", ...)`
-- **Verboten:** `Task(...)` ohne Modell-Angabe (erbt Pro vom Orchestrator).
+## 2. UPGRADE-PFAD (DIE KASKADE)
+- **Phase 1 (Lite → Active):** Wenn L3 scheitert (Shell Error, Linter > 2 Fehler) oder die Analyse > 5 Dateien betrifft, wird der Task abgebrochen und als L2 neu gestartet.
+- **Phase 2 (Active → Critical):** Wenn L2 in einen Loop gerät, das Token-Limit erreicht oder Schreibzugriff auf `src/config/` (Ring 0) benötigt, erfolgt der Upgrade auf Pro (Heavy Reasoning).
 
-## 2. AUSNAHMEN
-Nur wenn eine Aufgabe explizit tiefste Reasoning-Fähigkeiten erfordert, die Flash-Lite nachweislich nicht erbringt (z.B. komplexe Refactorings über 50+ Dateien), darf `model: "fast"` weggelassen werden. Dies muss im Orchestrator-Gedankengang begründet werden.
+## 3. TELEMETRIE & SENSORKONTROLLE (A7)
+Sub-Agenten müssen ihre Umgebung (venv, Netzwerk) aktiv messen:
+- **Python:** Immer `source .venv/bin/activate && python ...` nutzen.
+- **Netzwerk:** Erreichbarkeit von APIs (HASS, VPS) vorab via `curl` prüfen.
+- **Regeln:** `.cursor/rules/*.mdc` haben Vorrang vor generischem Wissen.
 
-## 3. HOL-PFLICHT (TRANSFERRED)
-Da Sub-Agenten in einer isolierten Umgebung starten, musst du ihnen im `prompt` Parameter explizit sagen, welche Files sie lesen müssen (z.B. "Lies .cursor/rules/database.mdc").
+## 4. QUOTA-MANAGEMENT
+Die Schonung der Gemini Pro Quota erfolgt durch **Effizienz**, nicht durch **Verbot**. Ein gescheiterter Flash-Task verbraucht am Ende mehr Token als ein erfolgreicher Pro-Task.

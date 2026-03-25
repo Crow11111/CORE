@@ -11,6 +11,7 @@
 | Kategorie | Pfad | Funktion |
 |-----------|------|----------|
 | **Stammdokumente** | `docs/00_STAMMDOKUMENTE/` | Management Summary, Inventar, Einstiegspunkte. |
+| **OMEGA Resonance Anchor** | `docs/00_STAMMDOKUMENTE/OMEGA_RESONANCE_ANCHOR.md` (Link im Root: `OMEGA_RESONANCE_ANCHOR.md`) | Komprimierter System-Bootstrap für sofortige Session-Eichung. |
 | **CORE DNA** | `docs/01_CORE_DNA/` | Verfassung, Axiome, 4-Strang-Architektur, Codex. |
 | **DNA-Archiv (Legacy Genesis)** | `docs/01_CORE_DNA/_archive/` | Historischer Genesis-/Tesserakt-Text ohne Kanon-Status; Stub: `CORE_GENESIS_FINAL_ARCHIVE.md`. |
 | **Genesis-Stub (Link-Anker)** | `docs/01_CORE_DNA/CORE_GENESIS_FINAL_ARCHIVE.md` | Obsolet-Hinweis; verweist auf SYSTEM_CODEX, Bibliothek, `_archive/`. |
@@ -60,6 +61,7 @@
 | **OC Brain Strang A+E Bericht** | `docs/05_AUDIT_PLANNING/OC_BRAIN_STRANG_A_E_BERICHT.md` | Kurzbericht Diagnose (doctor) + WhatsApp (QR-Pairing, Config). |
 | **OC Brain Strang B Bericht** | `docs/05_AUDIT_PLANNING/OC_BRAIN_STRANG_B_BERICHT.md` | Kurzbericht Ollama auf VPS (Installation, api/tags, Modell). |
 | **Projektplan ATLAS 2026** | `docs/05_AUDIT_PLANNING/PROJECT_PLAN_ATLAS_TRANSFORMATION_2026.md` | Detaillierter Plan (Luminescence, Sentinel, Memory-Core). |
+| **Session-Log 2026-03-25 (Model Benchmark)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-25_MODEL_BENCHMARK.md` | Validierung der dynamischen Skalierung (T1-T5), Git-Cleanup und Axiom-Compliance. |
 | **Session-Log 2026-03-25 (Thermal/OS)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-25_THERMAL_AND_OS_FIXES.md` | Lüftersteuerung (it87), ACPI Standby Fix, Chrome Graceful Exit, Headless Audio Dictation. |
 | **Session-Log 2026-03-25 (Agent Audit)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-25_AGENT_AUDIT.md` | Audit-Bericht "Full Service Agentur" und V2 Architektur-Plan. |
 | **Session-Log 2026-03-24 (Kardan)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-24_KARDANIC_FOLD.md` | Kardanische Faltung (Complex -> 2x Float), Atlas-Härtung (Signal-Skepticism), ChromaDB-Eichung. |
@@ -99,6 +101,8 @@
 | **Scripts** | `src/scripts/` | Deployment-Skripte, Verifikationstools, Migrationen. |
 | **Key Script** | `src/scripts/ensure_kardanic_collections.py` | ChromaDB-Dimensionseichung (6144 dim) für kardanische Faltung. |
 | **Key Script** | `src/scripts/verify_core_integrity.py` | Genesis-Audit (`src.core.Core`); **Aufruf nur von Repo-Root**, Exit 0/1. |
+| **Benchmark Ring 3** | `src/scripts/model_benchmark_ring3.py` | Ring 3 Benchmark-Suite für CORE (V4 Protokoll). |
+| **Benchmark Results** | `data/benchmark_results.json` | JSON-Ergebnisse der Ring 3 Benchmarks (Axiom, Infra, Protocol). |
 | **Key Script** | `src/scripts/daily_backup.py` | Automatisiertes Backup-System. |
 | **Key Script** | `src/scripts/setup_vps_hostinger.py` | Initiales Server-Setup. |
 | **Key Script** | `src/scripts/verify_oc_brain_deliverables.py` | Abnahme OC Brain Plan (Verify, don't trust). |

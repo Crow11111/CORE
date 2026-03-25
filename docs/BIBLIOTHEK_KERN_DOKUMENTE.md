@@ -40,6 +40,7 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 | **Infrastruktur-Master** | `@docs/00_STAMMDOKUMENTE/00_CORE_INFRASTRUCTURE_MASTER.md` | Soll-Zustand aller Knoten (Dreadnought, Scout, VPS, Netze). |
 | **Prozess-Master** | `@docs/00_STAMMDOKUMENTE/00_CORE_PROCESSES_MASTER.md` | Prozess- und Ablauf-Soll. |
 | **Management Summary** | `@docs/00_STAMMDOKUMENTE/MANAGEMENT_SUMMARY.md` | Überblick Management/Status. |
+| **OMEGA Resonance Anchor** | `docs/00_STAMMDOKUMENTE/OMEGA_RESONANCE_ANCHOR.md` (Link im Root: `OMEGA_RESONANCE_ANCHOR.md`) | Komprimierter System-Bootstrap für sofortige Session-Eichung. |
 
 ---
 

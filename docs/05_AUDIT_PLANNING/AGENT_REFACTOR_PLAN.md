@@ -1,8 +1,8 @@
 # OMEGA CORE - AUDIT-BERICHT & ARCHITEKTUR-KONZEPT: AGENTEN-SYSTEM (V2)
 
-**Datum:** 2026-03-25  
-**Autor:** Systemarchitekt (Ring 3)  
-**Status:** Audit abgeschlossen | Konzept zur Ratifikation  
+**Datum:** 2026-03-25
+**Autor:** Systemarchitekt (Ring 3)
+**Status:** Audit abgeschlossen | Konzept zur Ratifikation
 
 ---
 
@@ -21,27 +21,22 @@ Der bisherige Ansatz der Agenten-Architektur war ineffizient, stochastisch fehle
 
 ---
 
-## 2. NEUES ARCHITEKTUR-KONZEPT (Agenten-Hierarchie V2)
+## 2. NEUES ARCHITEKTUR-KONZEPT (Agenten-Hierarchie V4 - Resonance-Aware)
 
-Um die Informationsasymmetrie zu beheben und deterministisches Verhalten zu erzwingen, wird die Architektur in drei entkoppelte, aber hart über das Dateisystem verdrahtete Schichten (Layers) restrukturiert.
+Das V2-Konzept (Statischer Käfig) ist gescheitert. Wir migrieren auf V4:
 
 ### LAYER 0: THE CEO & ORCHESTRATOR (`.cursorrules`)
-*   **Zweck:** Die Verfassung.
-*   **Inhalt:** Ausschließlich Kern-Axiome (A5/A6), die Dreadnought-Doktrin und die Zwangsanweisung, *wie* der Orchestrator delegiert. Keine operativen Regeln (kein Frontend-, Backend-, oder DB-Wissen).
-*   **Wirkung:** Maximale Token-Effizienz und klarer Fokus für den Orchestrator.
+*   **Zweck:** Die Verfassung. Fokus auf Planung und Überwachung der Resonanz-Kaskade.
 
-### LAYER 1: DIE SUB-AGENTEN (`.cursor/agents/*.md`)
-*   **Zweck:** Die Blackbox-Rollen (Produzenten).
-*   **Systemischer Modell-Zwang:** In den Frontmatter **jeder** Sub-Agenten-Datei wird zwingend `model: fast` eingetragen. 
-    ```yaml
-    ---
-    name: db-expert
-    description: Expert database engineer...
-    model: fast
-    ---
-    ```
-    Dadurch wird auf Engine-Ebene nativ erzwungen, dass dieser Sub-Agent *immer* das schnelle, kosteneffiziente Modell nutzt, selbst wenn der Orchestrator beim Aufruf den Parameter vergisst. Die Fehlerquelle "Hauptagent" ist eliminiert.
-*   **Harte Kopplung von Skill & Rolle:** Anstatt auf externe Dateien zu verweisen, wird die essenzielle System-DNA der Rolle *direkt* in ihren System-Prompt (die `.md`-Datei) einkompiliert. Der Agent *erwacht* bereits mit seiner spezifischen Fähigkeit.
+### LAYER 1: DYNAMISCHE SUB-AGENTEN
+*   **Kein statischer Modell-Zwang:** Modell-Auswahl erfolgt dynamisch gemäß `0_TASK_DELEGATION_PROTOCOL.mdc` (V4).
+*   **Resonanz-Level:** Tasks werden mit L3 (Lite) gestartet und bei Bedarf auf L1 (Pro) hochgestuft.
+
+### LAYER 2: KONTEXTUELLE REGELN (`.cursor/rules/*.mdc`)
+*   **Automatische Injektion:** Cursor nutzt Globs, um Fachwissen punktgenau zu liefern.
+
+### LAYER 3: TELEMETRIE-FEEDBACK
+*   **Messung:** Sub-Agenten berichten Fehlerraten und Token-Druck zurück an den Orchestrator.
 
 ### LAYER 2: KONTEXTUELLE REGELN (`.cursor/rules/*.mdc`)
 *   **Zweck:** Das physische Gesetz des Codes.

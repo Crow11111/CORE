@@ -97,6 +97,8 @@ ENV/
 # Project specific
 data/certs/
 data/chroma_db/
+data/telemetry.json
+data/benchmark_results.json
 terminals/
 agent-tools/
 .state/
@@ -116,3 +118,5 @@ list_*.py
 get_*.py
 *.pyc
 **/__pycache__/**
+.archive/
+backups/

@@ -367,40 +367,41 @@ class MthoEventBus:
         summary: str,
         severity: EventSeverity,
     ):
-        if severity == EventSeverity.INFO:
-            return
-
-        try:
-            from src.db.multi_view_client import ingest_document
-            import uuid as _uuid
-
-            doc_id = f"ha_{severity.value}_{_uuid.uuid4().hex[:10]}"
-            document = (
-                f"[HA {severity.value.upper()}] {entity_id}\n"
-                f"{summary}\n"
-                f"alt={((old_state or {}).get('state', '?'))} neu={new_state.get('state', '?')}"
-            )
-            metadata = {
-                "entity_id": entity_id,
-                "domain": entity_id.split(".")[0],
-                "severity": severity.value,
-                "timestamp": new_state.get("last_changed", ""),
-                "source": "event_bus",
-            }
-            result = await ingest_document(
-                document=document,
-                doc_id=doc_id,
-                source_collection="ha_events",
-                metadata=metadata,
-            )
-            ok = result.get("success", False)
-            score = result.get("convergence_score", 0)
-            logger.info(
-                "[EVENT-BUS] Multi-View persist {}: ok={} conv={:.4f}",
-                doc_id, ok, score,
-            )
-        except Exception as e:
-            logger.warning("[EVENT-BUS] Multi-View persist fehlgeschlagen: {}", e)
+        # // KOGNITIVER-PURGE: DEAKTIVIERT DURCH ORCHESTRATOR-DIREKTIVE
+        # if severity == EventSeverity.INFO:
+        #     return
+        #
+        # try:
+        #     from src.db.multi_view_client import ingest_document
+        #     import uuid as _uuid
+        #
+        #     doc_id = f"ha_{severity.value}_{_uuid.uuid4().hex[:10]}"
+        #     document = (
+        #         f"[HA {severity.value.upper()}] {entity_id}\n"
+        #         f"{summary}\n"
+        #         f"alt={((old_state or {}).get('state', '?'))} neu={new_state.get('state', '?')}"
+        #     )
+        #     metadata = {
+        #         "entity_id": entity_id,
+        #         "domain": entity_id.split(".")[0],
+        #         "severity": severity.value,
+        #         "timestamp": new_state.get("last_changed", ""),
+        #         "source": "event_bus",
+        #     }
+        #     result = await ingest_document(
+        #         document=document,
+        #         doc_id=doc_id,
+        #         source_collection="ha_events",
+        #         metadata=metadata,
+        #     )
+        #     ok = result.get("success", False)
+        #     score = result.get("convergence_score", 0)
+        #     logger.info(
+        #         "[EVENT-BUS] Multi-View persist {}: ok={} conv={:.4f}",
+        #         doc_id, ok, score,
+        #     )
+        # except Exception as e:
+        #     logger.warning("[EVENT-BUS] Multi-View persist fehlgeschlagen: {}", e)
 
     async def _forward_to_oc_brain(
         self,

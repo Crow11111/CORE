@@ -1,17 +1,5 @@
-# Kanonischer Einstieg — eine Tür, viele Räume
+# Kanonischer Einstieg
 
-**Vektor:** 2210 | **Delta:** 0.049
-
----
-
-## Kurzantwort: „Eine Datei mit allem“?
-
-**Nein** als ein einziges Markdown mit jedem Detail (Git, Reviews, VPS, HA, Theorie, Codepfade): Das wird **unlesbar**, **unmergebar** und **lügt** schneller als ein Index, weil nichts mehr aktuell gehalten wird.
-
-**Ja** als **eine definierte Einstiegs-Tür**, hinter der **klar** steht, **wo** welche Wahrheit liegt und **wer mit wem** spricht:
-
-| Frage | Erste Adresse |
-|--------|----------------|
 | Was ist überhaupt kanonisch? Wo fange ich an? | **`docs/BIBLIOTHEK_KERN_DOKUMENTE.md`** (vollständiger Index, Regeln „immer einbinden“). |
 | Diese Übersicht (eine Tür) | **`KANON_EINSTIEG.md`** (diese Datei) |
 | Regeln / Grounding / Entities | **`docs/SYSTEM_CODEX.md`** |

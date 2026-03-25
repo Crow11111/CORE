@@ -24,3 +24,8 @@ Es ist dem System (Agenten) STRENGSTENS UNTERSAGT, bestehende Einträge aus der 
 
 ## 4. BEGRÜNDUNG (KOGNITIVER KONTEXT)
 Die `.gitignore` ist der primäre Hitzeschild gegen Informations-Leaks. Ein automatisches Entfernen von Filtern gefährdet die Sicherheit des Gesamtsystems (Axiom 7/8). Jede Änderung an diesem Filter unterliegt der Veto-Hoheit des Operators.
+
+## 5. SICHERHEITS-AUDIT (ERWEITERUNG)
+- **Index-Check**: Vor dem Hinzufügen eines Musters MUSS geprüft werden, ob Dateien bereits getrackt werden (`git ls-files <pattern>`). Falls ja, müssen diese mit `git rm --cached` entfernt werden.
+- **Backup-Veto**: Dateien im `.archive/` oder `backups/` Ordner unterliegen derselben Sensitivitäts-Prüfung wie der Root-Ordner.
+- **PII-Schutz**: Koordinaten, IP-Adressen und private URLs in JSON/YAML-Dateien dürfen NIEMALS committet werden.

@@ -570,12 +570,14 @@ async def search_multi_view(
     limit: int = 5,
     source_collection: str = None,
     use_3072: bool = True,
-    use_3_facets: bool = False,
+    use_3_facets: bool = True,
     include_ai: bool = False, # Standardmäßig skeptische Exklusion von KI-Halluzinationen
+    torus_mode: bool = False, # Torus-Lauf: Simultan über alle Collections
 ) -> list[dict]:
     """Sucht nach Dokumenten.
     Duale Topologie: Vektor-Suche in ChromaDB (float), Hydrierung via PostgreSQL (int).
     Push-Pull-Suche: Nutzt 768 dim für Triage in Chroma, 6144 dim in PG.
+    Torus-Mode: Erweitert die Suche auf alle Domänen für maximale Reibung.
     """
     # 1. Vektorisierung (Immer lokal für Triage)
     vec_768 = await embed_local(query)
@@ -590,15 +592,23 @@ async def search_multi_view(
         facet_collections = list(FACET_TO_COLLECTION.values())
         if include_ai:
             facet_collections.extend(AI_FACET_TO_COLLECTION.values())
+        
+        # Torus-Mode: Wir suchen nicht nur in der Ziel-Collection, sondern ueberall
+        # Chroma query filtert normalerweise via Metadata.
+        where_filter = {}
+        if source_collection and not torus_mode:
+            where_filter = {"source": source_collection}
 
         async def _query_col(col_name):
             try:
-                col = await chroma_client.get_collection(col_name)
+                from src.network.chroma_client import get_collection
+                col = await get_collection(col_name)
                 # Chroma query liefert Distanzen (kleiner = besser)
                 res = await asyncio.to_thread(
                     col.query,
                     query_embeddings=[vec_768],
-                    n_results=limit * 2
+                    n_results=limit * 2,
+                    where=where_filter if where_filter else None
                 )
                 if res["ids"] and res["ids"][0]:
                     for i, row_id in enumerate(res["ids"][0]):
@@ -715,11 +725,11 @@ async def ingest_document(
     doc_id: str = None,
     source_collection: str = "",
     metadata: dict = None,
-    use_3_facets: bool = False,
+    use_3_facets: bool = True,
 ) -> Optional[dict]:
     """
-    Vollstaendige Ingest-Pipeline: Text -> 6 Linsen ODER 3 Facetten -> Konvergenz -> pgvector.
-    Asynchrone Entkopplung: Mittels 'use_3_facets' kann dynamisch auf die neue Struktur gewechselt werden.
+    Vollstaendige Ingest-Pipeline: Text -> 3 Facetten (Standard) -> Konvergenz -> pgvector.
+    CORE-Eichung: use_3_facets ist nun Standard für maximale Gedächtnis-Resonanz.
     """
     # 0. Bias Damper (Clean-up before vectorization)
     document = _apply_bias_damper(document)

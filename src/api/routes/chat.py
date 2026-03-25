@@ -55,15 +55,25 @@ async def _log_session_turn(user_msg: str, reply: str, mode: str):
     try:
         from src.db.multi_view_client import ingest_document
         import hashlib
+        import uuid
         ts = asyncio.get_event_loop().time()
         h = hashlib.md5(f"{ts}{user_msg[:40]}".encode()).hexdigest()[:10]
         doc_id = f"session_{h}"
-        document = f"[User] {user_msg}\n\n[CORE] {reply}"
+
+        # Trennung der Dokumente für präziseres Retrieval
+        # 1. User Input
         await ingest_document(
-            document=document,
-            doc_id=doc_id,
+            document=f"### USER INPUT\n{user_msg}",
+            doc_id=f"{doc_id}_user",
             source_collection="session_logs",
-            metadata={"mode": mode, "source": "cockpit_chat"},
+            metadata={"mode": mode, "source": "cockpit_chat", "speaker": "user"},
+        )
+        # 2. CORE Reply
+        await ingest_document(
+            document=f"### CORE REPLY\n{reply}",
+            doc_id=f"{doc_id}_core",
+            source_collection="session_logs",
+            metadata={"mode": mode, "source": "cockpit_chat", "speaker": "gemini", "is_ai": True},
         )
     except Exception as e:
         logger.warning(f"[SESSION-LOG] Persist fehlgeschlagen: {e}")

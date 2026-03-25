@@ -78,12 +78,31 @@ class EphemeralAgent:
         """
         Fuehrt den Intent-Handler aus und terminiert.
         0/1 Schalter: Prueft OMEGA-Pulse (Resonanz-Lock) vor Ausfuehrung.
+        Cognitive Grounding: Laedt relevanten Kontext aus den DBs.
         """
         from src.logic_core.resonance_membrane import check_omega_pulse, OmegaCircuitBreakerException
+        from src.db.multi_view_client import search_multi_view
+
         start = time.time()
         try:
             # --- CIRCUIT BREAKER VETO ---
             await check_omega_pulse()
+
+            # --- COGNITIVE GROUNDING (MEMORY REIBUNG) ---
+            # Suche nach dem aktuellen Intent im OMEGA-Torus (alle Collections)
+            grounding_query = f"Intent: {self.intent.value} Payload: {str(self.payload)}"
+            context_results = await search_multi_view(
+                grounding_query, 
+                limit=5, 
+                use_3_facets=True,
+                torus_mode=True, # Wahre Intelligenz durch Reibung im gesamten Torus
+                include_ai=True
+            )
+
+            if context_results:
+                logger.debug(f"[EPHEMERAL-{self.id}] Grounding: {len(context_results)} patterns found.")
+                # Hier koennte der Kontext in den Payload injiziert werden
+                self.payload["_grounding_context"] = context_results
 
             logger.debug(f"[EPHEMERAL-{self.id}] Spawn: {self.intent.value}")
             result_payload = await handler(self.payload)
@@ -136,7 +155,7 @@ class EphemeralAgentPool:
         Wirft Exception wenn Pool voll.
         """
         self._gc_sync()
-        
+
         if len(self._agents) >= self._max_concurrent:
             raise RuntimeError(f"Ephemeral Pool erschoepft ({self._max_concurrent} max)")
 

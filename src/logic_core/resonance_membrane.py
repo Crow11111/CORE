@@ -48,7 +48,9 @@ async def check_omega_pulse() -> bool:
 
     # 2. ChromaDB Heartbeat (float-Kern)
     try:
-        hb = await chroma_client.heartbeat()
+        from src.network.chroma_client import get_chroma_client
+        client = await get_chroma_client()
+        hb = client.heartbeat()
         # Axiom A5/A6 Validierung des Zeitstempels (float-Resonanz)
         assert_resonance_float("chroma_heartbeat", float(hb))
     except Exception as e:

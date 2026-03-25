@@ -77,9 +77,14 @@ class EphemeralAgent:
     async def execute(self, handler: Callable[..., Coroutine[Any, Any, Any]]) -> EphemeralResult:
         """
         Fuehrt den Intent-Handler aus und terminiert.
+        0/1 Schalter: Prueft OMEGA-Pulse (Resonanz-Lock) vor Ausfuehrung.
         """
+        from src.logic_core.resonance_membrane import check_omega_pulse, OmegaCircuitBreakerException
         start = time.time()
         try:
+            # --- CIRCUIT BREAKER VETO ---
+            await check_omega_pulse()
+
             logger.debug(f"[EPHEMERAL-{self.id}] Spawn: {self.intent.value}")
             result_payload = await handler(self.payload)
             duration = (time.time() - start) * 1000

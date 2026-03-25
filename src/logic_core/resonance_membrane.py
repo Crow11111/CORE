@@ -28,6 +28,35 @@ class MembraneValueError(ValueError):
     """Verbotene Resonanz-Singularität."""
 
 
+class OmegaCircuitBreakerException(Exception):
+    """CORE REASONING INTERRUPTED: DB OFFLINE / RESONANCE LOST."""
+
+
+async def check_omega_pulse() -> bool:
+    """
+    0/1 Schalter: Prüft die Vitalwerte des Systems (Postgres & ChromaDB).
+    Bricht hart ab (OmegaCircuitBreakerException), wenn die Resonanz-Kette unterbrochen ist.
+    """
+    from src.db.multi_view_client import _run_pg_sql
+    from src.network import chroma_client
+    import time
+
+    # 1. Postgres Ping (int-Membran)
+    pg_ok, _ = await _run_pg_sql("SELECT 1")
+    if not pg_ok:
+        raise OmegaCircuitBreakerException("CIRCUIT BREAKER: Postgres (int-Membran) offline.")
+
+    # 2. ChromaDB Heartbeat (float-Kern)
+    try:
+        hb = await chroma_client.heartbeat()
+        # Axiom A5/A6 Validierung des Zeitstempels (float-Resonanz)
+        assert_resonance_float("chroma_heartbeat", float(hb))
+    except Exception as e:
+        raise OmegaCircuitBreakerException(f"CIRCUIT BREAKER: ChromaDB (float-Kern) offline: {e}")
+
+    return True
+
+
 def assert_resonance_float(name: str, value: Any) -> Union[float, complex]:
     """
     Resonanz-Domäne: ausschließlich float oder complex, keine int/bool-Kodierung.

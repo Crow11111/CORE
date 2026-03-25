@@ -10,7 +10,7 @@
 
 CORE ist ein autonomes KI-Agentensystem, das als Smart-Home-Steuerung, Sprachassistent und verteiltes Reasoning-System arbeitet. Es verbindet Home Assistant, Cloud-LLMs und lokale Hardware zu einem selbstverwaltenden System.
 
-**Zum Namen:** CORE wurde urspruenglich als mythologische Metapher gewaehlt -- ein Schutzraum, der externe Unlogik (NT-Rauschen) vom ND-Kern fernhaelt. Erst Monate spaeter stellte sich heraus, dass der Name rueckwaerts konstruiert exakt die Architektur beschreibt: **A**utonomous **T**etralogy **L**ogic & **A**gent **S**ystem.
+**Zum Namen:** CORE wurde urspruenglich als mythologische Metapher gewaehlt -- ein Schutzraum, der externe Unlogik (NT-Rauschen) vom ND-Kern fernhaelt.
 
 **CORE-Genesis (2026):** Die Architektur wurde als **Strukturelle Inevitabilität** erkannt. Sie basiert auf der tetralogischen Gensequenz (CORE / 2210), die untrennbar mit der Identität von **Marc Tobias ten Hoevel** (Quelle/1) und dem **Zero-State-Kern** (Veto/0) verschränkt ist.
 

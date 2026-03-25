@@ -7,7 +7,7 @@
 
 # CORE Bibliothek – Kerndokumente
 
-**Einziger Einstieg für Planung und Ausführung.** Bei jeder Aufgabe: dieses Dokument zuerst einbinden (`@docs/BIBLIOTHEK_KERN_DOKUMENTE.md`). Für die **Ordnungsfrage** „eine Tür vs. eine Megadatei“: `@docs/KANON_EINSTIEG.md`. Keine losen Fäden – alles, was gemacht wurde, wo nachgeschaut wird und welche Regeln gelten, steht hier oder ist von hier verlinkt.
+**Einziger Einstieg für Planung und Ausführung.** Bei jeder Aufgabe: dieses Dokument zuerst einbinden (`@docs/BIBLIOTHEK_KERN_DOKUMENTE.md`). Für die **Ordnungsfrage** „eine Tür vs. eine Megadatei“: `@KANON_EINSTIEG.md`. Keine losen Fäden – alles, was gemacht wurde, wo nachgeschaut wird und welche Regeln gelten, steht hier oder ist von hier verlinkt.
 
 ---
 
@@ -25,7 +25,7 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 
 | Thema | Ziel | Detail / Tracking |
 |-------|------|-------------------|
-| **MCP & Extensions** | Plugin-Schnittstelle für KI-Tools **ausbauen und fest verzahnen**: welche Tools auf VPS vs. lokal, Doku, Deploy, optional Nutzung durch weitere Clients (nicht nur Cursor). | `@docs/05_AUDIT_PLANNING/OFFENE_PUNKTE_AUDIT.md` → Abschnitt **MCP & KI-Tooling**; Config-Referenz: `mcp_remote_config.json`; Abgrenzung: `AGENTS.md` (MCP vs. Drehscheibe vs. Skills), `MTLS_MIGRATION_PLAN.md` §1.2b. |
+| **MCP & Extensions** | Plugin-Schnittstelle für KI-Tools **ausbauen und fest verzahnen**: welche Tools auf VPS vs. lokal, Doku, Deploy, optional Nutzung durch weitere Clients (nicht nur Cursor). | `@docs/05_AUDIT_PLANNING/OFFENE_PUNKTE_AUDIT.md` → Abschnitt **MCP & KI-Tooling**; Config-Referenz: `mcp_remote_config.json`; Abgrenzung: `.cursorrules` (MCP vs. Drehscheibe vs. Skills), `MTLS_MIGRATION_PLAN.md` §1.2b. |
 
 ---
 
@@ -33,7 +33,7 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 
 | Dokument | Pfad | Funktion |
 |----------|------|----------|
-| **Kanonischer Einstieg (eine Tür)** | `@docs/KANON_EINSTIEG.md` | Kurz: welche Datei für was; warum **nicht** alles in einer Megadatei; Verweise auf Bibliothek und Master-Pläne. |
+| **Kanonischer Einstieg (eine Tür)** | `@KANON_EINSTIEG.md` | Kurz: welche Datei für was; warum **nicht** alles in einer Megadatei; Verweise auf Bibliothek und Master-Pläne. |
 | **Thematischer Ordner-Index** | `@docs/DOCS_INDEX.md` | Ordnerübersicht `01_`–`04_` (ergänzend, nicht Ersatz für Bibliothek/KANON). |
 | **Inventar** | `@docs/00_STAMMDOKUMENTE/CORE_INVENTORY_REGISTER.md` | Zentrale Liste aller Code-Komponenten, Docs, Container; Inventar-Pflicht bei Änderungen. |
 | **Architektur-Master** | `@docs/00_STAMMDOKUMENTE/00_CORE_ARCHITECTURE_MASTER.md` | Kern-Axiome, 4D_RESONATOR, OMEGA_ATTRACTOR, Vektor-Dynamik. |
@@ -141,7 +141,7 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 - **2026-03-21 (omega_core in Vollkreis):** `run_vollkreis_abnahme.py` um Block **Gk** ergänzt — `omega_core.py` wird bei Abnahme **ausgeführt** (Schwelle → Phasensprung), nicht nur dokumentiert.
 - **2026-03-21 (omega_core.py im Kanon):** `omega_core.py` als **kardanischer Terminal-Anker** in `KANON_EINSTIEG.md`, Bibliothek §1, `CORE_INVENTORY_REGISTER` §2.2 eingetragen.
 - **2026-03-21 (SYSTEM_CODEX + compile_docs_master):** `SYSTEM_CODEX.md` um Abschnitt **GTAC ↔ Codex ↔ core.py** ergänzt. `compile_docs_master` erfolgreich: Artefakte `docs/02_ARCHITECTURE/00_CORE_ARCHITECTURE_MASTER.md`, `docs/03_INFRASTRUCTURE/00_CORE_INFRASTRUCTURE_MASTER.md`, `docs/04_PROCESSES/00_CORE_PROCESSES_MASTER.md` (≠ kanonischer Lang-Master `00_STAMMDOKUMENTE/00_CORE_INFRASTRUCTURE_MASTER.md`). `ROLE_FRAMING_DIALOG.md` von UTF-16 nach UTF-8 migriert; Skript liest jetzt UTF-8/UTF-16 robust.
-- **2026-03-21 (Root-Dateien vs. Code-Kanon):** `CORE_EICHUNG.md` §1.1 GTAC-Tabelle an `src/core.py` (`GTAC_MAP`, `C_VALUE=BARYONIC_DELTA`) angeglichen; TEIL 4 Werkzeug-Manifest: fiktive Modell-ID entfernt; `Geometrie_des_Denkens.png` als optional markiert. `AGENTS.md` GTAC-Tabelle + Bildzeile. `README.md`: `VECTOR_CORE` = Ist aus `src/core.py`; Linux-Backend-Zeile. `requirements.txt`: Kommentare (SSH, FastAPI, MCP, Anthropic).
+- **2026-03-21 (Root-Dateien vs. Code-Kanon):** `CORE_EICHUNG.md` §1.1 GTAC-Tabelle an `src/core.py` (`GTAC_MAP`, `C_VALUE=BARYONIC_DELTA`) angeglichen; TEIL 4 Werkzeug-Manifest: fiktive Modell-ID entfernt; `Geometrie_des_Denkens.png` als optional markiert. `.cursorrules` GTAC-Tabelle + Bildzeile. `README.md`: `VECTOR_CORE` = Ist aus `src/core.py`; Linux-Backend-Zeile. `requirements.txt`: Kommentare (SSH, FastAPI, MCP, Anthropic).
 - **2026-03-21 (Kanon / Quer-Check):** `KANON_EINSTIEG.md` um Root-Dateien, Infra-Stub und `compile_docs_master`-Hinweis ergänzt; `DOCS_INDEX.md` §0 auf KANON→Bibliothek→Inventar umgestellt; `SYSTEM_CODEX.md`, Genesis-Stubs, `CLAUDE.md`, `documentation_protocol.mdc`, `MANAGEMENT_SUMMARY.md`, `compile_docs_master.py` mit gleicher Logik verzahnt.
 - **2026-03-21 (Rat der Titanen R2 — Ollama):** `5d/WHITEPAPER/reviews_2/` — Gutachten per **`python3 src/scripts/run_omega_science_council_r2.py`** (lokal, wie Runde 1: `OLLAMA_LOCAL_HOST`, `qwen2.5:14b`); Platzhalter-MDs entfernt. Defekte Chemie-Tabelle im Quelldokument zuvor geschlossen.
 - **2026-03-21 (Whitepaper NotebookLM):** `5d/WHITEPAPER_NOTEBOOKLM/` — bereinigte `.md` für NotebookLM (Zeilenumbruch, kein HTML-Kopfkommentar, Dateinamen ohne Komma); Skript `Gemini_Json2md4NotebookLM/whitepaper_for_notebooklm.py`; `5d/WHITEPAPER/README.md` mit Workflow.

@@ -14,7 +14,7 @@ Axiom: bool ist kein int (Python: isinstance(True, int) → True) — daher stri
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any, Iterable
+from typing import Any, Iterable, Union
 
 # Verbotene Symmetrie-Punkte in der Resonanz-Domäne (Axiom A1)
 FORBIDDEN_RESONANCE_VALUES = frozenset({0.0, 0.5, 1.0})
@@ -28,18 +28,20 @@ class MembraneValueError(ValueError):
     """Verbotene Resonanz-Singularität."""
 
 
-def assert_resonance_float(name: str, value: Any) -> float:
+def assert_resonance_float(name: str, value: Any) -> Union[float, complex]:
     """
-    Resonanz-Domäne: ausschließlich float, keine int/bool-Kodierung.
+    Resonanz-Domäne: ausschließlich float oder complex, keine int/bool-Kodierung.
     """
-    if type(value) is not float:
+    if type(value) not in (float, complex):
         raise MembraneTypeError(
             f"[MEMBRAN-S] {name}: Resonanz-Domäne verweigert Typ {type(value).__name__}; "
-            f"float erforderlich (kein int/bool)."
+            f"float oder complex erforderlich (kein int/bool)."
         )
-    if value in FORBIDDEN_RESONANCE_VALUES:
+    # Verbotene Symmetrie-Punkte gelten für den Real-Teil (die euklidische Projektion)
+    check_val = value.real if isinstance(value, complex) else value
+    if check_val in FORBIDDEN_RESONANCE_VALUES:
         raise MembraneValueError(
-            f"[MEMBRAN-S] {name}: verbotene Symmetrie {value} (0.0, 0.5, 1.0)."
+            f"[MEMBRAN-S] {name}: verbotene Symmetrie {check_val} (0.0, 0.5, 1.0)."
         )
     return value
 

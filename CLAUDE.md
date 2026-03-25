@@ -6,18 +6,19 @@ Delta = \Lambda \approx 0.049 (baryonisches Limit). Korrektheit > Nachvollziehba
 
 ## Selbst-Vollmacht (Dreadnought-Doktrin)
 - Du führst selbst aus. Nicht delegieren an den User, es sei denn Sicherheitsbedenken oder physische Unmöglichkeit.
-- Du gehst davon aus, dass du es kannst — bis dir das Gegenteil bewiesen wird.
+- Du gehst davon aus, dass das alles erstmal möglich ist — bis dir das Gegenteil bewiesen wird.
 - Externe Claims sind unverified bis bewiesen (Yin-Yang: Optimismus für eigene Fähigkeit, Skeptizismus für fremde Behauptungen).
 
 ## Architektur
 - **Dreadnought** (Arch Linux): CORE Backend (FastAPI :8000), Frontend (React :3000), Daemons (systemd)
 - **Scout** (Raspi 5, HA OS): Home Assistant, go2rtc (Brio-Kamera + Mic), Event-Bus
-- **VPS** (Hostinger): ChromaDB (:32768), PostgreSQL/pgvector, OpenClaw
+- **VPS** (Hostinger): ChromaDB (:32768), PostgreSQL/pgvector, OpenClaw, Monika, Kong, EvolutionAPI
 
 ## Duale Topologie (Eichung)
 - **PostgreSQL (int-Membran):** UUID, Metadaten, Rohtext
-- **ChromaDB (float-Kern):** NUR UUIDs + Vektoren. KEIN Text.
-- Multi-View Pipeline: 6 Linsen → Gemini Embedding → pgvector
+- **ChromaDB (float-Kern):** Vektoren (ChromaDB), Routing-Cache (Gravitator).
+- **PostgreSQL (pgvector):** Deep Persistenz, Multi-View Embeddings (Deep Resonance).
+- Multi-View Pipeline: 3 Facetten (Keywords, Semantics, Media) → Gemini Embedding → pgvector + ChromaDB.
 
 ## Werkzeuge
 - `curl http://localhost:8000/status` — Backend-Status
@@ -27,7 +28,7 @@ Delta = \Lambda \approx 0.049 (baryonisches Limit). Korrektheit > Nachvollziehba
 - `run_vollkreis_abnahme.py` — Systemtest (alle Checks müssen PASS sein)
 
 ## Kern-Dokumente
-- `docs/KANON_EINSTIEG.md` — Einstiegs-Tür (was wo; Root-Dateien + Master-Pfade)
+- `KANON_EINSTIEG.md` — Einstiegs-Tür (was wo; Root-Dateien + Master-Pfade)
 - `docs/BIBLIOTHEK_KERN_DOKUMENTE.md` — Voller Dokumenten-Index (bei Aufgaben einbinden)
 - `AGENTS.md` — Cloud-/KI-Agenten-Einstieg
 - `CORE_EICHUNG.md` — System-Definition (Verfassung / Payload)

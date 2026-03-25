@@ -13,9 +13,9 @@
 | Frage | Erste Adresse |
 |--------|----------------|
 | Was ist überhaupt kanonisch? Wo fange ich an? | **`docs/BIBLIOTHEK_KERN_DOKUMENTE.md`** (vollständiger Index, Regeln „immer einbinden“). |
-| Diese Übersicht (eine Tür) | **`docs/KANON_EINSTIEG.md`** (diese Datei) |
+| Diese Übersicht (eine Tür) | **`KANON_EINSTIEG.md`** (diese Datei) |
 | Regeln / Grounding / Entities | **`docs/SYSTEM_CODEX.md`** |
-| Cloud-/KI-Agenten (Cursor, Remote) | **`AGENTS.md`** (Root) |
+| Cloud-/KI-Agenten (Cursor, Remote) | **`.cursorrules`** (Root) |
 | System-Eichung / Session-Payload | **`CORE_EICHUNG.md`** (Root) |
 | Operative IDE-/Agenten-Regeln (Stufen 1–3) | **`.cursorrules`** (Root) |
 | Kurzüberblick für Menschen | **`README.md`** (Root) |
@@ -50,4 +50,4 @@
 
 ---
 
-**Referenz:** `@docs/BIBLIOTHEK_KERN_DOKUMENTE.md` · `@AGENTS.md` · `@CLAUDE.md` · `@README.md`
+**Referenz:** `@docs/BIBLIOTHEK_KERN_DOKUMENTE.md` · `@.cursorrules` · `@CLAUDE.md` · `@README.md`

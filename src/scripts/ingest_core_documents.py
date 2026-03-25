@@ -147,11 +147,18 @@ async def ingest_file(filepath: str, collection_name: str):
     for i, chunk in enumerate(chunks):
         t0 = time.time()
         try:
+            # KI-Skepsis: is_ai Flag setzen wenn Sprecher Gemini
+            is_ai = chunk["speaker"] == "gemini"
+
             result = await ingest_document(
                 document=chunk["text"],
                 doc_id=chunk["doc_id"],
                 source_collection=collection_name,
-                metadata={"speaker": chunk["speaker"], "source_file": filepath},
+                metadata={
+                    "speaker": chunk["speaker"],
+                    "source_file": filepath,
+                    "is_ai": is_ai
+                },
                 use_3_facets=True,
             )
 

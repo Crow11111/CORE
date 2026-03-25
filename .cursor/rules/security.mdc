@@ -1,0 +1,33 @@
+---
+description: Regeln für security
+globs:
+  - src/api/middleware/**/*.py
+  - src/auth/**/*.py
+  - .env.example
+---
+# Expertise: Security
+
+## Authentifizierungs-Patterns
+
+| Methode | Einsatz |
+|---------|---------|
+| Bearer Token | API-Authentifizierung (REST/WebSocket) |
+| JWT | Session-Management, Claims |
+| SSH-Keys | Absicherung VPS, Scout, Dreadnought |
+
+## Security-Prinzipien
+
+- **Zero-Trust**: Jeder Request (auch intern) erfordert Verifikation.
+- **OWASP Top 10**: Striktes Escaping, Parameterized Queries (SQLi), CSRF-Tokens.
+- **Least Privilege**: Container und Prozesser laufen mit minimalen Rechten.
+
+## System-spezifische Constraints
+
+- **Gateway Token**: Zwingend für externen API-Zugriff.
+- **VPS SSH-Zugriff**: Ausschließlich Key-Based-Authentication, Password-Login ist in der `sshd_config` deaktiviert.
+- **Confidence-Threshold**: Daten werden nur bei systematischer Verifikation (Score >= 0.99) persistiert, um Manipulation zu verhindern.
+
+## Agentur-Direktiven (Hol-Pflicht)
+
+- **Auditor**: Security-Claims sind empirisch zu testen. Token-Gültigkeit, Datei-Rechte (`chmod`/`chown`) und SSH-Verfügbarkeiten prüft der Agent autonom per Shell-Befehl.
+- Keine Annahmen zu Environment-Variablen. Vor der Nutzung von Secrets prüft der Agent autonom die Existenz in `.env` (ohne den Wert im Output auszugeben).

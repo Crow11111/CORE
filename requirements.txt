@@ -1,5 +1,5 @@
 # CORE SYSTEM — Python-Abhängigkeiten (kein Ersatz für Architektur-Doku).
-# Kanon: docs/KANON_EINSTIEG.md · Index: docs/BIBLIOTHEK_KERN_DOKUMENTE.md · Agenten: AGENTS.md · Regeln: .cursorrules
+# Kanon: KANON_EINSTIEG.md · Index: docs/BIBLIOTHEK_KERN_DOKUMENTE.md · Agenten: AGENTS.md · Regeln: .cursorrules
 pydantic>=2.7.0
 python-dotenv>=1.0.0
 loguru>=0.7.0    # Besseres Logging als Standard-Lib

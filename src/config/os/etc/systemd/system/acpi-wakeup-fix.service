@@ -1,0 +1,13 @@
+[Unit]
+Description=Disable instant wake triggers in /proc/acpi/wakeup
+Documentation=man:systemd.unit(5)
+DefaultDependencies=no
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/bin/sh -c 'for dev in XHCI AWAC PEG1 RP05 RP09 RP21; do if grep -q "^$dev.*\\*enabled" /proc/acpi/wakeup; then echo $dev > /proc/acpi/wakeup; fi; done'
+RemainAfterExit=yes
+
+[Install]
+WantedBy=sysinit.target

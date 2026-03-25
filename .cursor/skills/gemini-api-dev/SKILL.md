@@ -12,14 +12,11 @@ This skill provides the standard procedure for integrating Google's Gemini API w
 ## CORE Model Standards
 
 > [!IMPORTANT]
-> **Never** use Gemini 1.5, 2.0 Flash, or any older models. The system exclusively uses Pro models.
+> Um die Gemini Pro Quota (250 Requests/Tag) zu schonen, nutzt das System für alle autonomen Sub-Agenten und Standard-Aufgaben **Flash-Modelle** (Gemini 3 Flash oder 3.1 Flash-Lite).
 
-Always use these exact model strings:
-
-- **Primary / Standard Model:** `gemini-3.1-pro-preview` (Gemini 3.1 Pro)
-  - Used for Dev-Agent, Heavy Reasoning, WhatsApp, Brio Image Analysis.
-- **Fallback Model:** `gemini-3-pro-preview` (Gemini 3 Pro)
-  - Used if 3.1 Pro is unavailable.
+- **Primary / Orchestrator Model:** `gemini-3.1-pro-preview` (Nur für Architektur-Entscheidungen).
+- **Sub-Agent / Flash Model:** `gemini-3-flash-preview` (Standard für Code-Generierung).
+- **Lite Model:** `gemini-3.1-flash-lite-preview` (Für Triage und einfache Audits).
 
 ## API Keys & Environment Variables
 

@@ -1,0 +1,42 @@
+---
+description: Regeln für networking
+globs:
+  - src/api/**/*.py
+  - src/network/**/*.py
+  - src/connectors/**/*.py
+---
+# Expertise: Netzwerk & API
+
+## Technologie-Stack
+
+| Protokoll | Einsatz |
+|-----------|---------|
+| REST | Synchrone API-Endpoints, Webhooks |
+| WebSocket | Asynchrone Echtzeit-Kommunikation, Events |
+| MQTT | IoT-Sensordaten, Home Assistant |
+| SSH-Tunnel | Verschlüsselte Verbindungen zwischen Knoten |
+
+## Docker-Networking
+
+- Bridge-Netzwerke für strikte Service-Isolation.
+- Explizites Port-Mapping (Host:Container).
+- Benannte Volumes für persistente Datenhaltung.
+
+## Topologie-Knoten
+
+| Knoten | Funktion |
+|--------|----------|
+| VPS | Zentraler Server, Gateway (Port 18789) |
+| Scout | Edge-Device, Sensoren, Home Assistant |
+| Dreadnought | Entwicklungs- und Hauptrechner |
+
+## System-spezifische Constraints
+
+- **Gateway**: Zentrale Routing-Instanz für externen Traffic (Port 18789).
+- **API-Design**: Strikt RESTful, standardisierte HTTP-Fehlercodes und JSON-Strukturen.
+- **SSH-Tunnel**: Zwingend für die sichere Verbindung VPS ↔ Scout/Dreadnought.
+
+## Agentur-Direktiven (Hol-Pflicht)
+
+- **Producer/Auditor**: Offene Ports, Container-Status und Netzwerk-Verbindungen (z.B. SSH-Verbindungen, API-Erreichbarkeit) sind zwingend autonom zu prüfen (`curl`, `docker ps`, `netcat`, `ping`). 
+- Der Agent fordert den User NIEMALS auf, einen Port "mal kurz zu testen", wenn der Agent selbst einen Request absetzen kann. "Connection Refused" wird autonom analysiert (Logs lesen, Service-Status prüfen).

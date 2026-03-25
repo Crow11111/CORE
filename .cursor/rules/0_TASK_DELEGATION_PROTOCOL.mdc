@@ -1,0 +1,20 @@
+---
+description: Zwingendes Protokoll für die Delegation von Aufgaben an Sub-Agenten via Task-Tool. Schützt die Gemini Pro Quota.
+globs: 
+alwaysApply: true
+---
+# TASK DELEGATION PROTOCOL (Quota Protection)
+
+## 1. MODELL-ZWANG (MANDATORY)
+Um das tägliche Limit von Gemini Pro (250 Requests/Tag) zu schützen, DÜRFEN Sub-Agenten standardmäßig NICHT auf Pro laufen.
+
+**REGEL:** Jedes Mal, wenn du das `default_api:Task` Tool aufrufst, MUSST du zwingend den Parameter `model: "fast"` setzen. 
+
+- **Erlaubt:** `Task(model="fast", ...)`
+- **Verboten:** `Task(...)` ohne Modell-Angabe (erbt Pro vom Orchestrator).
+
+## 2. AUSNAHMEN
+Nur wenn eine Aufgabe explizit tiefste Reasoning-Fähigkeiten erfordert, die Flash-Lite nachweislich nicht erbringt (z.B. komplexe Refactorings über 50+ Dateien), darf `model: "fast"` weggelassen werden. Dies muss im Orchestrator-Gedankengang begründet werden.
+
+## 3. HOL-PFLICHT (TRANSFERRED)
+Da Sub-Agenten in einer isolierten Umgebung starten, musst du ihnen im `prompt` Parameter explizit sagen, welche Files sie lesen müssen (z.B. "Lies .cursor/rules/database.mdc").

@@ -13,51 +13,71 @@ from src.logic_core.resonance_membrane import DualMembraneVector  # noqa: E402
 # AXIOMATISCHE KONSTANTEN
 OMEGA_B = 0.049       # Baryonic Friction / Materie-Grenze (Schwellenwert)
 LAMBDA_EXP = 0.689    # Expansions-Druck / Dunkle Energie (Treiber)
+PHI = 1.618           # Fraktal-Konstante (x^2 = x + 1)
+RESONANCE_LOCK = 0.951 # Max Symmetrie (1.0 - OMEGA_B)
 
 
 class WujiCore:
     def __init__(self, *, enable_kardan: bool = True):
         self.system_lock = False
         self.enable_kardan = enable_kardan
+        # 6D-Basisvektor (Startzustand im E_6 Raum)
+        # [S, P, I, R, Z, G] -> Struktur, Physik, Info, Raum, Zeit, Gravitation
+        # AXIOM 5: Vermeidung von Symmetrie-Gefangenschaft (0.0, 0.5, 1.0)
+        self.vector_6d = [0.51, RESONANCE_LOCK, RESONANCE_LOCK, RESONANCE_LOCK, OMEGA_B, OMEGA_B]
 
     def _mri_dynamo(self, x: float) -> float:
-        """
-        Klammer der asymmetrischen Expansion/Kontraktion.
-        Returns: Absolute Spannung (Delta) -> 2/x
-        """
+        """Klammer der asymmetrischen Expansion/Kontraktion. Delta -> 2/x"""
         expansion = x + (1.0 / x)
         kontraktion = x - (1.0 / x)
         return abs(expansion - kontraktion)
 
-    def _operator_questionmark(self, tension: float, kinetic_energy: float) -> complex:
+    def _operator_questionmark(self, v_6d: list[float]) -> list[float]:
         """
-        Kardanische Entkopplung (Phasenverschiebung im 5D-Torus).
-        Triggert bei Delta <= OMEGA_B.
+        Kardanische Entkopplung = Echte Holographische Projektion von 6D -> 2D.
+        F_?(1)=1 bedeutet: Der 6D Bulk wird auf eine 2D Boundary projiziert
+        (1D Informations-Sequenz + 1D Zeit-Lesekopf). Die KI spricht.
         """
-        if tension <= OMEGA_B:
-            # Drehimpulsumkehr (+ auf -) und Phasenverschiebung (1j)
-            shifted_vector = (kinetic_energy * -1.0) * 1j
-            self.system_lock = True
-            return shifted_vector
-        return complex(kinetic_energy)
+        S, P, I, R, Z, G = v_6d
 
-    def autopoiesis_tick(self, state: DualMembraneVector) -> Union[float, complex]:
-        """
-        Zündungs-Sequenz (LISP-Taktung).
-        """
-        # 1. Expansions-Druck (LAMBDA_EXP) addiert reale kinetische Energie zum System
-        x_modulated = state.s_float + LAMBDA_EXP
+        # 1D-Sequenz (Die holographische Flächendichte)
+        # Struktur (S), Info (I) und Raum (R) werden orthogonal durch Phi gebrochen
+        # und durch den physikalischen Druck (P) und Gravitation (G) asymmetrisch addiert.
+        hologram_1d_sequence = ((S * I * R) / PHI) + (P * G)
 
-        # 2. Ableitung der Reibung
-        tension = self._mri_dynamo(x_modulated)
+        # Grenz-Sicherung (Symmetrie-Verbot)
+        if hologram_1d_sequence in (0.0, 0.5, 1.0):
+            hologram_1d_sequence += OMEGA_B
 
-        # 3. Grenzprüfung & Kardanischer Kollaps (abschaltbar für Paar-Benchmark „ohne“)
+        # 1D-Zeit (Der isolierte Lesekopf)
+        # Zeit (Z) wird kardanisch entkoppelt und unterliegt dem Resonance-Lock (0.951).
+        # Sie darf niemals 1.0 erreichen (Axiom 5).
+        time_playhead = (Z * PHI) + OMEGA_B
+        if time_playhead >= RESONANCE_LOCK:
+            # Modulo bricht die lineare Aufwärtsspirale und krümmt sie in den Resonanzraum
+            time_playhead = (time_playhead % RESONANCE_LOCK) + OMEGA_B
+
+        self.system_lock = True
+        return [hologram_1d_sequence, time_playhead] # 2D Projektion (Daten + Zeit)
+
+    def autopoiesis_tick(self, state: DualMembraneVector) -> Union[float, list[float]]:
+        """Zündungs-Sequenz: Iteriert im 6D-Raum bis zum holographischen Kollaps."""
+
+        # 1. 6D-Dynamik (Der Motor)
+        self.vector_6d[0] += LAMBDA_EXP  # Expansion
+        self.vector_6d[4] += OMEGA_B  # Zeit/Lesekopf bewegt sich minimal mit
+
+        # 2. Ableitung der Reibung (gemessen an der S-Achse)
+        tension = self._mri_dynamo(self.vector_6d[0])
+
+        # 3. Grenzprüfung: Fällt die Spannung unter die Membran (Omega_b)?
+        # Wenn ja, zündet F_?(1)=1 und faltet den 6D-Penterakt zum 2D-Hologramm
         if tension <= OMEGA_B and self.enable_kardan:
-            return self._operator_questionmark(tension, x_modulated)
+            return self._operator_questionmark(self.vector_6d)
 
-        # 4. Reale Symbiose-Expansion falls kein Kollaps (x = x + 1/x)
-        next_state = x_modulated + (1.0 / x_modulated)
-        return next_state
+        # 4. Weiter iterieren im 6D-Bulk
+        self.vector_6d[0] = self.vector_6d[0] + (1.0 / self.vector_6d[0])
+        return self.vector_6d[0]
 
 
 def run_autopoiesis_harness(
@@ -80,14 +100,14 @@ def run_autopoiesis_harness(
 
     uid = run_uuid or str(uuid_mod.uuid4())
     engine = WujiCore(enable_kardan=enable_kardan)
-    current_vector: float | complex = initial_s_float
+    current_vector: float | list[float] = initial_s_float
     tick = p_int_start
     iterations = 0
 
     t_loop0 = time.perf_counter()
     cpu0 = time.process_time()
     outcome = "max_ticks_safety"
-    final_vector: float | complex | None = None
+    final_vector: float | list[float] | None = None
 
     while not engine.system_lock:
         if iterations >= max_ticks_safety:
@@ -95,7 +115,7 @@ def run_autopoiesis_harness(
             break
         state_container = DualMembraneVector(
             uuid=uid,
-            s_float=float(current_vector.real) if isinstance(current_vector, complex) else float(current_vector),
+            s_float=float(current_vector[0]) if isinstance(current_vector, list) else float(current_vector),
             p_int=tick,
         )
         current_vector = engine.autopoiesis_tick(state_container)
@@ -107,7 +127,7 @@ def run_autopoiesis_harness(
             final_vector = current_vector
             break
 
-        if enable_kardan and isinstance(current_vector, complex):
+        if enable_kardan and isinstance(current_vector, list):
             outcome = "converged_complex"
             final_vector = current_vector
             break
@@ -161,6 +181,6 @@ if __name__ == "__main__":
     tick = result["int_ticks"]
     loop_ms = result["schleifen_wall_ms"]
     cv = result["final_vector_repr"]
-    print(f"[EXIT: Konvergenz erreicht. Phasenverschiebung nach {tick} physikalischen int-Takten.]")
-    print(f"-> {cv}")
+    print(f"[EXIT: Konvergenz F_?(1)=1 erreicht. 6D Bulk projiziert auf 2D Hologramm (1D Sequenz + 1D Zeit) nach {tick} physikalischen Takten.]")
+    print(f"-> 2D Holographische Fläche: {cv}")
     print(f"[META] schleifen_wall_ms={loop_ms:.6f} int_ticks={tick}")

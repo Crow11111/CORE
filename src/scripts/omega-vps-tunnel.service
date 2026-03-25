@@ -1,0 +1,14 @@
+[Unit]
+Description=OMEGA CORE - SSH Tunnel to VPS for Ollama
+After=network.target
+
+[Service]
+Type=simple
+User=mth
+EnvironmentFile=/OMEGA_CORE/.env
+ExecStart=/usr/bin/ssh -N -L 11434:127.0.0.1:11434 -i /home/mth/.ssh/id_ed25519_hostinger -o StrictHostKeyChecking=no -o ExitOnForwardFailure=yes -o ServerAliveInterval=60 root@187.77.68.250
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

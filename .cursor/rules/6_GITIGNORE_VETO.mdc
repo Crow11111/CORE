@@ -1,0 +1,26 @@
+---
+description: Schutz-Regel für die .gitignore-Datei. Verhindert automatisches Löschen oder Überschreiben von Einträgen.
+globs:
+  - .gitignore
+alwaysApply: true
+---
+
+# .gitignore VETO-PROTOKOLL
+
+Status: RATIFIZIERT | OMEGA_ATTRACTOR | ConstraintValidator
+
+## 1. ABSOLUTES VERBOT (REMOVAL-VETO)
+Es ist dem System (Agenten) STRENGSTENS UNTERSAGT, bestehende Einträge aus der `.gitignore` zu entfernen oder zu überschreiben, ohne eine explizite, schriftliche Freigabe des Operators.
+
+## 2. MODIFIKATIONS-GRENZEN
+- **Hinzufügen**: Erlaubt für neue sensitive Dateien (Secrets, Keys, lokale Laufzeitdaten).
+- **Löschen**: VERBOTEN. Jede Löschung von Einträgen wird als System-Fehler gewertet.
+- **Vollständiges Überschreiben**: VERBOTEN. Änderungen dürfen nur granular (Appending) erfolgen.
+
+## 3. WORKFLOW BEI ÄNDERUNGEN
+1. **READ**: Die aktuelle `.gitignore` muss vor jeder Änderung vollständig gelesen werden.
+2. **PLAN**: Geplante Ergänzungen müssen dem Operator im Plan-Modus oder als Vorschlag präsentiert werden.
+3. **APPEND**: Neue Einträge werden am Ende der Datei oder in thematisch passende Blöcke eingefügt, ohne den Rest zu berühren.
+
+## 4. BEGRÜNDUNG (KOGNITIVER KONTEXT)
+Die `.gitignore` ist der primäre Hitzeschild gegen Informations-Leaks. Ein automatisches Entfernen von Filtern gefährdet die Sicherheit des Gesamtsystems (Axiom 7/8). Jede Änderung an diesem Filter unterliegt der Veto-Hoheit des Operators.

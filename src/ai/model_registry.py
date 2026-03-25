@@ -27,13 +27,13 @@ def _env(key: str, default: str = "") -> str:
 # ── Gemini 3 Generation (neueste) ──
 GEMINI_HEAVY = _env("GEMINI_HEAVY_MODEL", "gemini-3.1-pro-preview")
 GEMINI_FLASH = _env("GEMINI_FLASH_MODEL", "gemini-3-flash-preview")
-GEMINI_DEV_AGENT = _env("GEMINI_DEV_AGENT_MODEL", "gemini-3.1-pro-preview")
+GEMINI_DEV_AGENT = _env("GEMINI_DEV_AGENT_MODEL", "gemini-3-flash-preview")
 
 # ── Gemini 3.1 ──
 GEMINI_TRIAGE = _env("GEMINI_TRIAGE_MODEL", "gemini-3.1-flash-lite-preview")
 
 # ── Gemini 2.5 (spezialisiert) ──
-DICTATE_STT_MODEL = _env("GEMINI_DICTATE_STT_MODEL", "gemini-2.5-pro")
+DICTATE_STT_MODEL = _env("GEMINI_DICTATE_STT_MODEL", "gemini-2.5-flash-preview")
 DICTATE_STT_LIVE_MODEL = _env("GEMINI_DICTATE_STT_LIVE_MODEL", "gemini-3.1-flash-lite-preview")
 GEMINI_TTS_MODEL = _env("GEMINI_TTS_MODEL", "gemini-2.5-flash-preview-tts")
 GEMINI_COMPUTER_USE = _env("GEMINI_COMPUTER_USE_MODEL", "gemini-2.5-computer-use-preview")

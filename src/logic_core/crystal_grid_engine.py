@@ -95,8 +95,9 @@ class CrystalGridEngine:
     @staticmethod
     def apply_operator_query(value: float) -> Union[float, complex]:
         """
-        Der Operator ?: Deterministischer Hard-Cut-off bei Λ (Baryonic Delta).
-        Bricht lineare Vorwärtsbewegung ab und rastet am Gitter ein.
+        Der Operator ? (psi_ex * i): Deterministischer Cut-off bei OMEGA_B (0.049).
+        Ersetzt den passiven Beobachter Q durch aktive kardanische Phasenrotation.
+        Bricht euklidische Gefangenschaft und faltet den 6D-Bulk auf 2D.
         """
         sign = -1.0 if value < 0 else 1.0
         abs_val = abs(value)
@@ -113,7 +114,8 @@ class CrystalGridEngine:
         if abs_val == 0.0:
             return BARYONIC_DELTA * sign
         if abs_val == 1.0:
-            return RESONANCE_LOCK * sign
+            logger.debug(f"[CRYSTAL] F_?(1)=1 -> Kardanische Entkopplung (Orthogonale Faltung / Holographische 6D->2D Projektion)")
+            return complex(0, 1) * sign
 
         folded_val = abs_val % 1.0
 

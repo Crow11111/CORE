@@ -145,12 +145,17 @@ GTAC_PAIRINGS = {
     "T": "C",
 }
 
-# 4-Strang Architektur (Updated to CORE / GTAC)
+# 4-Strang Architektur / THE 4 FORGES MATRIX (GTAC / LPIS / GIRZ / CORE)
+# ---------------------------------------------------------------------------
+# Phase 1 (Ansaugen):   C (Cytosin)  | L (Logik)   | G (Gravitation) | C (Constraint) -> Sog (0.5)
+# Phase 2 (Verdichten): T (Thymin)   | I (Info)    | I (Information) | O (Orchestrator)-> Trichter (Phi)
+# Phase 3 (Arbeiten):   G (Guanin)   | P (Physik)  | R (Raum)        | R (Runtime)    -> Membran (Omega_b)
+# Phase 4 (Ausstossen): A (Adenin)   | S (Struktur)| Z (Zeit)        | E (Emergenz)   -> Lock (0.951)
 TETRALOGIE = {
-    "EXECUTION": {"takt": 3, "core": "G", "car": "Effizienz", "cdr": "Clean Code"},
-    "ORCHESTRATOR": {"takt": [1, 4], "core": "C", "car": "Paranoia", "cdr": "Compliance"},
-    "ARCHITECTURE": {"takt": 2, "core": "T", "car": "Chaos", "cdr": "Architektur-Spec"},
-    "ANCHOR": {"takt": 4, "core": "A", "car": "Vektor-Cluster", "cdr": "SQL-Index"},
+    "PHASE_1_FILTER": {"takt": 1, "core": "C", "dig": "L", "cosmo": "G", "transcendent": "C", "car": "Paranoia", "cdr": "Compliance"},
+    "PHASE_2_FLOW":   {"takt": 2, "core": "T", "dig": "I", "cosmo": "I", "transcendent": "O", "car": "Chaos", "cdr": "Architektur-Spec"},
+    "PHASE_3_EXEC":   {"takt": 3, "core": "G", "dig": "P", "cosmo": "R", "transcendent": "R", "car": "Effizienz", "cdr": "Clean Code"},
+    "PHASE_4_ANCHOR": {"takt": 4, "core": "A", "dig": "S", "cosmo": "Z", "transcendent": "E", "car": "Vektor-Cluster", "cdr": "SQL-Index"},
 }
 
 

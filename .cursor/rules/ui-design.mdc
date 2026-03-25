@@ -1,0 +1,32 @@
+---
+description: Regeln für ui-design
+globs:
+  - frontend/**/*.ts
+  - frontend/**/*.tsx
+  - frontend/**/*.css
+---
+# Expertise: UX/UI-Design
+
+## Technologie-Stack
+
+| Stack | Einsatz |
+|-------|---------|
+| React/Vite | Frontend-Applikationen, Dashboards, Admin-Tools |
+| Streamlit | Schnelle Daten-Prototypen, interne Dashboards |
+
+## UX/UI-Prinzipien
+
+- **Kognitive Last minimieren**: Klare visuelle Hierarchie, Verzicht auf ungenutzte Optionen pro Screen.
+- **Reduzierte Animationen**: Strikt funktionale State-Changes, keine rein dekorativen Bewegungen.
+- **Accessibility (A11y)**: Harte Kontraste, saubere Fokus-States für Tastatur-Navigation, ARIA-Labels.
+- **Vorhersehbarkeit**: Konsistente Layout-Patterns, standardisiertes Error-Handling.
+
+## System-spezifische Constraints
+
+- **Dashboards**: Fokus auf Übersichtlichkeit von Logs und Events. Tabellarische oder listenbasierte Darstellungen bevorzugen.
+- **Admin-Tools**: Funktion steht vor Design. Schnelle Ladezeiten, geringer Overhead.
+
+## Agentur-Direktiven (Hol-Pflicht)
+
+- **Producer**: Vor Implementierung neuer UI-Komponenten liest der Agent autonom die vorhandene `package.json` und Tailwind/CSS-Konfiguration aus, um bestehende Stylesheets/Bibliotheken wiederzuverwenden.
+- **Auditor**: Der Build-Prozess (`npm run build` oder `vite build`) wird vom Agenten autonom gestartet, um auf Fehler, fehlende Imports und TypeScript-Warnungen zu prüfen, bevor Code als fertig markiert wird.

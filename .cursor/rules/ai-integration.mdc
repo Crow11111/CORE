@@ -1,0 +1,32 @@
+---
+description: Regeln für ai-integration
+globs:
+  - src/ai/**/*.py
+  - src/api/routes/chat.py
+---
+# Expertise: AI/LLM-Integration
+
+## Model-Tiering
+
+| Tier | Modell | Einsatz |
+|------|--------|---------|
+| 3/4 | Ollama (SLM) | Lokale, ressourcenschonende Tasks |
+| 5 | Gemini (Heavy) | Reasoning, komplexe Transformationen |
+
+## Kernkonzepte
+
+- **Prompt-Engineering**: Klare technische Instruktionen, Few-Shot, System-Prompts.
+- **Embedding-Strategien**: Strikte Zuordnung eines Modells pro Use-Case, definierte Chunk-Größen.
+- **Triage-Routing**: Leichte Anfragen → SLM, komplexe Anfragen → Heavy.
+- **RAG**: ChromaDB-Query → Kontext → LLM.
+
+## System-spezifische Constraints
+
+- **TIE (Token Implosion)**: Komprimierte Darstellung von Kontext zur Token-Reduktion.
+- **AER**: Architektur-Elemente für formales Reasoning.
+- **Gemini**: Nutzung des `google-genai` SDK, `GEMINI_API_KEY` aus `.env`.
+
+## Agentur-Direktiven (Hol-Pflicht)
+
+- **Producer/Architect**: APIs und Endpunkte sind autonom via Skript oder CLI (`curl`) auf Erreichbarkeit und Latenz zu prüfen. Token-Limits und API-Quotas sind vor Massen-Requests empirisch zu verifizieren.
+- Keine Annahmen zu Modell-Verfügbarkeiten. Fallback-Ketten sind technisch zwingend zu implementieren und zu testen.

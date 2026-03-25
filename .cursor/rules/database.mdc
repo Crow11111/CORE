@@ -1,0 +1,38 @@
+---
+description: Regeln für database
+globs:
+  - src/db/**/*.py
+  - src/scripts/*pg*.py
+---
+# Expertise: Datenbank
+
+## Technologie-Stack
+
+| System | Rolle |
+|--------|-------|
+| ChromaDB | Vektor-Datenbank, RAG, semantische Suche |
+| PostgreSQL | Persistenz, strukturierte relationale Daten, pgvector |
+| SQLite | Lokale Caching-Strukturen, Graph-Relikte |
+
+## Schema-Design-Patterns
+
+- **Normalisierung vs. Denormalisierung**: Technische Abwägung anhand von Lese-/Schreiblast.
+- **Indexing**: B-Tree für relationale Lookups, HNSW/IVF für Vektoren.
+- **Migration**: Versionierte SQL-Skripte, zwingende Rollback-Strategie.
+- **Embedding-Strategien**: Konsistente Dimensionen pro Collection, keine Modell-Mischung.
+
+## Collections (ChromaDB)
+
+| Collection | Zweck |
+|------------|-------|
+| core_knowledge_graph | Relationen, Graph-Strukturen, RAG-Kontext |
+| core_brain_registr | Immutable Systemdaten (nur bei Score >= 0.99) |
+| session_logs | Gesprächs-Sessions |
+| events | System-Events und Logs |
+| core_directives | Technische Direktiven für RAG |
+| krypto_scan_buffer | Temporärer Puffer für Scans |
+
+## Agentur-Direktiven (Hol-Pflicht)
+
+- **Auditor/Architect**: Vor jeder Migration oder Schema-Änderung MUSS das aktuelle Schema zwingend ausgelesen werden (z.B. via SQL oder Test-Skripten wie `src/scripts/check_pg_schema.py`). 
+- **Producer**: Keine Annahmen über Tabellen, Spalten oder Vektor-Dimensionen. Die Datenbank-Struktur wird gemessen, nicht geraten. Jeder Query-Code ist nach Erstellung autonom vom Agenten gegen die reale DB zu testen.

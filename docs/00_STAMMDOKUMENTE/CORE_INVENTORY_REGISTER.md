@@ -19,6 +19,8 @@
 | **White Paper** | `docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION.md` | Theorie-Synthese & Topologie (Kurzfassung). |
 | **White Paper vollständig** | `docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION_VOLLSTANDIG.md` | Herleitungs-Ausgabe: Ω_b, x=x-Kaskade, MRI, Teil F Konsolidierung. |
 | **Whitepaper 5D (Split)** | `docs/01_CORE_DNA/5d/WHITEPAPER/` | Kapitel I–IV + Vollständig; `README.md` → NotebookLM-Workflow. |
+| **Whitepaper II (Escape)** | `docs/01_CORE_DNA/5d/WHITEPAPER/Whitepaper_II_OMEGA_Escape_Vector.md` | Die OMEGA-Escape-Vector Theorie, Pi/Phi Dualität, Holographische 2D-Faltung. |
+| **Formel Cheat-Sheet** | `docs/01_CORE_DNA/CORE_FORMELN_CHEAT_SHEET.md` | Zentrale Anlaufstelle für OMEGA-Gleichungen: MRI-Dynamo, Symbiose-Antrieb, Kardanischer Fixpunkt. |
 | **Rat der Titanen R2** | `docs/01_CORE_DNA/5d/WHITEPAPER/reviews_2/` | Ollama-Gutachten (`run_omega_science_council_r2.py`) zur ausformulierten Datei. |
 | **Colab Science Council** | `docs/01_CORE_DNA/5d/WHITEPAPER/reviews_2/science_council_colab.ipynb` | Jupyter Notebook für Google Colab (GPU-Laufzeit). |
 | **Colab Guide** | `docs/01_CORE_DNA/5d/WHITEPAPER/reviews_2/COLAB_SCIENCE_COUNCIL.md` | Schritt-für-Schritt Anleitung für Colab. |
@@ -39,8 +41,10 @@
 | **ATLAS Legacy-Plasmoids** | `atlas-omega-voice/scripts/alte_plasmoids_auslagern.sh` | Archiviert Flex.Hub / lokales jarvis nach `~/.local/share/OMEGA-plasmoid-archiv/` (nicht unter `plasmoids/`); ruft Config-Bereinigung auf. |
 | **ATLAS Plasma Leiste** | `atlas-omega-voice/scripts/plasma_entferne_flex_hub_applet.py` | Entfernt Applets per `plugin=` (Args, Default: Flex.Hub), z. B. `org.kde.plasma.activitypager` bei kaputtem `plasma-desktop`. |
 | **Bibliothek Kern** | `docs/BIBLIOTHEK_KERN_DOKUMENTE.md` | Zentraler Einstieg; Index 00–05, Operator-Todo (MCP/Extensions), Was wurde gemacht, Wo nachschauen. |
-| **Kanonischer Einstieg** | `docs/KANON_EINSTIEG.md` | Eine Tür: Tabelle „welche Frage → welche Datei“; Abgrenzung Megadatei vs. Index; Pflege-Regeln. |
+| **Kanonischer Einstieg** | `KANON_EINSTIEG.md` | Eine Tür: Tabelle „welche Frage → welche Datei“; Abgrenzung Megadatei vs. Index; Pflege-Regeln. |
 | **DOCS_INDEX (thematisch)** | `docs/DOCS_INDEX.md` | Ordnerübersicht; ergänzend zu KANON/Bibliothek. |
+| **CoolerControl Setup** | `docs/03_INFRASTRUCTURE/COOLER_CONTROL_SETUP.md` | Lüftersteuerung (it87), Silent-Profile, Gigabyte B560M. |
+| **OS Audio Dictation** | `docs/04_PROCESSES/OS_AUDIO_DICTATION.md` | Headless Start/Stop Diktat-Workflow, Clipboard-Integration. |
 | **Infrastruktur-Master (Root-Stub)** | `docs/00_CORE_INFRASTRUCTURE_MASTER.md` | Weiterleitung nach `00_STAMMDOKUMENTE/00_CORE_INFRASTRUCTURE_MASTER.md` (kanonischer Volltext). |
 | **Infrastruktur** | `docs/03_INFRASTRUCTURE/` | VPS-Setup, Docker-Sandbox, Backup-Pläne. |
 | **VPS-Knoten & Flüsse** | `docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md` | Monica, Kong, Evolution, DBs: Zweck, Pull/Push-Matrix, Einbindung. |
@@ -49,12 +53,16 @@
 | **Prozesse** | `docs/04_PROCESSES/` | Workflows, Sicherheitsrat, Deployment-Regeln. |
 | **sudoers OMEGA** | `docs/04_PROCESSES/SUDOERS_OMEGA_DAEMONS.md` | Vorlage `/etc/sudoers.d/` für NOPASSWD `systemctl` auf omega-* Units. |
 | **Audit & Planung** | `docs/05_AUDIT_PLANNING/` | Session Logs, technische Schulden, Roadmaps. |
+| **Agent Refactor Plan** | `docs/05_AUDIT_PLANNING/AGENT_REFACTOR_PLAN.md` | Audit-Bericht und V2-Konzept für das Agenten-System (Schichten, Model-Zwang, MDC-Globs). |
 | **OC Brain Plan** | `docs/05_AUDIT_PLANNING/OC_BRAIN_REAKTIVIERUNG_PLAN.md` | Vollständiger Plan Stränge A–E, Abnahme A1–A7. |
 | **OC Brain Auftrag** | `docs/05_AUDIT_PLANNING/OC_BRAIN_AUFTRAG_AUSFUEHRUNG.md` | Ausführungsauftrag an Team (alles umsetzen lassen). |
 | **OC Brain RAG Spec** | `docs/02_ARCHITECTURE/OC_BRAIN_RAG_SPEC.md` | RAG-Pipeline Query → ChromaDB → Context → LLM (Strang D). |
 | **OC Brain Strang A+E Bericht** | `docs/05_AUDIT_PLANNING/OC_BRAIN_STRANG_A_E_BERICHT.md` | Kurzbericht Diagnose (doctor) + WhatsApp (QR-Pairing, Config). |
 | **OC Brain Strang B Bericht** | `docs/05_AUDIT_PLANNING/OC_BRAIN_STRANG_B_BERICHT.md` | Kurzbericht Ollama auf VPS (Installation, api/tags, Modell). |
 | **Projektplan ATLAS 2026** | `docs/05_AUDIT_PLANNING/PROJECT_PLAN_ATLAS_TRANSFORMATION_2026.md` | Detaillierter Plan (Luminescence, Sentinel, Memory-Core). |
+| **Session-Log 2026-03-25 (Thermal/OS)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-25_THERMAL_AND_OS_FIXES.md` | Lüftersteuerung (it87), ACPI Standby Fix, Chrome Graceful Exit, Headless Audio Dictation. |
+| **Session-Log 2026-03-25 (Agent Audit)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-25_AGENT_AUDIT.md` | Audit-Bericht "Full Service Agentur" und V2 Architektur-Plan. |
+| **Session-Log 2026-03-24 (Kardan)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-24_KARDANIC_FOLD.md` | Kardanische Faltung (Complex -> 2x Float), Atlas-Härtung (Signal-Skepticism), ChromaDB-Eichung. |
 | **Session-Log 2026-03-22 (Audio)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-22_AUDIO_REPAIR.md` | SIGNAL-COMMANDER: Reparatur Aufnahmekette (pw-record, Razer Seiren V3 Mini, RMS-Validierung). |
 | **Session-Log 2026-03-21 (NotebookLM WP)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-21_NOTEBOOKLM_WHITEPAPER.md` | Whitepaper 5d → NotebookLM: Sanitizer, SGML-/Zeilenlängen-Fix, Inventar/Bibliothek. |
 | **Session-Log 2026-03-20** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-20.md` | ATLAS Transformation (Red Theme, Daemon Monitoring, Deep RAG). |
@@ -89,6 +97,7 @@
 |-----|------|----------|
 | **Daemons** | `src/daemons/` | Watchdog, Event-Bus, Vision-Daemon. |
 | **Scripts** | `src/scripts/` | Deployment-Skripte, Verifikationstools, Migrationen. |
+| **Key Script** | `src/scripts/ensure_kardanic_collections.py` | ChromaDB-Dimensionseichung (6144 dim) für kardanische Faltung. |
 | **Key Script** | `src/scripts/verify_core_integrity.py` | Genesis-Audit (`src.core.Core`); **Aufruf nur von Repo-Root**, Exit 0/1. |
 | **Key Script** | `src/scripts/daily_backup.py` | Automatisiertes Backup-System. |
 | **Key Script** | `src/scripts/setup_vps_hostinger.py` | Initiales Server-Setup. |
@@ -105,6 +114,7 @@
 | **Science Council Dossiers** | `docs/00_STAMMDOKUMENTE/SCIENCE_COUNCIL_DOSSIERS_FLAT/` | Flache Ordnerstruktur mit detaillierten Dossiers (Biografie, Werke, Interviews, Visuals) für alle 22 Titanen; Dateinamen = Namen der Personen. |
 | **Science Council Gesamt** | `docs/00_STAMMDOKUMENTE/SCIENCE_COUNCIL_DOSSIERS_FLAT/SCIENCE_COUNCIL_DOSSIERS_GESAMT.md` | Konsolidierte Gesamt-Datei aller Titanen-Dossiers. |
 | **MCP stdio** | `src/scripts/mcp_core_chroma_stdio.py` | Cursor/MCP: Tool `query_chromadb` (CORE_EICHUNG) → ChromaDB über `chroma_client`; Eintrag `core-chromadb` in `mcp_remote_config.json`. |
+| **Database (PostgreSQL)** | `src/db/multi_view_client.py` | Multi-View Ingest & Search (pgvector & ChromaDB); kardanische Faltung. |
 | **Database** | `src/db/core_infrastructure.sql` | 2D Integer-Membran (SQL-Schema) für CORE-Infrastruktur-Monitoring. |
 | **Database** | `src/db/init_infrastructure.py` | Initialisierungs-Skript für die CORE-Infrastruktur-Tabelle auf VPS. |
 | **Service** | `src/services/infrastructure_heartbeat.py` | Hintergrund-Service für periodisches Status-Monitoring (Dreadnought, Scout, VPS). |
@@ -125,6 +135,8 @@
 | Datei | Funktion |
 |-------|----------|
 | `.env` | Zentrale Umgebungsvariablen (Keys, Ports, Hosts). |
+| `.cursor/agents/` | Deterministische Sub-Agenten-Rollen (Layer 1). |
+| `.cursor/rules/` | Kontextuelle Constraints via MDC-Globs (Layer 2). |
 | `.cursorrules` | Primäre operative Direktiven für Agenten. |
 | `src/config/core_state.py` | Mathematischer Kern (State Vector, Axiome). |
 

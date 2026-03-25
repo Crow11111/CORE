@@ -1,0 +1,14 @@
+[Unit]
+Description=Graceful exit for Google Chrome on Shutdown
+DefaultDependencies=no
+Before=shutdown.target halt.target poweroff.target reboot.target plasma-workspace.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/bin/true
+ExecStop=/bin/sh -c '/usr/bin/pkill -TERM -x "chrome" || true; /usr/bin/pkill -TERM -x "google-chrome-stable" || true; sleep 3'
+TimeoutStopSec=10
+
+[Install]
+WantedBy=default.target

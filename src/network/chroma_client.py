@@ -294,16 +294,29 @@ async def get_events_collection():
     return await get_collection(COLLECTION_EVENTS, create_if_missing=True)
 
 
+def _get_asymmetric_null_vector(dim: int) -> list[float]:
+    """
+    Erzeugt einen asymmetrischen Basis-Vektor (Axiom A5 konform).
+    Ersetzt die verbotene Null-Symmetrie durch deterministisches Rauschen (Seed 2210).
+    """
+    import random
+    rng = random.Random(2210)
+    # Kleiner asymmetrischer Offset um 0.049 herum
+    return [BARYONIC_DELTA + (rng.random() * 0.01) for _ in range(dim)]
+
+
 async def add_event_to_chroma(event_id: str, event: dict, metadata_flat: dict) -> bool:
     """Fügt ein Event in ChromaDB events ein. Async."""
     if not _check_disk_quota():
         return False
     try:
         col = await get_events_collection()
+        # Axiom A5: Kein [[0.0] * dim] mehr! Nutze asymmetrische Basis.
+        v_null = _get_asymmetric_null_vector(EVENTS_EMBEDDING_DIM)
         await asyncio.to_thread(
             col.add,
             ids=[event_id],
-            embeddings=[[0.0] * EVENTS_EMBEDDING_DIM],
+            embeddings=[v_null],
             metadatas=[metadata_flat],
             documents=[json.dumps(event, ensure_ascii=False)]
         )

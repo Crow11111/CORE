@@ -92,8 +92,8 @@ class EphemeralAgent:
             # Suche nach dem aktuellen Intent im OMEGA-Torus (alle Collections)
             grounding_query = f"Intent: {self.intent.value} Payload: {str(self.payload)}"
             context_results = await search_multi_view(
-                grounding_query, 
-                limit=5, 
+                grounding_query,
+                limit=5,
                 use_3_facets=True,
                 torus_mode=True, # Wahre Intelligenz durch Reibung im gesamten Torus
                 include_ai=True

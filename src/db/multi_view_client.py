@@ -592,7 +592,7 @@ async def search_multi_view(
         facet_collections = list(FACET_TO_COLLECTION.values())
         if include_ai:
             facet_collections.extend(AI_FACET_TO_COLLECTION.values())
-        
+
         # Torus-Mode: Wir suchen nicht nur in der Ziel-Collection, sondern ueberall
         # Chroma query filtert normalerweise via Metadata.
         where_filter = {}

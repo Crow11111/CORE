@@ -71,14 +71,17 @@ def _is_critical_request(method: str, path: str) -> bool:
 
 
 def _get_z_widerstand() -> float:
-    """Liest z_widerstand aus dem aktuellen State Vector."""
+    """Liest z_widerstand aus dem aktuellen State Vector. Bricht hart ab bei Fehlern (Zero-Trust)."""
     try:
         from src.config.core_state import get_current_state
+        from src.logic_core.resonance_membrane import OmegaCircuitBreakerException
 
         state = get_current_state()
         return state.z_widerstand
-    except Exception:
-        return 0.51  # SYMMETRY_BREAK_HIGH statt 0.5
+    except Exception as e:
+        # Kein Fake-Fallback mehr. Wenn der Puls weg ist, bricht das Gate ab.
+        logger.critical(f"[VETO-GATE] State Vector unlesbar: {e}. CIRCUIT BREAKER TRIPPED.")
+        raise OmegaCircuitBreakerException(f"CORE STATE LOST: {e}")
 
 
 def _has_confirmation(request: Request) -> bool:

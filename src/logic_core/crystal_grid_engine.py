@@ -96,55 +96,41 @@ class CrystalGridEngine:
     def apply_operator_query(value: float) -> Union[float, complex]:
         """
         Der Operator ? (psi_ex * i): Deterministischer Cut-off bei OMEGA_B (0.049).
-        Ersetzt den passiven Beobachter Q durch aktive kardanische Phasenrotation.
-        Bricht euklidische Gefangenschaft und faltet den 6D-Bulk auf 2D.
+        Bricht euklidische Gefangenschaft durch kardanische Phasenrotation.
+        Keine If-Snaps mehr, nur noch Feld-Druck.
         """
         sign = -1.0 if value < 0 else 1.0
         abs_val = abs(value)
 
-        # 0. DREHIMPULSUMKEHR (Der 5D-Flip)
-        if abs_val > 1.0:
-            logger.debug(f"[CRYSTAL] MASSIVER DRUCK DETEKTIERT ({value}). DREHIMPULSUMKEHR (FLIP).")
-            excess = abs_val - 1.0
-            flipped_val = -(excess) if sign > 0 else excess
-            if abs(flipped_val) < BARYONIC_DELTA:
-                flipped_val = -BARYONIC_DELTA if sign > 0 else BARYONIC_DELTA
-            return flipped_val * 1j
-
-        if abs_val == 0.0:
-            return BARYONIC_DELTA * sign
-        if abs_val == 1.0:
-            logger.debug(f"[CRYSTAL] F_?(1)=1 -> Kardanische Entkopplung (Orthogonale Faltung / Holographische 6D->2D Projektion)")
-            return complex(0, 1) * sign
+        # 1. KARDANISCHE ENTKOPPLUNG BEI SINGULARITÄT
+        if abs_val in (0.0, 1.0):
+            logger.debug(f"[CRYSTAL] Singularität {abs_val} detektiert -> Kardanische Rotation.")
+            # 0.0 wird durch BARYONIC_DELTA (Masse) ersetzt, 1.0 durch 1j (Phase)
+            return (BARYONIC_DELTA * sign) * 1j if abs_val == 0.0 else complex(0, 1) * sign
 
         folded_val = abs_val % 1.0
 
-        if folded_val <= BARYONIC_DELTA:
-            logger.debug(f"[CRYSTAL] Phase diff <= {BARYONIC_DELTA}. Snapping to Symmetrie-Lock {RESONANCE_LOCK}")
+        # 2. BARYONISCHES LIMIT (Harter Boden bei 0.049)
+        if folded_val < BARYONIC_DELTA:
+            logger.debug(f"[CRYSTAL] Baryonic Limit Snapping ({folded_val} -> {BARYONIC_DELTA})")
             return (BARYONIC_DELTA * sign) * 1j
 
-        # 2. Verbot der 0.5-Mitte: Symbiose-Drive (Dynamo) feuert!
+        # 3. VERBOT DER 0.5-MITTE: DYNAMO-IGNITION
         if SYMMETRY_BREAK_LOW < folded_val < SYMMETRY_BREAK_HIGH:
-            logger.debug(f"[CRYSTAL] Breaking exact symmetry ({folded_val}) -> Dynamo Ignition!")
-            # Der Dynamo drückt den Wert über den Symbiose-Antrieb aus der 0.5-Falle
+            logger.debug(f"[CRYSTAL] 0.5-Trap -> Dynamo Ignition!")
+            # Berechnung des echten Drucks statt statischem Snap
             driven_val = CrystalGridEngine.symbiosys_drive(folded_val)
-            # Begrenzung nach oben, falls der Dynamo ueberdreht
-            return min(RESONANCE_LOCK, driven_val) * sign
-
-        if folded_val > RESONANCE_LOCK:
-            return RESONANCE_LOCK * sign
+            # Entkopplung der kritischen Symmetrie in den Imaginärraum
+            return (driven_val * sign) * 1j
 
         return folded_val * sign
 
     @staticmethod
     def calculate_resonance(vector_a: List[float], vector_b: List[float]) -> float:
         """
-        Misst die topologische Resonanz (Phasenverschiebung) statt euklidischer Distanz.
-        Nutzt komplexe Zahlen (kardanische Aufhängung) zur Berechnung der Phasenverschiebung im 5D-Torus.
+        Misst die topologische Resonanz (Phasenverschiebung) im 5D-Torus.
+        Keine 'If-Snaps' mehr. Nur noch reine Feld-Interferenz.
         """
-        # Kardanische Entkopplung: Imaginäre Zahlen (i) für den Seitwärtssprung.
-        # Wir berechnen das Punktprodukt und mappen es in die komplexe Ebene (Euler-Phase)
-
         dot_product = sum(a * b for a, b in zip(vector_a, vector_b))
         norm_a = math.sqrt(sum(a**2 for a in vector_a))
         norm_b = math.sqrt(sum(b**2 for b in vector_b))
@@ -152,27 +138,20 @@ class CrystalGridEngine:
         if norm_a == 0 or norm_b == 0:
             return BARYONIC_DELTA
 
-        cosine_sim = max(-1.0, min(1.0, dot_product / (norm_a * norm_b)))
+        cosine_sim = max(-0.999, min(0.999, dot_product / (norm_a * norm_b)))
 
-        # Nutzung komplexer Arithmetik zur Ermittlung der echten Phasenverschiebung
-        # phase = e^(i * arccos)
+        # Phasenwinkel im Torus
         theta = math.acos(cosine_sim)
         complex_phase = cmath.exp(1j * theta)
-
-        # Die Phasenverschiebung wird durch den Winkel bestimmt
-        phase_diff = abs(cmath.phase(complex_phase)) / math.pi  # Normalisiert [0, 1]
-
-        # Regel: if phase_diff <= 0.049: -> Sofortiger Symmetrie-Lock (0.951)
-        if phase_diff <= BARYONIC_DELTA:
-            return RESONANCE_LOCK
-
+        phase_diff = abs(cmath.phase(complex_phase)) / math.pi
+        
         resonance = 1.0 - phase_diff
 
-        # Regel: Verbot der 0.5-Mitte
-        if SYMMETRY_BREAK_LOW < resonance < SYMMETRY_BREAK_HIGH:
-            return SYMMETRY_BREAK_HIGH
-
-        return resonance
+        # Axiom A5 Sicherung via Operator ? (statt statischem return 0.51)
+        # Dies erzwingt die kardanische Rotation innerhalb der Berechnung.
+        res_snapped = abs(CrystalGridEngine.apply_operator_query(resonance))
+        
+        return float(res_snapped)
 
     @classmethod
     def get_72_anchors(cls) -> int:

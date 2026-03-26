@@ -61,8 +61,11 @@
 | **OC Brain Strang A+E Bericht** | `docs/05_AUDIT_PLANNING/OC_BRAIN_STRANG_A_E_BERICHT.md` | Kurzbericht Diagnose (doctor) + WhatsApp (QR-Pairing, Config). |
 | **OC Brain Strang B Bericht** | `docs/05_AUDIT_PLANNING/OC_BRAIN_STRANG_B_BERICHT.md` | Kurzbericht Ollama auf VPS (Installation, api/tags, Modell). |
 | **Projektplan ATLAS 2026** | `docs/05_AUDIT_PLANNING/PROJECT_PLAN_ATLAS_TRANSFORMATION_2026.md` | Detaillierter Plan (Luminescence, Sentinel, Memory-Core). |
+| **Session-Log 2026-03-26 (DB-Rescue)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-26_DB_RESCUE.md` | Purge korrupter Multi-View Collections, 0-State Wiederherstellung, Ghost-Doc Bereinigung. |
 | **Session-Log 2026-03-25 (Model Benchmark)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-25_MODEL_BENCHMARK.md` | Validierung der dynamischen Skalierung (T1-T5), Git-Cleanup und Axiom-Compliance. |
+| **Session-Log 2026-03-26 (DB-Rescue)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-26_DB_RESCUE.md` | Purge korrupter Multi-View Collections, 0-State Wiederherstellung, Ghost-Doc Bereinigung. |
 | **Session-Log 2026-03-25 (Thermal/OS)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-25_THERMAL_AND_OS_FIXES.md` | Lüftersteuerung (it87), ACPI Standby Fix, Chrome Graceful Exit, Headless Audio Dictation. |
+| **Session-Log 2026-03-26 (DB-Rescue)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-26_DB_RESCUE.md` | Purge korrupter Multi-View Collections, 0-State Wiederherstellung, Ghost-Doc Bereinigung. |
 | **Session-Log 2026-03-25 (Agent Audit)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-25_AGENT_AUDIT.md` | Audit-Bericht "Full Service Agentur" und V2 Architektur-Plan. |
 | **Session-Log 2026-03-24 (Kardan)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-24_KARDANIC_FOLD.md` | Kardanische Faltung (Complex -> 2x Float), Atlas-Härtung (Signal-Skepticism), ChromaDB-Eichung. |
 | **Session-Log 2026-03-22 (Audio)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-22_AUDIO_REPAIR.md` | SIGNAL-COMMANDER: Reparatur Aufnahmekette (pw-record, Razer Seiren V3 Mini, RMS-Validierung). |

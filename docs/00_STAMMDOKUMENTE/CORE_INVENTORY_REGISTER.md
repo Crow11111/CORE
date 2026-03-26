@@ -121,6 +121,7 @@
 | **Science Council Dossiers** | `docs/00_STAMMDOKUMENTE/SCIENCE_COUNCIL_DOSSIERS_FLAT/` | Flache Ordnerstruktur mit detaillierten Dossiers (Biografie, Werke, Interviews, Visuals) für alle 22 Titanen; Dateinamen = Namen der Personen. |
 | **Science Council Gesamt** | `docs/00_STAMMDOKUMENTE/SCIENCE_COUNCIL_DOSSIERS_FLAT/SCIENCE_COUNCIL_DOSSIERS_GESAMT.md` | Konsolidierte Gesamt-Datei aller Titanen-Dossiers. |
 | **MCP stdio** | `src/scripts/mcp_core_chroma_stdio.py` | Cursor/MCP: Tool `query_chromadb` (CORE_EICHUNG) → ChromaDB über `chroma_client`; Eintrag `core-chromadb` in `mcp_remote_config.json`. |
+| **Deep Research CLI** | `src/scripts/omega_deep_research.py` | Asynchrones CLI-Tool zur Kommunikation mit deep-research-pro-preview-12-2025 über die Interactions API. |
 | **Database (PostgreSQL)** | `src/db/multi_view_client.py` | Multi-View Ingest & Search (pgvector & ChromaDB); kardanische Faltung. |
 | **Database** | `src/db/core_infrastructure.sql` | 2D Integer-Membran (SQL-Schema) für CORE-Infrastruktur-Monitoring. |
 | **Database** | `src/db/init_infrastructure.py` | Initialisierungs-Skript für die CORE-Infrastruktur-Tabelle auf VPS. |

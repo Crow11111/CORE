@@ -23,6 +23,8 @@ import json
 import os
 import sys
 import warnings
+import subprocess
+import time
 from pathlib import Path
 
 from dotenv import load_dotenv
@@ -60,7 +62,7 @@ def get_client() -> genai.Client:
         sys.exit(1)
     return genai.Client(api_key=api_key)
 
-async def cmd_start(prompt: str):
+async def cmd_start(prompt: str, watch: bool = False, output_file: str = "docs/05_AUDIT_PLANNING/DEEP_RESEARCH_RESULT.md"):
     client = get_client()
     print(f"Starte Deep Research Job mit Modell {AGENT_MODEL}...")
     try:
@@ -91,6 +93,20 @@ async def cmd_start(prompt: str):
         save_job(str(job_id), prompt)
         print("ERFOLG: Job asynchron gestartet.")
         print(f"Job ID: {job_id}")
+        
+        if watch:
+            print(f"Starte Hintergrund-Daemon zur Überwachung (Output: {output_file})...")
+            # Starte den Watcher-Prozess im Hintergrund (detached)
+            cmd = [
+                sys.executable, 
+                os.path.abspath(__file__), 
+                "watch", 
+                str(job_id), 
+                output_file
+            ]
+            subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+            print("Daemon läuft im Hintergrund. Du wirst benachrichtigt, sobald er fertig ist.")
+            
     except Exception as e:
         print(f"FEHLER beim Starten des Jobs: {e}")
         sys.exit(1)
@@ -134,7 +150,7 @@ async def cmd_fetch(job_id: str, output_file: str):
         if isinstance(response, dict) and status == "UNBEKANNT":
             status = response.get("status", "UNBEKANNT")
             
-        if status != "COMPLETED":
+        if status.upper() != "COMPLETED":
             print(f"Job ist noch nicht abgeschlossen. Status: {status}")
             print("Bitte warte auf 'COMPLETED', bevor du fetch aufrufst.")
             sys.exit(1)
@@ -173,6 +189,56 @@ async def cmd_fetch(job_id: str, output_file: str):
         print(f"FEHLER beim Abrufen des Ergebnisses: {e}")
         sys.exit(1)
 
+async def cmd_watch(job_id: str, output_file: str, interval: int = 60):
+    client = get_client()
+    print(f"Starte Watcher-Daemon für Job {job_id}. Prüfe alle {interval} Sekunden...")
+    
+    while True:
+        try:
+            if hasattr(client, "aio") and hasattr(client.aio, "interactions"):
+                response = await client.aio.interactions.get(job_id)
+            else:
+                response = await asyncio.to_thread(client.interactions.get, job_id)
+                
+            status = getattr(response, "status", "UNBEKANNT")
+            if isinstance(response, dict) and status == "UNBEKANNT":
+                status = response.get("status", "UNBEKANNT")
+                
+            status_str = str(status).upper()
+            
+            # Status loggen
+            jobs = load_jobs()
+            if job_id in jobs:
+                jobs[job_id]["status"] = status_str
+                with open(STATE_FILE, "w", encoding="utf-8") as f:
+                    json.dump(jobs, f, indent=2)
+                    
+            if status_str in ["COMPLETED", "SUCCESS", "DONE"]:
+                print("Job erfolgreich abgeschlossen! Hole Ergebnisse...")
+                break
+            elif status_str in ["FAILED", "ERROR"]:
+                print(f"Job fehlgeschlagen mit Status: {status_str}")
+                subprocess.run(["notify-send", "-u", "critical", "OMEGA Deep Research", "Der Recherche-Job ist FEHLGESCHLAGEN."])
+                subprocess.run(["paplay", "/usr/share/sounds/freedesktop/stereo/dialog-error.oga"])
+                sys.exit(1)
+                
+        except Exception as e:
+            print(f"Fehler bei Status-Abfrage (ignoriere): {e}")
+            
+        await asyncio.sleep(interval)
+        
+    # Wenn abgeschlossen, Resultate holen
+    await cmd_fetch(job_id, output_file)
+    
+    # Benachrichtigung
+    subprocess.run(["notify-send", "-u", "normal", "OMEGA Deep Research", f"Der Recherche-Job ist fertig!\nErgebnis in: {output_file}\nBitte Orchestrator checken."])
+    
+    # Ton spielen (wenn paplay existiert, sonst aplay)
+    if os.path.exists("/usr/bin/paplay") and os.path.exists("/usr/share/sounds/freedesktop/stereo/complete.oga"):
+        subprocess.run(["paplay", "/usr/share/sounds/freedesktop/stereo/complete.oga"])
+    else:
+        print('\a') # Terminal bell fallback
+
 async def main_async():
     parser = argparse.ArgumentParser(description="Omega Deep Research CLI (google-genai Interactions API)")
     subparsers = parser.add_subparsers(dest="command", help="Verfügbare Befehle", required=True)
@@ -180,6 +246,8 @@ async def main_async():
     # --- START ---
     start_parser = subparsers.add_parser("start", help="Startet einen neuen Deep Research Job")
     start_parser.add_argument("prompt", type=str, help="Der Research Prompt")
+    start_parser.add_argument("--watch", "-w", action="store_true", help="Startet automatisch den Daemon-Watcher")
+    start_parser.add_argument("--output", "-o", type=str, default="docs/05_AUDIT_PLANNING/DEEP_RESEARCH_RESULT.md", help="Ausgabedatei (wenn Watch-Modus aktiv ist)")
     
     # --- STATUS ---
     status_parser = subparsers.add_parser("status", help="Prüft den Status eines laufenden Jobs")
@@ -189,15 +257,23 @@ async def main_async():
     fetch_parser = subparsers.add_parser("fetch", help="Holt die Ergebnisse eines abgeschlossenen Jobs")
     fetch_parser.add_argument("id", type=str, help="Die Job ID")
     fetch_parser.add_argument("output_file", type=str, help="Zieldatei (Markdown) für das finale Ergebnis")
+
+    # --- WATCH ---
+    watch_parser = subparsers.add_parser("watch", help="Daemon: Startet den Hintergrund-Poller")
+    watch_parser.add_argument("id", type=str, help="Die Job ID")
+    watch_parser.add_argument("output_file", type=str, help="Zieldatei (Markdown) für das finale Ergebnis")
+    watch_parser.add_argument("--interval", type=int, default=60, help="Poll-Intervall in Sekunden")
     
     args = parser.parse_args()
     
     if args.command == "start":
-        await cmd_start(args.prompt)
+        await cmd_start(args.prompt, args.watch, getattr(args, "output", "docs/05_AUDIT_PLANNING/DEEP_RESEARCH_RESULT.md"))
     elif args.command == "status":
         await cmd_status(args.id)
     elif args.command == "fetch":
         await cmd_fetch(args.id, args.output_file)
+    elif args.command == "watch":
+        await cmd_watch(args.id, args.output_file, args.interval)
 
 def main():
     asyncio.run(main_async())

@@ -1,0 +1,17 @@
+#!/bin/bash
+# OMEGA Deep Research Trigger
+# Nutze dieses Script, um asynchrone Deep Research Jobs zu starten.
+# In Cursor: Ziehe diese Datei in den Chat und schreibe deinen Prompt dazu.
+
+if [ -z "$1" ]; then
+    echo "FEHLER: Kein Prompt angegeben."
+    echo "Nutzung: ./DeepResearch \"Dein komplexer Recherche-Prompt\""
+    exit 1
+fi
+
+# Wechsle in das Root-Verzeichnis (falls von woanders aufgerufen)
+cd "/OMEGA_CORE"
+
+# Aktiviere venv und starte den Job mit Watcher-Daemon
+source .venv/bin/activate && set -a && source .env && set +a
+python3 src/scripts/omega_deep_research.py start "$1" --watch

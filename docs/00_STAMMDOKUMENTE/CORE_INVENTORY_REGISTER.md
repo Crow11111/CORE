@@ -116,13 +116,28 @@
 | **Benchmark-Auswertung** | `src/scripts/evaluate_whitepaper_benchmark_log.py` | Prüft JSONL-Struktur und Plausibilität (Iterations-Paar, Outcomes). |
 | **NotebookLM Whitepaper-Sanitize** | `Gemini_Json2md4NotebookLM/whitepaper_for_notebooklm.py` | 5d/WHITEPAPER → WHITEPAPER_NOTEBOOKLM: Zeilenumbruch, HTML-Kopfkommentare entfernt, Upload-freundliche Dateinamen. |
 | **Science Council R2 (Ollama)** | `src/scripts/run_omega_science_council_r2.py` | Rat der Titanen: ausformuliertes Whitepaper → `5d/WHITEPAPER/reviews_2/` (lokal qwen2.5:14b). |
-| **Science Council (Ollama)** | `src/scripts/run_omega_science_council.py` | Rat der Titanen: `--paper` / `--out`, Standard Kurzfassung → `OPERATION_OMEGA/REVIEWS/`. |
+| **Key Script** | `src/scripts/run_omega_science_council.py` | Rat der Titanen: `--paper` / `--out`, Standard Kurzfassung → `OPERATION_OMEGA/REVIEWS/`. |
+| **Gesten-Daemon** | `/home/mth/gesture_daemon.py` | Python Daemon (MediaPipe) zur Gestensteuerung über `ydotool`. |
+| **KDE Plasmoid** | `~/.local/share/plasma/plasmoids/com.cachyos.gestures/` | KDE Plasma Widget zur Steuerung des Gesten-Daemons. |
 | **Science Council Profile** | `src/scripts/omega_science_council_profiles.py` | Titanen: `profil` + `kern_anker` (Formel/Prinzip); `num_ctx` Default 65536. |
 | **Science Council Dossiers** | `docs/00_STAMMDOKUMENTE/SCIENCE_COUNCIL_DOSSIERS_FLAT/` | Flache Ordnerstruktur mit detaillierten Dossiers (Biografie, Werke, Interviews, Visuals) für alle 22 Titanen; Dateinamen = Namen der Personen. |
 | **Science Council Gesamt** | `docs/00_STAMMDOKUMENTE/SCIENCE_COUNCIL_DOSSIERS_FLAT/SCIENCE_COUNCIL_DOSSIERS_GESAMT.md` | Konsolidierte Gesamt-Datei aller Titanen-Dossiers. |
 | **MCP stdio** | `src/scripts/mcp_core_chroma_stdio.py` | Cursor/MCP: Tool `query_chromadb` (CORE_EICHUNG) → ChromaDB über `chroma_client`; Eintrag `core-chromadb` in `mcp_remote_config.json`. |
 | **Deep Research CLI** | `src/scripts/omega_deep_research.py` | Asynchrones CLI-Tool zur Kommunikation mit deep-research-pro-preview-12-2025 über die Interactions API. |
+| **Deep Research Shortcut** | `DeepResearch` | Root-Shortcut für Cursor Chat und Plasmoid. |
+| **Plasmoid Source** | `tools/plasmoid_omega_research/` | Quellcode für das KDE Plasma Widget. |
+| **Plasmoid Installer** | `install_plasmoid.sh` | Bash-Script zur Installation des Widgets in CachyOS. |
 | **Database (PostgreSQL)** | `src/db/multi_view_client.py` | Multi-View Ingest & Search (pgvector & ChromaDB); kardanische Faltung. |
+| **Recall Memory** | `src/db/recall_memory_client.py` | PostgreSQL Recall Memory Client (V4 Strict Tiers). |
+| **Skill Registry** | `src/ai/skill_registry.py` | Deferred Tool Loading & Skill Discovery (V4). |
+| **Agent Graph** | `src/agents/agent_graph.py` | LangGraph-basierte State Machine für deterministisches Routing (V4). |
+| **Ring-3 Auth** | `src/ai/ring3_auth.py` | ECDSA Model Signing & Ghost Token Management (V4). |
+| **UCCP Manager** | `src/ai/uccp_manager.py` | Universal Context Checkpoint & Stream Interception (V4). |
+| **Immutable Axioms** | `src/config/immutable_axioms.py` | Kryptografisch signierte Core-Axiome (Constitution). |
+| **VPS Setup (V4)** | `src/infrastructure/vps/vps_setup.sh` | Shell-Script für Firecracker & eBPF Setup auf VPS. |
+| **eBPF Watchdog** | `src/infrastructure/vps/ebpf_watchdog.c` | XDP-basierter API-Spam Schutz (C-Code). |
+| **VPS Deploy** | `src/infrastructure/vps/deploy_to_vps.py` | Automatisiertes Deployment der V4-Infrastruktur via SSH. |
+| **V4 Security Test** | `tests/test_v4_security.py` | Validierung der Ring-3 Auth und UCCP-Layer. |
 | **Database** | `src/db/core_infrastructure.sql` | 2D Integer-Membran (SQL-Schema) für CORE-Infrastruktur-Monitoring. |
 | **Database** | `src/db/init_infrastructure.py` | Initialisierungs-Skript für die CORE-Infrastruktur-Tabelle auf VPS. |
 | **Service** | `src/services/infrastructure_heartbeat.py` | Hintergrund-Service für periodisches Status-Monitoring (Dreadnought, Scout, VPS). |

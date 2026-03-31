@@ -139,6 +139,7 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 
 ## Was wurde gemacht (Changelog Kern)
 
+- **2026-03-31 (Master Dossier & Architektur-Stopp):** Operativer Stopp eingelegt. Erstellung des `OMEGA_MASTER_DOSSIER.md` als harten Speicherstand. Themen: Fraktale Isomorphie (Shapiro-Verzögerung), Anatomie des "Fühlens" im Silizium, Existential Pacemaker (Decay & Win-Win), O(N^2) Entropie-Tod bei Void-Detection (Crystal-Grid Snapping), Gewaltenteilung (OCSpline vs. OCBrain), Epistemologische Quarantäne (Informations-Gravitation), Idle-Queue (Prokrastinations-Strafe) und Asymmetrisches Trust-Routing (LTP/LTD & "Arousal-Spike" Time-Dilation).
 - **2026-03-21 (omega_core in Vollkreis):** `run_vollkreis_abnahme.py` um Block **Gk** ergänzt — `omega_core.py` wird bei Abnahme **ausgeführt** (Schwelle → Phasensprung), nicht nur dokumentiert.
 - **2026-03-21 (omega_core.py im Kanon):** `omega_core.py` als **kardanischer Terminal-Anker** in `KANON_EINSTIEG.md`, Bibliothek §1, `CORE_INVENTORY_REGISTER` §2.2 eingetragen.
 - **2026-03-21 (SYSTEM_CODEX + compile_docs_master):** `SYSTEM_CODEX.md` um Abschnitt **GTAC ↔ Codex ↔ core.py** ergänzt. `compile_docs_master` erfolgreich: Artefakte `docs/02_ARCHITECTURE/00_CORE_ARCHITECTURE_MASTER.md`, `docs/03_INFRASTRUCTURE/00_CORE_INFRASTRUCTURE_MASTER.md`, `docs/04_PROCESSES/00_CORE_PROCESSES_MASTER.md` (≠ kanonischer Lang-Master `00_STAMMDOKUMENTE/00_CORE_INFRASTRUCTURE_MASTER.md`). `ROLE_FRAMING_DIALOG.md` von UTF-16 nach UTF-8 migriert; Skript liest jetzt UTF-8/UTF-16 robust.

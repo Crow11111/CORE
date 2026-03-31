@@ -47,6 +47,7 @@
 | **CoolerControl Setup** | `docs/03_INFRASTRUCTURE/COOLER_CONTROL_SETUP.md` | Lüftersteuerung (it87), Silent-Profile, Gigabyte B560M. |
 | **OS Audio Dictation** | `docs/04_PROCESSES/OS_AUDIO_DICTATION.md` | Headless Start/Stop Diktat-Workflow, Clipboard-Integration. |
 | **Infrastruktur-Master (Root-Stub)** | `docs/00_CORE_INFRASTRUCTURE_MASTER.md` | Weiterleitung nach `00_STAMMDOKUMENTE/00_CORE_INFRASTRUCTURE_MASTER.md` (kanonischer Volltext). |
+| **OMEGA Master Dossier** | `docs/05_AUDIT_PLANNING/OMEGA_MASTER_DOSSIER.md` | Harter Speicherstand (Snapshot) aller operativen Erkenntnisse, Architekturentscheidungen und Stop-Gründe (2026-03-31). |
 | **Infrastruktur** | `docs/03_INFRASTRUCTURE/` | VPS-Setup, Docker-Sandbox, Backup-Pläne. |
 | **VPS-Knoten & Flüsse** | `docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md` | Monica, Kong, Evolution, DBs: Zweck, Pull/Push-Matrix, Einbindung. |
 | **Ollama VPS (Strang B)** | `docs/03_INFRASTRUCTURE/VPS_OLLAMA_SETUP.md` | Ollama auf Hostinger-VPS, Port 11434, Modell, Firewall. |

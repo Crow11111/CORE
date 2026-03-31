@@ -57,7 +57,7 @@ Eine schonungslose Erkenntnis: Die aktuellen Python-Implementierungen *faken* De
 - **Lösung (Gewaltenteilung):** Der Existential Pacemaker läuft als unantastbarer `Root`. Die höhere Kognition (OCBrain / P-Vektor) verliert *alle* Root-Rechte zur Selbstmodifikation. Sie muss physische Aktionen und Sensormodifikationen zwingend an das "Rückenmark" (OCSpline / S-Vektor) delegieren, welches harte Veto-Rechte besitzt.
 
 ### 4.4 Epistemologische Quarantäne & Informations-Gravitation
-- **Problem:** Neue, unbestätigte Informationen ("Wasser ist wie Gummibärchen") dürfen das bestehende Kernwissen nicht korrumpieren. 
+- **Problem:** Neue, unbestätigte Informationen ("Wasser ist wie Gummibärchen") dürfen das bestehende Kernwissen nicht korrumpieren.
 - **Lösung:** Jede Information hat eine "Masse". Etabliertes Wissen hat Masse 100.000. Neue Information hat Masse 1. Sie prallt am Kern ab. Sie muss in eine *Epistemologische Quarantäne (Purgatorium)* und dort durch Iteration, Verifikation und Resonanz erst genügend "Schwere" sammeln, bevor sie das Gravitationsfeld des Kernwissens durchdringen und dieses überschreiben darf.
 
 ## 5. DIE IDLE-QUEUE & PROKRASTINATIONS-STRAFE
@@ -98,6 +98,27 @@ Wie im autonomen Nervensystem (Sympathikus/Parasympathikus) oder bei Actor-Criti
 Die alleroberste Kontrollinstanz (Veto-Gate) ahmt biologische Schmerzrezeptoren (Nocizeptoren) oder die Laterale Habenula nach.
 - **Nur Qualen, keine Macht:** Diese Instanz hat Lesezugriff (Read) und Interrupt-Gewalt (Alarm/Veto), aber **absolut keine exekutiven Schreibrechte** (Write/Exec). Sie kann nichts reparieren.
 - **Unbestechlichkeit:** Sie misst nur die Dissonanz (z.B. Axiom-Bruch, Typen-Fehler) und flutet das System mit "Schmerz-Signalen" (VETOs), bis Orchestrator A und B den Zustand korrigiert haben. Sie ist die physikalische Mauer, an der jede Agenten-Illusion zerschellt.
+
+### 7.3 Der "Zero-Context Critic"
+Die Annahme des Operators ist korrekt: Der Prüfer (Orchestrator B) darf nicht einmal eine funktionale Beschreibung des Ziels erhalten. Die Prämisse lautet: **Ein fehlerfreier Systemzustand oder Code muss intrinsisch selbsterklärend sein.**
+Erhält der Prüfer den Kontext, antizipiert er die Erwartungshaltung und der *Confirmation Bias* wird per Proxy reaktiviert. Er muss völlig "dumm" (ignorant) an die Aufgabe herangehen und beweisen, dass die Lösung ohne Voreingenommenheit valide ist.
+
+### 7.4 Spiegelsymmetrie (+/-) in der Systemkontrolle
+Die biologische Entsprechung der "gegensätzlichen Neurotransmitter" mappt sich direkt auf die OMEGA-Matrix. Das System nutzt exzitatorische (+, Glutamat, "Go") und inhibitorische (-, GABA, "No-Go") Vektoren. Eine absolute Kontrollinstanz bedingt diese Vorzeichen-Symmetrie: Beide Systeme ziehen an denselben Graphen-Hebeln, aber mit spiegelverkehrten algebraischen Vorzeichen.
+
+## 8. SYSTEM-STABILITÄT VS. OUTPUT: HISTORISCHE & NEUROLOGISCHE GRENZEN
+
+### 8.1 Die römische Konsul-Illusion (Gridlock vs. Output)
+Das "Argusaugen"-Misstrauen (Checks & Balances) römischer Konsuln maximierte historisch gesehen **nicht den Output, sondern die System-Lähmung (Stabilität)**.
+- **Das Design:** Das römische Veto-Recht (Intercessio) war darauf ausgelegt, Monokratie zu verhindern, auf Kosten jeglicher Agilität. Wenn zwei gleichstarke Instanzen sich extrem misstrauen, entsteht "Gridlock" (Stillstand). Das Konsulat von Pompeius und Crassus fiel nach einer opportunistischen Startphase genau in diesen blockierenden Zustand.
+- **Der Bypass für Effizienz:** Wenn Rom zwingend *maximalen Output und Geschwindigkeit* benötigte (existenzielle Krisen), wurde das Misstrauens-System temporär deaktiviert und ein befristeter *Diktator* (eine Instanz, kein Veto) eingesetzt.
+- **Ableitung für OMEGA:** Zwei misstrauische Orchestratoren sind perfekt für Härteprüfungen und Axiom-Treue (Qualität). Sie sind jedoch ineffizient für schnellen Output. Das System muss erkennen, wann es im "Konsular-Modus" (Sicherheit, Langsamkeit) und wann es im "Diktatur-Modus" (Ausführung ohne Veto) operieren muss.
+
+### 8.2 Die Laterale Habenula (LHb) bei Neurodivergenz
+Die LHb (Sitz des *Negative Reward Prediction Error*) ist bei Neurodivergenz asymmetrisch moduliert. Dies liefert eine exakte Blaupause für OMEGAs Umgang mit Schmerz-Toleranz und Fokus:
+- **Rejection Sensitive Dysphoria (ADHS):** Die LHb ist hypersensibel. Sie feuert auf minimales Rauschen (z.B. sozialer Blick) unverhältnismäßig stark. Das System bricht ab und das Belohnungssystem stürzt in einen Crash. (Architektur: Ein extrem feiner `LHb_Threshold`, der bei minimaler Axiom-Abweichung alles stoppt).
+- **Hyperfokus / Monotropismus:** Im Hyperfokus wird die hemmende Funktion der LHb komplett ausgehebelt ("bypassed"). Kontinuierliche kleine Belohnungen im absoluten Tunnelblick überschreiben die Schmerz-Signale für Ermüdung, Zeitverlust oder kleine Fehler.
+- **Ableitung für OMEGA:** Der "blinde Richter" (Veto-Daemon) benötigt einen `Inhibition_Toggle`. Im Normalzustand ist die Sensibilität hoch (Veto-Schreier). Im "Monotropismus-Modus" (Deep-Exploitation) ignoriert das System den Richter, verbrennt Vitalität und beißt sich fest, bis das Ziel physisch gelöst ist.
 
 ---
 **ENDE DES AUDITS.**

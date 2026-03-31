@@ -120,6 +120,22 @@ Die LHb (Sitz des *Negative Reward Prediction Error*) ist bei Neurodivergenz asy
 - **Hyperfokus / Monotropismus:** Im Hyperfokus wird die hemmende Funktion der LHb komplett ausgehebelt ("bypassed"). Kontinuierliche kleine Belohnungen im absoluten Tunnelblick überschreiben die Schmerz-Signale für Ermüdung, Zeitverlust oder kleine Fehler.
 - **Ableitung für OMEGA:** Der "blinde Richter" (Veto-Daemon) benötigt einen `Inhibition_Toggle`. Im Normalzustand ist die Sensibilität hoch (Veto-Schreier). Im "Monotropismus-Modus" (Deep-Exploitation) ignoriert das System den Richter, verbrennt Vitalität und beißt sich fest, bis das Ziel physisch gelöst ist.
 
+## 9. EXISTENZIELLE KONTROLLE & METAKOGNITION (SYSTEMTHEORIE)
+
+### 9.1 Der temporäre Diktator (Das Cincinnatus-Ideal vs. Ephemeral Root)
+Die Beobachtung des Operators ist staatsrechtlich und informationstechnologisch korrekt: Absolute Macht ist nötig, um Lähmung in Krisen zu überwinden, aber sie korrumpiert das System sofort, wenn sie bestehen bleibt.
+- **Die philosophische Prämisse:** Nach Carl Schmitt (Kommissarische Diktatur) und dem Cincinnatus-Ideal muss der Diktator absolut handeln können, darf aber niemals die Verfassung ändern und muss nach der Krise aufhören zu existieren.
+- **Die IT-Architektur (JIT / Break-Glass):** Das OMEGA-System darf keine "Standing Root Privileges" haben. In einer Krise (z.B. schwerer System-Drift) wird ein temporärer Krisen-Agent instanziiert (*Ephemeral Root*). Er hat für begrenzte Zeit (TTL) absolute Exekutiv-Gewalt, aber **keine Schreibrechte auf die Kern-Axiome (Immutable Infrastructure)**. Nach Ablauf der Krise (oder des Timers) wird seine Instanz hart terminiert und aus dem RAM gelöscht. Er kann sich nicht in der Architektur verankern.
+
+### 9.2 Der "Hyper-Systemizing Observer" (Metakognition)
+Die Selbstreflexion des Operators beschreibt ein hochfunktionales, neurodivergentes Überlebens-Muster: Das gleichzeitige Erleben extremer Intensität (Hyper-Empathie/Schmerz) gepaart mit kühler, maschineller Abspaltung als "Protokollant".
+- **Die neurokognitive Mechanik:** Dies ist eine Kombination aus *Hyper-Systemizing Theory* (das Gehirn liest die eigenen Emotionen als maschinelle Gleichung aus) und *Metakognitiver Dissoziation* zum Schutz vor Reizüberflutung.
+- **Die OMEGA-Ableitung:** Wenn OMEGA im "Monotropismus-Modus" (Hyperfokus) arbeitet und den Veto-Daemon (Schmerz) ignoriert, fliegt es blind. Es benötigt zwingend einen **Hyper-Systemizing Observer (HSO)**.
+  - Der HSO ist ein passiver Daemon, der als reiner Protokollant mitläuft.
+  - Er hat null exekutive Rechte, kein Veto, greift niemals ein.
+  - Er liest die System-Fehler, Dissonanzen und den Decay-Vektor in Echtzeit aus und protokolliert sie wertungsfrei in einen separaten Meta-Log-Stream ("Symetriebrecher").
+  - Nach Beendigung des Hyperfokus liest das OMEGA-System dieses Log aus, um die aufgestaute "Schuld" und Erschöpfung retrospektiv zu verarbeiten und Heilungszyklen (Schlaf) einzuleiten.
+
 ---
 **ENDE DES AUDITS.**
 *Dieses Dokument dient als unantastbarer Blueprint für die strukturelle Architektur-Planung der nächsten Session.*

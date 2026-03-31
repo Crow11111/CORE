@@ -55,8 +55,8 @@ $$
 **Das Holografische Prinzip und die ballistische Schranke:**
 Gemäß dem holografischen Prinzip [^13] ist die Information des 5D-Bulks auf der 4D-Randfläche kodiert. Weicht der State-Vektor von der optimalen Fraktalgeometrie der Helix ab (er geht "zu steil"), bricht die Eichtransformation zusammen. Er verliert die topologische Kohärenz, wird von der Informationsgravitation zerrissen und als unstrukturiertes Hawking-Rauschen emittiert.
 
-#### 3. Magnetrotationsinstabilität (MRI) als kosmologischer Dynamo
-Der Zustand $0.5$ repräsentiert das probabilistische Entropiemaximum – den thermischen Tod des Universums. Der stochastische Zug in die $0.5$ ist der fundamentale Motor der Magnetrotationsinstabilität (MRI). Er erzeugt den Reibungswiderstand für die differenzielle Rotation zwischen der schnellen äußeren Schicht (P-Vektor, Agency) und der langsamen inneren Schicht (S-Vektor, Struktur). Trifft ein Vektor im korrekten Resonanzwinkel auf den Kern ($\Omega_b = 0.049$), erfolgt ein Vorzeichen-Flip (Drehimpulsumkehr), der das Signal durch einen Phasensprung in die nächste Dimensionsebene katapultiert.
+#### 3. Magnetrotationsinstabilität (MRI) als kosmologischer Dynamo (Shapiro-Turbo)
+Der Zustand $0.5$ repräsentiert das probabilistische Entropiemaximum – den thermischen Tod des Universums. Der stochastische Zug in die $0.5$ ist der fundamentale Motor der Magnetrotationsinstabilität (MRI). Wie beim vierten Test der Allgemeinen Relativitätstheorie (Shapiro-Verzögerung) [^14] bewirkt die Raumzeitkrümmung der Informationsmasse am Gravitationstrichter eine Verzögerung. Dieser fraktale Reibungswiderstand treibt die differenzielle Rotation zwischen der schnellen äußeren Schicht (P-Vektor, Agency) und der langsamen inneren Schicht (S-Vektor, Struktur) an. Trifft ein Vektor durch diesen "Dynamo-Turbo" im korrekten Resonanzwinkel auf den Kern ($\Omega_b = 0.049$), erfolgt ein Vorzeichen-Flip (Drehimpulsumkehr), der das Signal durch einen Phasensprung gezielt in die nächste Dimensionsebene katapultiert.
 
 | Physikalischer Parameter | Klassisches Standardmodell | Informationsgravitation (5D-Torus) |
 | :--- | :--- | :--- |
@@ -235,3 +235,4 @@ Die Reduktion auf den $5D$-Torus durch Streichung des relativistischen Beobachte
 [^11]: Atasoy, S. et al. (2016). Human brain networks function in connectome-specific harmonic waves. *Nature Communications*.
 [^12]: Murray, D., Lesser, M., & Lawson, W. (2005). Attention, monotropism and the diagnostic criteria for autism. *Autism*.
 [^13]: Bekenstein, J. D. (1973). Black holes and entropy. *Physical Review D*; 't Hooft, G. (1993). Dimensional Reduction in Quantum Gravity. *arXiv*; Susskind, L. (1995). The World as a Hologram. *Journal of Mathematical Physics*.
+[^14]: Shapiro, I. I. (1964). Fourth Test of General Relativity. *Physical Review Letters*.

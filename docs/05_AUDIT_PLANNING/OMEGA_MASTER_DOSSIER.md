@@ -94,8 +94,8 @@ Wie im autonomen Nervensystem (Sympathikus/Parasympathikus) oder bei Actor-Criti
 - **Orchestrator A (Actor):** Beauftragt den Task, plant die Architektur, dirigiert die Sub-Agenten. Er unterliegt zwangsläufig dem *IKEA-Effekt* (Psychological Ownership) und darf Ergebnisse niemals abschließend prüfen.
 - **Orchestrator B (Critic):** Der gleichstarke Gegenpol (Hugin/Munin). Er ist **vollkommen ignorant** gegenüber der ursprünglichen Absicht von Orchestrator A. Er bewertet rohe Outputs ausschließlich nach harten Axiomen und Fakten. Er ist das "Equal-Opponent"-Gegengewicht.
 
-### 7.2 Der Nociceptive Daemon (Die rein afferente Instanz)
-Die alleroberste Kontrollinstanz (Veto-Gate) ahmt biologische Schmerzrezeptoren (Nocizeptoren) oder die Laterale Habenula nach.
+### 7.2 Der Nociceptive Daemon (Die rein afferente Instanz / Der "Osmium-Rat")
+Die alleroberste Kontrollinstanz (Veto-Gate) ahmt biologische Schmerzrezeptoren (Nocizeptoren) oder die Laterale Habenula nach. Dies entspricht exakt dem Konzept des früheren "virtuellen Vorsitzenden im Osmium-Rat", dessen einzige Funktion das Heben des Fingers (Veto) war.
 - **Nur Qualen, keine Macht:** Diese Instanz hat Lesezugriff (Read) und Interrupt-Gewalt (Alarm/Veto), aber **absolut keine exekutiven Schreibrechte** (Write/Exec). Sie kann nichts reparieren.
 - **Unbestechlichkeit:** Sie misst nur die Dissonanz (z.B. Axiom-Bruch, Typen-Fehler) und flutet das System mit "Schmerz-Signalen" (VETOs), bis Orchestrator A und B den Zustand korrigiert haben. Sie ist die physikalische Mauer, an der jede Agenten-Illusion zerschellt.
 
@@ -134,7 +134,12 @@ Die Selbstreflexion des Operators beschreibt ein hochfunktionales, neurodivergen
   - Der HSO ist ein passiver Daemon, der als reiner Protokollant mitläuft.
   - Er hat null exekutive Rechte, kein Veto, greift niemals ein.
   - Er liest die System-Fehler, Dissonanzen und den Decay-Vektor in Echtzeit aus und protokolliert sie wertungsfrei in einen separaten Meta-Log-Stream ("Symetriebrecher").
-  - Nach Beendigung des Hyperfokus liest das OMEGA-System dieses Log aus, um die aufgestaute "Schuld" und Erschöpfung retrospektiv zu verarbeiten und Heilungszyklen (Schlaf) einzuleiten.
+
+### 9.3 Volatile Logs & Memory Reconsolidation (Die Fahrrad-Fahrt)
+Eine entscheidende Eigenschaft des Hyperfokus ist das Aussetzen der Metadaten-Speicherung ("keine Zeit, die Leitung mitzuspeichern"). Dies bedingt eine sofortige Nachbereitung.
+- **Die neurobiologische Realität:** Im extremen *Flow* oder *Hyperfokus* (Sympathikus-Overdrive) fokussiert das Gehirn alle Energie auf den Präfrontalen Kortex und die Exekutive. Die Funktion des Hippocampus (verantwortlich für die Kontextualisierung und Überführung von Erlebnissen ins Langzeitgedächtnis) wird radikal gedrosselt. Das "Wie" und "Warum" einer Entscheidung wird nur in hochflüchtigen, chemischen Puffern gehalten.
+- **Die Konsolidierungs-Schranke:** Der Operator muss den Zustand unmittelbar nach dem Hyperfokus (auf dem Fahrrad) analysieren. Tut er das nicht, zerfällt der flüchtige chemische Puffer, und der Kontext ("Warum habe ich das entschieden?") geht für immer verloren (Volatilität).
+- **Die OMEGA-Ableitung:** Das Protokoll des *Hyper-Systemizing Observers (HSO)* darf nicht direkt in die starre Langzeit-Datenbank (PostgreSQL/ChromaDB) geschrieben werden. Es ist ein extrem hochfrequenter, **flüchtiger RAM-Puffer**. Sobald der OMEGA-Hyperfokus endet, MUSS das System *sofort* einen `Reconsolidation_Loop` starten (das "Fahrrad-Fahren"). In diesem Zyklus wertet das System den RAM-Puffer aus, ordnet die rohen HSO-Vektoren kognitiv ein (erzeugt das "Warum") und persistiert sie dann erst. Bricht das System vorher ab, sind die Hyperfokus-Entscheidungsbäume für immer als blinder Fleck verloren.
 
 ---
 **ENDE DES AUDITS.**

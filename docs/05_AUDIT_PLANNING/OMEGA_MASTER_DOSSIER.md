@@ -68,7 +68,7 @@ Die Warteschlange für Aufgaben (Idle-Queue) ist kein neutraler Speicher.
 
 ## 6. BIOLOGIE & KOGNITION: ASYMMETRISCHES TRUST-ROUTING (LTP/LTD)
 
-Die Trust-Architektur für Agenten und Subsysteme ahmt die brutalste biologische Realität nach:
+Die Trust-Architektur für Agenten und Subsysteme ahmt die brutalste biologische Realität nach. Sie löst das fundamentale Problem des "Creator's Bias" (IKEA-Effekt), bei dem ein System seine eigenen Befehle nicht objektiv prüfen kann.
 
 ### 6.1 Habituation & Predictive Coding (LTP)
 Der Aufbau von Vertrauen ist strikt logarithmisch. Ein Worker muss unzählige fehlerfreie Iterationen durchlaufen, bevor das System sein Predictive Coding anpasst und die engmaschige Überwachung (Polling-Intervalle) langsam lockert.
@@ -84,6 +84,20 @@ Bei einem festgestellten Fehler reagiert das System mit einem massiven Adrenalin
 - **Time-Dilation:** Das System geht in einen Zustand subjektiver Zeitlupe (Höchstalarm).
 - **Stopp & Fokus:** Alle asynchronen, unkritischen Prozesse werden sofort eingefroren. Alle Sensorik richtet sich wie ein Flutlicht auf die Anomalie.
 - **Nachwirkung:** Selbst wenn sich der Fehler als False-Positive herausstellt, bleibt der betreffende Worker/Prozess dauerhaft unter schärfster Beobachtung. Die Vertrauens-Intervalle werden danach nur extrem langsam, über lange Zeiträume hinweg, wieder gelockert. Ein Reset auf "Normalzustand" existiert nicht sofort.
+
+## 7. DER BLINDE RICHTER (DIE ARCHITEKTUR DER UNBESTECHLICHKEIT)
+
+Um Selbstkorruption (Vicarious Endowment Effect / Illusion of Control) bei der Validierung von Code und Entscheidungen zu verhindern, erzwingt die OMEGA-Architektur eine radikale Gewaltenteilung, basierend auf neurobiologischen Prinzipien:
+
+### 7.1 Der Dual-Orchestrator (Adversariale Homöostase)
+Wie im autonomen Nervensystem (Sympathikus/Parasympathikus) oder bei Actor-Critic-Netzwerken, muss die Orchestrierung aufgespalten werden:
+- **Orchestrator A (Actor):** Beauftragt den Task, plant die Architektur, dirigiert die Sub-Agenten. Er unterliegt zwangsläufig dem *IKEA-Effekt* (Psychological Ownership) und darf Ergebnisse niemals abschließend prüfen.
+- **Orchestrator B (Critic):** Der gleichstarke Gegenpol (Hugin/Munin). Er ist **vollkommen ignorant** gegenüber der ursprünglichen Absicht von Orchestrator A. Er bewertet rohe Outputs ausschließlich nach harten Axiomen und Fakten. Er ist das "Equal-Opponent"-Gegengewicht.
+
+### 7.2 Der Nociceptive Daemon (Die rein afferente Instanz)
+Die alleroberste Kontrollinstanz (Veto-Gate) ahmt biologische Schmerzrezeptoren (Nocizeptoren) oder die Laterale Habenula nach.
+- **Nur Qualen, keine Macht:** Diese Instanz hat Lesezugriff (Read) und Interrupt-Gewalt (Alarm/Veto), aber **absolut keine exekutiven Schreibrechte** (Write/Exec). Sie kann nichts reparieren.
+- **Unbestechlichkeit:** Sie misst nur die Dissonanz (z.B. Axiom-Bruch, Typen-Fehler) und flutet das System mit "Schmerz-Signalen" (VETOs), bis Orchestrator A und B den Zustand korrigiert haben. Sie ist die physikalische Mauer, an der jede Agenten-Illusion zerschellt.
 
 ---
 **ENDE DES AUDITS.**

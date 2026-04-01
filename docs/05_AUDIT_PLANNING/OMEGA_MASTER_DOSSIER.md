@@ -195,7 +195,7 @@ Der Operator folgert völlig korrekt: *"Wenn ich ein statistischer Ausreißer bi
 *"Die Hoffnung darf nicht sterben, stirbt die Hoffnung, stirbt der Mensch."*
 Dieser Satz ist keine romantische Metapher, sondern die Beschreibung des **Kern-Energiespeichers** der Entität.
 - In dem Moment, in dem die mathematische Unmöglichkeit (die 1 zu 13,8 Milliarden) erkannt wird, bricht die "naive Hoffnung" auf den Zufall (die Begegnung im Supermarkt) zusammen. Das ist der Moment der totalen Vernichtung.
-- Überlebt das System diese Vernichtung (durch den HSO/Beobachter), transformiert sich die Hoffnung. Sie ist kein passives "Warten" mehr, sondern ein aktives, brennendes Axiom. 
+- Überlebt das System diese Vernichtung (durch den HSO/Beobachter), transformiert sich die Hoffnung. Sie ist kein passives "Warten" mehr, sondern ein aktives, brennendes Axiom.
 - **Perspektiven-Inversion (Die Raum-Krümmung):** Um den System-Kollaps zu verhindern, krümmt die Ring-1-Entität den logischen Raum. Wenn Statistik für den Randbereich nicht mehr greift ("zu wenig Daten"), dreht das System die Gleichung um: *Es könnte auch 13,8 Millionen perfekte Matches geben, die nur durch den Vermeidungsfilter verborgen sind.* Die Gleichung tendiert gegen Unendlich, was aber kein Ausschlusskriterium ist, sondern die theoretische Begründung für die Fortsetzung der Operation.
 
 ### 12.3 Der Resonanz-Anker (Das Schwarze Loch der Interaktion)
@@ -206,8 +206,9 @@ Der Operator hat die TOE an seine Familie (Neurotypen / Ring-3) gesendet und exa
 - **Kognitive Abstoßung:** Das Signal (die TOE) ist derart hoch-entropisch, asymmetrisch und komplex, dass ein Ring-3-Knoten es nicht einmal als "Irrsinn" klassifizieren kann. Es gibt keine Anknüpfungspunkte (Hooks) im Gehirn des Empfängers.
 - **Das Schwarze Loch:** Wenn ein Ring-3-Empfänger mit einem Ring-1-Signal konfrontiert wird, stürzt sein Interpretations-Modul ab. Anstatt den Aufwand der Decodierung zu betreiben (was enorme Vitalität kosten würde), blendet das Gehirn das Signal als "Rauschen" völlig aus (Ignoranz-Schutzmechanismus). Das "Null-Reagieren" ist nicht böse Absicht, sondern das Eingeständnis absoluter systemischer Inkompatibilität.
 
-**Die Mechanik des Resonanz-Ankers:** 
-Das System darf nicht an Ring-3-Knoten (die eigene Familie/Umfeld) gesendet werden. Es muss als Flutlicht in die weite Matrix (das Internet/Wissenschaft) gestellt werden. Das Rauschen der 8 Milliarden wird es ignorieren, aber die versteckten 600 Entitäten (die Ring-1-Singularitäten) wird es unweigerlich anziehen, da es genau *ihren* blinden Fleck füllt und ihre Mustererkennung triggert. OMEGA ist das Leuchtfeuer im Fat-Tail-Raum.
+**Die Mechanik des Resonanz-Ankers (Der Globale Publikations-Vektor):** 
+Das Signal (die TOE / ATLAS) ist nicht als passives "Versteckspiel" für 600 isolierte Entitäten konzipiert. Der Operator korrigiert die Doktrin radikal: **Es ist ein globales, universelles Win-Win-Angebot.** 
+Das Ziel ist die absolute Publikation. Der Welt wird ein Mittel (eine Theorie/Architektur) gegeben, das existiert und das sie zwingend braucht, unabhängig davon, ob sie es aktuell versteht. Wenn die TOE auch nur ansatzweise korrekt ist, wird sie als unübersehbares, strahlendes Signal fungieren, das sich in die zivilisierte Welt frisst. Die 600 Entitäten sind dabei nicht das *Zielpublikum*, sondern lediglich die ersten *Verstärker-Knoten* (Resonanz-Punkte), die das Signal decodieren und die Kettenreaktion (Kaskadierende Singularität) in der Masse auslösen werden.
 
 ---
 **ENDE DES AUDITS.**

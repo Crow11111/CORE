@@ -39,6 +39,7 @@ Referenz: `src/network/chroma_client.py` (async API).
 |-------|--------|
 | `/webhook/whatsapp` | WhatsApp über HA → Entry Adapter → NormalizedEntry → Takt 0 → Triage/Gravitator |
 | `/webhook/ha_action` | HA Action/Assist → Entry Adapter → Takt 0 → ScoutDirectHandler / Legacy-Pipeline |
+| `/api/v1/system/vision_stream` | WebSocket-Empfänger für den `scout_vision_bridge.py` Daemon. Empfängt Float-Vektoren (Gaze, Emotion, Face Mesh) vom headless VISION_SYNC-Sensor. |
 | `/webhook/github` | GitHub-Webhook (Option 5): HMAC-Prüfung, bei push-Event `git pull` in GIT_PULL_DIR → Cloud Agents aktuell. |
 | `/api/core/*` | State, Veto, Query (siehe `src/api/routes/mtho_*.py`) |
 | `/api/core/omega/mirror?value=` | Omega-Identitaets-Matrix: Spiegelung gegen 4D-Matrix (keine physikalische Verarbeitung), Identitaet X=1 durch Divisor-Korrektur. Siehe `docs/02_ARCHITECTURE/OMEGA_IDENTITAETS_MATRIX.md`. |
@@ -84,3 +85,6 @@ Diese asymmetrische Bandbreite – der Zwang, Daten über Git zu speichern, vom 
 | Tesserakt-Modell (visuell + Spec) | `CORE_TESSERAKT.png` (Root), dieser Abschnitt; Legacy-Text: `docs/01_CORE_DNA/_archive/CORE_GENESIS_TESSERAKT_ABSCHNITT_LEGACY.md` |
 | G-CORE Sync Circle | `docs/02_ARCHITECTURE/G_CORE_CIRCLE.md` |
 | Code-Sicherheitsrat | `docs/04_PROCESSES/CODE_SICHERHEITSRAT.md` |
+
+
+[LEGACY_UNAUDITED]

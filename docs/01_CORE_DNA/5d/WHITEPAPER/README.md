@@ -7,4 +7,4 @@ Diese `.md`-Dateien sind **Split-Kapitel** und Varianten für die Arbeit am Text
 - Ausgabe: `../WHITEPAPER_NOTEBOOKLM/`
 - Generator: `Gemini_Json2md4NotebookLM/whitepaper_for_notebooklm.py` (vom Repo-Root: `python3 Gemini_Json2md4NotebookLM/whitepaper_for_notebooklm.py`)
 
-Kanonische Langfassungen im DNA-Root: `WHITE_PAPER_INFORMATIONSGRAVITATION.md` und `WHITE_PAPER_INFORMATIONSGRAVITATION_VOLLSTANDIG.md`.
+Kanonische Langfassungen im DNA-Root: `Whitepaper_Informationsgrafitation_infRep.md`.

@@ -107,3 +107,6 @@ Waehrend dieser Analyse wurden folgende Systemaenderungen vorgenommen:
 6. **Audio Daemon** → Persistiert WAV-Clips als nativ multimodale Audio-Vektoren
 7. **Vision Daemon** → Persistiert Frames als nativ multimodale Bild-Vektoren
 8. **Gravitator** → Dual-Path Routing (ChromaDB 384d + pgvector via lokale 768d Zentroide)
+
+
+[LEGACY_UNAUDITED]

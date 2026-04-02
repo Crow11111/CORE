@@ -93,8 +93,8 @@ async def receive_whatsapp(
         os.makedirs(log_dir, exist_ok=True)
         with open(os.path.join(log_dir, "last_whatsapp_webhook_raw.json"), "w") as f:
             json.dump(raw, f, indent=2)
-    except:
-        pass
+    except Exception as e:
+        logger.debug(f"[WA] Log file write failed: {e}")
     if isinstance(raw, str):
         try:
             raw_payload = json.loads(raw)
@@ -207,7 +207,7 @@ async def receive_whatsapp(
         # In der OMEGA-Gruppe akzeptieren wir Audio auch ohne Prefix
         if not is_omega_group and not (incoming_text and (low.startswith("@core") or low.startswith("@omega"))):
             # Check falls Audio ohne Text reinkommt (typisch für PTT)
-            pass
+            logger.debug("Audio PTT Check")
 
         logger.success(f"🎤 Sprachnachricht von {sender} ({audio_seconds}s)!")
         await _send_whatsapp_async(sender, f"[Scout] 🎤 Sprachmemo ({audio_seconds}s) empfangen. Analysiere...")

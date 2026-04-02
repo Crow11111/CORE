@@ -185,7 +185,7 @@ def oc_trigger_whatsapp_plan(_auth: None = Depends(verify_oc_auth)):
             }
         # 405 oder anderer Fehler → Fallback
         if "405" in response_text or "Method Not Allowed" in response_text:
-            pass  # Fallback unten
+            logger.debug("OC-Abstimmung API fallback")  # Fallback unten
         else:
             return {"ok": False, "method": "api", "message": response_text}
 

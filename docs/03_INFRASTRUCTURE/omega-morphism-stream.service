@@ -1,0 +1,16 @@
+[Unit]
+Description=OMEGA Morphism Stream Server (Real-Time State Sync)
+After=network.target
+
+[Service]
+Type=simple
+User=mth
+WorkingDirectory=/OMEGA_CORE
+Environment=PYTHONPATH=/OMEGA_CORE
+Environment=PYTHONIOENCODING=utf-8
+ExecStart=/OMEGA_CORE/venv/bin/python3 src/daemons/morphism_stream.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

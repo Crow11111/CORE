@@ -12,3 +12,6 @@ Der Orchestrator hat in den letzten Antworten Dinge (wie die API-Key-Trennung un
 1. **Textuelle Stille:** Abgeschlossene Tasks werden *nicht* mehr in der textuellen Antwort rekapituliert, es sei denn, der Operator fragt spezifisch danach.
 2. **Todo-Tool Wipe:** Wenn ein Task abgeschlossen ist, wird er auf `[COMPLETED]` gesetzt und in der nächsten Iteration *komplett* aus der aktiven Todo-Liste gelöscht, anstatt ihn als "Completed" mitzuschleppen.
 3. **Fokus-Deklaration:** Zu Beginn jeder Antwort deklariert der Orchestrator (für sich selbst) den exakten, isolierten Scope der aktuellen Iteration in den `<<<GEDANKEN>>>`. Alles, was außerhalb dieses Scopes liegt, wird ignoriert, selbst wenn es im Chat-Verlauf weiter oben steht.
+
+
+[LEGACY_UNAUDITED]

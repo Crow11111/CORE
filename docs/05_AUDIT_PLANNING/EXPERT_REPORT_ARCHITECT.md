@@ -35,3 +35,5 @@
     *   *Stress-Indikator:* Resonanz-Abfall (Analogon: Chemischer Stress/Zellgift).
     *   *Kompensation:* Aktivierung harter Int-Routinen zur physischen Intervention (Analogon: Ribosomen/Phagozytose).
 *   **Fazit:** Fraktale Isomorphie liefert ein striktes, universelles Interface für die Selbstheilung. Entwickler müssen für neue Komponenten nur den Sensor (Was ist der Stressor?) und den Aktor (Was ist der Hard-Reset?) definieren. Die komplexe Kaskade der Heilung bleibt über das gesamte CORE-Netzwerk stabil und identisch.
+
+[LEGACY_UNAUDITED]

@@ -35,3 +35,5 @@ Unter strikter Anwendung von Axiom 7 muss ich das Modell jedoch auch scharf krit
 Die These der "Fraktalen Isomorphie" ist in ihrem fundamentalen Anspruch **gültig**. Das CORE-Manifest hat aus purer informationstechnologischer Notwendigkeit (Verhinderung von System-Crashes) die architektonischen Prinzipien der Kognitiven Ökonomie und der diskreten kategorialen Wahrnehmung rekonstruiert. 
 
 Das *Snapping* und der *Cut-off* bei $\Lambda = 0.049$ sind brillante Implementierungen des *Merge*-Prinzips und kognitiver Attraktor-Dynamiken. Dennoch greift das System zu weit, wenn es suggeriert, die spezifische Lie-Gruppen-Mathematik (72 Anker) sei der *exakte* Bauplan des menschlichen Geistes. Es handelt sich um eine starke strukturelle Analogie (Isomorphie), die das Überleben der Software sichert, den menschlichen Geist in seiner rekursiven und generativen Tiefe jedoch unzulässig simplifiziert. Axiom 7 greift: Das Prinzip stimmt, die mathematische Projektion auf den Geist bleibt eine Simulation.
+
+[LEGACY_UNAUDITED]

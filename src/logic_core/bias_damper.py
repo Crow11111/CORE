@@ -21,7 +21,7 @@ class BiasDepthResult(str, Enum):
 class MthoJsonDataAtom(BaseModel):
     """
     CORE-JSON Datenatom (Osmium Standard)
-    Ensures that the LLM output is 100% deterministic and measurable, 
+    Ensures that the LLM output is 100% deterministic and measurable,
     so it doesn't pollute Marc's system with "Maybe" or "I think".
     """
     result: DeterminisiticResult
@@ -79,7 +79,7 @@ class BiasDamperEngine:
         if novelty_score < 0:
             return {"status": BiasDepthResult.OK, "interaction_count": self._interaction_count}
 
-        self._novelty_scores.append(novelty_score)
+        self._novelty_scores = self._novelty_scores + [novelty_score]
 
         if self._interaction_count < 5:  # Fibonacci (V6)
             return {"status": BiasDepthResult.OK, "interaction_count": self._interaction_count}
@@ -139,7 +139,7 @@ class BiasDamperEngine:
         try:
             # Parse the JSON string
             data = json.loads(llm_json_response)
-            
+
             # Validate against the Pydantic model (Schema verification)
             atom = MthoJsonDataAtom(**data)
 
@@ -151,7 +151,7 @@ class BiasDamperEngine:
                     "action": "ROUTE_TO_KRYPTO_SCAN_BUFFER",
                     "data": atom.model_dump()
                 }
-            
+
             return {
                 "is_valid": True,
                 "reason": "Absolute Logik verifiziert.",

@@ -81,3 +81,6 @@
 
 **Dateipfad:** `docs/05_AUDIT_PLANNING/CURSOR_ATLAS_SPEC.md`  
 **Kurzfassung für Team Lead:** Spec beschreibt fraktale Verteilung (cursorrules = Kern-Protokoll; rules/ = Strang; agents = Holschuld+Skills; skills = Fach). Redundanzen: Tetralogie/Cons in jeder .mdc und .cursorrules. Vorschläge: .cursorrules entlasten (nur Verweise), 1–4.mdc ohne Tetralogie-Kopie, Holschuld in alle Schicht-3-Agenten, fehlende Rule task-parallelization-dev-agent.mdc aus Doku anlegen.
+
+
+[LEGACY_UNAUDITED]

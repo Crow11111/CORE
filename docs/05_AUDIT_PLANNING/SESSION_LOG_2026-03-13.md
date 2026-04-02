@@ -37,3 +37,6 @@
 - Langzeit-Monitoring der Scout-Auslastung bei parallelen Whisper/Ollama-Anfragen.
 - Finale Deaktivierung von AnythingLLM auf Dreadnought (VRAM-Fresser).
 - Überprüfung der ChromaDB-Gitterdichte auf dem VPS.
+
+
+[LEGACY_UNAUDITED]

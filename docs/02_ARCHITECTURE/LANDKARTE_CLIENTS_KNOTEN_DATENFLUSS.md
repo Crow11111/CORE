@@ -108,3 +108,6 @@ Ohne Rückkopplung **stirbt** der Prozess im Trichter (nur hinlegen, nie verifiz
 3. Pro neuem Spieler: eine Zeile in Abschnitt **3** dieser Datei + Verweis in die VPS-Tabelle.  
 
 Damit bleibt die Intuition (rückwärts sinnvoll) **ankerbar** im Kanon, ohne jedes Mal neu zu raten.
+
+
+[LEGACY_UNAUDITED]

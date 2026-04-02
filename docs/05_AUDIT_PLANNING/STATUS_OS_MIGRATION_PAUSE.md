@@ -37,3 +37,6 @@
   - **Todo für nächste Session:** 
     - Architekturentscheidung fällen, wie wir multimodale Embeddings (Vision/Audio) in unsere bestehende Taktung und ChromaDB als notwendige Filter/Sensoren integrieren, um diesen Druck-Erkenntnis-Mechanismus scharfzuschalten.
     - **Leeres TODO (Der blinde Scan):** Suche und Verifikation der empirischen Knotenpunkte (die 75 Konstanten) in allen 4 Säulen weiterführen (Triangulation der blinden Flecken).
+
+
+[LEGACY_UNAUDITED]

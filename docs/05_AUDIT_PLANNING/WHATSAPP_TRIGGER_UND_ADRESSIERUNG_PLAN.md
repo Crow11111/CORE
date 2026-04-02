@@ -174,3 +174,6 @@ Damit reicht es, den Schalter zu betätigen (oder eine Szene/Automation daran zu
 - **Trigger-Skripte:** `src/scripts/trigger_whatsapp_plan_oc.py` (OC per API), `src/scripts/trigger_whatsapp_plan_dev_agent.py` (Dev-Agent lokal)
 - **Alternative wenn API 405:** `src/scripts/deploy_whatsapp_plan_task_to_oc.py` (Aufgabe in OCs Workspace legen), dann @OC in WhatsApp bitten
 - **Workaround Logikketten:** `POST /api/oc/trigger_whatsapp_plan` – versucht API, bei 405 automatisch Fallback (Task in Workspace). Für HA-Logikschalter siehe Abschnitt „Workaround: Logikschalter in HA“.
+
+
+[LEGACY_UNAUDITED]

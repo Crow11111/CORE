@@ -92,3 +92,6 @@ Der Event-Bus exponiert Metriken ueber die `.stats` Property:
 - **Ephemeral Agents:** `docs/02_ARCHITECTURE/G_CORE_CIRCLE.md`
 - **ChromaDB Schema:** `docs/02_ARCHITECTURE/CORE_CHROMADB_SCHEMA.md`
 - **Voice Architecture:** `docs/02_ARCHITECTURE/CORE_VOICE_ASSISTANT_ARCHITECTURE.md`
+
+
+[LEGACY_UNAUDITED]

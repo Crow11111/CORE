@@ -25,7 +25,6 @@ import asyncio
 import os
 import threading
 import time
-from http.server import HTTPServer, SimpleHTTPRequestHandler
 from typing import Optional
 
 from loguru import logger
@@ -228,7 +227,7 @@ async def _ha_piper_tts(text: str) -> bool:
 
 
 async def _stream_audio_to_mini(audio_path: str) -> bool:
-    """Streamt eine lokale Audiodatei zum HA media_player via temporaerem HTTP-Server."""
+    """Streamt eine lokale Audiodatei zum HA media_player via FastAPI /media Route."""
     hass_url = os.getenv("HASS_URL") or os.getenv("HA_URL")
     hass_token = os.getenv("HASS_TOKEN") or os.getenv("HA_TOKEN")
     if not hass_url or not hass_token:
@@ -237,30 +236,16 @@ async def _stream_audio_to_mini(audio_path: str) -> bool:
         return True
 
     host_ip = os.getenv("CORE_HOST_IP", "192.168.178.20")
-    port = int(os.getenv("TTS_STREAM_PORT", str(DEFAULT_STREAM_PORT)))
+    # CORE API läuft standardmäßig auf 8000. Die /media Route wird im main.py bereitgestellt.
+    port = int(os.getenv("CORE_API_PORT", "8000"))
     filename = os.path.basename(audio_path)
-    serve_dir = os.path.dirname(os.path.abspath(audio_path))
-    audio_url = f"http://{host_ip}:{port}/{filename}"
+    
+    # URL, unter der die FastAPI-Instanz die Datei aus dem 'media' Ordner bereitstellt
+    audio_url = f"http://{host_ip}:{port}/media/{filename}"
+    
     entity_id = (
         os.getenv("TTS_CONFIRMATION_ENTITY", DEFAULT_ENTITY).strip() or DEFAULT_ENTITY
     )
-
-    server_done = asyncio.Event()
-    server_obj = [None]
-
-    def _serve():
-        orig_dir = os.getcwd()
-        os.chdir(serve_dir)
-        server = HTTPServer(("0.0.0.0", port), SimpleHTTPRequestHandler)
-        server_obj[0] = server
-        server_done.set()
-        server.serve_forever()
-        os.chdir(orig_dir)
-
-    t = threading.Thread(target=_serve, daemon=True)
-    t.start()
-    await server_done.wait()
-    await asyncio.sleep(0.51)
 
     try:
         from src.connectors.home_assistant import HomeAssistantClient
@@ -276,14 +261,14 @@ async def _stream_audio_to_mini(audio_path: str) -> bool:
             },
         )
         if result is not None:
-            logger.info("Audio-Stream: Datei auf Mini gestartet.")
+            logger.info(f"Audio-Stream: Datei {filename} auf Mini gestartet ({audio_url}).")
+            return True
         else:
             logger.warning("HA play_media fehlgeschlagen.")
-        await asyncio.sleep(8)
-        return result is not None
-    finally:
-        if server_obj[0]:
-            server_obj[0].shutdown()
+            return False
+    except Exception as e:
+        logger.error(f"Fehler beim Starten des Audio-Streams auf Mini: {e}")
+        return False
 
 
 async def _elevenlabs_stream_to_mini(
@@ -291,8 +276,7 @@ async def _elevenlabs_stream_to_mini(
     role_name: str = "core_dialog",
 ) -> bool:
     """
-    ElevenLabs → MP3 → temporärer HTTP-Server → HA media_player.play_media.
-    Der Mini streamt die MP3 von CORE_HOST_IP:PORT.
+    ElevenLabs → MP3 → HA media_player.play_media via FastAPI /media Route.
     """
     path = await _elevenlabs_speak(
         text, role_name, output_path=None, play=False
@@ -304,62 +288,7 @@ async def _elevenlabs_stream_to_mini(
         if not path or not os.path.isfile(path):
             return await _mini_tts(text)
 
-    hass_url = os.getenv("HASS_URL") or os.getenv("HA_URL")
-    hass_token = os.getenv("HASS_TOKEN") or os.getenv("HA_TOKEN")
-    if not hass_url or not hass_token:
-        logger.warning("HASS_URL/TOKEN fehlt – spiele lokal ab.")
-        await asyncio.to_thread(os.startfile, path)
-        return True
-
-    host_ip = os.getenv("CORE_HOST_IP", "192.168.178.20")
-    port = int(os.getenv("TTS_STREAM_PORT", str(DEFAULT_STREAM_PORT)))
-    filename = os.path.basename(path)
-    serve_dir = os.path.dirname(os.path.abspath(path))
-    audio_url = f"http://{host_ip}:{port}/{filename}"
-    entity_id = (
-        os.getenv("TTS_CONFIRMATION_ENTITY", DEFAULT_ENTITY).strip() or DEFAULT_ENTITY
-    )
-
-    server_done = asyncio.Event()
-    server_obj = [None]  # Mutable für Zugriff aus Thread
-
-    def _serve():
-        orig_dir = os.getcwd()
-        os.chdir(serve_dir)
-        server = HTTPServer(("0.0.0.0", port), SimpleHTTPRequestHandler)
-        server_obj[0] = server
-        server_done.set()
-        server.serve_forever()
-        os.chdir(orig_dir)
-
-    t = threading.Thread(target=_serve, daemon=True)
-    t.start()
-    await server_done.wait()
-    await asyncio.sleep(0.51)
-
-    try:
-        from src.connectors.home_assistant import HomeAssistantClient
-
-        client = HomeAssistantClient()
-        result = await client.call_service(
-            "media_player",
-            "play_media",
-            {
-                "entity_id": entity_id,
-                "media_content_id": audio_url,
-                "media_content_type": "music",
-            },
-        )
-        if result is not None:
-            logger.info("ElevenLabs Stream: Audio auf Mini gestartet.")
-        else:
-            logger.warning("HA play_media fehlgeschlagen.")
-        # Mini braucht Zeit zum Streamen
-        await asyncio.sleep(8)
-        return result is not None
-    finally:
-        if server_obj[0]:
-            server_obj[0].shutdown()
+    return await _stream_audio_to_mini(path)
 
 
 async def dispatch_tts(

@@ -36,3 +36,6 @@ Einige Punkte sind unklar:
 3. Die Definition von "ChromaDB" als Kristall-Engine ist speziell und könnte eine explizitere mathematische Formulierung profitieren.
 
 Gesamt gesehen bietet dieses White Paper einen interessanten Ansatz zur Modellierung und Verarbeitung komplexer Systeme, der jedoch weiteren wissenschaftlichen Diskussion bedarf, um seine volle Potentialität zu entfalten.
+
+
+[LEGACY_UNAUDITED]

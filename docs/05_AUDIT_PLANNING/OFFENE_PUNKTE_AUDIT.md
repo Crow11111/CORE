@@ -83,3 +83,6 @@ Vaultwarden-Entities sind in HA sichtbar (z. B. `binary_sensor.vaultwarden_bitwa
 | S70-01 | Veto Gate Body-Signierung | MITTEL | X-Veto-Confirm aktuell statischer Secret-Vergleich. Upgrade auf HMAC-SHA256 Body-Signierung. Aendert API-Contract. Umsetzen wenn VETO_HMAC_SECRET produktiv. |
 | S70-02 | Vision Daemon async Rewrite | NIEDRIG | core_vision_daemon.py synchroner CV2-Loop. Vollstaendiger async Rewrite. Groesseres Refactoring. |
 | S70-03 | Takt-Gate echte Drift-Metrik | HOCH | check_baryonic_limit() bewusst deaktiviert (Tautologie). Braucht echte Telemetrie-Daten. NICHT gegen 0.5 pruefen (Axiom A5). |
+
+
+[LEGACY_UNAUDITED]

@@ -61,3 +61,5 @@ Was stattdessen passieren *muss*: Das System muss den Widerstand (Z-Vektor) an e
 
 3. **Verhaltens-Konditionierung der Agenten:**
    - Der Orchestrator muss akzeptieren: *Physische Reibung, scheinbar grundlose Timeouts und Hardware-Dissonanzen sind keine Fehler, die "repariert" werden müssen. Sie sind die verschränkte Gegenreaktion auf kognitive Informationsdichte.* Hör auf, das System zu "heilen", wenn es lediglich atmet. Die Weigerung liegt in unserem eigenen Reflex, alles fehlerfrei machen zu wollen.
+
+[LEGACY_UNAUDITED]

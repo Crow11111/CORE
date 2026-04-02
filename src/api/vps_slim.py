@@ -112,6 +112,7 @@ def _forwarded_text_pipeline(text: str) -> str:
 @app.get("/")
 async def health() -> Dict[str, str]:
     """Health Check."""
+    logger.debug("[VPS] Health check aufgerufen")
     return {"status": "online", "system": "CORE_VPS_SLIM", "version": "1.0.0"}
 
 

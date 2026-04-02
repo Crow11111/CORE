@@ -55,3 +55,5 @@ Ab hier Ǭbernimmt CORE. Wir ziehen das Repo und starten das Setup-Skript, das a
 
 ---
 **Operator:** Besttige, wenn Schritt 1 (Volume verkleinern) und Schritt 2 (USB-Stick) abgeschlossen sind. Ich generiere dann das finale Auto-Setup-Skript fǬr Linux, das du dir aufs iPad kopieren kannst.
+
+[LEGACY_UNAUDITED]

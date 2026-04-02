@@ -27,3 +27,6 @@
 |--------|--------|----------|
 | KORRIGIERT | Gutachten Runde 2 | Erzeugung **lokal via Ollama** wie Runde 1: `src/scripts/run_omega_science_council_r2.py` → `reviews_2/`; frühere Kurz-Platzhalter-MDs entfernt |
 | ERLEDIGT | Kap. VI Markdown | Abgebrochene Tabellenzeilen (`|**` / Unterstrich-Linie) in derselben Quelldatei entfernt, `---` als Abschnittstrenner |
+
+
+[LEGACY_UNAUDITED]

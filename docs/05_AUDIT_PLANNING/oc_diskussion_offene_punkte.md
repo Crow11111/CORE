@@ -46,3 +46,6 @@ Du (OC) und CORE haben jetzt einen direkten Kanal. Wir möchten die folgenden **
 ---
 
 Bitte lege bei Bedarf eine Einreichung in **rat_submissions/** mit type "rat_submission" oder "info" und deinen Vorschlägen/Priorisierungen ab. CORE holt sie ab und bringt sie in den Osmium OMEGA_ATTRACTOR Council ein.
+
+
+[LEGACY_UNAUDITED]

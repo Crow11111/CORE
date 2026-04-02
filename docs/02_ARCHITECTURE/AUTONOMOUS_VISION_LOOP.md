@@ -28,22 +28,22 @@ Der Prozess läuft lokal auf dem Core-Server (4D_RESONATOR (CORE)) oder einem de
 graph TD
     CAM[Kamera (MX Brio)] -->|RTSP Stream| GO2RTC[go2rtc Server]
     GO2RTC -->|RTSP/MJPEG| DAEMON[atlas_vision_daemon.py]
-    
+
     subgraph "Lokal: Vision Loop (10-30 FPS)"
         DAEMON -->|cv2.VideoCapture| FRAME[Frame Grabber]
         FRAME -->|Grayscale/Blur| PREPROC[Preprocessing]
         PREPROC -->|Frame Diff / MOG2| MOTION[Motion Detector]
         MOTION -->|Delta > Threshold?| TRIGGER{Bewegung?}
     end
-    
+
     TRIGGER -->|Nein| SLEEP[Wait / Loop]
     TRIGGER -->|Ja + Cooldown abgelaufen| SNAPSHOT[Snapshot ziehen]
-    
+
     subgraph "Cloud: Kognition"
         SNAPSHOT -->|API Call| GEMINI[Gemini 1.5 Flash/Pro Vision]
         GEMINI -->|"Beschreibe Ereignis"| DESC[Text-Beschreibung]
     end
-    
+
     subgraph "Memory: Zero-State Feld"
         DESC -->|Ingest| CHROMA[ChromaDB: zero_state_field]
         CHROMA -->|Context| ORCHESTRATOR[Orchestrator / Brain]
@@ -77,16 +77,14 @@ Ein Python-Skript, das als System-Service läuft.
     *   Speichert das Ergebnis in ChromaDB (`zero_state_field`).
     *   Metadaten: `source=vision_daemon`, `type=observation`, `timestamp=ISO`.
 
-### 3.3. Schnittstellen
+### 3.4. Schnittstellen (Sensoren / Live-Vektoren)
 
-#### A. Google Gemini API (Direkt)
-Um Latenz und Abhängigkeiten zu minimieren, nutzt der Daemon das `google-generativeai` SDK direkt (statt via OpenClaw VPS), sofern ein lokaler API-Key vorhanden ist.
-*Fallback:* OpenClaw Brain API.
-
-#### B. ChromaDB (Zero-State)
-Nutzung von `src/network/chroma_client.py`.
-- **Funktion:** `add_event_to_chroma` oder spezifisch `add_zero_state_observation`.
-- **Ziel-Collection:** `zero_state_field` (Das Kurzzeitgedächtnis für Wahrnehmungen).
+#### C. VISION_SYNC Brücke (Headless Sensor)
+Für hochfrequente Vektor-Extraktion (Face Mesh, Emotionen, Blickrichtung, Gesten) nutzt das System das externe `VISION_SYNC` Tool.
+- **Der Daemon:** `src/daemons/scout_vision_bridge.py`
+- **Funktion:** Startet bei Bedarf (On-Demand) einen Headless-Browser, füttert den lokalen Stream ein und leitet die erkannten Vektoren weiter.
+- **Kommunikation:** Das Tool sendet die aggregierten Vektoren per WebSocket an `ws://localhost:8000/api/v1/system/vision_stream`.
+- **Zweck:** Stellt sicher, dass rechenintensive MediaPipe-Modelle nicht als permanenter UI-Ressourcenfresser laufen, sondern nur als isolierter Sensor (Sonde) bei Bedarf getriggert werden.
 
 ---
 
@@ -130,3 +128,6 @@ Beispiel-Eintrag:
 2.  [ ] `src/network/chroma_client.py` erweitern um `add_zero_state_observation`.
 3.  [ ] Testlauf mit `gemini-1.5-flash` (Latenz-Check).
 4.  [ ] Integration in den Autostart (PM2 oder Systemd).
+
+
+[LEGACY_UNAUDITED]

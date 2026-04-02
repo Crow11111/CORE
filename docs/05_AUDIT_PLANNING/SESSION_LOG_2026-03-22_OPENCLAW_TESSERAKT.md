@@ -37,3 +37,6 @@
 
 ## Agos-Takt-Status
 - **Takt 2 (Architektur) abgeschlossen.** Signalfluss und theoretische Rahmung sind gesichert und dokumentiert.
+
+
+[LEGACY_UNAUDITED]

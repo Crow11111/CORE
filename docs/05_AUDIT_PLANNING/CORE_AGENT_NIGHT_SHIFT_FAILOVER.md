@@ -42,3 +42,6 @@ Skizziert, wie wir sicherstellen, dass die ChromaDB auf dem VPS und die lokale C
 - "Failure is not an option." – Wenn der Failover die Latenz um mehr als 1.5 Sekunden erhöht, ist das Design fehlerhaft. Baut es asynchron und aggressiv im Timeout.
 
 [AUTHORIZATION: OSMIUM_JUDGE // CEO_CORE]
+
+
+[LEGACY_UNAUDITED]

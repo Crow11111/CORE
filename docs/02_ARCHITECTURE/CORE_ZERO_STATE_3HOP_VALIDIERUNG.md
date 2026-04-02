@@ -242,3 +242,6 @@ HOP-ZÄHLUNG (pro Pfad):
 ---
 
 *Quelle: Codebase-Analyse (whatsapp_webhook, ha_webhook, oc_channel, scout_direct_handler, openclaw_client, atlas_omni_node, auth_webhook, MCP user-core-remote)*
+
+
+[LEGACY_UNAUDITED]

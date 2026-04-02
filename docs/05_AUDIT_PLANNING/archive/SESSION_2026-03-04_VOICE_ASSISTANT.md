@@ -298,3 +298,6 @@ Erwartete Antwort:
 
 *Erstellt: 2026-03-04*
 *Autor: CORE Orchestrator (Session-Dokumentation)*
+
+
+[LEGACY_UNAUDITED]

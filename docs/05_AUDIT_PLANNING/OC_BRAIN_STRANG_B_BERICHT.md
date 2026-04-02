@@ -54,3 +54,6 @@ Zusätzlich: `ollama list` auf dem VPS war leer, `systemctl`-Ausgabe leer. Mögl
 
 - Auftrag Strang B: `docs/05_AUDIT_PLANNING/OC_BRAIN_AUFTRAG_AUSFUEHRUNG.md`
 - Infrastruktur-Doku: `docs/03_INFRASTRUCTURE/VPS_OLLAMA_SETUP.md`
+
+
+[LEGACY_UNAUDITED]

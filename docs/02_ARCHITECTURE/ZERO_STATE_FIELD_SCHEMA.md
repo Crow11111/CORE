@@ -128,3 +128,6 @@ col.query(where={"$and": [{"type": "session"}, {"session_date": "2026-03-01"}]},
 - `src/config/engine_patterns.py` (QBASES, QBASE_PAIRS)
 - `src/logic_core/quaternary_codec.py` (category → lpis_base Mapping)
 - `docs/05_AUDIT_PLANNING/vps_chroma_full_export.json` (Quelldaten)
+
+
+[LEGACY_UNAUDITED]

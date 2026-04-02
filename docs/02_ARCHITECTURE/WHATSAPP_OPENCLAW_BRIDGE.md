@@ -63,3 +63,5 @@ Der Datenfluss durchbricht die Isolation des Systems kontrolliert nach außen ("
 
 > **System Architect Anmerkung (Defizit-Erkennung):**
 > Mir fehlt die exakte OpenClaw API-Spezifikation für den direkten Versand in Kanäle (welcher REST-Pfad genau angetriggert wird, um WhatsApp-Nachrichten proaktiv zu pushen, abseits von Agent-Responses). Falls dies fehlt, muss der Teamleiter die OpenClaw API Docs überprüfen und `openclaw_client.py` entsprechend anpassen. Keine Halluzination von Endpunkten im produktiven Code.
+
+[LEGACY_UNAUDITED]

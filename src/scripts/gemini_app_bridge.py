@@ -126,7 +126,7 @@ def _takeout_json_to_markdown(json_path: str) -> str:
                 speaker_label = "User"
                 turn_title = content[:60].replace("\n", " ").strip()
                 if turn_title.endswith("..."):
-                    pass
+                    turn_title = turn_title.strip()
                 elif len(content) > 60:
                     turn_title += "..."
                 lines.append(f"## Turn {turn_num:02d}: {turn_title}")

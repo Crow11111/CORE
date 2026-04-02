@@ -28,3 +28,6 @@ Regeln: Keine Fakten erfinden. CORE-Begriffe korrekt (CORE, Dreadnought, ChromaD
 ---
 
 Referenz: **CORE_EICHUNG.md** Anhang B (ausführlich); Anhang A = Systemanweisungen für CORE (nicht für AI Studio).
+
+
+[LEGACY_UNAUDITED]

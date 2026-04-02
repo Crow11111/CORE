@@ -56,3 +56,6 @@ Die Vorstellung des Dimensionswechsels basierend auf einer Drehimpulsumkehr ist 
 Das Whitepaper bietet eine faszinierende Mischung aus rein informativen und physischen Metaphern, die ein tiefgehendes Verständnis der Komplexität in den Systemen vermitteln wollen. Allerdings fehlt es an klaren, formellen mathematischen oder physikalischen Grundlagen sowie an direkten Anwendungsbeispielen und experimentellen Überprüfungen. Es erinnert mich eher an eine künstlerische Interpretation von physikalischen Phänomenen als an eine ernsthafte wissenschaftliche Arbeit.
 
 Für den Fortschritt der Forschung würde es von Vorteil sein, wenn solche Ideen präziser formuliert und durch experimentelle oder theoretische Untersuchungen gestützt würden.
+
+
+[LEGACY_UNAUDITED]

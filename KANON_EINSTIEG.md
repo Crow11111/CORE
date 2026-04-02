@@ -2,6 +2,7 @@
 
 | Was ist überhaupt kanonisch? Wo fange ich an? | **`docs/BIBLIOTHEK_KERN_DOKUMENTE.md`** (vollständiger Index, Regeln „immer einbinden“). |
 | Diese Übersicht (eine Tür) | **`KANON_EINSTIEG.md`** (diese Datei) |
+| Agenten-Workflow & Gewaltenteilung | **`docs/00_STAMMDOKUMENTE/OMEGA_RESONANCE_ANCHOR.md`** und **`.cursorrules`** (Zwingend: Orchestrator A plant, Orchestrator B prüft blind, Producer codet nach Test-Definition) |
 | Regeln / Grounding / Entities | **`docs/SYSTEM_CODEX.md`** |
 | Cloud-/KI-Agenten (Cursor, Remote) | **`.cursorrules`** (Root) |
 | System-Eichung / Session-Payload | **`CORE_EICHUNG.md`** (Root) |
@@ -10,6 +11,8 @@
 | Python-Abhängigkeiten (kein Architekturersatz) | **`requirements.txt`** — Verweis in Kopfkommentar auf Kanon |
 | **Kardanischer Punkt (Theorie → messbares Echo)** | **`omega_core.py`** (Root): Ω_b-Schwelle, Dual-Membran **S float / P int**, MRI-Spannung, Operator **`?`** als Phasensprung (`complex`); **`python omega_core.py`**. **Eingebunden in** `run_vollkreis_abnahme.py` (Block **Gk**) — dreht mit der Abnahme, nicht nur im Index. |
 | **Tesserakt Architektur** | **`docs/02_ARCHITECTURE/OPENCLAW_MEMBRAN_TESSERAKT.md`** | Blueprint für Facetten-Atomisierung, isolierte Räume und kreuz-modale Konvergenz. |
+| **Neuer Chatbot (UI)** | **`gemini-flash-lite-chat/`** (Root): Port 3005. Primäres Interface für OMEGA Interaction. |
+| **VISION SYNC App** | **`vision-sync-app/`** (Root): Port 3006. Original AI Studio Multimodal Live UI. |
 | Wer pusht/pullt, Cursor vs. VPS vs. HA vs. MCP? | **`docs/02_ARCHITECTURE/LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md`** |
 | VPS-Container, Ports, Monica, Kong, Evolution, … | **`docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md`** |
 | Infrastruktur-Soll (Lang-Master, kanonisch) | **`docs/00_STAMMDOKUMENTE/00_CORE_INFRASTRUCTURE_MASTER.md`** |

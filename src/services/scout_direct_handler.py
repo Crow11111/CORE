@@ -52,6 +52,7 @@ def _load_ha_client():
 def _load_triage():
     """Lazy load Triage (nur bei Bedarf)."""
     from src.ai.llm_interface import core_llm
+    logger.debug("[SCOUT] Triage lazy loaded")
     return core_llm
 
 

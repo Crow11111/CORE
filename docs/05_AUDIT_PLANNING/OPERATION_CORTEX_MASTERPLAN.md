@@ -40,3 +40,6 @@ Das System **CORE CORTEX** ist operativ.
 **Nächster Schritt:**
 Initierung des ersten **Audio-Loops** (User Input -> Brain -> Audio Output).
 Deployment der neuesten Skills auf den VPS (optional, zur Sicherheit).
+
+
+[LEGACY_UNAUDITED]

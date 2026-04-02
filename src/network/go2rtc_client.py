@@ -60,6 +60,8 @@ def get_snapshot(
             return False, str(e)
 
     def _ha_headers() -> dict:
+        from loguru import logger
+        logger.debug("[GO2RTC] Lade HA-Headers")
         if _HASS_TOKEN:
             return {"Authorization": f"Bearer {_HASS_TOKEN}"}
         return {}
@@ -104,4 +106,6 @@ def is_configured() -> bool:
 
 def streams_api_url() -> str:
     """URL der go2rtc API-Streams-Liste (z. B. für Auflistung verfügbarer Streams)."""
+    from loguru import logger
+    logger.debug("[GO2RTC] streams_api_url called")
     return f"{GO2RTC_BASE_URL}/api/streams"

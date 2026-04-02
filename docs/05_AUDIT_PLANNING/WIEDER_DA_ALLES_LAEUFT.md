@@ -127,3 +127,6 @@ Damit das CORE-Backend beim Anmelden/Start von Windows (4D_RESONATOR (CORE)) sta
 - **Oder Taskplaner:** Aufgabe „Beim Anmelden“ erstellen, Aktion: `/OMEGA_CORE\batch_launcher/START_BACKEND_SERVICES.bat` (Arbeitsverzeichnis: `/OMEGA_CORE`).
 
 Danach ist CORE bereit, sobald der Rechner läuft – die eingehende Nachricht triggert die Kette.
+
+
+[LEGACY_UNAUDITED]

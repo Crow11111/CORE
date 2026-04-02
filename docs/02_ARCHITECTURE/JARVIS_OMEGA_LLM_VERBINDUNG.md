@@ -90,3 +90,6 @@ Chat und TTS hängen dagegen an:
 ---
 
 *Letzte Aktualisierung: 2026-03-19*
+
+
+[LEGACY_UNAUDITED]

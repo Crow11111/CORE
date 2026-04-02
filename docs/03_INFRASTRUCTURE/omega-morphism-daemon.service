@@ -1,0 +1,16 @@
+[Unit]
+Description=OMEGA Morphism Stream Daemon (ChromaDB Observer)
+After=network.target omega-morphism-stream.service
+
+[Service]
+Type=simple
+User=mth
+WorkingDirectory=/OMEGA_CORE
+Environment=PYTHONPATH=/OMEGA_CORE
+Environment=PYTHONIOENCODING=utf-8
+ExecStart=/OMEGA_CORE/venv/bin/python3 src/daemons/morphism_stream_daemon.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

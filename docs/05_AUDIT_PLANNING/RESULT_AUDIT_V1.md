@@ -141,3 +141,6 @@ Basierend auf den Analysen lassen sich die absoluten Best Practices (Stand 2026)
 21. [eunomia.dev](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEzCeCrHI90vHpa_xMv75lyVvaDhPmpcV1v5KUHy3mUNS9dF3d3u6usNBDS9b9TOO8KrOVSJmdDP1o4yS_WUT7DcZT9l_HcMxScNkpuOgSLJFLoVzBPIckmNGUquH9d65g4vq5h0oHxj7zvXJIGiX9tt4BlLtQQTiVEhHEa-1FSfzZcNDvKfNEx__Z0SpuuQacR4VFKC72MlkTmoFvqJHQDmJPdxqLHpYbSA7Zakzw8wQ==)
 22. [merge.dev](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGCR9tnmm76kNNPQWxC-lQYIVdpwNPrsYRFATpd8WmGu6ktOh8MXq41v3Yl_wTFdXHkfBurIerdlt02MG8eOA063vZR7LZKStztLcWHaD1JLBg281inSKIxNAy3oJDnUwtMW-l560A=)
 23. [medium.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHaP9eq0aD7YZGimJ4W9cOWYV71-m08cSMdHrsnZxzs51eGs7dyRBsyCYYiCTpckUG6u4kpz3VGOmjI3ItYOjQqrY271tv_aRYoPwX4JYPy-G0eBl2DU0vqF1QEFUp4UaxmQkljDSPJDLak9lu7Q5ReiX50DBleFQv2lf1ZynG8atkIiZWqB_5YUrYWV9szVAIBMBlBvsMfQNATetn7siU2zRL-tVg=)
+
+
+[LEGACY_UNAUDITED]

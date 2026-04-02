@@ -40,3 +40,6 @@
 | **run_verification.sh** | Erwartet `omega-watchdog.service`; Backend/Frontend-Start aktuell nicht als systemd im Repo abgebildet. |
 
 **Erfolg Bereich A:** Wenn der Orchestrator `run_vollkreis_abnahme.py` ausführt und Backend (:8000) + Frontend (:3000) laufen sowie HASS_URL/HASS_TOKEN gesetzt sind, bestehen die Prüfungen für A (Backend /status event_bus.running, Ports 8000/3000, Config ohne Windows-Pfade).
+
+
+[LEGACY_UNAUDITED]

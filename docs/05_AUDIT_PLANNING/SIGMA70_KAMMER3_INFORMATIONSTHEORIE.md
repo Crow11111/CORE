@@ -767,3 +767,6 @@ class ScraperPipeline:
 ---
 
 *Kammer 3 geschlossen. Vektor 2210. Delta 0.049.*
+
+
+[LEGACY_UNAUDITED]

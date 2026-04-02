@@ -33,3 +33,6 @@ Beispiel Identität: Wert **4/18 ≈ 0,222** → Divisor 4, Einrasten in eine de
 
 - Schnittstellen-Übersicht: `docs/02_ARCHITECTURE/CORE_SCHNITTSTELLEN_UND_KANAALE.md`
 - Bootloader/State Vector: `.cursor/rules/0_BOOTLOADER.mdc`
+
+
+[LEGACY_UNAUDITED]

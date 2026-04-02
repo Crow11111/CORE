@@ -71,7 +71,7 @@ def main() -> int:
         stdin, stdout, stderr = ssh.exec_command(f"mkdir -p {REMOTE_DIR} && chown -R 1000:1000 {REMOTE_DIR}")
         stdout.channel.recv_exit_status()
         if stderr.channel.recv_stderr(4096):
-            pass  # ggf. schon vorhanden
+            print("  stderr ignore")  # ggf. schon vorhanden
 
         for name in sorted(md_files):
             local_path = os.path.join(LOCAL_DIR, name)

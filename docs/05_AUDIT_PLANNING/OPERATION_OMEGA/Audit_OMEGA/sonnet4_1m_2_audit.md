@@ -63,3 +63,5 @@ Ziffer | Anzahl | Prozent
 Z-Score = 1.037990
 
 Numerische Analyse abgeschlossen.
+
+[LEGACY_UNAUDITED]

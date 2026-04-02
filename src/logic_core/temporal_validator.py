@@ -127,7 +127,7 @@ def detect_drift(evidence_timeline: list[dict]) -> list[dict]:
         is_drift = distance > DRIFT_THRESHOLD and same_category
 
         if is_drift:
-            drift_events.append({
+            drift_events = drift_events + [{
                 "position": idx,
                 "from_id": current.get("id", f"idx_{idx}"),
                 "to_id": next_ev.get("id", f"idx_{idx + 1}"),
@@ -136,7 +136,7 @@ def detect_drift(evidence_timeline: list[dict]) -> list[dict]:
                 "severity": "high" if distance > 1.2 else "medium",
                 "from_preview": doc_a[:100],
                 "to_preview": doc_b[:100],
-            })
+            }]
 
     return drift_events
 

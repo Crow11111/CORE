@@ -29,4 +29,5 @@ app.include_router(whatsapp_router)
 
 @app.get("/health")
 async def health_check():
+    logger.debug("[API] Health check aufgerufen")
     return {"status": "ok", "service": "agi-core"}

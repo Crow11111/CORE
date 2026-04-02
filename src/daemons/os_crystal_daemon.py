@@ -100,7 +100,7 @@ class OSCrystalDaemon:
                     if not self.dry_run:
                         # Eskalation: Reduziere CPU Frequenz oder setze renice
                         # subprocess.run("cpufreq-set -g powersave", shell=True)
-                        pass
+                        logger.warning("[OS-CRYSTAL] Dry Run deaktiviert. Eskalation aktiv: CPU-Frequenz / renice ausstehend.")
                         
                 elif res_abs == SYMMETRY_BREAK:
                     logger.debug(f"[OS-CRYSTAL] Symmetriebruch bei {temp}°C initiiert.")

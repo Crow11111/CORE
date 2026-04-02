@@ -143,3 +143,6 @@
 - **Aktion:** Recherche zur Hyperbolischen Geometrie in LLMs, Poincar� Embeddings und deren Eignung f�r hierarchische Daten.
 - **Synthese:** Best�tigung, dass der latente Raum von Sprache intrinsisch hyperbolisch gekr�mmt ist (exponentielles Wachstum von B�umen vs. polynomielles Wachstum von Euklidischen R�umen). Empirische Evidenz durch negative Ricci-Kr�mmung in LLM-Embeddings gefunden (HELM, HiM).
 - **Architektur-Impact:** Validiert die Notwendigkeit von nicht-euklidischen Metriken (Poincar�-Distanz) im CORE-Gravitator f�r das Routing und in der Wissensdatenbank f�r hierarchische Cluster.
+
+
+[LEGACY_UNAUDITED]

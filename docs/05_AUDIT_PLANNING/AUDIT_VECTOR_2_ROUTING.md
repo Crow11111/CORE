@@ -9,3 +9,6 @@
 
 **Anforderung an den Output:**
 Erstelle einen detaillierten, technischen Consulting-Report (Markdown), der klare, deterministische Architekturentwürfe skizziert. Vermeide allgemeine Buzzwords und fokussiere dich auf konkrete, implementierbare Constraints (als künftige "OMEGA-Axiome") für das LLM-Routing und State-Handling.
+
+
+[LEGACY_UNAUDITED]

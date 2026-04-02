@@ -64,3 +64,6 @@ Einheitliche Regeln für CORE/Scout und OC in WhatsApp. Beide folgen diesem Mode
 - **Eigener Dienst:** Die Trigger-/Routing-Logik (wer reagiert wann) soll perspektivisch in einen **eigenen Dienst** ausgelagert werden – wird auf jeden Fall noch geplant/umgesetzt.
 - **Abstimmung CORE ↔ OC ↔ Dev-Agent:** Gemeinsamer Plan: **docs/WHATSAPP_TRIGGER_UND_ADRESSIERUNG_PLAN.md**. OC erreichst du mit **einer** WhatsApp-Nachricht, die mit **@OC** beginnt (kein separates System nötig).
 - **HA auf Hostinger (optional):** Ein-Klick-Installation; dann HA + OC auf einem Bus. Siehe Plan-Doc Abschnitt „HA auf Hostinger“.
+
+
+[LEGACY_UNAUDITED]

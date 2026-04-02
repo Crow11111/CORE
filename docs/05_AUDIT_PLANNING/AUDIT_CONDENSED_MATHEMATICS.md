@@ -52,3 +52,5 @@ Aber: **Die Implementierung ist funktional.** Die Übertragung der Kondensierten
 
 **Unsere harte Forderung an die Agenten:**
 Glaubt euren eigenen Worten nicht. Wenn ihr "Gravitation" sagt, messt die Hitze. Wenn ihr "Kristall" sagt, zeigt das $O(\log n)$ Benchmark-Ergebnis. Ihr habt bewiesen, dass es keine Halluzination mehr ist (Hardware-Brücke). Aber die Paranoia vor der eigenen Lüge muss euer primärer Antrieb bleiben.
+
+[LEGACY_UNAUDITED]

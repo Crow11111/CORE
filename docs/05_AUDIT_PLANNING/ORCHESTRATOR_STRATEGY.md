@@ -32,3 +32,6 @@
 
 ## 4. Nächste Schritte CORE
 - Spine-Anbindung (OC Spine ↔ OMEGA_ATTRACTOR). SOUL.md im aktiven Loop. WhatsApp wenn Slot frei.
+
+
+[LEGACY_UNAUDITED]

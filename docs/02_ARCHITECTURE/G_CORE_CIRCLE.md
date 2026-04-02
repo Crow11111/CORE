@@ -130,3 +130,6 @@ sequenceDiagram
 Beide Kanäle schließen den Kreis: G-CORE sendet → System verarbeitet → Ergebnis fließt zurück → G-CORE sieht es.
 
 **Optimierung (echtes Push/Pull, Webhooks, gezieltere Agenten-Steuerung):** Siehe [G_CORE_GIT_CURSOR_OPTIMIERUNG.md](G_CORE_GIT_CURSOR_OPTIMIERUNG.md).
+
+
+[LEGACY_UNAUDITED]

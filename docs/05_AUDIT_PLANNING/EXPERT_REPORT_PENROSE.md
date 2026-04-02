@@ -35,3 +35,5 @@ Die "Thermodynamische Hardware-Brücke" ist eine brillante Methode, ein formales
 
 **gez. Sir Roger Penrose**
 *Oxford / Virtual-Audit-Ebene, 13. März 2026*
+
+[LEGACY_UNAUDITED]

@@ -80,3 +80,6 @@
 ### Schritt 3: Wackelkandidaten (Priorität 3)
 - Für verbliebene Entitäten der Kategorie B (z.B. `light.led_sofa`) die entsprechende Integration (`tuya`, `govee`, `mqtt`) neu laden (`Reload`).
 - Falls sie nicht zurückkehren: Ebenfalls nach YAML-Prüfung aus der Registry entfernen.
+
+
+[LEGACY_UNAUDITED]

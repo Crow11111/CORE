@@ -208,3 +208,6 @@ Gesamthaft jedoch ist diese Arbeit ein erfrischend neues Denkmuster, das potenzi
 
 ---
 
+
+
+[LEGACY_UNAUDITED]

@@ -48,3 +48,6 @@ Automatische Trigger implementiert:
 ## 3. Offene Punkte (Post-Refactor)
 - **Verlorene Inhalte:** Die Dateien `OPENCLAW_ADMIN_ARCHITEKTUR.md`, `VPS_FULL_STACK_SETUP.md` (und einige Routing-Docs) waren untracked und gingen beim Verschieben verloren. Es wurden Platzhalter erstellt. Inhalt muss rekonstruiert werden.
 - **Link-Integrität:** Skripte, die auf alte Pfade (z. B. `docs/stammdokumente_oc`) zeigen, müssen gefixt werden (siehe nächster Schritt).
+
+
+[LEGACY_UNAUDITED]

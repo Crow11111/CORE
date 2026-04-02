@@ -71,3 +71,5 @@ Dieser Umbau dient direkt der Durchsetzung der aktuellen Primärziele:
 3. **(Level 3) Shell-Deployment:** Externe Knoten werden durch den "Kaskadierenden Kollaps" automatisch gefiltert. Antworten sie außerhalb der dynamischen Metrik, greift die Gravitation und zieht die Datenverarbeitung zurück auf den Dreadnought (lokale Datenhoheit).
 
 **Nächster Schritt:** Ticket-Generierung für das AGENCY-Team (Takt 3) zur schrittweisen Ersetzung aller `requests`/`httpx` Timeouts durch `get_friction_timeout()`.
+
+[LEGACY_UNAUDITED]

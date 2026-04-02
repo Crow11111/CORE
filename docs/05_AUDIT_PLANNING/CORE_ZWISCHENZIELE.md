@@ -57,3 +57,6 @@
 | 3 | Z12 OMEGA_ATTRACTOR Task-Loop | Orchestrator sendet Teilaufgabe an OMEGA_ATTRACTOR (send_message_to_agent), Antwort auswerten. |
 | 4 | Z11 Voice-IDs | Team: voice_config Rollen ohne voice_id; ElevenLabs-IDs oder Fallback. |
 | 5 | Z16 Prototyp-Status-Doc | Eine Seite: Stand 0.5, offen, nächste 5 Z. |
+
+
+[LEGACY_UNAUDITED]

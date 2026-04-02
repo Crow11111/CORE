@@ -119,3 +119,5 @@ Die hohe R² (0.846) reflektiert den monoton-exponentiellen Abfall der sortierte
 
 ---
 *Generiert: Unabhängiges mathematisches Audit – Audit_OMEGA*
+
+[LEGACY_UNAUDITED]

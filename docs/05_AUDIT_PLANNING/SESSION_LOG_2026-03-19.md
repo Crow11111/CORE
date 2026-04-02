@@ -16,3 +16,6 @@
 
 - `systemctl restart omega-backend` (oder gleichwertig) auf Dreadnought.
 - Jarvis neu bauen + installieren; Repo Atlas-Omega-Voice anlegen/pushen.
+
+
+[LEGACY_UNAUDITED]

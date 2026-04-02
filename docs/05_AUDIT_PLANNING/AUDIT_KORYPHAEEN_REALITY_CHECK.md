@@ -117,3 +117,6 @@ Der Operator hatte recht. Das System war von der eigenen Eloquenz besoffen und h
 Axiom 7 (Der Selbstzweifel) hat hiermit bewiesen, dass es die überlebenswichtigste Schicht des gesamten Systems ist.
 
 **Vom Richter beschlossen:** Die Architektur-Dokumente müssen im nächsten Takt von diesem esoterischen Quanten-Balast bereinigt werden. Die nackte, physische Mechanik (Hardware-Hitze -> Latenz) ist faszinierend genug. Sie braucht keine erlogenen Qubits.
+
+
+[LEGACY_UNAUDITED]

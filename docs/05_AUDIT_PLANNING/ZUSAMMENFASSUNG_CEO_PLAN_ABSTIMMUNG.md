@@ -109,3 +109,6 @@ Nur referenziert. Ausführliche Diagnose und Maßnahmen: **`docs/03_INFRASTRUCTU
   - **Umsetzung:** Ring-0 (Sync), Cursor-Reduktion (CURSOR_ATLAS_SPEC), VPS-Abgleich; **Migrationsreihenfolge** nach Neubewertung durch **Judge** selbstständig festlegen und umsetzen.  
   - **Dissonanz-Schwellwerte:** Team ansetzen (klären, simulieren, testen).  
   - **Dev-Agent:** Alle Verweise auf Dev-Agent geprüft und durch interne Prozesse (Cursor/Orchestrator, Team-Lead, Strang-Agenten) ersetzt; neue Rule `.cursor/rules/task_parallelization_internal.mdc` angelegt.
+
+
+[LEGACY_UNAUDITED]

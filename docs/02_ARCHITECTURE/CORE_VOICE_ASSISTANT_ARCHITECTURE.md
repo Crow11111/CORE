@@ -130,3 +130,6 @@ User: "Hey CORE, Regal 80% Helligkeit"
 - `docs/03_INFRASTRUCTURE/SCOUT_ASSIST_PIPELINE.md` – HA-Setup
 - `docs/04_PROCESSES/VOICE_SMART_COMMAND_PATTERNS.md` – Parser-Patterns
 - `docs/04_PROCESSES/VOICE_TROUBLESHOOTING.md` – Troubleshooting
+
+
+[LEGACY_UNAUDITED]

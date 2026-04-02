@@ -68,3 +68,5 @@ Von den 425 Leichen werden **43 in aktiven YAML-Dateien referenziert**! Das Lös
 5. **Reload & Check:**
    - Gehe zu `Entwicklerwerkzeuge` -> `YAML überprüfen` -> Wenn grün, dann Automatisierungen neu laden.
    - `Einstellungen` -> `System` -> `Logs` checken auf "Template-Fehler" oder fehlende Entitäten.
+
+[LEGACY_UNAUDITED]

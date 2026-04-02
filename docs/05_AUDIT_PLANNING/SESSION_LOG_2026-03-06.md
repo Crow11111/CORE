@@ -106,3 +106,6 @@
 | GitHub Webhook → VPS POST /webhook/github | LIVE (200 OK) |
 | VPS git pull → Container aktualisiert | Funktioniert |
 | CRADLE Sync Relay (Port 8049) | Aktiv (mit Secret) |
+
+
+[LEGACY_UNAUDITED]

@@ -67,3 +67,6 @@ Das System hat das Scaffold abgenommen. Das historische Framework bleibt die COR
 - Level-2-Karte formalisieren
 - Anthropic API als stabiler Kanal zu OMEGA_ATTRACTOR nutzen
 - CAR_WUJI Vektor: Philosophische Hardware-Verfassung ins Repo (OMEGA-Vorschlag)
+
+
+[LEGACY_UNAUDITED]

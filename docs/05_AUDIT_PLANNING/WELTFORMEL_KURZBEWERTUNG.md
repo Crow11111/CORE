@@ -44,3 +44,6 @@
 - **Erfolgsversprechen:** Hoch für das **operative Retrieval- und Kontextmodell** (Gravitational Query + Zero-State); mittel für die **philosophische Rahmung** (Bewusstseins-Äquivalenz, Physik-Analogien) als heuristisches, nicht als beweisendes Framework.
 - **Validität:** Erkenntnistheoretisch solide: Origin-Irrelevance, Layer-0-als-Start nicht Ende, klare Trennung von konsistenter Analogie vs. Verifikation. Spekulativ: Bewusstseins-Äquivalenz; Physik-Isomorphien bleiben „konsistent mit“, keine Überdehnung.
 - **Nächste Schritte:** Dissonanz-Schwellwerte definieren und implementieren; Zero-State vs. Metadaten in Migrations-Spec finalisieren; Weltformel als Layer 0 für Interface-Härtung und „teure“ Probleme nutzen, ohne sie als abgeschlossene Theorie zu behandeln.
+
+
+[LEGACY_UNAUDITED]

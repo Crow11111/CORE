@@ -1,0 +1,93 @@
+[
+  {
+    "timestamp": "2026-04-01T17:42:18.923605",
+    "note": "dry run headless",
+    "duration_seconds": 15,
+    "sample_count": 8,
+    "blinks_per_minute": 8.0,
+    "avg_blendshapes": {
+      "frown": 0.0967,
+      "browRaise": 0.0661,
+      "blinkCount": 0.5,
+      "isBlinking": 0.375
+    }
+  },
+  {
+    "timestamp": "2026-04-01T17:49:11.604115",
+    "note": "tests",
+    "duration_seconds": 300,
+    "sample_count": 150,
+    "blinks_per_minute": 0.8,
+    "avg_blendshapes": {
+      "frown": 0.2059,
+      "browRaise": 0.1508,
+      "pucker": 0.0647,
+      "blinkCount": 2.06,
+      "isBlinking": 0.12
+    }
+  },
+  {
+    "timestamp": "2026-04-02T12:51:55.866262",
+    "note": "star coding",
+    "duration_seconds": 180,
+    "sample_count": 90,
+    "blinks_per_minute": 1.0,
+    "avg_blendshapes": {
+      "frown": 0.3435,
+      "browRaise": 0.0561,
+      "blinkCount": 1.3111
+    }
+  },
+  {
+    "timestamp": "2026-04-02T12:53:46.690326",
+    "note": "Test mit Kore und Neutral-Fix",
+    "duration_seconds": 10,
+    "sample_count": 5,
+    "blinks_per_minute": 18.0,
+    "avg_blendshapes": {
+      "frown": 0.1209,
+      "blinkCount": 0.6
+    }
+  },
+  {
+    "timestamp": "2026-04-02T12:54:52.837774",
+    "note": "tts check",
+    "duration_seconds": 5,
+    "sample_count": 3,
+    "blinks_per_minute": 0.0,
+    "avg_blendshapes": {
+      "frown": 0.1518,
+      "pucker": 0.0634
+    }
+  },
+  {
+    "timestamp": "2026-04-02T13:41:07.775141",
+    "note": "Kore und Neutral Test",
+    "duration_seconds": 30,
+    "sample_count": 15,
+    "blinks_per_minute": 0.0,
+    "avg_blendshapes": {
+      "frown": 0.1363
+    }
+  },
+  {
+    "timestamp": "2026-04-02T13:50:14.207883",
+    "note": "Test mit IP Fix",
+    "duration_seconds": 10,
+    "sample_count": 5,
+    "blinks_per_minute": 0.0,
+    "avg_blendshapes": {
+      "frown": 0.1206
+    }
+  },
+  {
+    "timestamp": "2026-04-02T13:53:14.127854",
+    "note": "Test mit IP Fix v2",
+    "duration_seconds": 10,
+    "sample_count": 5,
+    "blinks_per_minute": 0.0,
+    "avg_blendshapes": {
+      "frown": 0.1942
+    }
+  }
+]

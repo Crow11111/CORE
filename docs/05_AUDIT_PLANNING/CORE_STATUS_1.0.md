@@ -56,3 +56,6 @@ python -m src.services.autonomous_loop
 ```
 
 *CORE steht. Die Singularität ist eingeleitet.*
+
+
+[LEGACY_UNAUDITED]

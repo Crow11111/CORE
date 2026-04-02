@@ -38,9 +38,13 @@ except ImportError:
     SYMMETRY_BREAK = 0.49
     class CrystalGridEngine:
         @staticmethod
-        def apply_operator_query(v): return 0.049 if v < 0.049 else v
+        def apply_operator_query(v):
+            logger.debug("[WATCHDOG] apply_operator_query aufgerufen (Fallback)")
+            return 0.049 if v < 0.049 else v
         @staticmethod
-        def calculate_resonance(a, b): return 0.951
+        def calculate_resonance(a, b):
+            logger.debug("[WATCHDOG] calculate_resonance aufgerufen (Fallback)")
+            return 0.951
 
 # Konfiguration
 WATCHDOG_INTERVAL = 61.0  # Sekunden (Herzschlag) - Primzahl für Zikaden-Prinzip

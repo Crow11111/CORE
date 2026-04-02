@@ -84,3 +84,6 @@ python -m src.scripts.test_voice_e2e
 - [ ] Entities regelmäßig aktualisieren (`fetch_ha_data` oder HA-API im Context)
 - [ ] Kurzen NASA-Clip (5–10 s) extrahieren statt 60-min-Datei
 - [ ] TTS_TARGET in HA-Integration konfigurierbar machen
+
+
+[LEGACY_UNAUDITED]

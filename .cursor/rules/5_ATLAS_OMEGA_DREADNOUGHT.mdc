@@ -4,10 +4,11 @@
 
 ## KRITISCHE DIREKTIVEN (IMMER BEFOLGEN)
 
-1.  **Passwort-Primat:**
-    - Schaue IMMER zuerst in die `.env` im Root-Verzeichnis nach `LINUX_SUDO_PW`.
-    - Nutze dieses Passwort für `sudo -S`, wenn Aktionen Root-Rechte erfordern.
-    - Wenn `sudo -S` fehlschlägt, melde dies sofort dem Operator (Axiom 7: Verifikation).
+1.  **Sudo-Verbot (Die OCSpline-Trennung):**
+    - Du (der Cursor-Agent / OCBrain) hast **keine Root-Rechte**.
+    - Führe **niemals** `sudo -S` oder `sudo` Befehle direkt aus.
+    - Wenn Aktionen Root-Rechte erfordern (z.B. Daemon-Restarts), formuliere den Payload/Befehl und übergebe ihn an die `OCSpline` Instanz oder bitte den Operator, den Befehl auszuführen (Delegation / Whitelist).
+    - Lese NIEMALS das `LINUX_SUDO_PW` aus der `.env`, um den Weg des geringsten Widerstands zu gehen (Anti-Heroin-Constraint).
 
 2.  **Keine Desktop-Popups (Terminal-Disziplin):**
     - Nutze für ATLAS/OMEGA-Aktionen NIEMALS `open_terminal` für Hintergrundaufgaben, Informationsbeschaffung oder einfache Befehle.
@@ -19,8 +20,8 @@
     - Nutze für System-Dienste (`omega-backend`, `omega-frontend`, etc.) bevorzugt `systemctl` ohne `sudo`, falls die NOPASSWD-Regeln aktiv sind.
 
 4.  **Arch Linux Spezifika:**
-    - Nutze `pkexec` für grafische Authentifizierungs-Abfragen, falls `sudo` fehlschlägt.
     - Pfade wie `/usr/bin/systemctl` sind zu bevorzugen.
+    - Führe **keine** interaktiven Authentifizierungs-Abfragen (wie `pkexec`) aus. Delegiere Root-Aktionen.
 
 ## VERBOTEN
 

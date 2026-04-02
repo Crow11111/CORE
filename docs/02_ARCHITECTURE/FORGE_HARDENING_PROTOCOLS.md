@@ -106,3 +106,6 @@ def check_semantic_drift(expected_context: str, actual_output: str, threshold: f
 2. **Reibung ist Kumulativ:** Mehrere kleine Fehler in einem Request-Cycle (z.B. Gravitator stürzt ab -> Fallback -> Context-Injector checkt Drift -> Context-Injector stürzt auch ab) addieren den Z-Vektor auf `> 0.8`.
 3. **Schwellwert-Reaktion:** Wenn `z_widerstand > 0.8` (Nachgeben -> Veto), schaltet der Core-Orchestrator in Takt 1 oder 4 (Council/Archive), um die Anomalie zu verarbeiten, bevor Takt 3 (Agency) blinden Code produziert.
 4. **Organische Heilung:** Der Z-Vektor sinkt nur durch erfolgreiche, reibungsfreie Durchläufe in Takt 3 (Agency Work), in denen `drift_score < DRIFT_THRESHOLD` liegt, langsam wieder Richtung `INV_PHI`.
+
+
+[LEGACY_UNAUDITED]

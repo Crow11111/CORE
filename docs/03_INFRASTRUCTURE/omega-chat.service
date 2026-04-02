@@ -1,0 +1,15 @@
+[Unit]
+Description=OMEGA CORE Chat (Gemini Live UI)
+After=network.target
+
+[Service]
+Type=simple
+User=mth
+WorkingDirectory=/OMEGA_CORE/gemini-flash-lite-chat
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
+ExecStart=/usr/bin/npm run dev
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

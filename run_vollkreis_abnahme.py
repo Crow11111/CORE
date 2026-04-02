@@ -225,8 +225,8 @@ print(json.dumps({"count": col.count(), "has_zero_vectors": has_zero_vec}))
         proc_ms = (time.perf_counter() - t0) * 1000.0
         anchor_ok = (
             code == 0
-            and "Phasenverschiebung" in out
-            and ("j)" in out or "complex" in out.lower())
+            and "Konvergenz F_?(1)=1 erreicht" in out
+            and "2D Holographische Fläche" in out
             and "schleifen_wall_ms=" in out
         )
         detail_ok = f"prozess_wall_ms={proc_ms:.6f} (inkl. Python-Start); stdout enthält schleifen_wall_ms"
@@ -239,6 +239,27 @@ print(json.dumps({"count": col.count(), "has_zero_vectors": has_zero_vec}))
             fails += 1
     else:
         check("omega_core.py vorhanden", False, str(omega_py))
+        fails += 1
+    print()
+
+    # --- I: Anti-Heroin-Scanner (Code Integrity) ---
+    print("I: Anti-Heroin-Scanner (Code Integrity)")
+    code, out = run([sys.executable, "-c", """
+import sys
+from pathlib import Path
+from src.logic_core.anti_heroin_validator import validate_file, TrustCollapseException
+fails = 0
+for f in Path('src').rglob('*.py'):
+    if 'anti_heroin_validator.py' in str(f): continue
+    try:
+        validate_file(str(f))
+    except TrustCollapseException as e:
+        print(f"Heroin detektiert in {f}: {e}")
+        fails += 1
+sys.exit(1 if fails > 0 else 0)
+"""], timeout=60)
+    check("Anti-Heroin-Scanner (src/ ohne Fakes)", code == 0, out.strip() if code != 0 else "")
+    if code != 0:
         fails += 1
     print()
 

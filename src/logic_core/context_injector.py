@@ -154,9 +154,9 @@ def inject_context_for_agent(
     ):
         t = meta.get("type", "?") if isinstance(meta, dict) else "?"
         if format == "markdown":
-            lines.append(f"### [{i}] ({t}, score={score:.2f})\n{doc}")
+            lines = lines + [f"### [{i}] ({t}, score={score:.2f})\n{doc}"]
         else:
-            lines.append(f"[{t}] {doc}")
+            lines = lines + [f"[{t}] {doc}"]
     return "\n\n".join(lines)
 
 

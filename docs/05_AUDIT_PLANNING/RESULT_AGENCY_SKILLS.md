@@ -168,3 +168,6 @@ Indem Sie tiefe technische Orchestrierung (Forward Deployed Engineering) mit str
 40. [cloudsecurityalliance.org](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQESIdkbsQEHfOYKK7fTVw2_Ug5tmtriSeFRXH64xRWAtsp-oZ9CVTEbV7wGNO_G87390qAmDdrWzn-kgXcH5eu0Nwnt8LM7dNW1spYYa9wggPycyzveCz_fd6-bzK7MPlNJ7pA4dn6yd4SDHS5gcm4GEatpidwQDMzbECKDzEd5NsBgwaNKN0VVYZ8rsP5VM4mTzmGaAxlUcJR1t1NDMO0Qe7OjRiRM2g==)
 41. [theloops.io](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFtIWXbM-WiXXIMtyl1lv6Wceb6M_HoGAOYmtVhmD3dM0VLLkxMLOxBrPACSDUWlSOIal96rc27SQsoml2rdQuAu5X006z07JjrZIYRY3od64znWNL3MbBMdCPEWUJ7HLiG1MflNtpXDLlHy_cnvg==)
 42. [mckinsey.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF7zgqW2yELczHKxtcTeAfaeGE5TaLWV6z41puw07jxN1NYkOykkkv-vjWWF7176GowtYUd-AWhxtMHuxmKJVBawvSPL8ZMnSCYwnYb2qjWBD8Q-TjTkYGVFN4JEV858qPDJhIugAArJjiyZygCUe5Jm-bYlGcw9cZWBPJB1N6N6WfIdj1AUyLCm-wngG3jz5V7Cr3jUqqXp27dhrTJJbniPdQBthSxhHeA-dj0_ZzszO8Tzhg=)
+
+
+[LEGACY_UNAUDITED]

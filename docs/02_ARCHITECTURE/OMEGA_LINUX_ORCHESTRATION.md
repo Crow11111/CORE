@@ -99,3 +99,6 @@ Kurz: Triage → Ollama (Scout); Heavy → OpenClaw/Gemini bzw. Ollama-Fallback;
 - VPS-Setup: `@docs/03_INFRASTRUCTURE/VPS_FULL_STACK_SETUP.md`
 - VPS-Knoten & Flüsse: `@docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md`
 - WhatsApp E2E: `@docs/03_INFRASTRUCTURE/WHATSAPP_E2E_HA_SETUP.md`
+
+
+[LEGACY_UNAUDITED]

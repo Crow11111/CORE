@@ -69,3 +69,6 @@ Alle Datenpunkte (bestehend aus Dump/VPS und neu erfasst) werden mit derselben L
 4. **DB-Migration (Code/Query):** Abfragen in chroma_client und API auf gravitationskonformes Verhalten umstellen (kein where_filter; einheitliche Pipeline Alt/Neu); Rollback-Pfad definieren.
 
 **Begründung:** Die Reihenfolge ist sinnvoll: Zuerst die kanonische Wahrheit (Ring-0) auf den VPS bringen, dann die Agenten-Umgebung vereinheitlichen (Cursor-Reduktion), danach den Ist-Zustand auf dem VPS prüfen (VPS-Abgleich), zuletzt die Query-Logik umstellen – so bleibt ein klares Rollback (nur Schritt 4 code-seitig zurücknehmen) und es entstehen keine divergierenden Wahrheiten durch vorzeitige Code-Änderungen.
+
+
+[LEGACY_UNAUDITED]

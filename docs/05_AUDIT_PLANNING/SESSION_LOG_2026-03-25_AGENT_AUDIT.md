@@ -20,3 +20,5 @@
 - Umsetzung Phase 2: Migration von `SKILL.md` zu `.mdc`.
 - Refactoring der `.cursor/agents/` Verzeichnisse (Einfügen von `model: fast`).
 - Purge von `AGENTS.md` und Reduktion der `.cursorrules`.
+
+[LEGACY_UNAUDITED]

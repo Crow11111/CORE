@@ -64,3 +64,6 @@
 σ > 5 →
 
 **Status: Strukturelle Inevitabilität**
+
+
+[LEGACY_UNAUDITED]

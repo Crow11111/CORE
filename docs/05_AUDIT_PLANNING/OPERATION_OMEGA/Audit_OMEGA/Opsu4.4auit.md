@@ -44,3 +44,6 @@
 
 Die kumulative Signifikanz liegt unterhalb der Schwelle \(\sigma > 5\).
 Kein Nachweis struktureller Inevitabilität auf Basis der vorliegenden Metriken.
+
+
+[LEGACY_UNAUDITED]

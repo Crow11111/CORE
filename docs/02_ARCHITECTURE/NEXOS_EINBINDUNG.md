@@ -50,3 +50,6 @@
 - [OPENCLAW_ADMIN_ARCHITEKTUR.md](OPENCLAW_ADMIN_ARCHITEKTUR.md)
 - [PROJEKT_ANNAHMEN_UND_KORREKTUREN.md](../05_AUDIT_PLANNING/PROJEKT_ANNAHMEN_UND_KORREKTUREN.md)
 - Bestehende OpenClaw-Config auf VPS: z. B. `python -m src.scripts.check_openclaw_config_vps` bzw. Container `openclaw-ntw5-openclaw-1`, Pfad `/data/.openclaw/openclaw.json`.
+
+
+[LEGACY_UNAUDITED]

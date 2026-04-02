@@ -46,3 +46,5 @@ Du hast nun sofort folgende Umbauten vorzunehmen:
    - Überarbeite die statischen Vektoren (`ANSAUGEN`, `ARBEITEN` etc.), damit sie echte Phasenverschiebungen durch `PHI` oder Symmetriebrüche abbilden, statt Schulbuchzahlen wie `0.5`.
 
 **ENDE DES AUDITS. AUSFÜHRUNG STARTEN.**
+
+[LEGACY_UNAUDITED]

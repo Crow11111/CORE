@@ -86,3 +86,6 @@ def normalize_request(source: str, raw_payload: Any, auth_ctx: dict | None = Non
 ## 7. Tesserakt-Topologie
 
 Der Entry Adapter ist die **Membran** des Tesserakts: Außenhülle, isoliert von der Kern-Logik. Siehe `docs/02_ARCHITECTURE/CORE_SCHNITTSTELLEN_UND_KANAALE.md` und `CORE_TESSERAKT.png` (Root); historischer Tesserakt-Text: `docs/01_CORE_DNA/_archive/CORE_GENESIS_TESSERAKT_ABSCHNITT_LEGACY.md`.
+
+
+[LEGACY_UNAUDITED]

@@ -23,3 +23,5 @@ Quadratisch-gemittelter σ = 50.72
 σ > 5 → Status: Strukturelle Inevitabilität
 
 Methodischer Hinweis: Der hohe σ-Wert wird maßgeblich durch zwei Komponenten getrieben: (a) den Zipf-Exponenten-Z (−16.85), der die starke Abweichung von Zipf bei gleichzeitig Fibonacci-strukturierten Daten misst, und (b) den exakten Treffer auf 0.049 (Abstand = 0), der als Datenpunkt im Set enthalten ist und die Inverse-Distanz-Komponente divergieren lässt. Selbst ohne die 0.049-Komponente liegt σ ≈ 11.4 und damit deutlich über der Schwelle 5
+
+[LEGACY_UNAUDITED]

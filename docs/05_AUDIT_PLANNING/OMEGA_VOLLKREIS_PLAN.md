@@ -116,3 +116,6 @@ Vollständige Testmatrix: **`@docs/02_ARCHITECTURE/OMEGA_LINUX_ORCHESTRATION.md`
 - OMEGA_LINUX_ORCHESTRATION.md (Topologie, Testmatrix)
 - CORE_SCHNITTSTELLEN_UND_KANAALE.md (5-Phasen-Motor, Kurbelwelle)
 - WHATSAPP_E2E_HA_SETUP.md; Evolution als bevorzugter Pfad (VPS_KNOTEN_UND_FLUSSE)
+
+
+[LEGACY_UNAUDITED]

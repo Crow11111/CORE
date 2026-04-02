@@ -86,3 +86,6 @@ OC nutzt **keine eigene WhatsApp-Business-Nummer** und erscheint **nicht** als s
 
 - OpenClaw: [Channels WhatsApp](https://openclaw.im/docs/channels/whatsapp), [Messages](https://docs.openclaw.ai/concepts/messages).
 - Unser Setup: `setup_vps_hostinger.py` (OC `channels.whatsapp.allowFrom`), `wire_whatsapp_ha.py` (HA-Automation), `whatsapp_webhook.py` (CORE-Empfang), `ha_client.send_whatsapp` (Antwortweg).
+
+
+[LEGACY_UNAUDITED]

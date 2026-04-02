@@ -124,7 +124,7 @@ def _discover_and_build_sync() -> list[_CollectionNode]:
         try:
             remote = chromadb.HttpClient(host=vps_host, port=vps_port)
             remote.heartbeat()
-            sources.append(("vps", remote))
+            sources = sources + [("vps", remote)]
         except Exception as e:
             logger.warning("[GRAVITATOR] VPS ChromaDB nicht erreichbar: %s", e)
 
@@ -132,7 +132,7 @@ def _discover_and_build_sync() -> list[_CollectionNode]:
     if os.path.isdir(local_path):
         try:
             local = chromadb.PersistentClient(path=local_path)
-            sources.append(("local", local))
+            sources = sources + [("local", local)]
         except Exception as e:
             logger.warning("[GRAVITATOR] Lokale ChromaDB Fehler: %s", e)
 
@@ -160,7 +160,7 @@ def _discover_and_build_sync() -> list[_CollectionNode]:
                 real_embs = []
                 for emb in embeddings:
                     if emb is not None and not all(float(v) == 0.0 for v in emb):
-                        real_embs.append([float(v) for v in emb])
+                        real_embs = real_embs + [[float(v) for v in emb]]
 
                 if len(real_embs) < MIN_COLLECTION_SIZE:
                     continue
@@ -172,7 +172,7 @@ def _discover_and_build_sync() -> list[_CollectionNode]:
                 if docs:
                     for d in docs[:5]:
                         if d:
-                            sample_docs.append(str(d)[:200])
+                            sample_docs = sample_docs + [str(d)[:200]]
 
                 existing = next((n for n in nodes if n.name == col.name), None)
                 if existing:
@@ -181,13 +181,13 @@ def _discover_and_build_sync() -> list[_CollectionNode]:
                         existing.centroid = centroid
                         existing.sample_docs = sample_docs
                 else:
-                    nodes.append(_CollectionNode(
+                    nodes = nodes + [_CollectionNode(
                         name=col.name,
                         count=cnt,
                         centroid=centroid,
                         sample_docs=sample_docs,
                         discovered_at=now,
-                    ))
+                    )]
 
             except Exception as e:
                 logger.debug("[GRAVITATOR] Collection %s skip: %s", col.name, e)
@@ -203,7 +203,7 @@ def _discover_and_build_sync() -> list[_CollectionNode]:
                 existing.dim = pn.dim
                 existing.source = "pgvector"
         else:
-            nodes.append(pn)
+            nodes = nodes + [pn]
 
     logger.info(
         "[GRAVITATOR] Feld gebaut: %d Knoten, %s",
@@ -275,7 +275,7 @@ def _discover_pgvector_collections() -> list[_CollectionNode]:
                 try:
                     cnt = int(parts[1].strip())
                     if name and not name.startswith("-") and name != "source_collection":
-                        collections.append((name, cnt))
+                        collections = collections + [(name, cnt)]
                 except ValueError:
                     continue
 
@@ -297,7 +297,7 @@ def _discover_pgvector_collections() -> list[_CollectionNode]:
                 for sline in r2.stdout.decode("utf-8", errors="replace").strip().split("\n"):
                     txt = sline.strip()
                     if txt and not txt.startswith("-") and not txt.startswith("(") and txt != "left":
-                        sample_docs.append(txt[:300])
+                        sample_docs = sample_docs + [txt[:300]]
 
             centroid = []
             if sample_docs:
@@ -307,7 +307,7 @@ def _discover_pgvector_collections() -> list[_CollectionNode]:
                 except Exception as e:
                     logger.debug("[GRAVITATOR] pgvector Centroid-Embed Fehler fuer %s: %s", coll_name, e)
 
-            nodes.append(_CollectionNode(
+            nodes = nodes + [_CollectionNode(
                 name=f"pg:{coll_name}",
                 count=cnt,
                 centroid=centroid,
@@ -315,7 +315,7 @@ def _discover_pgvector_collections() -> list[_CollectionNode]:
                 discovered_at=now,
                 dim=768 if centroid else 0,
                 source="pgvector",
-            ))
+            )]
 
         logger.debug("[GRAVITATOR] pgvector: %d Collections mit lokalen Zentroiden", len(nodes))
         return nodes
@@ -396,7 +396,7 @@ async def route(
                 score = CrystalGridEngine.calculate_resonance(
                     list(query_emb_chroma), list(node.centroid),
                 )
-                scored.append((node.name, score))
+                scored = scored + [(node.name, score)]
         except Exception as e:
             logger.warning("[GRAVITATOR] ChromaDB Routing Fehler: %s", e)
 
@@ -411,11 +411,11 @@ async def route(
                 score = CrystalGridEngine.calculate_resonance(
                     list(query_emb_local), list(node.centroid),
                 )
-                scored.append((node.name, score))
+                scored = scored + [(node.name, score)]
         except Exception as e:
             logger.warning("[GRAVITATOR] pgvector Routing Fehler: %s", e)
             for node in pg_with_centroid:
-                scored.append((node.name, threshold))
+                scored = scored + [(node.name, threshold)]
 
     scored.sort(key=lambda x: -x[1])
     matches = [(name, s) for name, s in scored if s >= threshold][:top_k]

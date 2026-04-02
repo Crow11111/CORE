@@ -31,6 +31,9 @@ DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl restart omega-event-bus
 DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl restart omega-watchdog
 DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl restart omega-vision
 DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl restart omega-audio
+DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl restart omega-chat
+DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl restart omega-vision-ui
+DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl restart dreadnought-membrane
 
 DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl status omega-backend
 DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl status omega-frontend
@@ -38,6 +41,9 @@ DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl status omega-event-bus
 DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl status omega-watchdog
 DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl status omega-vision
 DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl status omega-audio
+DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl status omega-chat
+DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl status omega-vision-ui
+DEIN_USER ALL=(root) NOPASSWD: /usr/bin/systemctl status dreadnought-membrane
 ```
 
 **Hinweis:** `!requiretty` ist optional; ohne TTY schlagen manche `sudo`-Aufrufe (z. B. aus IDE) sonst fehl. Nur setzen, wenn Du das bewusst willst.

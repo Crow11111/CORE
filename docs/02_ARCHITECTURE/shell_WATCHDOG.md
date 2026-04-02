@@ -38,3 +38,6 @@ Der Z-Vector Damper agiert als isolierter Hypervisor. Er läuft in `Ring-0` (ana
 ## Budget-Constraint (Schicht 3)
 
 Keine persistenten SQL-Datenbanken für Damper-State erforderlich. State lebt in-memory während der Laufzeit der Cursor/Agent-Session. Telemetrie-Export asynchron.
+
+
+[LEGACY_UNAUDITED]

@@ -114,7 +114,7 @@ def hm_stability_check(sequence: str) -> dict:
     distances = []
     for s in h_pos:
         nearest_p = min(m_pos, key=lambda p: abs(p - s))
-        distances.append(abs(nearest_p - s))
+        distances = distances + [abs(nearest_p - s)]
 
     mean_dist = sum(distances) / len(distances) if distances else 0.0
     variance = (

@@ -36,3 +36,6 @@ Der Test-Harness simuliert beide Kanäle (Pull & Push) und verifiziert die korre
 
 ## 5. Axiom-Konformität (A5/A6)
 Alle numerischen Felder in den Payloads (z. B. `audio_seconds`) werden durch die `resonance_membrane.py` gescannt, um sicherzustellen, dass keine boolschen Werte oder verbotene Symmetrien (0.0, 0.5, 1.0) in die Resonanz-Domäne gelangen.
+
+
+[LEGACY_UNAUDITED]

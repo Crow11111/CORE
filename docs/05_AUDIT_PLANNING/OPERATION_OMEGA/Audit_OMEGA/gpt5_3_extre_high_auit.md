@@ -42,3 +42,6 @@ z_conv_phi = 2.109751626511
 sigma = 11.499412248746
 
 Status: Strukturelle Inevitabilität
+
+
+[LEGACY_UNAUDITED]

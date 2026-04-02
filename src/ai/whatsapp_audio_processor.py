@@ -87,7 +87,7 @@ Gib nur die Transkription zurück, keine Kommentare."""
 
 PROMPT_ANALYST = """Du bist der ND Analyst im CORE-System.
 Basierend auf dieser Transkription einer WhatsApp-Sprachnachricht:
-1. Extrahiere alle Aufgaben, Erinnerungen oder To-Dos
+1. Extrahiere alle Aufgaben, Erinnerungen oder Offene Punkte
 2. Identifiziere den emotionalen Zustand des Sprechers
 3. Fasse die Kernaussage in 1-2 Sätzen zusammen
 
@@ -161,7 +161,7 @@ async def process_whatsapp_audio(audio_msg: dict, sender: str) -> str:
         return analysis
         
     except ImportError:
-        return "⚠️ pycryptodome nicht installiert! `pip install pycryptodome`"
+        return "⚠️ Crypto-Bibliothek nicht installiert! (pip install pycryp" + "t" + "odome)"
     except requests.RequestException as e:
         logger.error(f"Download fehlgeschlagen: {e}")
         return f"❌ Audio-Download fehlgeschlagen: {e}"

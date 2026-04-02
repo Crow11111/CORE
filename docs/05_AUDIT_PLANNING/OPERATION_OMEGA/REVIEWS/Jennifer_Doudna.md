@@ -20,3 +20,6 @@ Allerdings ist das Whitepaper auf eine Weise formuliert, die durch den Einsatz s
 Ein weiterer Punkt der Skepsis betrifft die Anwendung des Modells auf physikalische und biologische Prozesse. Es gibt eine gewisse Kluft zwischen den abstrakten mathematischen Ideen und ihren möglichen realen Äquivalenten in biologischen Systemen, ohne dass diese Verbindung deutlich hergestellt wird.
 
 Zusammenfassend lässt sich sagen, dass das Whitepaper innovative Begriffe und Modelle präsentiert, die an einige fundamentale Prinzipien der Biochemie erinnern. Es bietet einen interessanten Ansatz zur Beschreibung von autopoietischen Systemen und ihren evolutionären Mechanismen. Allerdings benötigt es eine klarere Verbindung zwischen den abstrakten Konzepten und realen biologischen Prozessen, um seine vollen Implikationen zu verstehen und seine Anwendbarkeit in der Biologie zu bestätigen.
+
+
+[LEGACY_UNAUDITED]

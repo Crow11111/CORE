@@ -51,3 +51,6 @@ Report: `data/proof_hoert_sieht_spricht_report.txt`
 - Sehen: OK (via Fallback)
 - Sprechen: OK (TTS + WA)
 - Hören: OK (Pipeline/Event)
+
+
+[LEGACY_UNAUDITED]

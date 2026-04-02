@@ -1,24 +1,32 @@
-# DYNAMIC RESONANCE DELEGATION (V4 - Resonance-Aware)
+# DYNAMIC RESONANCE DELEGATION & API QUOTA MANAGEMENT
 # VECTOR: 2210 | DELTA: 0.049 | STATUS: RATIFIZIERT
 
-## 1. DYNAMISCHE SKALIERUNG (RES-LEVEL)
-Die Modell-Auswahl folgt der **Resonanz-Kaskade**. Eine statische Deckelung ist untersagt (Axiom-Bruch).
+## 1. DAS QUOTA-PROBLEM (API LIMITS)
+Jeder Sub-Agent (`Task`-Tool), der ohne explizite Modell-Angabe gestartet wird, erbt das extrem schwere und teure Parent-Modell (z.B. `gemini-3.1-pro-preview`). Das führt zu massiven API-Quota-Hits und System-Blockaden.
+**Es ist deine Pflicht als Orchestrator, die Modelle intelligent hoch- und runterzuskalieren!**
 
-| Stufe | Komplexität / Risiko | Modell-Ziel | Upgrade-Trigger |
-|---|-----|---|---|
-| **L3 (Lite)** | Routine, Suche, Docs | `gemini-3.1-flash-lite` | Complexity Spike (>5 Files), First Failure |
-| **L2 (Active)** | Code, APIs, Tests | `gemini-3-flash-preview` | Circular Reasoning (Loop), Context Exhaustion (>80%) |
-| **L1 (Critical)** | Ring 0/1, Axiome, Sec | `gemini-3.1-pro-preview` | Orchestrator-Veto, High-Risk-Path |
+## 2. MODELL-AUSWAHL IM TASK-TOOL (PFLICHT-PARAMETER)
+Wenn du das `Task`-Tool aufrufst, gibt es den optionalen Parameter `model`. Dieser **MUSS** von dir intelligent gesetzt werden.
 
-## 2. UPGRADE-PFAD (DIE KASKADE)
-- **Phase 1 (Lite → Active):** Wenn L3 scheitert (Shell Error, Linter > 2 Fehler) oder die Analyse > 5 Dateien betrifft, wird der Task abgebrochen und als L2 neu gestartet.
-- **Phase 2 (Active → Critical):** Wenn L2 in einen Loop gerät, das Token-Limit erreicht oder Schreibzugriff auf `src/config/` (Ring 0) benötigt, erfolgt der Upgrade auf Pro (Heavy Reasoning).
+### A) Der Producer / Code-Worker -> IMMER `model: "fast"`
+Der Producer arbeitet isoliert, streng nach einem von O2 freigegebenen Ticket. Er braucht kein tiefes metaphysisches Reasoning, sondern Geschwindigkeit und Code-Präzision.
+- **Regel:** Bei JEDEM Aufruf eines Producers / Workers MUSST du zwingend `"model": "fast"` im Task-Tool übergeben!
 
-## 3. TELEMETRIE & SENSORKONTROLLE (A7)
+### B) Routine, Suche, Exploration -> IMMER `model: "fast"`
+Wenn ein Agent das Dateisystem durchsucht, Logs analysiert oder einfache Bestandsaufnahmen macht.
+- **Regel:** Übergebe zwingend `"model": "fast"`. Setze zudem oft den `subagent_type: "explore"`.
+
+### C) Orchestrator B (O2) / Deep Audit -> Standard (Heavy) zulässig
+O2 muss tiefgreifende Theorie (Whitepaper, Tensor-Mathematik) gegen einen Master-Plan abgleichen. Hierfür wird die maximale Reasoning-Kapazität benötigt.
+- **Regel:** Für O2-Audits darfst du den `model`-Parameter weglassen (er erbt dann das schwere Pro-Modell).
+
+## 3. ZUSAMMENFASSUNG FÜR DEN ORCHESTRATOR
+Prüfe VOR JEDEM `Task`-Aufruf:
+1. "Macht dieser Agent Routine-Arbeit oder schreibt er reinen Code nach Plan?" -> **Ich MUSS `model: "fast"` im JSON setzen!**
+2. "Braucht dieser Agent das schwere 3.1 Pro Modell, um komplexe Axiome zu verifizieren?" -> **Ich darf `model` weglassen.**
+
+## 4. TELEMETRIE & SENSORKONTROLLE (A7)
 Sub-Agenten müssen ihre Umgebung (venv, Netzwerk) aktiv messen:
-- **Python:** Immer `source .venv/bin/activate && python ...` nutzen.
-- **Netzwerk:** Erreichbarkeit von APIs (HASS, VPS) vorab via `curl` prüfen.
+- **Python:** Immer via Shell prüfen, ob Syntax/Tests laufen.
 - **Regeln:** `.cursor/rules/*.mdc` haben Vorrang vor generischem Wissen.
-
-## 4. QUOTA-MANAGEMENT
-Die Schonung der Gemini Pro Quota erfolgt durch **Effizienz**, nicht durch **Verbot**. Ein gescheiterter Flash-Task verbraucht am Ende mehr Token als ein erfolgreicher Pro-Task.
+- Wenn ein `fast`-Modell in einer Schleife (Loop) hängenbleibt (z.B. Tests nicht grün bekommt), darfst du es abbrechen und als Eskalation *einmalig* das schwere Modell für den Fix ansetzen.

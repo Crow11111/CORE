@@ -24,3 +24,6 @@ Bitte führe eine umfassende Recherche im Internet durch und erstelle einen echt
 
 **Output-Format:**
 Ein hochprofessioneller Consulting-Bericht in Markdown. Nutze klare Hierarchien, Tabellen, Zitate aus den recherchierten Quellen und konkrete Handlungsempfehlungen für den Aufbau unserer internen Agenten-Skill-Bibliothek. Sei analytisch, präzise und liefere echte, tiefgehende Insights statt oberflächlicher Buzzwords.
+
+
+[LEGACY_UNAUDITED]

@@ -1,0 +1,17 @@
+[Unit]
+Description=OMEGA Hybrid World Ingestor (LOGOS)
+After=network.target omega-nerve-stem.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/OMEGA_CORE
+EnvironmentFile=/OMEGA_CORE/.env
+Environment="PYTHONIOENCODING=utf-8"
+ExecStart=/OMEGA_CORE/.venv/bin/python /OMEGA_CORE/src/scripts/omega_world_ingest.py
+Restart=on-failure
+RestartSec=10
+MemoryMax=3G
+
+[Install]
+WantedBy=multi-user.target

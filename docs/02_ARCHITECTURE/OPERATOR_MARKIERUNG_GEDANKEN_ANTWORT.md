@@ -44,3 +44,6 @@ Das ist **unser** Konventionssystem für **deine** Eingaben und Transkripte (Hea
 ---
 
 **Kurz:** Für **Google-getrennte Thoughts** → API **`includeThoughts` + `parts[].thought`**. Für **deine Texte im Board** → **`<<<GEDANKEN>>>` / `<<<ANTWORT>>>`**. Beides parallel erlaubt, aber nicht verwechseln.
+
+
+[LEGACY_UNAUDITED]

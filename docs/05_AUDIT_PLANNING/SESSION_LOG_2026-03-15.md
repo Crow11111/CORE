@@ -73,3 +73,6 @@ Interpretation: Alle 6 Perspektiv-Linsen (Mathe, Physik, Philosophie, Biologie, 
 - [ ] TTS-Integration in Command Post (Zusammenfassungen per Kore ausgeben)
 - [ ] gemini.md (10 MB, 3949 Eintraege) Batch-Ingest
 - [ ] BRAIN_REGISTR_RAW (162k Zeilen) Batch-Ingest
+
+
+[LEGACY_UNAUDITED]

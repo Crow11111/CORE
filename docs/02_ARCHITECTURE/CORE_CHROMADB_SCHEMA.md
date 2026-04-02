@@ -113,3 +113,6 @@
 |-----------|------------|
 | 384 | ChromaDB Default (all-MiniLM-L6-v2), events, insights |
 | 1536 | user_state_vectors (OpenAI-kompatibel, multimodal) |
+
+
+[LEGACY_UNAUDITED]

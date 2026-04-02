@@ -56,3 +56,6 @@
 ---
 
 *Addendum erstellt 2026-03-14. YouTube-Video und RAG-Referenz sind verbindlicher Teil der OC Brain / RAG-Operation; Umsetzung liegt bei den beauftragten Experten.*
+
+
+[LEGACY_UNAUDITED]

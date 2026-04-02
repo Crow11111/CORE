@@ -63,3 +63,6 @@ Computer Use ermöglicht es, einen Agenten (Gemini 2.5 Computer Use) **UI und Sy
 - **Vollkreis & Abnahme:** `@docs/05_AUDIT_PLANNING/OMEGA_VOLLKREIS_PLAN.md`; `run_vollkreis_abnahme.py`.
 - **RAG/Vektorisierung:** `@docs/02_ARCHITECTURE/AI_MODEL_CAPABILITIES.md` (RAG/Vektorisierung); `src/db/multi_view_client.py`, `src/ai/model_registry.py`.
 - **BIBLIOTHEK:** `@docs/BIBLIOTHEK_KERN_DOKUMENTE.md`.
+
+
+[LEGACY_UNAUDITED]

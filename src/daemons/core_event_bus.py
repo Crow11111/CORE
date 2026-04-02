@@ -72,8 +72,8 @@ class EventSeverity(Enum):
 
 _DEFAULT_SEVERITY_RULES: dict[str, EventSeverity] = {
     # binary_sensor device_classes
-    "motion": EventSeverity.WARNING,
-    "occupancy": EventSeverity.WARNING,
+    "motion": EventSeverity.INFO,     # Reduziert von WARNING, da nachts zu viele falsche Warnings getriggert wurden
+    "occupancy": EventSeverity.INFO,  # Reduziert von WARNING
     "door": EventSeverity.WARNING,
     "window": EventSeverity.WARNING,
     "smoke": EventSeverity.CRITICAL,
@@ -84,15 +84,16 @@ _DEFAULT_SEVERITY_RULES: dict[str, EventSeverity] = {
     "safety": EventSeverity.CRITICAL,
     "problem": EventSeverity.WARNING,
     "connectivity": EventSeverity.INFO,
-    "battery": EventSeverity.WARNING,
+    "battery": EventSeverity.INFO,    # Reduziert von WARNING auf INFO (Batterie-Level Warnungen)
     "plug": EventSeverity.INFO,
     "light": EventSeverity.INFO,
-    "presence": EventSeverity.WARNING,
+    "presence": EventSeverity.INFO,   # Reduziert von WARNING
 }
 
 _NIGHT_ESCALATION: dict[EventSeverity, EventSeverity] = {
-    EventSeverity.WARNING: EventSeverity.CRITICAL,
-    EventSeverity.INFO: EventSeverity.WARNING,
+    # Komplett deaktiviert, da es massiven Spam an "Warnings" nachts verursacht hat (z.B. Batteriestatus)
+    # EventSeverity.WARNING: EventSeverity.CRITICAL,
+    # EventSeverity.INFO: EventSeverity.WARNING,
 }
 
 
@@ -367,6 +368,7 @@ class MthoEventBus:
         summary: str,
         severity: EventSeverity,
     ):
+        logger.debug(f"[EVENT-BUS] _persist_event aufgerufen für {entity_id} - derzeit deaktiviert.")
         # // KOGNITIVER-PURGE: DEAKTIVIERT DURCH ORCHESTRATOR-DIREKTIVE
         # if severity == EventSeverity.INFO:
         #     return

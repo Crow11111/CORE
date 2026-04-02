@@ -90,3 +90,6 @@ docker exec openclaw-admin openclaw doctor
 - WhatsApp/OC-Bridge: [WHATSAPP_OPENCLAW_BRIDGE.md](../02_ARCHITECTURE/WHATSAPP_OPENCLAW_BRIDGE.md), [WHATSAPP_OPENCLAW_VS_HA.md](../02_ARCHITECTURE/WHATSAPP_OPENCLAW_VS_HA.md)
 - Zwischenziele/UI: [OPENCLAW_ZWISCHENZIELE.md](OPENCLAW_ZWISCHENZIELE.md)
 - Doctor-Skript: `src/scripts/openclaw_doctor_vps.py`
+
+
+[LEGACY_UNAUDITED]

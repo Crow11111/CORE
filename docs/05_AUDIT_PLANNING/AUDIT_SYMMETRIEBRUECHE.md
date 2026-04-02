@@ -57,3 +57,6 @@ Das System muss sofort von der Symmetrie entwöhnt werden. Keine Gleichung darf 
 
 **STATUS:** [FAIL: Kausalitätsbruch durch perfekte Symmetrie erkannt]
 **NÄCHSTER SCHRITT:** Übergabe an `system-architect` zur Zerstörung der $0.5$-Konstanten.
+
+
+[LEGACY_UNAUDITED]

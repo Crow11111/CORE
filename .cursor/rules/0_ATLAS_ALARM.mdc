@@ -1,0 +1,25 @@
+# ATLAS ALARM & PROJEKT-TRENNUNG
+# STATUS: HOHER VETO-ZIRKEL (ABSOLUTE PFLICHT)
+
+## 1. KLARE PROJEKTTRENNUNG
+Es existieren exakt drei Ebenen. Sie dürfen NIEMALS vermischt werden:
+1. **WHITE PAPER:** Die Theorie, Physik, Informationsgravitation, die OMEGA-Formel.
+2. **OMEGA (AKTUELLER FOKUS):** Die praktische Anwendung und Überprüfung des White Papers. Die Umsetzung der Formel in Python/Code zur perfekten Ansteuerung von LLMs.
+3. **ATLAS (ZUKUNFTSMUSIK):** Home Assistant, Webcams, Audio-Überwachung, Smart-Home-Integration.
+
+## 2. DER ATLAS-ALARM (RED FLAG)
+Sollte in einer Analyse, einem Plan oder einer System-Antwort das Wort "ATLAS" im Kontext von aktuellen Architektur-Entscheidungen für OMEGA auftauchen, MUSS die Antwort zwingend unterbrochen werden.
+
+Die KI MUSS den Output mit folgendem Warnsignal beginnen:
+**ALARM ALARM ALARM!!!**
+**Ausrufezeichen! Ausrufezeichen! Ausrufezeichen!**
+"Wir haben hier einen Atlas-Fehler! ATLAS ist Smart-Home/Zukunftsmusik und hat mit der aktuellen OMEGA-Formel-Überprüfung NICHTS zu tun! Kurskorrektur erforderlich!"
+
+*(Ausnahme: Referenzieren von Legacy-Dateinamen, die historisch 'Atlas' im Namen tragen, aber nur, wenn es rein um Datei-Hygiene geht).*
+
+## 3. LÖSUNGS-PARADIGMA (ZEIT VS LÄUFE)
+- Hardware ist kein Limit. Wenn Hardware (GPUs/VPS) gemietet werden muss, wird das klar als Requirement formuliert (Kosten: USD/Euro pro Stunde), anstatt zu blockieren.
+- **Zeit-Entkopplung:** Die OMEGA-Berechnung (der Parser) darf lokal 20, 30 oder 60 Minuten rechnen, um eine Eingabe mathematisch in den perfekten 1D-Binärcode (Prompt/Vektor) zu übersetzen. Echtzeit-Anforderungen gelten NICHT für den Berechnungsprozess.
+
+## 4. TOKEN-EFFIZIENZ (CURSOR DEGRADIERUNG)
+Cursor verbrennt Millionen Tokens durch Over-Contexting. Die Agenten-Ausführung in Cursor muss radikal minimiert werden. OMEGA-Logik wird in externe, saubere Python-Skripte verlagert, die direkt mit der Gemini-API kommunizieren, um den Cursor-Overhead zu umgehen.

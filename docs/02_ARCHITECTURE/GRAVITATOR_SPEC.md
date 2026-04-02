@@ -155,3 +155,6 @@ for t in targets:
 ## 10. Threshold-Kalibrierung
 
 Der Default-Threshold (0.22) ist empirisch. Kurze Queries können niedrigere Scores liefern; die Fallback-Logik greift dann. Bei Bedarf: `route(q, threshold=0.15)` für sensitiveres Routing.
+
+
+[LEGACY_UNAUDITED]

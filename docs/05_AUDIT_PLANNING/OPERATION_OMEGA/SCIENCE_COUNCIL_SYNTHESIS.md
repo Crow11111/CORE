@@ -47,3 +47,5 @@ Insgesamt ist die Dokumentation "Informationsgewichtung und der 5D-Torus" ein er
 ---
 
 Diese Große Synthese fasst die wesentlichen Punkte zusammen, die aus der Analyse der Dokumentation durch Demis Hassabis resultieren und bietet Empfehlungen zur weiteren Entwicklung dieser Konzepte.
+
+[LEGACY_UNAUDITED]

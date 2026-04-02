@@ -270,3 +270,6 @@ Fuer alle nachfolgenden Kammern gelten die folgenden Axiome als mathematisch bew
 ---
 
 *SIGMA-70 Kammer 1 – Topologie und Dynamische Systeme. Versiegelt.*
+
+
+[LEGACY_UNAUDITED]

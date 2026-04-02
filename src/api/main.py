@@ -11,12 +11,13 @@ from typing import AsyncIterator
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 from loguru import logger
 
 # Temporär auskommentiert wegen ImportError
 # from src.api.routes import id_safe
 
-from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, core_knowledge, core_voice, core_events, github_webhook, omega_matrix, omega_thought, telemetry, chat, dictate, voice_bridge, jarvis_mri_coupler, core_state_api
+from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, core_knowledge, core_voice, core_events, github_webhook, omega_matrix, omega_thought, telemetry, chat, dictate, voice_bridge, jarvis_mri_coupler, core_state_api, system_ops
 
 from src.api.middleware.veto_gate import VetoGateMiddleware
 from src.api.middleware.friction_guard import FrictionGuardMiddleware
@@ -136,6 +137,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Statischer Ordner fuer generierte Audio/Media-Dateien
+media_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "media"))
+os.makedirs(media_dir, exist_ok=True)
+app.mount("/media", StaticFiles(directory=media_dir), name="media")
+
 # Registrierung der Routen (Webhooks + OpenClaw Channel)
 app.include_router(whatsapp_webhook.router)
 app.include_router(ha_webhook.router)
@@ -152,6 +158,7 @@ app.include_router(jarvis_mri_coupler.router)
 app.include_router(voice_bridge.router)
 app.include_router(dictate.router)
 app.include_router(core_state_api.router)
+app.include_router(system_ops.router)
 # app.include_router(id_safe.router)
 
 @app.get("/")
@@ -246,6 +253,7 @@ def jarvis_wrong_base_health_compat() -> dict:
     ``.../v1/chat/completions/health`` (404) aufgerufen. Diese Route liefert 200.
     Korrekte Konfiguration bleibt: nur Origin, z. B. ``http://127.0.0.1:8000``.
     """
+    logger.warning("[API] jarvis_wrong_base_health_compat aufgerufen. Überprüfe KDE-Jarvis Konfiguration.")
     return {"status": "ok", "note": "jarvis-compat-wrong-llm-base"}
 
 

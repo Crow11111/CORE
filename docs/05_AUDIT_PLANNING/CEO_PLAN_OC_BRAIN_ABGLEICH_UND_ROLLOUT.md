@@ -89,3 +89,6 @@
 - `docs/01_CORE_DNA/GRAVITATIONAL_QUERY_AND_CORE_AXIOMS.md`
 - `docs/02_ARCHITECTURE/CORE_CHROMADB_SCHEMA.md`
 - Skills: `planning/budget-estimation`, `planning/team-composition`
+
+
+[LEGACY_UNAUDITED]

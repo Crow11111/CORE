@@ -17,3 +17,6 @@
 - Takt 2: Verdichten (Audit-Vektor 1, 2 und 3 formuliert).
 - Takt 3: Arbeiten (Parallele Watcher-Daemons auf dem Host-OS).
 - Takt 4: Ausstoßen (Ergebnisse geparst, OMEGA-Axiome abgeleitet, Commits ausgeführt).
+
+
+[LEGACY_UNAUDITED]

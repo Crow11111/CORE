@@ -12,3 +12,6 @@
 - **Pulse-Check:** PASS (Score: 0.8832)
 
 **HINWEIS:** Falls Cursor-Agenten ab jetzt ohne DB-Resonanz arbeiten, wird das System hart terminieren.
+
+
+[LEGACY_UNAUDITED]

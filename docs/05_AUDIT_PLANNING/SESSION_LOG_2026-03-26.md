@@ -17,3 +17,6 @@
 - Takt 2: Verdichten (Architektur des Watcher-Daemons entworfen).
 - Takt 3: Arbeiten (CLI mit Subprocess-Daemon und OS-Level Benachrichtigung codiert).
 - Takt 4: Ausstoßen (Resultate von Google API gefetched, Session-Log erstellt).
+
+
+[LEGACY_UNAUDITED]

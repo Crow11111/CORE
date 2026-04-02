@@ -94,7 +94,7 @@ class IDSafe:
                         "content_summary": doc_data,
                         **metadata
                     }
-                    found_docs.append(IdentityDocument(**full_data))
+                    found_docs = found_docs + [IdentityDocument(**full_data)]
             return found_docs
         except Exception as e:
             logger.error(f"[IDSafe] Fehler bei der Dokumentsuche mit Query '{query}': {e}")

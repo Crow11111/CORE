@@ -42,7 +42,8 @@ MEDIA_SERVE_PORT = int(os.getenv("PROOF_MEDIA_PORT", "8888"))
 
 
 def _log(msg: str) -> None:
-    print(msg)
+    sys.stdout.write(msg + "\n")
+    sys.stdout.flush()
 
 
 def step1_oc_ping() -> tuple[bool, str]:

@@ -46,3 +46,6 @@
 
 ## Agos-Takt-Status
 - Das System geht nach dieser Konsolidierung wieder in Takt 0 (Diagnose/Ruhe) und erwartet neue Inputs für Takt 1 (Ansaugen).
+
+
+[LEGACY_UNAUDITED]

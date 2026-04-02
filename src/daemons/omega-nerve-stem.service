@@ -1,0 +1,19 @@
+[Unit]
+Description=OMEGA Central Nerve Stem (Watchdog V2)
+After=network.target
+
+[Service]
+Type=notify
+User=root
+WorkingDirectory=/OMEGA_CORE
+EnvironmentFile=/OMEGA_CORE/.env
+Environment="PYTHONIOENCODING=utf-8"
+ExecStart=/OMEGA_CORE/.venv/bin/python /OMEGA_CORE/src/daemons/omega_nerve_stem.py
+Restart=on-failure
+RestartSec=5
+WatchdogSec=150s
+MemoryMax=4G
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target

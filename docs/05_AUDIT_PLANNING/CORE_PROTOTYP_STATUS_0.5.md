@@ -70,3 +70,6 @@ API auf Port 8000 starten für volle Prüfung (Voice/roles, Event-Ingest).
 - Zwischenziele: `ATLAS_ZWISCHENZIELE.md`
 - Schnittstellen: `docs/02_ARCHITECTURE/ATLAS_SCHNITTSTELLEN_UND_KANAALE.md`
 - Architektur: `docs/02_ARCHITECTURE/ATLAS_NEOCORTEX_V1.md`
+
+
+[LEGACY_UNAUDITED]

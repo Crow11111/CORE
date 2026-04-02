@@ -37,8 +37,10 @@ def get_completion(prompt: str, model: str | None = None, max_tokens: int = 2048
     """
     if not NEXOS_API_KEY:
         raise ValueError("NEXOS_API_KEY nicht gesetzt – siehe .env und docs/NEXOS_EINBINDUNG.md")
-    # TODO: requests.post zu NEXOS_BASE_URL, Modell aus Config/Env;
+    # ANSTEHEND: requests.post zu NEXOS_BASE_URL, Modell aus Config/Env;
     # 402 → Guthaben leer, 429 → Retry/Backoff, 5xx → Fallback
-    raise NotImplementedError(
+    from loguru import logger
+    logger.debug("[NEXOS] get_completion als Placeholder aufgerufen.")
+    raise ValueError(
         "Nexos-Modul: Implementierung ausstehend; Modell-IDs und Endpoint aus bestehender OpenClaw openclaw.json übernehmen."
     )

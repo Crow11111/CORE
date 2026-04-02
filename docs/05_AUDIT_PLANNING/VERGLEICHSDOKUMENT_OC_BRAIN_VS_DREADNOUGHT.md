@@ -59,3 +59,6 @@ Lokal sind alle erwarteten core_directives vorhanden; keine Nachziehe nötig. Op
 - **Ursache:** Vermutlich Frontend/Payload (leere oder fehlerhafte Übertragung). Kein Backend-Fix im Repo nötig.
 - **Maßnahmen:** Siehe `docs/03_INFRASTRUCTURE/OC_BRAIN_LEERE_NACHRICHTEN_DIAGNOSE.md` (Update v2026.3.2 ausführen, keine leeren Sends, ggf. Browser-Konsole prüfen).
 - **Vorgabe:** Keine destabilisierenden Änderungen an OMEGA_ATTRACTOR.
+
+
+[LEGACY_UNAUDITED]

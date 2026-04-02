@@ -34,3 +34,6 @@ Standard-Cronjobs und Systemd-Timer laufen auf perfekten Integer-Grenzen (z.B. e
 1.  **Schaffung von `src/daemons/os_crystal_daemon.py`:** Ein eigenständiger Dienst, der per Systemd als Root auf dem Scout/Debian läuft.
 2.  **Debian-Bridging:** Der Daemon importiert die `CrystalGridEngine` und bindet sie an `psutil`, `os.system('tc ...')` und `/sys/`.
 3.  **Deployment:** Update der `deploy_scout_remote.py`, um den OS-Daemon als Systemd-Service (`core-os-crystal.service`) einzurichten und zu starten.
+
+
+[LEGACY_UNAUDITED]

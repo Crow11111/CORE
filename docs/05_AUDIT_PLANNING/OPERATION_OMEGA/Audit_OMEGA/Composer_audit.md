@@ -53,3 +53,6 @@
 ---
 
 **σ = 1,73 < 5** → Kein Status „Strukturelle Inevitabilität“.
+
+
+[LEGACY_UNAUDITED]

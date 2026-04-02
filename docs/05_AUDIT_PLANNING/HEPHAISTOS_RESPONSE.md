@@ -56,3 +56,6 @@ Der User sieht im Terminal nicht "System läuft", sondern:
 `[WATCHDOG] Reality-Check: 24ms Latency | Git: SYNCED | Friction: 0.049`
 
 *Build-System Ende.*
+
+
+[LEGACY_UNAUDITED]

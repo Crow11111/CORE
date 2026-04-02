@@ -17,3 +17,6 @@ Konvergenzrate_0_049_eps_0_01 = 0.014705882353
 Konvergenzrate_Phi_eps_0_01 = 0.014705882353
 
 Sigma_kumulativ = 1.732629807863
+
+
+[LEGACY_UNAUDITED]

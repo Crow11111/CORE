@@ -9,3 +9,6 @@
 
 **Anforderung an den Output:**
 Keine Marketing-Texte. Liefere einen dichten, technischen Architekturentwurf oder eine Liste harter Constraints und Konzepte (z.B. ABAC, SPIFFE/SPIRE für Agenten, eBPF-basierte Überwachung), die wir als "OMEGA-Axiome" in unser eigenes System überführen können. Zitiere konkrete Mechanismen.
+
+
+[LEGACY_UNAUDITED]

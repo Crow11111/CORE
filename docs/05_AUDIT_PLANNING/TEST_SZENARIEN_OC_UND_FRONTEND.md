@@ -66,3 +66,6 @@ Szenarien zum Prüfen: (1) Daten landen bei OC, CORE/OC können sich abstimmen. 
 ---
 
 Referenzen: KANAL_CORE_OC.md, STAMMDOKUMENTE_DEPLOY.md, BACKEND_INTEGRATION.md. Skripte: test_core_oc_channel.py, fetch_oc_submissions.py, send_offene_punkte_to_oc.py, test_frontend_backend.py.
+
+
+[LEGACY_UNAUDITED]

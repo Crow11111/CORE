@@ -138,3 +138,6 @@ Kein passender expertise-Skill vorhanden. Bei späterer Erweiterung um `expertis
 1. Fix 1 in alle 10 Schicht-3-Agenten einarbeiten (Holschuld-Block).
 2. Fix 2 für osmium-judge optional umsetzen.
 3. Nach Änderungen: kurze Stichprobe, ob Agenten-Prompts noch lesbar und konsistent sind.
+
+
+[LEGACY_UNAUDITED]

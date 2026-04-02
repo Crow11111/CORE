@@ -56,3 +56,6 @@
 
 - **Budget dieser Aufgabe:** max. 3.000 Token (Phase 1 des CEO-Plans).
 - **Schwellen:** Unter 1.000 Token Reserve → Ergebnis liefern und stoppen. Keine Eskalation in weitere Phasen.
+
+
+[LEGACY_UNAUDITED]

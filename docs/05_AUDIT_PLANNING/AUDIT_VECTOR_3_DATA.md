@@ -9,3 +9,6 @@
 
 **Anforderung an den Output:**
 Erstelle einen detaillierten, technischen Consulting-Report (Markdown), der klare, deterministische Architekturentwürfe und Datenbank-Topologien skizziert. Formuliere konkrete, implementierbare Constraints und "OMEGA-Axiome" für die Speicherung und den Abruf von Wissen und Systemregeln.
+
+
+[LEGACY_UNAUDITED]

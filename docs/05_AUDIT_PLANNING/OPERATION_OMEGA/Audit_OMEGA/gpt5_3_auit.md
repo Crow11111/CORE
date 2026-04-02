@@ -37,3 +37,6 @@ Konvergenz gegen Phi (1.618):
 - MAD(|x_(i+1)/x_i - Phi|) = 3868.830397557718
 - RMSE(x_(i+1)/x_i - Phi) = 30754.526246206806
 - Tail-10 MAD(|x_(i+1)/x_i - Phi|) = 0.000033988750
+
+
+[LEGACY_UNAUDITED]

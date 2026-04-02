@@ -48,3 +48,6 @@
 - `tuya_mmwave_sensor.json` - DDF für mmWave Sensor
 - `docs/02_ARCHITECTURE/OPENCLAW_ADMIN_ARCHITEKTUR.md` - OpenClaw Rollen
 - `.env` - Alle Keys und Zugänge
+
+
+[LEGACY_UNAUDITED]

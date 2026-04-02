@@ -50,3 +50,6 @@
 - [ ] Token nur in `.env` und in Container-ENV, nicht in Code oder Repo.
 - [ ] Nach Token-Wechsel: `.env` aktualisieren, OpenClaw-Admin-Config/ENV aktualisieren, betroffene Container/Dienste neu starten.
 - [ ] Zugriff auf `.env` und VPS-Config nur für berechtigte Personen; SSH und Secrets siehe [PROJEKT_ANNAHMEN_UND_KORREKTUREN.md](../05_AUDIT_PLANNING/PROJEKT_ANNAHMEN_UND_KORREKTUREN.md) (Abschnitt SSH und Secrets).
+
+
+[LEGACY_UNAUDITED]

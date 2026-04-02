@@ -350,3 +350,6 @@ Der VPS muss bereit sein:
 ---
 
 *Erstellt: 2026-03-05 | MISSION OMEGA – Autonome Intelligenz für CORE*
+
+
+[LEGACY_UNAUDITED]

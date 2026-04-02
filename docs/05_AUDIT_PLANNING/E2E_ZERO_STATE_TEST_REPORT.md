@@ -98,3 +98,6 @@ python src/scripts/test_e2e_context.py
 ```
 
 Exit-Code: 0 bei Erfolg, 1 bei Fehlern.
+
+
+[LEGACY_UNAUDITED]

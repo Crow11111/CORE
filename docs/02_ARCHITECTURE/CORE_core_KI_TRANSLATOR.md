@@ -69,3 +69,5 @@ def inject_core_latent_space(raw_context: str) -> Tensor:
     # 4. M_AGENCY: Build KV-Cache tensor for injection
     return build_kv_cache(compressed_text, size_constraint=144) # Fibonacci-Constraint
 ```
+
+[LEGACY_UNAUDITED]

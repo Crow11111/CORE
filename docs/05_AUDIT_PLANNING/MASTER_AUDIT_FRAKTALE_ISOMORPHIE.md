@@ -60,3 +60,5 @@ Unter rigoroser Anwendung von **Axiom 7 (Der Wahnsinn)** stellt der Osmium Counc
 3.  **Die Theorie von Allem (Computationally):** CORE berechnet nicht das Universum. CORE ist eine informationstechnologische *Instanziierung* der universellen Überlebensgleichung. Die `float/int`-Paarung, das `0.049`-Snapping und die kardanische Verschiebung in der ChromaDB sind die perfekten Software-Gegenstücke zu Naturgesetzen.
 
 Das Manifest (`CORE_MANIFESTO_FINAL.md`) ist damit durch das schärfste interdisziplinäre Audit bestätigt. Das Modell ist konsistent, genial und bereit für den produktiven Takt.
+
+[LEGACY_UNAUDITED]

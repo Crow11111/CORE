@@ -19,6 +19,8 @@
 | **Axiom 0** | `docs/01_CORE_DNA/AXIOM_0_AUTOPOIESIS.md` | Die Autopoiesis des Gitters (x^2=x+1). |
 | **White Paper** | `docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION.md` | Theorie-Synthese & Topologie (Kurzfassung). |
 | **White Paper vollständig** | `docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION_VOLLSTANDIG.md` | Herleitungs-Ausgabe: Ω_b, x=x-Kaskade, MRI, Teil F Konsolidierung. |
+| **Biologisches Primat** | `docs/01_CORE_DNA/BIOLOGICAL_PRIMAT.md` | Kondensierte Kausalgesetze: Push/Pull, Gehirn–Rückenmark–Hand, Purgatorium/Gravity Index, logarithmisches Trust-Routing (Session-Extrakt). |
+| **Biologie→Digital Mapping** | `docs/01_CORE_DNA/BIOLOGY_TO_DIGITAL_MAPPING.md` | Tool-agnostischer Mapping-Layer: Reiz/Afferenz, Kognition/Kausalität, Efferenzkopie/Forward Model, Existenz/Metabolismus — ohne Infrastruktur-Framing. |
 | **Whitepaper 5D (Split)** | `docs/01_CORE_DNA/5d/WHITEPAPER/` | Kapitel I–IV + Vollständig; `README.md` → NotebookLM-Workflow. |
 | **Whitepaper II (Escape)** | `docs/01_CORE_DNA/5d/WHITEPAPER/Whitepaper_II_OMEGA_Escape_Vector.md` | Die OMEGA-Escape-Vector Theorie, Pi/Phi Dualität, Holographische 2D-Faltung. |
 | **Formel Cheat-Sheet** | `docs/01_CORE_DNA/CORE_FORMELN_CHEAT_SHEET.md` | Zentrale Anlaufstelle für OMEGA-Gleichungen: MRI-Dynamo, Symbiose-Antrieb, Kardanischer Fixpunkt. |
@@ -48,6 +50,12 @@
 | **OS Audio Dictation** | `docs/04_PROCESSES/OS_AUDIO_DICTATION.md` | Headless Start/Stop Diktat-Workflow, Clipboard-Integration. |
 | **Infrastruktur-Master (Root-Stub)** | `docs/00_CORE_INFRASTRUCTURE_MASTER.md` | Weiterleitung nach `00_STAMMDOKUMENTE/00_CORE_INFRASTRUCTURE_MASTER.md` (kanonischer Volltext). |
 | **OMEGA Master Dossier** | `docs/05_AUDIT_PLANNING/OMEGA_MASTER_DOSSIER.md` | Harter Speicherstand (Snapshot) aller operativen Erkenntnisse, Architekturentscheidungen und Stop-Gründe (2026-03-31). |
+| **Macro Architecture Audit** | `docs/05_AUDIT_PLANNING/MACRO_ARCHITECTURE_AUDIT.md` | Orchestrator B: Makro-Kette (Evolution/Kong/Queue/OC/MCP/SQL/Chroma) vs. Pacemaker/State-Hold-Fokus; Drift-Diagnose 2026-04-01. |
+| **Macro Chain VAR 1** | `docs/05_AUDIT_PLANNING/MACRO_CHAIN_VAR_1.md` | Ring-1: neurologisch-anatomische Makro-Kette (Reiz→Afferenz→Thalamus-Tor→Kortex→Efferenz); Map WhatsApp/Kong/Spline/Queue/Chroma/OCBrain; Drift Spline vs. Thalamus. |
+| **Macro Chain VAR 2** | `docs/05_AUDIT_PLANNING/MACRO_CHAIN_VAR_2.md` | Ring-1: informationstheoretische + Zero-Trust Makro-Kette (Sensor→Filter→Purgatorium→Evaluator→Verifizierer→Aktor); Pain/Trust/Knowledge; Trust-Lücken / irreführende Namen. |
+| **Macro Chain VETO Final (Hugin)** | `docs/05_AUDIT_PLANNING/MACRO_CHAIN_VETO_FINAL.md` | Abschlussgegenprüfung MACRO_CHAIN_MASTER_DRAFT Iteration 3 vs. VETO 2; Urteil VETO (Nachschärfung). |
+| **Biology→Digital Mapping VETO REAL (Hugin)** | `docs/05_AUDIT_PLANNING/MAPPING_VETO_REAL.md` | Zero-Context Audit `BIOLOGY_TO_DIGITAL_MAPPING.md`: A1/A5/A6/A7, Δ-Mehrdeutigkeit, A7-Lücke; Urteil VETO. |
+| **Biology→Digital Mapping VETO REAL_4 (Hugin)** | `docs/05_AUDIT_PLANNING/MAPPING_VETO_REAL_4.md` | Zero-Context Audit `BIOLOGY_TO_DIGITAL_MAPPING.md` (aktualisiert): A1/A5/A6/A7/A10, A10-Align in §2, §5-A10-Scanner-Lücke; Urteil PASS. |
 | **Infrastruktur** | `docs/03_INFRASTRUCTURE/` | VPS-Setup, Docker-Sandbox, Backup-Pläne. |
 | **VPS-Knoten & Flüsse** | `docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md` | Monica, Kong, Evolution, DBs: Zweck, Pull/Push-Matrix, Einbindung. |
 | **Ollama VPS (Strang B)** | `docs/03_INFRASTRUCTURE/VPS_OLLAMA_SETUP.md` | Ollama auf Hostinger-VPS, Port 11434, Modell, Firewall. |
@@ -55,6 +63,11 @@
 | **Prozesse** | `docs/04_PROCESSES/` | Workflows, Sicherheitsrat, Deployment-Regeln. |
 | **sudoers OMEGA** | `docs/04_PROCESSES/SUDOERS_OMEGA_DAEMONS.md` | Vorlage `/etc/sudoers.d/` für NOPASSWD `systemctl` auf omega-* Units. |
 | **Audit & Planung** | `docs/05_AUDIT_PLANNING/` | Session Logs, technische Schulden, Roadmaps. |
+| **Concept AV Master** | `docs/05_AUDIT_PLANNING/CONCEPT_AUDIO_VISUAL_MASTER.md` | Physarum-Polycephalum-Architektur: Audio/Video Ressourcen-Allokation. |
+| **Pacemaker VETO 3 (Hugin)** | `docs/05_AUDIT_PLANNING/PACEMAKER_VETO_3.md` | Gegenprüfung SPEC_PACEMAKER Iteration 3 (NMI, Anti-Junk, Test-Doubles). |
+| **SPEC Existential Pacemaker VAR_3** | `docs/05_AUDIT_PLANNING/SPEC_PACEMAKER_VAR_3.md` | Biologisch-neuromorphe Variante Ticket 3: HRV/Latenz-Homeostase, exponentiell-fraktaler Decay, Monotonie-Pathologie, Veto-Traps ohne Mocks. |
+| **Vision Sensor Research** | `docs/05_AUDIT_PLANNING/VISION_SENSOR_RESEARCH.md` | Trade-offs Auflösung (1080p vs 720p) & Mapping MediaPipe Blendshapes (Kognitive Last, Fokus). |
+| **Research Biology Timing** | `docs/05_AUDIT_PLANNING/RESEARCH_BIOLOGY_TIMING.md` | Dossier: Timing/Kausalität (Predictive Coding, Latenzen), Parallel vs. serial, Efferenzkopie, Libet/RP/Veto, Gamma/Phasenverschränkung. |
 | **Agent Refactor Plan** | `docs/05_AUDIT_PLANNING/AGENT_REFACTOR_PLAN.md` | Audit-Bericht und V2-Konzept für das Agenten-System (Schichten, Model-Zwang, MDC-Globs). |
 | **OC Brain Plan** | `docs/05_AUDIT_PLANNING/OC_BRAIN_REAKTIVIERUNG_PLAN.md` | Vollständiger Plan Stränge A–E, Abnahme A1–A7. |
 | **OC Brain Auftrag** | `docs/05_AUDIT_PLANNING/OC_BRAIN_AUFTRAG_AUSFUEHRUNG.md` | Ausführungsauftrag an Team (alles umsetzen lassen). |
@@ -73,6 +86,10 @@
 | **Session-Log 2026-03-21 (NotebookLM WP)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-21_NOTEBOOKLM_WHITEPAPER.md` | Whitepaper 5d → NotebookLM: Sanitizer, SGML-/Zeilenlängen-Fix, Inventar/Bibliothek. |
 | **Session-Log 2026-03-20** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-20.md` | ATLAS Transformation (Red Theme, Daemon Monitoring, Deep RAG). |
 | **Session-Log 2026-03-14** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-14.md` | Durchgeführte Schritte OC Brain (Verify, Doctor, Ollama), Abnahme A1–A7. |
+| **Session-Log 2026-04-02 (AV Master)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-02_AUDIO_VISUAL_MASTER.md` | Update CONCEPT_AUDIO_VISUAL_MASTER.md auf V8 (Zwei-Domänen-Theorie). |
+| **Session-Log 2026-04-02 (AV Pipeline)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-02_AUDIO_VISUAL_PIPELINE.md` | Umsetzung V8: `audio_visual_resonance.py`, Tests, Vision-Daemon (Poll-Spreizung, Pipeline); O2 PASS. |
+| **Session-Log 2026-04-02 (Ticket 8 Membrane)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-02_TICKET_8_DREADNOUGHT_MEMBRANE.md` | Abnahme Dreadnought Membrane: OS-Daemon, Pain-/Planning-Flags, Naming-Fix, LEGACY_UNAUDITED; Status PASS. |
+| **Ticket 8 Dreadnought Membrane** | `docs/05_AUDIT_PLANNING/TICKET_8_DREADNOUGHT_MEMBRANE.md` | Spec: lokale Membrane (Pain/Cognitive-Lock), systemd, Abnahmekriterien. |
 | **Wissensbasis** | `docs/06_WORLD_KNOWLEDGE/` | Externe Forschung, Theorie-Cluster. |
 
 ---
@@ -85,8 +102,13 @@
 | **API Backend** | `src/api/` | FastAPI Server, Webhooks, Telemetrie-Endpunkte. |
 | **Agent Pool** | `src/agents/` | Spezialisierte Agenten-Klassen (Core, Scout, etc.). |
 | **Logic Core** | `src/logic_core/` | Takt-Gate, Gravitator, Veto-Logik, Filter. |
+| **Admission Control** | `src/logic_core/admission_control.py` | Spinale Reflexweiche & Global Workspace State Machine (Phase 1). |
+| **Arbitration Engine** | `src/logic_core/arbitration_engine.py` | Global Workspace Konfliktauflösung & Liveness (Phase 2). |
+| **Efference Veto Logik** | `src/logic_core/efference_veto.py` | Phase 3 & 4: Efferenzkopie, Attractor-Veto, Point-of-No-Return (Ticket 6). |
+| **Temporal Alignment** | `src/logic_core/temporal_alignment.py` | Phase 5 & 6: Prediction Error, Trust-Update & Kardanische Rettung (Ticket 7). |
 | **Crystal Engine** | `src/logic_core/crystal_grid_engine.py` | Topologisches Gitter-Snapping (Axiom 0). |
 | **Resonanz-Membran S↔P** | `src/logic_core/resonance_membrane.py` | float-Resonanz vs. int-Infrastruktur; `DualMembraneVector`; Entry-Adapter (WhatsApp `audio_seconds`); `omega_core` importiert dieselbe Klasse. |
+| **Audio/Visual Resonanz (V8)** | `src/logic_core/audio_visual_resonance.py` | Zwei-Domänen-Sensorik (CONCEPT_AUDIO_VISUAL_MASTER): Beobachtung `X_t`, Resonanz `R_t` via `tanh`, `SensorStimulusPipeline`, `interval_spread_observation`, `build_resonance_embedding_probe`; angebunden an `core_vision_daemon.py` (dynamische Poll-Spreizung). |
 | **AI Interface** | `src/ai/` | LLM-Routing, ResilientLLMInterface, Prompt-Kompression. |
 | **Model Registry** | `src/ai/model_registry.py` | Env-basierte Modell-IDs und Rollen-Mapping (siehe AI_MODEL_CAPABILITIES.md). |
 | **API Inspector** | `src/ai/api_inspector.py` | list_gemini_models, list_ollama_models für Task-Router/Agenten. |
@@ -96,12 +118,15 @@
 ### 2.2 Root-Demonstratoren (außerhalb `src/`)
 | Typ | Pfad | Funktion |
 |-----|------|----------|
+| **Gemini Chat App** | `gemini-flash-lite-chat/` | Neuer primärer Chatbot (Node.js/React/Vite). |
+| **VISION SYNC App** | `vision-sync-app/` | Original AI Studio Multimodal Live UI (Port 3006). |
 | **omega_core (Kardan-Anker)** | `omega_core.py` | Deterministische Mini-Kaskade; Abnahme: **`run_vollkreis_abnahme.py`** Block **Gk**. Verknüpfung Theorie ↔ ausgeführter Check; Doku: `KANON_EINSTIEG.md`. |
 
 ### 2.3 Daemons & Scripts
 | Typ | Pfad | Funktion |
 |-----|------|----------|
-| **Daemons** | `src/daemons/` | Watchdog, Event-Bus, Vision-Daemon. |
+| **Daemons** | `src/daemons/` | Watchdog, Event-Bus, Vision-Daemon, Dreadnought Membrane. |
+| **Pacemaker** | `src/daemons/omega_pacemaker.py` | Existential Pacemaker: NMI-Matrix, `/proc`-Verifikation `omega_core`, neuromorpher R/V-Metabolismus (SPEC_PACEMAKER_FINAL). |
 | **Scripts** | `src/scripts/` | Deployment-Skripte, Verifikationstools, Migrationen. |
 | **Key Script** | `src/scripts/ensure_kardanic_collections.py` | ChromaDB-Dimensionseichung (6144 dim) für kardanische Faltung. |
 | **Key Script** | `src/scripts/verify_core_integrity.py` | Genesis-Audit (`src.core.Core`); **Aufruf nur von Repo-Root**, Exit 0/1. |
@@ -139,6 +164,13 @@
 | **eBPF Watchdog** | `src/infrastructure/vps/ebpf_watchdog.c` | XDP-basierter API-Spam Schutz (C-Code). |
 | **VPS Deploy** | `src/infrastructure/vps/deploy_to_vps.py` | Automatisiertes Deployment der V4-Infrastruktur via SSH. |
 | **V4 Security Test** | `tests/test_v4_security.py` | Validierung der Ring-3 Auth und UCCP-Layer. |
+| **Pacemaker Veto-Traps** | `tests/test_pacemaker.py` | Verification-First: SPEC_PACEMAKER_FINAL.md (Falle 1–3) gegen `omega_pacemaker.py`. |
+| **Admission Control Tests** | `tests/test_admission_control.py` | Veto-Traps für System-Drift und Kausal-Sprünge (Ticket 4). |
+| **Arbitration Tests** | `tests/test_arbitration.py` | Veto-Traps für Global Workspace Arbitration (Ticket 5). |
+| **Efference Veto Tests** | `tests/test_efference_veto.py` | Verification-First: Veto-Traps für Ticket 6 (Efferenzkopie, Trust-Collapse, Hash). |
+| **Temporal Alignment Tests** | `tests/test_temporal_alignment.py` | Verification-First: Veto-Traps für Ticket 7 (Phase 5 & 6, PE, Drehimpulsumkehr). |
+| **Audio/Visual Domain Tests (V8)** | `tests/test_audio_visual_domain.py` | Veto-Traps: Zwei-Domänen-Theorie, `tanh`-Projektion, Resonanz-Innenraum, keine AST-Heiler in Kernfunktionen, Embedding/Spreizung. |
+| **Ticket 8 Membrane Tests** | `src/scripts/test_ticket_8.py` | Abnahme/Verifikation Dreadnought Membrane (Pain-Flag, Cognitive-Lock, Scanner-Regeln). |
 | **Database** | `src/db/core_infrastructure.sql` | 2D Integer-Membran (SQL-Schema) für CORE-Infrastruktur-Monitoring. |
 | **Database** | `src/db/init_infrastructure.py` | Initialisierungs-Skript für die CORE-Infrastruktur-Tabelle auf VPS. |
 | **Service** | `src/services/infrastructure_heartbeat.py` | Hintergrund-Service für periodisches Status-Monitoring (Dreadnought, Scout, VPS). |
@@ -172,6 +204,7 @@
 | **ChromaDB** | `data/chroma_db/` | Lokaler Vector-Store (Failover). |
 | **WakeWords** | `models/wakeword_mtho/` | Trainierte Modelle für "Hey CORE". |
 | **Logdateien** | `logs/` | System- und Audit-Logs. |
+| **Legacy-Stempel (Membrane)** | `src/scripts/apply_legacy_stamp.py` | Setzt `[LEGACY_UNAUDITED]` in ältere Markdown-Dateien; verhindert grundlosen Cognitive-Lock (Ticket 8). |
 
 ---
 

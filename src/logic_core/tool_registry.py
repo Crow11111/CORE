@@ -38,30 +38,30 @@ class ToolRegistry:
         """
         func_name = name or func.__name__
         func_desc = description or inspect.getdoc(func) or "Keine Beschreibung verfügbar."
-        
+
         sig = inspect.signature(func)
         type_hints = get_type_hints(func)
-        
+
         properties = {}
         required = []
-        
+
         for param_name, param in sig.parameters.items():
             # Überspringe self in Klassenmethoden (falls als ungebundene Methode registriert wird)
             if param_name == "self":
                 continue
-                
+
             param_type = type_hints.get(param_name, str)
             properties[param_name] = {
                 "type": self._type_to_json_schema(param_type),
                 "description": f"Parameter {param_name}"
             }
             if param.default == inspect.Parameter.empty:
-                required.append(param_name)
-                
+                required = required + [param_name]
+
         # Nimm die erste Zeile der Beschreibung für das Schema, wenn sie existiert
         desc_lines = func_desc.strip().split('\n')
         short_desc = desc_lines[0] if desc_lines else "Keine Beschreibung verfügbar."
-                
+
         schema = {
             "name": func_name,
             "description": short_desc,
@@ -71,9 +71,9 @@ class ToolRegistry:
                 "required": required
             }
         }
-        
+
         self._tools[func_name] = func
-        self._schemas.append(schema)
+        self._schemas = self._schemas + [schema]
 
     def get_schemas(self) -> List[Dict[str, Any]]:
         """Gibt die JSON-Schemas aller registrierten Tools zurück."""
@@ -86,9 +86,9 @@ class ToolRegistry:
         """
         if name not in self._tools:
             raise ValueError(f"Tool '{name}' ist nicht registriert.")
-            
+
         func = self._tools[name]
-        
+
         if inspect.iscoroutinefunction(func):
             return await func(**kwargs)
         else:

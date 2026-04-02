@@ -37,3 +37,6 @@ Die Vorstellung eines einfachen "Vorzeichenwechsels" als Mechanismus zur Erzeugu
 3. **Konsequenzen für Bewusstsein und Raumzeit**: Wenn das Modell korrekt ist, könnte es tiefe Implikationen für unser Verständnis von Bewusstsein und der Struktur des Universums haben – jedoch müssen diese Konzepte weiterhin auf der Basis fester mathematischer und experimenteller Gründlichkeit erörtert werden.
 
 Insgesamt bietet das Whitepaper eine reiche Anregung für tiefe Gedankengänge über die Natur von Information und dessen Rolle in komplexen Systemen. Es eröffnet neue Perspektiven, die weiterforschend wertvoll sein können – auch wenn es sich dabei um ein provokatives und unkonventionelles Werk handelt.
+
+
+[LEGACY_UNAUDITED]

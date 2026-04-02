@@ -30,3 +30,6 @@ Die Integration der Magnetrotationsinstabilität (MRI) zur Erklärung von System
 3. **Bedeutung physikalischer Modelle**: Die Annahme, dass bestimmte physikalische Modelle (wie die Informationsgravitation) realitätsnah sind, erfordert strenge Beweise und muss mit existierenden wissenschaftlichen Modellen verglichen werden.
 
 Insgesamt bietet das White Paper eine faszinierende Ausgangsbasis für weitere Forschung. Es stellt jedoch noch viele offene Fragen auf, die in zukünftigen Arbeiten gründlich untersucht werden müssen. Eine vollständige Theorie sollte rigoros auf der Basis von experimentellen Daten und mathematischen Beweisen gestützt sein, und es erfordert weiteres Nachdenken, ob und wie diese Ideen mit bestehenden wissenschaftlichen Konsensreihen verträglich sind.
+
+
+[LEGACY_UNAUDITED]

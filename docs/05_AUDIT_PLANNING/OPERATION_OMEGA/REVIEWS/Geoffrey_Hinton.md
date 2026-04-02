@@ -39,3 +39,6 @@ Vielen Dank für deinen Beitrag zu diesem faszinierenden Thema!
 
 Mit freundlichen Grüßen,
 Geoffrey Hinton
+
+
+[LEGACY_UNAUDITED]

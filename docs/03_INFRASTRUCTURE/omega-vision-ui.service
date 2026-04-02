@@ -1,0 +1,15 @@
+[Unit]
+Description=OMEGA CORE Vision UI (Original AI Studio App)
+After=network.target
+
+[Service]
+Type=simple
+User=mth
+WorkingDirectory=/OMEGA_CORE/vision-sync-app
+Environment="PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
+ExecStart=/usr/bin/npm run dev
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

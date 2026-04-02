@@ -76,3 +76,6 @@
 **CEO-Vorgabe:** Teamleads briefen ihre Teams aus diesem Dokument. Kein Selbstausführen durch CEO; Implementierung bei Architect / API-Infra / Security / Archive. Bei Konflikten (z.B. wo der Webhook leben soll): Architect + API/Infra abstimmen, Security einbinden.
 
 **Budget-Zuteilung:** Jeder Lead erhält sein Phasen-Budget (Min/Max aus Tabelle §0). Überschreitung nur nach Eskalation (Reserve anfassen). Tokendruck bei Unterschreitung der Schwellwerte sofort verschärfen.
+
+
+[LEGACY_UNAUDITED]

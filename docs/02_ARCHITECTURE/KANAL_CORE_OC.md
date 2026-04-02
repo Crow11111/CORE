@@ -137,3 +137,6 @@ Die abgeholten Dateien in `data/rat_submissions/` können von Marc oder von eine
 
 - OpenClaw OpenResponses API: [docs.openclaw.ai/gateway/openresponses-http-api](https://docs.openclaw.ai/gateway/openresponses-http-api)
 - `openclaw_client.py`, `fetch_oc_submissions.py`, `setup_vps_hostinger.py` (Gateway-Config, rat_submissions-Verzeichnis)
+
+
+[LEGACY_UNAUDITED]

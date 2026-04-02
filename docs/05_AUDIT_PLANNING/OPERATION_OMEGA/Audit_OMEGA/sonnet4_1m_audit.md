@@ -54,3 +54,5 @@
 Z-Score σ = 1.037990 < 5
 
 Mathematische Kennzahlen dokumentiert.
+
+[LEGACY_UNAUDITED]

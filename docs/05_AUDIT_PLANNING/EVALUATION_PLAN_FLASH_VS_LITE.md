@@ -27,3 +27,6 @@
 
 ## Ausführung
 Die Evaluation wird durch ein Skript `src/scripts/evaluate_flash_vs_lite.py` automatisiert. Das Skript jagt die Test-Batches parallel durch beide Modelle und aggregiert die Ergebnisse in ChromaDB zur Analyse.
+
+
+[LEGACY_UNAUDITED]

@@ -43,3 +43,6 @@ Konkret nach dem Pairing:
 3. Optional: ChromaDB-Collections `events`/`insights` auf VPS anlegen und in die Pipeline einhängen.
 
 Referenz: `docs/02_ARCHITECTURE/CORE_AGI_ARCHITECTURE.md`, `docs/02_ARCHITECTURE/CORE_SCHNITTSTELLEN_UND_KANAALE.md`.
+
+
+[LEGACY_UNAUDITED]

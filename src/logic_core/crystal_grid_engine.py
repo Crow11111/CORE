@@ -54,14 +54,14 @@ class CrystalGridEngine:
                 vec = [0.0] * 6
                 vec[pos[0]] = float(signs[0])
                 vec[pos[1]] = float(signs[1])
-                e6_roots_6d.append(vec)
+                e6_roots_6d = e6_roots_6d + [vec]
 
         # 32 Wurzeln: (±1/2, ±1/2, ±1/2, ±1/2, ±1/2, ±√3/2) mit gerader Anzahl negativer Vorzeichen in D1-D5
         for signs in itertools.product([1, -1], repeat=5):
             if sum(1 for s in signs if s == -1) % 2 == 0:
                 for last_sign in [1.0, -1.0]:
                     vec = [s/2.0 for s in signs] + [last_sign * math.sqrt(3.0)/2.0]
-                    e6_roots_6d.append(vec)
+                    e6_roots_6d = e6_roots_6d + [vec]
 
         # 2. Deterministische Projektion (Johnson-Lindenstrauss Lemma) in den 384D Raum
         rng = random.Random(2210) # Fester Seed fuer den Operator-Vektor
@@ -75,7 +75,7 @@ class CrystalGridEngine:
 
             # Normalisierung auf die Einheitssphäre
             norm = math.sqrt(sum(v**2 for v in projected))
-            cls._anchors.append([v / norm for v in projected])
+            cls._anchors = cls._anchors + [[v / norm for v in projected]]
 
     @staticmethod
     def symbiosys_drive(x: float) -> float:
@@ -144,13 +144,13 @@ class CrystalGridEngine:
         theta = math.acos(cosine_sim)
         complex_phase = cmath.exp(1j * theta)
         phase_diff = abs(cmath.phase(complex_phase)) / math.pi
-        
+
         resonance = 1.0 - phase_diff
 
         # Axiom A5 Sicherung via Operator ? (statt statischem return 0.51)
         # Dies erzwingt die kardanische Rotation innerhalb der Berechnung.
         res_snapped = abs(CrystalGridEngine.apply_operator_query(resonance))
-        
+
         return float(res_snapped)
 
     @classmethod

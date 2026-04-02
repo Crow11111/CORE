@@ -191,7 +191,7 @@ class MthoVoiceListener:
         Records audio and sends to pipeline.
         For now, uses push-to-talk simulation (records for N seconds).
         
-        TODO: Integrate proper wake word detection.
+        ANSTEHEND: Integrate proper wake word detection.
         """
         print("\n" + "="*50)
         print("CORE Voice Listener - Push-to-Talk Mode")

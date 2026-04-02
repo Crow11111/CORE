@@ -92,3 +92,6 @@ bash /OMEGA_CORE/atlas-omega-voice/scripts/install_whisper_modell.sh
 ---
 
 *Stand: 2026-03-19*
+
+
+[LEGACY_UNAUDITED]

@@ -109,3 +109,6 @@ Damit entsteht ein **echter Push/Pull-Kreislauf:** G-CORE → Sync Relay (schrei
 ---
 
 **Stand:** 2026-03-06. Bewertung der Optionen für echten Push/Pull und gezieltere Nutzung des G-CORE-Git-Cursor-Kanals.
+
+
+[LEGACY_UNAUDITED]

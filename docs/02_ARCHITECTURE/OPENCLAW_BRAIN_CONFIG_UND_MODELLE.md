@@ -127,3 +127,6 @@ Das Deploy-Skript `deploy_openclaw_config_vps.py` fügt derzeit nur Google und A
 **Nach Deploy:** `python -m src.scripts.openclaw_doctor_vps` (oder im Container `openclaw doctor`) ausführen, dann Container neustarten – so prüfst du, ob die Config schema-konform ist und alle Modelle wählbar sind.
 
 Referenz: [OpenClaw Config Schema](https://config.clawi.sh/), [Configuration Examples](https://docs.openclaw.ai/gateway/configuration-examples).
+
+
+[LEGACY_UNAUDITED]

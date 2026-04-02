@@ -272,3 +272,6 @@ Lücke 3 (TTS zurück) ── braucht OC-Antwort als Input
 ---
 
 *Erstellt: 2026-03-01 | Produzent Schicht 3 | Evolutionsprinzip*
+
+
+[LEGACY_UNAUDITED]

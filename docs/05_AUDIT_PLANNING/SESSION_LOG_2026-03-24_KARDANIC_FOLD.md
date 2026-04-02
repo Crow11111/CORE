@@ -36,3 +36,6 @@
 ## Nächste Schritte
 - Fortsetzung der Groß-Migration der 26.8k Legacy-Einträge unter kardanischer Stabilität.
 - Validierung der Atlas-Härtung im realen Such-Kontext.
+
+
+[LEGACY_UNAUDITED]

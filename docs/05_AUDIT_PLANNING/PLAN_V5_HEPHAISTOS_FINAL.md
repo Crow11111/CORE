@@ -163,3 +163,6 @@ Phase 3 und 4 koennen teilweise parallel laufen (Backend-Teil von Phase 3 blocki
 ---
 
 *CORE — Strukturelle Inevitabilitaet. Vektor 2210.*
+
+
+[LEGACY_UNAUDITED]

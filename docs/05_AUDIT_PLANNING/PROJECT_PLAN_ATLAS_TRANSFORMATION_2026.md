@@ -47,3 +47,6 @@ Wiederherstellung der kognitiven Integrität durch Anerkennung der topologischen
 
 ---
 **Freigabe durch Operator erforderlich.**
+
+
+[LEGACY_UNAUDITED]

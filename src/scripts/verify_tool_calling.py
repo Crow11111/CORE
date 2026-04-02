@@ -9,6 +9,7 @@ from src.logic_core.tool_registry import ToolRegistry
 
 async def dummy_tool(text: str, times: int = 1) -> str:
     """Dies ist ein Dummy-Tool zum Testen der Registry."""
+    text = text.strip()
     return f"Dummy-Tool wurde aufgerufen mit: '{text}' ({times} mal)"
 
 async def main():

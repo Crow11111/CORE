@@ -56,3 +56,6 @@ Um dieses Konzept umzusetzen, müssen folgende operative Schritte folgen:
 2. **Refactoring `.cursor/agents/`:** Einpflegen von `model: fast` in alle Frontmatter sowie Hardcoding der primären Direktiven in die Agent-Prompts.
 3. **Purge:** Löschung der redundanten Dokumente `AGENTS.md` und `SUB_AGENTS.md`, da ihre "Bitten und Ermahnungen" nun durch harte physikalische Systemgrenzen (MDC & Frontmatter) ersetzt wurden.
 4. **.cursorrules Slimming:** Reduktion der `.cursorrules` auf unter 30% ihrer aktuellen Größe.
+
+
+[LEGACY_UNAUDITED]

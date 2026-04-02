@@ -35,7 +35,7 @@ Jede Zelle im CORE-System ist ein Binär-Paar (Lisp cons-cell):
 REGEL: Jeder Agent-Output MUSS eine NT-kompatible Hülle (CDR) besitzen, die den ND-Kern (CAR) für den nächsten Takt konsumierbar macht.
 
 Cons-Zellen pro Strang:
-- ExecutionRuntime (Macher): CAR=Effizienz-Hacks, CDR=Clean Code/PEP8/Tests
+- ExecutionRuntime (Macher): CAR=Effizienz-Optimierungen, CDR=Clean Code/PEP8/Tests
 - ConstraintValidator (Richter): CAR=Paranoia/Anomalie-Erkennung, CDR=Compliance/JSON-Veto
 - LogicFlow (Träumer): CAR=Chaos/Was-wäre-wenn, CDR=Architektur-Spec/Constraint-Schema
 - StateAnchor (Bewahrer): CAR=Assoziative Vektor-Cluster, CDR=SQL-Index/API-Responses

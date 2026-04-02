@@ -121,3 +121,6 @@ Beide Fähigkeiten sind für CORE/Projekt Omega relevant: **Deep Research** für
 - Code: `src/ai/llm_interface.py`, `src/ai/model_registry.py` (Rolle `embedding`), `src/ai/whatsapp_audio_processor.py`, `src/api/routes/dictate.py`, `src/daemons/core_vision_daemon.py`, `src/db/multi_view_client.py` (RAG-Vektorisierung an Registry).
 - Deep Research & Computer Use: `@docs/02_ARCHITECTURE/DEEP_RESEARCH_UND_COMPUTER_USE.md`.
 - BIBLIOTHEK: `@docs/BIBLIOTHEK_KERN_DOKUMENTE.md` (Regel: Immer einbinden).
+
+
+[LEGACY_UNAUDITED]

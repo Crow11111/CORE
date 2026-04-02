@@ -211,3 +211,6 @@ API-Keys (Anthropic, Google, etc.) sind **keine Single-Use-Tokens** – sie gelt
 ---
 
 *Weitere Tasks werden hier ergänzt. Verweis: DEV_AGENT_UND_SCHNITTSTELLEN.md, BACKUP_PLAN_FINAL.md, OFFENE_PUNKTE_AUDIT.md.*
+
+
+[LEGACY_UNAUDITED]

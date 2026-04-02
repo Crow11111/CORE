@@ -141,9 +141,11 @@ def step_docker_firewall(ssh, dry):
 
 def step_networks(ssh, dry):
     print("\n[2] Docker-Netzwerke (entfaellt zugunsten von Docker-Compose) ...")
+    from loguru import logger; logger.debug("step_networks placeholder")
 
 def step_chromadb(ssh, dry):
     print(f"\n[3] ChromaDB (wird uebersprungen, da chroma-uvmy bereits existiert) ...")
+    from loguru import logger; logger.debug("step_chromadb placeholder")
     run(ssh, "docker stop chroma-core 2>/dev/null; docker rm chroma-core 2>/dev/null; true", check=False, dry=dry)
 
 def _oc_config(token, port, wa_allow, with_providers):
@@ -409,10 +411,10 @@ networks:
     run(ssh, "docker ps --format '{{.Names}}' | grep -iE 'openclaw|ha-core'", check=False, dry=dry)
 
 def step_openclaw_spine(ssh, dry):
-    pass # Wird jetzt im Compose-Schritt mitgemacht
+    from loguru import logger; logger.debug("step_openclaw_spine placeholder") # Wird jetzt im Compose-Schritt mitgemacht
 
 def step_homeassistant(ssh, dry):
-    pass # Wird jetzt im Compose-Schritt mitgemacht
+    from loguru import logger; logger.debug("step_homeassistant placeholder") # Wird jetzt im Compose-Schritt mitgemacht
 
 def step_backup(ssh, dry):
     print("\n[7] Backup-Verzeichnis + Cron ...")

@@ -89,3 +89,6 @@ Report wird in `data/proof_hoert_sieht_spricht_report.txt` geschrieben (Exit-Cod
 | Sehen    | **OK**   | `data/mx_test/proof_mx_20260228_202644.jpg` | Quelle: scout_mx (via HA camera_proxy) |
 | Sprechen | OK       | media/proof_tts.mp3 + WhatsApp via HA gesendet |
 | Hören    | **VORBEREITET** | Hardware erkannt (Brio-Mikro Source 4 + Samsung Headset Source 3). go2rtc-Streams definiert. Assist-Pipeline-Anleitung bereit (`SCOUT_ASSIST_PIPELINE.md`). User muss 4 Addons in HA installieren. |
+
+
+[LEGACY_UNAUDITED]

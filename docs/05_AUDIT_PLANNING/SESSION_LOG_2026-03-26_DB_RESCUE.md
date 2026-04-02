@@ -15,3 +15,6 @@
 
 ## Drift-Level
 Null. Der Zustand der betroffenen Facetten ist exakt asymmetriefrei (0). Bereit für den Master-Plan und den sauberen Re-Ingest.
+
+
+[LEGACY_UNAUDITED]

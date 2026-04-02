@@ -92,3 +92,6 @@ Der Agent im neuen Chat soll einen **eigenen, ausführbaren Plan** daraus ableit
 
 - Kern-Context: [CORE_KERN_CONTEXT.md](CORE_KERN_CONTEXT.md)
 - Vollständig: CORE_ZWISCHENZIELE.md, CORE_PROTOTYP_STATUS_0.5.md, ORCHESTRATOR_STRATEGY.md
+
+
+[LEGACY_UNAUDITED]

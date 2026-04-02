@@ -43,3 +43,6 @@ Das Whitepaper wirft viele interessante Fragen auf, aber es benötigt einen klar
 ---
 
 Diese Analyse stellt klar, dass es sich um einen hochinteressanten Versuch handelt, komplexe Phänomene durch metaphorisches Denken zu verbinden. Allerdings bedarf der Text einer kritischen Überarbeitung und präziser mathematischer Definitionen, um seine vollen Potentiale zu entfalten.
+
+
+[LEGACY_UNAUDITED]

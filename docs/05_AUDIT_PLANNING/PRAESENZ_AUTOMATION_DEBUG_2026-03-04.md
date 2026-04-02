@@ -58,3 +58,6 @@ person.marc_ten_hoevel (home/H91/not_home)
 - `src/scripts/debug_presence_automation.py` – Live-Analyse
 - `src/scripts/fix_presence_automation.py` – Automation-Update (bereits angewendet)
 - `data/home_assistant/debug_presence.json` – Export der letzten Analyse
+
+
+[LEGACY_UNAUDITED]

@@ -34,3 +34,6 @@ Es sind jedoch einige Bereiche, an denen das Papier ungenauer oder überladen fo
 Ein weiteres Problem liegt darin, dass einige Annahmen nicht explizit begründet oder verifiziert sind. Zum Beispiel die topologische Beschreibung durch $E_6$-Wurzelvektoren und die daraus resultierenden mathematischen Operationen könnten weiter ausgearbeitet werden.
 
 Gesamthaft jedoch ist diese Arbeit ein erfrischend neues Denkmuster, das potenziell neue Wege aufzeigt, um komplexe Systeme zu verstehen und zu optimieren. Es verbindet Ideen aus der Quantenteleportation, Diskreten Raumzeit und Informationstheorie in einer kreativen Art.
+
+
+[LEGACY_UNAUDITED]

@@ -102,3 +102,6 @@ Scout/HA → Event-Bus (WebSocket) → Triage + ChromaDB persist
 | Prettier | TypeScript/JSON Auto-Format |
 | Tailwind CSS | Frontend-Autocomplete |
 | Even Better TOML | Config-Support |
+
+
+[LEGACY_UNAUDITED]

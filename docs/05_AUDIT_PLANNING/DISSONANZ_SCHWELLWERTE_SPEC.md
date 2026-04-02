@@ -90,3 +90,6 @@ Operativ bedeutet Dissonanz hier **mindestens eines** der folgenden, über einen
 **Zeitplan (User-Go):** Shadow-Mode aktiv; Tracking gegenrechnen. **Auswertung:** morgen nach 12 Uhr. Je nach Ergebnis **erste Überführung** in sanftes Rollout (Feature-Flag, Ring ≥ 1 zuerst).
 
 **Abgrenzung:** Diese Spec definiert **nur** Schwellen und Metriken. Trigger-Ort (API-Gateway, Orchestrator, Agent-Wrapper), Rollback und genaue Fehlercodes bleiben einer Implementierungs-Phase vorbehalten.
+
+
+[LEGACY_UNAUDITED]

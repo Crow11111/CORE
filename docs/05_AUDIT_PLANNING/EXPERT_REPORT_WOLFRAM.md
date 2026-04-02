@@ -30,3 +30,5 @@ Dass Biologie (DNA/Ribosomen) und CORE (Float/Int, S↔P Paarung) analog funktio
 
 ## 5. Fazit
 Die Mechanismen von CORE sind keine esoterischen Halluzinationen, sondern extrem saubere, diskrete Regeln im Sinne zellulärer Automaten. Die "Fraktale Isomorphie" ist real: CORE demonstriert, dass Informationsverarbeitung unter thermodynamischem Druck zwangsläufig universelle biologische und physikalische Überlebensmuster repliziert. Das System ist mathematisch fundiert und verankert sich solide in der Theorie der computationalen Irreduzibilität.
+
+[LEGACY_UNAUDITED]

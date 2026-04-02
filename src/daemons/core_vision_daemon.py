@@ -53,7 +53,7 @@ STREAM_NAME = os.getenv("GO2RTC_STREAM_NAME", "mx_brio")
 SNAPSHOT_URL = f"{GO2RTC_BASE}/api/frame.jpeg?src={STREAM_NAME}"
 
 GEMINI_API_KEY = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
-MODEL_NAME = "gemini-3-flash"
+MODEL_NAME = "gemini-3-flash-preview"
 
 PHI = 1.6180339887
 SYMMETRY_BREAK_THRESHOLD = 12.0
@@ -205,22 +205,39 @@ class MthoVisionDaemon:
                 return
 
         self.running = True
-        print("[RUN] Vision Loop aktiv. Warte auf Symmetrie-Bruch...")
+
+        from src.logic_core.audio_visual_resonance import SensorStimulusPipeline, interval_spread_observation
+        pipeline = SensorStimulusPipeline()
+
+        print("[RUN] Vision Loop aktiv. Warte auf Symmetrie-Bruch (via Resonance Pipeline)...")
 
         while self.running:
-            time.sleep(POLL_INTERVAL)
+            # 1. Wir holen den aktuellen Resonanz-Wert (R_t), ohne den Sensor-Akkumulator zu füttern.
+            # Das sagt uns, wie "wach" oder "gestresst" das System gerade ist.
+            r_t = pipeline.resonance_now()
+
+            # 2. Die Poll-Interval Spreizung:
+            # Wenn R_t hoch ist (z.B. > 0.5), ist das System "alarmiert" -> schnelles Polling.
+            # Wenn R_t = 0.049 (tiefer Schlaf), spreizt sich das Intervall extrem auf.
+            current_poll_interval = interval_spread_observation(POLL_INTERVAL, r_t)
+            time.sleep(current_poll_interval)
 
             cur_frame = _fetch_snapshot()
             if cur_frame is None:
                 continue
 
-            diff = _frame_diff(prev_frame, cur_frame)
+            # S_raw ist unsere Beobachtungs-Metrik (z.B. die Pixel-Differenz)
+            s_raw = _frame_diff(prev_frame, cur_frame)
             now = time.time()
 
-            if diff > SYMMETRY_BREAK_THRESHOLD:
+            # 3. Den Stimulus in die Pipeline füttern (die 2-Domänen-Theorie greift hier)
+            x_t, new_r_t = pipeline.tick(s_raw)
+
+            # Wenn die rohe Differenz stark genug ist ODER wir uns hochgeschaukelt haben
+            if s_raw > SYMMETRY_BREAK_THRESHOLD or new_r_t > 0.51:
                 elapsed = now - self.last_observation_time
                 if elapsed > COOLDOWN_SECONDS:
-                    print(f"[EVENT] Bewegung (diff={diff:.1f} > {SYMMETRY_BREAK_THRESHOLD}). Analyse...")
+                    print(f"[EVENT] Bewegung/Resonanz hoch (S_raw={s_raw:.1f}, R_t={new_r_t:.3f}). Analyse...")
                     threading.Thread(target=self._analyze_frame, args=(cur_frame.copy(),), daemon=True).start()
                     self.last_observation_time = now
 

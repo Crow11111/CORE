@@ -339,3 +339,6 @@ Total VRAM:          12288 MB (100.0%)
 ---
 
 *Ende Kammer 2. Alle Werte sind physikalisch verifizierbar. Keine Metaphern.*
+
+
+[LEGACY_UNAUDITED]

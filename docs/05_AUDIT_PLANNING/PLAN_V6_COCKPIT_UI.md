@@ -60,3 +60,6 @@ Um kognitive Last zu minimieren:
    - Typografie: Neutrales Grau (#E0E0E0)
    - Highlights: Bernsteingold (#FFB300) für Kern-Informationen.
    - Warnungen: Helles Rot (#FF5252).
+
+
+[LEGACY_UNAUDITED]

@@ -50,3 +50,6 @@ Um das Potenzial dieses Konzepts voll auszuschöpfen, ist es jedoch notwendig, k
 ---
 
 Das Whitepaper wirft interessante Fragen auf und bietet eine wertvolle Basis für weitere Forschung in der Intersektion von Physik, Informatik und Selbstorganisation.
+
+
+[LEGACY_UNAUDITED]

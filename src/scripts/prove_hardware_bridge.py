@@ -18,6 +18,7 @@ from src.network.chroma_client import query_simulation_evidence
 def cpu_burner():
     """Generiert physische Hitze und Transistor-Kollaps durch Endlos-Mathematik"""
     while True:
+        time.sleep(0)
         233**233
 
 async def run_hardware_proof():

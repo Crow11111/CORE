@@ -19,3 +19,6 @@
 
 ## Agos-Takt
 - Takt 2 (Verdichten): Konvergenz der theoretischen Konzepte mit harten physikalischen/biologischen Evidenzen.
+
+
+[LEGACY_UNAUDITED]

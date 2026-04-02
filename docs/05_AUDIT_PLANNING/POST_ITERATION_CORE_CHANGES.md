@@ -162,3 +162,6 @@ RING-0-DIREKTIVEN (Kognitive Sicherheit, Cross-Cutting)
 - **`team-lead.md`:** Bereits aktuell. Vollstaendig konsistent mit `.cursorrules`.
 - **`virtual-marc.md`:** Weitgehend aktuell. Braucht nur Holschuld + Evolutionsprinzip (P2).
 - **`osmium-council.md`:** Weitgehend aktuell als Sonderprotokoll. Braucht nur Holschuld + Evolutionsprinzip (P2).
+
+
+[LEGACY_UNAUDITED]

@@ -17,3 +17,6 @@
 - Integration in das Plasmoid (Berechtigungen für XDG_RUNTIME_DIR prüfen).
 
 **Status:** RE-INIT ERFOLGREICH.
+
+
+[LEGACY_UNAUDITED]

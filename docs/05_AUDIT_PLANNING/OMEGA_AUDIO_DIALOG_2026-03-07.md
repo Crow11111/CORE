@@ -47,3 +47,6 @@ Er soll als ruhige nachtraegliche Verankerung eines begrifflichen Durchbruchs fu
 - Ausgabe:
   - ElevenLabs rendert Segmentdateien
   - Home Assistant spielt sie nacheinander auf `media_player.player`
+
+
+[LEGACY_UNAUDITED]

@@ -49,3 +49,6 @@
 - WhatsApp-Kanal pairen und testen
 - Spine-Anbindung (OC Spine ↔ OMEGA_ATTRACTOR)
 - SOUL.md / Agent-Routing prüfen
+
+
+[LEGACY_UNAUDITED]

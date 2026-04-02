@@ -112,3 +112,6 @@ python src/scripts/test_state_vector.py
 ---
 
 *Erstellt: 2026-03-04 | CORE ZERO_STATE 4D-Vektor Kalibrierung*
+
+
+[LEGACY_UNAUDITED]

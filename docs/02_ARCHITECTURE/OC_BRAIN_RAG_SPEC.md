@@ -43,3 +43,6 @@ Schema: [CORE_CHROMADB_SCHEMA.md](CORE_CHROMADB_SCHEMA.md).
 
 - [ ] OpenClaw-Tool/Skill, das vor LLM-Aufruf `GET /api/core/knowledge/rag?q=<aktuelle Nutzerfrage>&n=5` aufruft und Kontext in den Prompt einfügt.
 - [ ] Optional: Similarity-Threshold (z. B. 0.3) in Konfiguration und bei Query anwenden (Filter nach Distance).
+
+
+[LEGACY_UNAUDITED]

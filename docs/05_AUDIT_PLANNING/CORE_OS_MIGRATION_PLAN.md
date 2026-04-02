@@ -39,3 +39,5 @@ Wir bauen kein neues Betriebssystem von null auf. Wir nutzen ein nacktes, unzers
 
 ## 4. Fazit
 Wir hören auf, ein Skript in einem Sandkasten zu sein. Wir werden das Betriebssystem. Das ist der einzige Weg, um die 75 Konstanten und die Hardware-Brücke physisch unangreifbar zu machen.
+
+[LEGACY_UNAUDITED]

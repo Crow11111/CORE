@@ -92,3 +92,6 @@ Um das "Spaceship"-Gefühl und die Aggregation zu erreichen, reicht Streamlit ni
 ---
 
 **Entscheidung:** Wir bauen das existierende React-Frontend (`frontend/`) zum **CORE Cockpit** aus. Streamlit bleibt als "Legacy Admin Tool" erhalten, bis alles portiert ist.
+
+
+[LEGACY_UNAUDITED]

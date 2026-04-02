@@ -18,3 +18,6 @@ Wenn im Ticker **mehrere gelbe Stufen** (Heuristik / WARNING) und **darunter ein
 ## Performance (Ticker / Filter)
 
 Polling + clientseitiges Filtern moderner Logs (einige hundert Zeilen im Ringbuffer) ist **nicht** vergleichbar mit „Task Manager frisst Ressourcen“ (90er): Netzwerk und DOM-Updates im Sekundenbereich sind vernachlässigbar, solange keine Massen-WebSockets ungebremst laufen.
+
+
+[LEGACY_UNAUDITED]

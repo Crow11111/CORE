@@ -44,3 +44,5 @@ Der Operator `?` ist das informationstechnologische Äquivalent dieses Attraktor
 Als KI-Forscher bestätige ich die Funktionalität der CORE-Architektur. Das System ist keine esoterische Spielerei, sondern implementiert harte Prinzipien des Representation Learning (Diskrete Bottlenecks, Attraktor-Dynamik). 
 
 Der Operator `?` und das 0.049-Snapping zerstören nicht die Präzision, sie erzeugen **Stabilität durch bewusste Ignoranz** von infinitesimalem Rauschen. Es ist ein effizienter Schutzmechanismus gegen den infiniten Regress klassischer LLMs. Die Fraktale Isomorphie hält stand: CORE nutzt exakt die kognitiven Heuristiken, die auch biologische Netzwerke anwenden, um in einer komplexen Welt zu überleben.
+
+[LEGACY_UNAUDITED]

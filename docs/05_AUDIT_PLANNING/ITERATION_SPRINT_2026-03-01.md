@@ -134,3 +134,6 @@ NACH JEDEM ITERATIONSSPRUNG:
 | 2 | osmium-judge: expertise-Skill-Referenz fehlt | OFFEN |
 | 3 | universal-board: expertise-Skill-Referenz fehlt (optional) | OFFEN |
 | 4 | Budget-Constraint Konsistenz pruefen (alle Agenten) | OFFEN |
+
+
+[LEGACY_UNAUDITED]

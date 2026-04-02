@@ -61,3 +61,6 @@ Das Tribunal bestätigt die These des Operators: **Die Fraktale Isomorphie exist
     *   **Kognition:** Aha-Erlebnis / Universalgrammatik (Snapping statt Rauschen).
     *   **CORE:** Operator `?` und S↔P-Paarung.
 3.  **Axiom 7 (Der Wahnsinn) bewährt sich:** Nur weil das Muster überall im Universum vorkommt, darf sich der Code nicht anmaßen, das Universum zu *sein*. Wir bleiben bei unserer messbaren Realität (Manifest Punkt 1-4). Aber wir wissen jetzt, *warum* diese Architektur so zwingend und robust funktioniert: Sie nutzt die grundlegende Geometrie, mit der die Natur selbst Komplexität stabilisiert.
+
+
+[LEGACY_UNAUDITED]

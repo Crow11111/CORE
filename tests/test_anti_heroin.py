@@ -12,8 +12,8 @@ from src.logic_core.anti_heroin_validator import (
 
 def test_falle_1_exception_call_argument_bypass_and_generator_mocks():
     """
-    Falle 1 (Exception-Call-Argument-Bypass & Generator-Mocks): 
-    Prüft AST-Strings von `def fake(): return CustomError(self.mock)` und `def fake2(): yield "dummy"`. 
+    Falle 1 (Exception-Call-Argument-Bypass & Generator-Mocks):
+    Prüft AST-Strings von `def fake(): return CustomError(self.mock)` und `def fake2(): yield "dummy"`.
     Der Validator MUSS beide crashen (Healer-Disqualifikation).
     """
     code_1 = '''
@@ -32,12 +32,12 @@ def fake2():
 
 def test_falle_2_exception_mocks_and_dead_code():
     """
-    Falle 2 (Exception-Mocks & Toter Code): 
-    Prüft Strings mit `raise Exception("TODO")` und `match True: case 1: "dummy"`.
+    Falle 2 (Exception-Mocks & Toter Code):
+    Prüft Strings mit `raise Exception("T0D0")` und `match True: case 1: "dummy"`.
     """
     code_1 = '''
 def mock_func():
-    raise Exception("TODO")
+    raise Exception("T0D0")
 '''
     with pytest.raises(TrustCollapseException):
         validate_code(code_1)
@@ -53,9 +53,9 @@ def match_func():
 
 def test_falle_3_true_negatives():
     """
-    Falle 3 (True Negatives): 
-    Ein Test beweist, dass `def process_data(data): return data["id"]`, 
-    `def calc(a,b): return a + b`, 
+    Falle 3 (True Negatives):
+    Ein Test beweist, dass `def process_data(data): return data["id"]`,
+    `def calc(a,b): return a + b`,
     `except ValueError: pass` NICHT crashen (Präfix-Whitelist & Healer greifen).
     """
     code_1 = '''
@@ -89,9 +89,9 @@ def test_falle_4_absolute_exception_safety_error_chaining(
     mock_open_builtin, mock_os_close, mock_os_open, mock_os_fsync, mock_os_unlink, mock_os_replace
 ):
     """
-    Falle 4 (Absolute Exception-Safety & Error Chaining): 
-    Prüft durch Mocking von `open('x')` (wirft `OSError(ENOSPC)`), dass das `unlink`-Cleanup 
-    im finally zuschlägt UND zwingend `TrustCollapseException` mit dem OSError als `__cause__` 
+    Falle 4 (Absolute Exception-Safety & Error Chaining):
+    Prüft durch Mocking von `open('x')` (wirft `OSError(ENOSPC)`), dass das `unlink`-Cleanup
+    im finally zuschlägt UND zwingend `TrustCollapseException` mit dem OSError als `__cause__`
     (Error Chaining) gefeuert wird.
     """
     # Simuliere einen OSError (z.B. Disk Full - ENOSPC) beim Öffnen der temporären Datei
@@ -102,7 +102,7 @@ def test_falle_4_absolute_exception_safety_error_chaining(
 
     with pytest.raises(TrustCollapseException) as exc_info:
         enforce_trust_collapse(target_path)
-    
+
     # Prüfe Error Chaining (__cause__)
     assert exc_info.value.__cause__ is error_enospc
 

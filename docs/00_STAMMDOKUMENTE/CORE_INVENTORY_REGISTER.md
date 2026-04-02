@@ -89,7 +89,9 @@
 | **Session-Log 2026-04-02 (AV Master)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-02_AUDIO_VISUAL_MASTER.md` | Update CONCEPT_AUDIO_VISUAL_MASTER.md auf V8 (Zwei-Domänen-Theorie). |
 | **Session-Log 2026-04-02 (AV Pipeline)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-02_AUDIO_VISUAL_PIPELINE.md` | Umsetzung V8: `audio_visual_resonance.py`, Tests, Vision-Daemon (Poll-Spreizung, Pipeline); O2 PASS. |
 | **Session-Log 2026-04-02 (Ticket 8 Membrane)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-02_TICKET_8_DREADNOUGHT_MEMBRANE.md` | Abnahme Dreadnought Membrane: OS-Daemon, Pain-/Planning-Flags, Naming-Fix, LEGACY_UNAUDITED; Status PASS. |
+| **Session-Log 2026-04-02 (Ticket 9 Git-Resonance)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-02_TICKET_9_GIT_RESONANCE.md` | Umsetzung Ticket 9: Bi-direktionale Kausalitäts-Brücke (Git Pull/Push) in Dreadnought Membrane. |
 | **Ticket 8 Dreadnought Membrane** | `docs/05_AUDIT_PLANNING/TICKET_8_DREADNOUGHT_MEMBRANE.md` | Spec: lokale Membrane (Pain/Cognitive-Lock), systemd, Abnahmekriterien. |
+| **Ticket 9 Git-Resonance** | `docs/05_AUDIT_PLANNING/TICKET_9_GIT_RESONANCE.md` | Spec: Bi-direktionale Kausalitäts-Brücke, Auto-Push nach Validator-PASS, Auto-Pull, Konflikt-Pain-Flag. |
 | **Wissensbasis** | `docs/06_WORLD_KNOWLEDGE/` | Externe Forschung, Theorie-Cluster. |
 
 ---
@@ -171,6 +173,7 @@
 | **Temporal Alignment Tests** | `tests/test_temporal_alignment.py` | Verification-First: Veto-Traps für Ticket 7 (Phase 5 & 6, PE, Drehimpulsumkehr). |
 | **Audio/Visual Domain Tests (V8)** | `tests/test_audio_visual_domain.py` | Veto-Traps: Zwei-Domänen-Theorie, `tanh`-Projektion, Resonanz-Innenraum, keine AST-Heiler in Kernfunktionen, Embedding/Spreizung. |
 | **Ticket 8 Membrane Tests** | `src/scripts/test_ticket_8.py` | Abnahme/Verifikation Dreadnought Membrane (Pain-Flag, Cognitive-Lock, Scanner-Regeln). |
+| **Ticket 9 Git-Resonance Tests** | `tests/test_ticket_9.py` | Veto-Traps für Dreadnought Membrane Git-Logik (Auto-Push nach PASS, Pull, Konflikt-Flag). |
 | **Database** | `src/db/core_infrastructure.sql` | 2D Integer-Membran (SQL-Schema) für CORE-Infrastruktur-Monitoring. |
 | **Database** | `src/db/init_infrastructure.py` | Initialisierungs-Skript für die CORE-Infrastruktur-Tabelle auf VPS. |
 | **Service** | `src/services/infrastructure_heartbeat.py` | Hintergrund-Service für periodisches Status-Monitoring (Dreadnought, Scout, VPS). |

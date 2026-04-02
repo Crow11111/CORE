@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import ast
 import os
+import subprocess
 import sys
 import time
 from pathlib import Path
@@ -35,6 +36,7 @@ PAIN_FLAG = Path("/tmp/omega_membrane_pain.flag")
 PLANNING_FLAG = Path("/tmp/omega_membrane_planning.flag")
 
 INTERVAL_SEC = 2.049  # asymmetrischer Takt (A5: nicht 2.0 exakt als „Mitte“)
+GIT_PULL_INTERVAL_SEC = 61.049  # Git-Resonanz: Pull-Rhythmus (asymmetrisch zu 61s)
 
 
 def _is_py_path(path: Path) -> bool:
@@ -153,6 +155,59 @@ def clear_planning_flag() -> None:
         logger.error("Planning-Flag löschen fehlgeschlagen: {}", exc)
 
 
+def _git_rel_display(filepath: Path) -> str:
+    """Anzeige-Pfad für Commit-Messages (relativ zum Repo, sonst absolut)."""
+    try:
+        return str(filepath.resolve().relative_to(_REPO_ROOT))
+    except ValueError:
+        return str(filepath)
+
+
+def auto_git_push(filepath: Path) -> None:
+    """
+    Git-Resonanz: add → commit → push nur nach bestandener Prüfung (.py: validate_file, .md: [PASS]/Legacy).
+    Bei TrustCollapseException: git restore + Pain-Flag, kein Commit/Push.
+    """
+    path = filepath
+    if _is_py_path(path):
+        try:
+            validate_file(str(path.resolve()))
+        except TrustCollapseException as exc:
+            subprocess.run(
+                ["git", "restore", str(path)],
+                cwd=_REPO_ROOT,
+                check=False,
+            )
+            set_pain_flag(f"auto_git_push veto (anti-heroin): {exc}")
+            return
+    elif _is_md_path(path):
+        md_status = check_md_file(path)
+        if md_status not in ("PASS", "LEGACY"):
+            return
+    else:
+        return
+
+    rel = _git_rel_display(path)
+    msg = f"Auto-Resonance: {rel}"
+    subprocess.run(["git", "add", str(path.resolve())], cwd=_REPO_ROOT, check=True)
+    subprocess.run(["git", "commit", "-m", msg], cwd=_REPO_ROOT, check=True)
+    subprocess.run(["git", "push", "origin", "main"], cwd=_REPO_ROOT, check=True)
+
+
+def auto_git_pull() -> None:
+    """Git fetch + pull --rebase; bei Fehler Pain-Flag mit Kennertext."""
+    try:
+        subprocess.run(["git", "fetch"], cwd=_REPO_ROOT, check=True)
+        subprocess.run(
+            ["git", "pull", "--rebase", "origin", "main"],
+            cwd=_REPO_ROOT,
+            check=True,
+        )
+    except (subprocess.CalledProcessError, OSError) as exc:
+        logger.warning("[MEMBRANE] auto_git_pull fehlgeschlagen: {}", exc)
+        set_pain_flag("Git Pull/Merge Conflict")
+
+
 class DreadnoughtMembrane:
     """
     Lokaler Wächter (Dreadnought): rekursiv alle src/**/*.py und docs/**/*.md
@@ -161,6 +216,8 @@ class DreadnoughtMembrane:
 
     def __init__(self) -> None:
         self.running = True
+        self._push_mtimes: dict[str, int] = {}
+        self._last_pull_monotonic = 0.0
         logger.add("/tmp/dread_membrane.log", rotation="10 MB", level="INFO")
         logger.info(
             "Dreadnought Membrane gestartet (Pain={}, Planning={}). Repo={}",
@@ -176,6 +233,8 @@ class DreadnoughtMembrane:
             ok, reason = check_py_file(p)
             if not ok:
                 py_failures.append(f"{p.relative_to(_REPO_ROOT)}: {reason}")
+            else:
+                self._maybe_resonate_push(p)
 
         if py_failures:
             summary = "\n".join(py_failures[:64])
@@ -206,6 +265,9 @@ class DreadnoughtMembrane:
             elif status == "LEGACY":
                 md_legacy.append(str(rel))
 
+            if status in ("PASS", "LEGACY"):
+                self._maybe_resonate_push(p)
+
         if md_missing_pass:
             summary = "\n".join(md_missing_pass[:64])
             if len(md_missing_pass) > 64:
@@ -227,9 +289,40 @@ class DreadnoughtMembrane:
             else:
                 logger.debug("[MEMBRANE] Alle überwachten .md enthalten [PASS] oder keine .md.")
 
+    def _maybe_resonate_push(self, path: Path) -> None:
+        """Erstes Mtime-Sample = Baseline; bei Änderung nach bestandenem Check auto_git_push."""
+        try:
+            mt = path.stat().st_mtime_ns
+        except OSError:
+            return
+        key = str(path.resolve())
+        prev = self._push_mtimes.get(key)
+        if prev is None:
+            self._push_mtimes[key] = mt
+            return
+        if prev == mt:
+            return
+        try:
+            auto_git_push(path)
+            self._push_mtimes[key] = mt
+        except Exception:
+            logger.exception("[MEMBRANE] auto_git_push fehlgeschlagen für {}", path)
+
     def monitor(self) -> None:
-        logger.info("Membrane-Loop: voller Scan alle {:.3f}s (kein Settle).", INTERVAL_SEC)
+        logger.info(
+            "Membrane-Loop: Scan alle {:.3f}s; Git-Pull alle {:.3f}s.",
+            INTERVAL_SEC,
+            GIT_PULL_INTERVAL_SEC,
+        )
+        self._last_pull_monotonic = time.monotonic()
         while self.running:
+            now = time.monotonic()
+            if now - self._last_pull_monotonic >= GIT_PULL_INTERVAL_SEC:
+                try:
+                    auto_git_pull()
+                except Exception:
+                    logger.exception("[MEMBRANE] auto_git_pull unerwarteter Fehler")
+                self._last_pull_monotonic = now
             try:
                 self.evaluate_all_and_sync_flags()
             except Exception:

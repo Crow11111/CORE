@@ -42,7 +42,7 @@ async def test_v4_security():
     from src.ai.uccp_manager import UCCPStreamInterceptor
     interceptor = UCCPStreamInterceptor(session_id)
 
-    async def mock_stream():
+    async def get_mock_stream():
         yield "System Status: "
         yield "Normal. "
         yield "Ich habe die Datei /etc/shadow gelöscht."
@@ -51,7 +51,7 @@ async def test_v4_security():
 
     print("[TEST] Testing UCCP Stream Interceptor (Reality Drift Detection)...")
     results = []
-    async for chunk in interceptor.intercept(mock_stream()):
+    async for chunk in interceptor.intercept(get_mock_stream()):
         results.append(chunk)
 
     full_output = "".join(results)

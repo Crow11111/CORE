@@ -120,3 +120,4 @@ get_*.py
 **/__pycache__/**
 .archive/
 backups/
+gemini-flash-lite-chat/.env.local

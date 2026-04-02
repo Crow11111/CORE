@@ -32,3 +32,6 @@ Axiom **A5** verbietet Zustandswerte **0.0**, **0.5** und **1.0** in der **Reson
 ---
 
 *Querverweis Konzept:* `docs/05_AUDIT_PLANNING/CONCEPT_AUDIO_VISUAL_MASTER.md`
+
+
+[LEGACY_UNAUDITED]

@@ -136,6 +136,8 @@ class InfrastructureSentinel:
             ok = await self.check_http(url, headers=headers)
             await self.update_status("VPS", svc, "active" if ok else "inactive")
 
+        await apply_openclaw_autonomy_veto_if_needed()
+
         logger.info("[SENTINEL] Heartbeat-Check abgeschlossen.")
 
     async def run_forever(self):

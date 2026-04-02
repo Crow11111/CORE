@@ -43,7 +43,7 @@ async def apply_openclaw_autonomy_veto_if_needed() -> None:
     AUTONOMY_VETO_FLAG_PATH.write_text("Gateway Down", encoding="utf-8")
     log_path = _pacemaker_pathology_log_path()
     line = (
-        f"{datetime.utcnow().isoformat()}Z "
+        f"{datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')} "
         "PATHOLOGY asystole / openclaw gateway dead — autonomy veto "
         f"(check_gateway: {msg})\n"
     )

@@ -11,6 +11,9 @@ from dotenv import load_dotenv
 from src.db.multi_view_client import _run_pg_sql
 from src.network import openclaw_client
 
+# TICKET_10 / Tests: gebundenes Symbol für patch.object(ih, "check_gateway_async", ...)
+check_gateway_async = openclaw_client.check_gateway_async
+
 # CORE Infrastructure Heartbeat Service
 # Vector: 2210 | Resonance: 0221 | Delta: 0.049
 
@@ -34,7 +37,7 @@ async def apply_openclaw_autonomy_veto_if_needed() -> None:
     """
     Prüft das OpenClaw-Gateway (check_gateway_async); bei Fehlschlag: Veto-Flag + Pathologie-Log (asystole).
     """
-    ok, msg = await openclaw_client.check_gateway_async()
+    ok, msg = await check_gateway_async()
     if ok:
         return
 

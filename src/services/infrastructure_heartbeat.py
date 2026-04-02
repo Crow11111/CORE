@@ -4,7 +4,7 @@ import subprocess
 import time
 import json
 import httpx
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from loguru import logger
 from dotenv import load_dotenv

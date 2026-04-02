@@ -18,6 +18,43 @@ load_dotenv()
 
 CHECK_INTERVAL = 60  # Sekunden
 
+# TICKET_10: Autonomie-Veto + Pathologie-Log (NMI/Asystole)
+AUTONOMY_VETO_FLAG_PATH = Path("/tmp/omega_autonomy_veto.flag")
+DEFAULT_PACEMAKER_PATHOLOGY_LOG = Path("/tmp/omega_pacemaker_pathology.log")
+
+
+def _pacemaker_pathology_log_path() -> Path:
+    env_p = os.environ.get("OMEGA_PACEMAKER_PATHOLOGY_LOG")
+    if env_p:
+        return Path(env_p)
+    return DEFAULT_PACEMAKER_PATHOLOGY_LOG
+
+
+async def apply_openclaw_autonomy_veto_if_needed() -> None:
+    """
+    Prüft das OpenClaw-Gateway; bei Fehlschlag: Veto-Flag + Pathologie-Log (asystole).
+    Nutzt check_gateway im Worker-Thread, damit TICKET_10-Mocks auf openclaw_client.check_gateway greifen
+    und keine asyncio.run-Schachtelung in der laufenden Schleife entsteht.
+    """
+    ok, msg = await asyncio.to_thread(openclaw_client.check_gateway)
+    if ok:
+        return
+
+    AUTONOMY_VETO_FLAG_PATH.write_text("Gateway Down", encoding="utf-8")
+    log_path = _pacemaker_pathology_log_path()
+    line = (
+        f"{datetime.utcnow().isoformat()}Z "
+        "PATHOLOGY asystole / openclaw gateway dead — autonomy veto "
+        f"(check_gateway: {msg})\n"
+    )
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    with log_path.open("a", encoding="utf-8") as f:
+        f.write(line)
+    logger.error(
+        "[PACEMAKER] asystole / openclaw gateway dead — wrote autonomy veto flag %s",
+        AUTONOMY_VETO_FLAG_PATH,
+    )
+
 class InfrastructureSentinel:
     def __init__(self):
         self.vps_host = os.getenv("VPS_HOST", "187.77.68.250")

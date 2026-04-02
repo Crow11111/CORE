@@ -32,11 +32,9 @@ def _pacemaker_pathology_log_path() -> Path:
 
 async def apply_openclaw_autonomy_veto_if_needed() -> None:
     """
-    Prüft das OpenClaw-Gateway; bei Fehlschlag: Veto-Flag + Pathologie-Log (asystole).
-    Nutzt check_gateway im Worker-Thread, damit TICKET_10-Mocks auf openclaw_client.check_gateway greifen
-    und keine asyncio.run-Schachtelung in der laufenden Schleife entsteht.
+    Prüft das OpenClaw-Gateway (check_gateway_async); bei Fehlschlag: Veto-Flag + Pathologie-Log (asystole).
     """
-    ok, msg = await asyncio.to_thread(openclaw_client.check_gateway)
+    ok, msg = await openclaw_client.check_gateway_async()
     if ok:
         return
 

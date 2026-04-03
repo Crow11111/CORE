@@ -20,7 +20,7 @@ def validate_agent_preflight(agent_id: str, memory_hash: str | None = None) -> N
         raise PreFlightVetoException(
             f"memory_hash required for agent pre-flight (agent_id={agent_id!r})"
         )
-    if memory_hash == "":
+    if not memory_hash.strip():
         raise PreFlightVetoException(
             f"memory_hash must not be empty (agent_id={agent_id!r})"
         )

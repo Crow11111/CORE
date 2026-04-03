@@ -58,6 +58,10 @@ def create_efference_copy(
         signature=signature
     )
 
+def _proposed_action_signature_sha256(proposed_action: Dict[str, Any]) -> str:
+    """Canonical SHA256 hex digest over proposed_action (A7 binding, JSON sort_keys)."""
+    return hashlib.sha256(json.dumps(proposed_action, sort_keys=True).encode()).hexdigest()
+
 def _has_asymmetry_violation(data: Any) -> bool:
     if isinstance(data, dict):
         for value in data.values():

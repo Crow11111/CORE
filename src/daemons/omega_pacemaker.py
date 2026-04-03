@@ -459,8 +459,6 @@ async def _async_main() -> None:
     ibi_window: deque[float] = deque(maxlen=W_IBI)
     mu_L_history: deque[float] = deque(maxlen=M_MONO)
     last_tick_end_mono: Optional[float] = None
-    _last_gain_used_exp = False
-    _last_loss_used_exp = False
 
     while True:
         latencies, homeo_ok = await _measure_homeostase_latencies()
@@ -480,11 +478,9 @@ async def _async_main() -> None:
 
         value_proof = await _evaluate_value_proof_async()
         D = _compute_D(R, rmssd_star, T_NOMINAL, PHI)
-        V_before = V
-        R_before = R
         V = _update_v_exponential(V, R, D, value_proof)
-        R = _update_r_from_metrics(R, rmssd_star, T_NOMINAL, mu_L_history)
         mu_L_history.append(mu_L)
+        R = _update_r_from_metrics(R, rmssd_star, T_NOMINAL, mu_L_history)
 
         if os.environ.get("OMEGA_PACEMAKER_INVARIANTS", "").strip() == "1":
             assert math.isfinite(V) and math.isfinite(R) and math.isfinite(D)
@@ -503,10 +499,6 @@ async def _async_main() -> None:
         if last_tick_end_mono is not None:
             ibi_window.append(tick_end - last_tick_end_mono)
         last_tick_end_mono = tick_end
-
-        if os.environ.get("OMEGA_PACEMAKER_INVARIANTS", "").strip() == "1":
-            _invariants_check_v_used_exp()
-            assert (V_before != V) or (R_before != R) or True
 
 
 def main() -> None:

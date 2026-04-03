@@ -13,7 +13,7 @@
 
 `.venv/bin/python -m pytest tests/test_pacemaker.py tests/test_admission_control.py tests/test_arbitration.py tests/test_efference_veto.py tests/test_temporal_alignment.py`
 
-**Ergebnis (Stand Re-Audit):** **34 passed, 6 skipped** (Laufzeit ~0,26 s).
+**Ergebnis (Stand Re-Audit):** **42 passed, 6 skipped** (Laufzeit ~0,28 s).
 
 - **Skipped:** Integrationsfallen in `tests/test_pacemaker.py`, die `POSTGRES_DSN` und/oder erreichbare **Chroma** voraussetzen (laut `pytest.skip`).
 

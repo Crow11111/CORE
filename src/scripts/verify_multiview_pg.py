@@ -75,19 +75,19 @@ def get_chroma_counts() -> dict[str, int]:
 def main() -> int:
     pg_count = get_pg_count()
     chroma_counts = get_chroma_counts()
-    
+
     print("=== [MULTI-VIEW SYSTEM STATUS] ===")
     if pg_count >= 0:
         print(f"[PASS] PostgreSQL: {pg_count} Einträge.")
     else:
         print("[FAIL] PostgreSQL nicht erreichbar oder Fehler.")
-        
+
     all_chroma_synced = True
     for coll, count in chroma_counts.items():
         print(f"[INFO] ChromaDB '{coll}': {count} Einträge.")
         if count == 0:
             all_chroma_synced = False
-            
+
     if pg_count > 0 and not any(chroma_counts.values()):
         print("[WARN] Keine Einträge in ChromaDB gefunden!")
     elif pg_count > 0 and any(c < pg_count for c in chroma_counts.values()):

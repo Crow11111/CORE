@@ -1,5 +1,7 @@
 import math
 
+from src.logic_core.efference_veto import ReleaseToken
+
 class HawkingRadiationDropError(Exception):
     pass
 
@@ -43,6 +45,9 @@ def adjust_trust_level(current_trust: float, pe: float) -> float:
         
     return float(new_trust)
 
+# P-Vektor (Isolation-Queue): monotoner Zähler pro erfolgreichem Kardanic-Rescue (O2 Axiom).
+_kardanic_isolation_queue_counter: int = 0
+
 def apply_kardanic_rescue(context_mass: float, trust_level: float, pe: float) -> tuple[complex, int]:
     if trust_level > 0.049:
         raise RuntimeError("No rescue needed, trust level > 0.049")
@@ -51,12 +56,14 @@ def apply_kardanic_rescue(context_mass: float, trust_level: float, pe: float) ->
         raise HawkingRadiationDropError("Context mass too large and PE extreme: Purge.")
         
     rescue_vector = (-context_mass) * 1j
-    queue_counter = int(1)
-    
+    global _kardanic_isolation_queue_counter
+    _kardanic_isolation_queue_counter += 1
+    queue_counter = _kardanic_isolation_queue_counter
+
     return rescue_vector, queue_counter
 
 def dispatch_to_evolution(action_payload: dict, release_token: object) -> str:
-    if release_token is None:
+    if not isinstance(release_token, ReleaseToken):
         raise ValueError("Invalid release token.")
         
     action_payload["state"] = str("sent")

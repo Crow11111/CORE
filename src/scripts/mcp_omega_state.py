@@ -77,6 +77,54 @@ async def update_handbook(role: str, content: str) -> str:
     except Exception as e:
         return f"[FAIL] Fehler beim Aktualisieren des Handbuchs via Proxy: {e}"
 
+
+@mcp.tool()
+async def get_episodic_history(agent_id: str | None = None, limit: int = 100) -> str:
+    """
+    Liefert die chronologische Event-Historie aus PostgreSQL (omega_events) für Pre-Flight /
+    Episodisches Gedächtnis. Delegiert nicht an den 8049-Proxy — direkter PG-Pfad (TICKET 11).
+    """
+    if isinstance(limit, bool) or not isinstance(limit, int):
+        limit = 100
+    rows = await _omega_event_store.get_history(agent_id=agent_id, limit=limit)
+    return json.dumps(
+        {"events": rows, "count": len(rows)},
+        ensure_ascii=False,
+        default=str,
+    )
+
+
+@mcp.tool()
+async def record_event(agent_id: str, event_type: str, content_json: str, memory_hash: str) -> str:
+    """
+    Schreibt ein append-only Event in omega_events (Abschluss / Audit). content_json muss
+    gültiges JSON sein; memory_hash ist Pflicht (Zero-Trust).
+    """
+    raw = (content_json or "").strip()
+    if not raw:
+        raw = "{}"
+    try:
+        body = json.loads(raw)
+    except json.JSONDecodeError as e:
+        return json.dumps(
+            {
+                "success": False,
+                "id": None,
+                "error": f"content_json parse error: {e}",
+            },
+            ensure_ascii=False,
+        )
+    if not isinstance(body, dict):
+        body = {"payload": body}
+    result = await _omega_event_store.record_event(
+        agent_id=agent_id,
+        event_type=event_type,
+        content=body,
+        memory_hash=memory_hash,
+    )
+    return json.dumps(result, ensure_ascii=False)
+
+
 def main() -> None:
     mcp.run(transport="stdio")
 

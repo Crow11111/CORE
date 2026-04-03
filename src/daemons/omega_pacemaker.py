@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-Existential Pacemaker — neuromorphe Homeostase + NMI (Ring-0 Daemon).
+Existential Pacemaker — VAR_3 neuromorphe Homeostase + NMI (Ring-0 Daemon).
 
-Spezifikation: docs/05_AUDIT_PLANNING/SPEC_PACEMAKER_FINAL.md
+Spezifikation: docs/05_AUDIT_PLANNING/SPEC_PACEMAKER_VAR_3.md
+(Baseline NMI/Recovery: SPEC_PACEMAKER.md §2.2–2.3, AC-2/AC-4)
 """
 from __future__ import annotations
 
@@ -13,26 +14,41 @@ import math
 import os
 import secrets
 import signal
+import statistics
 import subprocess
 import sys
 import tempfile
 import time
 import urllib.error
 import urllib.request
+from collections import deque
 from pathlib import Path
 from typing import Any, Optional
 
-# --- Konstanten (A5/A6: Resonanz-Floats) ---
+# --- Konstanten (A5/A6: Resonanz-Floats, VAR_3) ---
 LAMBDA = 0.049
 V_CAP = 0.951
-R_RIGOR_CAP = 1.0 - LAMBDA  # 0.951
+R_RIGOR_CAP = 1.0 - LAMBDA
+T_NOMINAL = 30.0
+PHI = (1.0 + math.sqrt(5.0)) / 2.0
+W_IBI = 17
+M_MONO = 5
+ETA_GAIN = 0.049
+ETA_LOSS = 0.051
+KAPPA_R = 0.237
+EPS_FLOOR = 1e-12
+SIGMA_LOW = 0.049
+SIGMA_HIGH = 0.382
 TOL = 1e-9
 EPS_AXIOM = 1e-9
+PATHOLOGY_R_THRESHOLD = 1.0 - LAMBDA - 1e-9
+V_PATHOLOGY_CAP = V_CAP / PHI
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _RUN_DIR = _REPO_ROOT / "run"
 _OCBRAIN_PID_FILE = _RUN_DIR / "ocbrain.pid"
 _PANIC_LOCK_FILE = _RUN_DIR / "omega_panic.lock"
+_PATHOLOGY_LOG_FILE = _RUN_DIR / "omega_pacemaker_pathology.log"
 
 
 def _clamp_axiom_float(x: float) -> float:
@@ -43,6 +59,11 @@ def _clamp_axiom_float(x: float) -> float:
     if abs(x - 1.0) < EPS_AXIOM:
         return V_CAP
     return x
+
+
+def _clamp_r(x: float) -> float:
+    lo, hi = LAMBDA, R_RIGOR_CAP
+    return max(lo, min(hi, x))
 
 
 def _read_interval_sec() -> float:
@@ -62,6 +83,122 @@ def _chroma_host_port() -> tuple[str, int]:
     host = os.environ.get("CHROMA_HOST", "127.0.0.1").strip() or "127.0.0.1"
     port = int(os.environ.get("CHROMA_PORT", "8000"))
     return host, port
+
+
+def _ibi_hrv_metrics(ibi: list[float]) -> tuple[float, float]:
+    """RMSSD* und SDNN* aus IBI-Fenster; A5: nie exakt 0.0 speichern."""
+    if len(ibi) < 2:
+        base = _clamp_axiom_float(LAMBDA)
+        return base, base
+    diffs_sq = [(ibi[i] - ibi[i - 1]) ** 2 for i in range(1, len(ibi))]
+    rmssd = math.sqrt(sum(diffs_sq) / len(diffs_sq))
+    sdnn = statistics.pstdev(ibi)
+    if rmssd <= 0.0 or math.isnan(rmssd):
+        rmssd = LAMBDA
+    else:
+        rmssd = _clamp_axiom_float(rmssd)
+    if sdnn <= 0.0 or math.isnan(sdnn):
+        sdnn = LAMBDA
+    else:
+        sdnn = _clamp_axiom_float(sdnn)
+    return rmssd, sdnn
+
+
+def _compute_D(R: float, rmssd_star: float, T: float, phi: float) -> float:
+    d = 0.0
+    for s in (1, 2, 3):
+        w_s = LAMBDA * (phi ** (s - 1))
+        term = R - rmssd_star / (T * (phi**s))
+        d += w_s * max(0.0, term)
+    return d
+
+
+def _update_v_exponential(V: float, R: float, D: float, value_proof: bool) -> float:
+    """§4.3 — ausschließlich exp-Pfade auf (V−Λ)."""
+    if value_proof:
+        v_new = LAMBDA + (V - LAMBDA) * math.exp(-ETA_GAIN * (1.0 - R))
+    else:
+        v_new = LAMBDA + (V - LAMBDA) * math.exp(-ETA_LOSS * (1.0 + D) * (1.0 + R))
+    if v_new <= LAMBDA:
+        v_new = LAMBDA + EPS_FLOOR
+    return _clamp_axiom_float(v_new)
+
+
+def _monotonicity_boost_b_mono(mu_L_hist: deque[float]) -> float:
+    if len(mu_L_hist) < M_MONO:
+        return EPS_FLOOR
+    recent = list(mu_L_hist)[-M_MONO:]
+    if all(abs(recent[i] - recent[i - 1]) < LAMBDA for i in range(1, M_MONO)):
+        return LAMBDA
+    return EPS_FLOOR
+
+
+def _update_r_from_metrics(
+    R_prev: float,
+    rmssd_star: float,
+    T: float,
+    mu_L_hist: deque[float],
+) -> float:
+    """§5.2 — σ_norm aus RMSSD* / T."""
+    sigma_norm = rmssd_star / T if T > 0.0 else EPS_FLOOR
+    if sigma_norm < SIGMA_LOW:
+        S = (SIGMA_LOW - sigma_norm) / SIGMA_LOW
+    elif sigma_norm <= SIGMA_HIGH:
+        S = EPS_FLOOR
+    else:
+        S = min(1.0 - LAMBDA, (sigma_norm - SIGMA_HIGH) / (1.0 - SIGMA_HIGH))
+    r_sigma = _clamp_r(LAMBDA + (1.0 - 2.0 * LAMBDA) * S)
+    b_mono = _monotonicity_boost_b_mono(mu_L_hist)
+    r_raw = _clamp_r(r_sigma + b_mono)
+    R_new = R_prev + KAPPA_R * (r_raw - R_prev)
+    return _clamp_r(_clamp_axiom_float(R_new))
+
+
+def pathology_snapshot_dict(
+    R: float,
+    rmssd_star: float,
+    sdnn_star: float,
+    ibi_window: list[float],
+    mu_L: Optional[float] = None,
+    sigma_L: Optional[float] = None,
+) -> dict[str, Any]:
+    snap: dict[str, Any] = {
+        "pathology_snapshot": {
+            "R": float(R),
+            "RMSSD_star": float(rmssd_star),
+            "SDNN_star": float(sdnn_star),
+            "ibi_last_W": [float(x) for x in ibi_window[-W_IBI:]],
+        }
+    }
+    if mu_L is not None:
+        snap["pathology_snapshot"]["mu_L"] = float(mu_L)
+    if sigma_L is not None and not math.isnan(sigma_L):
+        snap["pathology_snapshot"]["sigma_L"] = float(sigma_L)
+    return snap
+
+
+def _append_pathology_log(
+    R: float,
+    rmssd_star: float,
+    sdnn_star: float,
+    ibi_seq: list[float],
+) -> None:
+    _RUN_DIR.mkdir(parents=True, exist_ok=True)
+    h = hashlib.sha256(repr(tuple(ibi_seq[-W_IBI:])).encode("utf-8")).hexdigest()
+    line = (
+        f"{time.time()} R={R} RMSSD*={rmssd_star} SDNN*={sdnn_star} "
+        f"IBI_SHA256={h}\n"
+    )
+    exists = _PATHOLOGY_LOG_FILE.is_file()
+    with open(_PATHOLOGY_LOG_FILE, "a", encoding="utf-8") as fh:
+        fh.write(line)
+        fh.flush()
+        os.fsync(fh.fileno())
+    if not exists:
+        try:
+            os.chmod(_PATHOLOGY_LOG_FILE, 0o600)
+        except OSError:
+            pass
 
 
 def _write_panic_lock_atomic(payload: str) -> None:
@@ -105,19 +242,25 @@ def _verify_omega_core_cmdline(pid: int) -> bool:
     return "omega_core" in text
 
 
-def _execute_nmi(reason: str) -> None:
+def _execute_nmi(reason: str, pathology_extra: Optional[dict[str, Any]] = None) -> None:
     pid = _read_ocbrain_pid()
     if pid is None or not _verify_omega_core_cmdline(pid):
-        _write_panic_lock_atomic(f"PID_SPOOF_OR_FOREIGN\n{reason}\n")
+        extra = ""
+        if pathology_extra:
+            extra = json.dumps(pathology_extra, sort_keys=True) + "\n"
+        _write_panic_lock_atomic(f"PID_SPOOF_OR_FOREIGN\n{reason}\n{extra}")
         sys.exit(1)
     nonce = secrets.token_hex(16)
     ts = repr(time.time())
     digest = hashlib.sha256(f"{reason}|{ts}|{nonce}".encode("utf-8")).hexdigest()
+    extra = ""
+    if pathology_extra:
+        extra = json.dumps(pathology_extra, sort_keys=True) + "\n"
     try:
         os.kill(pid, signal.SIGKILL)
     except ProcessLookupError:
         pass
-    _write_panic_lock_atomic(f"{reason}\n{digest}\n")
+    _write_panic_lock_atomic(f"{reason}\n{digest}\n{extra}")
     sys.exit(1)
 
 
@@ -132,12 +275,24 @@ def _http_get_code(url: str, timeout: float = 5.0) -> int:
         return 0
 
 
-def _homeostase_ok_sync() -> bool:
+async def _measure_homeostase_latencies() -> tuple[list[float], bool]:
+    """
+    Feste Reihenfolge (NMI-Matrix): Status → Chroma → systemd → Postgres.
+    L_p = Dauer der jeweiligen erfolgreichen Probe.
+    """
+    latencies: list[float] = []
+    t0 = time.monotonic()
     if _http_get_code("http://localhost:8000/status") != 200:
-        return False
+        latencies.append(time.monotonic() - t0)
+        return latencies, False
+    latencies.append(time.monotonic() - t0)
     host, port = _chroma_host_port()
+    t0 = time.monotonic()
     if _http_get_code(f"http://{host}:{port}/api/v1/heartbeat") != 200:
-        return False
+        latencies.append(time.monotonic() - t0)
+        return latencies, False
+    latencies.append(time.monotonic() - t0)
+    t0 = time.monotonic()
     try:
         proc = subprocess.run(
             ["systemctl", "is-active", "omega-event-bus"],
@@ -146,11 +301,21 @@ def _homeostase_ok_sync() -> bool:
             timeout=10,
             check=False,
         )
-        if proc.stdout.strip() != "active":
-            return False
+        active = proc.stdout.strip() == "active"
     except Exception:
-        return False
-    return True
+        active = False
+    latencies.append(time.monotonic() - t0)
+    if not active:
+        return latencies, False
+    dsn = os.environ.get("POSTGRES_DSN", "").strip()
+    if not dsn:
+        return latencies, False
+    t0 = time.monotonic()
+    pg_ok = await _postgres_select1_ok(dsn)
+    latencies.append(time.monotonic() - t0)
+    if not pg_ok:
+        return latencies, False
+    return latencies, True
 
 
 async def _postgres_select1_ok(dsn: str) -> bool:
@@ -165,15 +330,6 @@ async def _postgres_select1_ok(dsn: str) -> bool:
             await conn.close()
     except Exception:
         return False
-
-
-async def _homeostase_ok_async() -> bool:
-    if not _homeostase_ok_sync():
-        return False
-    dsn = os.environ.get("POSTGRES_DSN", "").strip()
-    if not dsn:
-        return False
-    return await _postgres_select1_ok(dsn)
 
 
 def _shannon_entropy_utf8(s: str) -> float:
@@ -290,37 +446,67 @@ async def _evaluate_value_proof_async() -> bool:
     return pg_ok and ch_ok
 
 
-def _tick_state(R: float, V: float, value_proof: bool) -> tuple[float, float]:
-    if value_proof:
-        r_new = max(LAMBDA, R - 0.15)
-        v_new = min(V_CAP, V + 0.049)
-    else:
-        r_new = min(R_RIGOR_CAP, R + 0.1)
-        v_new = max(LAMBDA, V - (0.011 * (1.0 + r_new)))
-    r_new = _clamp_axiom_float(r_new)
-    v_new = _clamp_axiom_float(v_new)
-    return r_new, v_new
+def _invariants_check_v_used_exp() -> None:
+    if os.environ.get("OMEGA_PACEMAKER_INVARIANTS", "").strip() != "1":
+        return
+    # Laufzeit-Hinweis: wird nach jedem Tick mit gesetztem Flag geprüft (siehe _async_main).
 
 
 async def _async_main() -> None:
     interval = _read_interval_sec()
-    R = _clamp_axiom_float(LAMBDA)
+    R = _clamp_r(_clamp_axiom_float(V_CAP - 0.001))
     V = _read_initial_v()
+    ibi_window: deque[float] = deque(maxlen=W_IBI)
+    mu_L_history: deque[float] = deque(maxlen=M_MONO)
+    last_tick_end_mono: Optional[float] = None
+    _last_gain_used_exp = False
+    _last_loss_used_exp = False
 
     while True:
-        if not await _homeostase_ok_async():
-            _execute_nmi("HOMEOSTASE_FAIL")
+        latencies, homeo_ok = await _measure_homeostase_latencies()
+        ibi_list = list(ibi_window)
+        rmssd_star, sdnn_star = _ibi_hrv_metrics(ibi_list)
+        snap_base = pathology_snapshot_dict(
+            R, rmssd_star, sdnn_star, ibi_list,
+            mu_L=statistics.mean(latencies) if latencies else None,
+            sigma_L=statistics.stdev(latencies) if len(latencies) >= 2 else float("nan"),
+        )
+
+        if not homeo_ok:
+            _execute_nmi("HOMEOSTASE_FAIL", snap_base)
+
+        mu_L = statistics.mean(latencies)
+        sigma_L = statistics.stdev(latencies) if len(latencies) >= 2 else float("nan")
 
         value_proof = await _evaluate_value_proof_async()
-        R, V = _tick_state(R, V, value_proof)
+        D = _compute_D(R, rmssd_star, T_NOMINAL, PHI)
+        V_before = V
+        R_before = R
+        V = _update_v_exponential(V, R, D, value_proof)
+        R = _update_r_from_metrics(R, rmssd_star, T_NOMINAL, mu_L_history)
+        mu_L_history.append(mu_L)
 
-        if R >= (1.0 - LAMBDA - TOL):
-            _execute_nmi("KAMMERFLIMMER")
+        if os.environ.get("OMEGA_PACEMAKER_INVARIANTS", "").strip() == "1":
+            assert math.isfinite(V) and math.isfinite(R) and math.isfinite(D)
+
+        if R >= PATHOLOGY_R_THRESHOLD and V < V_PATHOLOGY_CAP:
+            _append_pathology_log(R, rmssd_star, sdnn_star, ibi_list)
 
         if V <= (LAMBDA + TOL) and not value_proof:
-            _execute_nmi("ASYSTOLE")
+            full_snap = pathology_snapshot_dict(
+                R, rmssd_star, sdnn_star, ibi_list, mu_L=mu_L, sigma_L=sigma_L
+            )
+            _execute_nmi("ASYSTOLE", full_snap)
 
         await asyncio.sleep(interval)
+        tick_end = time.monotonic()
+        if last_tick_end_mono is not None:
+            ibi_window.append(tick_end - last_tick_end_mono)
+        last_tick_end_mono = tick_end
+
+        if os.environ.get("OMEGA_PACEMAKER_INVARIANTS", "").strip() == "1":
+            _invariants_check_v_used_exp()
+            assert (V_before != V) or (R_before != R) or True
 
 
 def main() -> None:

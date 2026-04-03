@@ -36,6 +36,14 @@ def get_pg_count() -> int:
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=45)
         if r.returncode != 0:
+            err = (r.stderr or "").strip()[:500]
+            out = (r.stdout or "").strip()[:300]
+            hint = f" ssh_rc={r.returncode}"
+            if err:
+                hint += f" stderr={err!r}"
+            if out:
+                hint += f" stdout={out!r}"
+            print(f"[DIAG] PostgreSQL SSH/psql:{hint}")
             return -1
         out = r.stdout.strip()
         # Find the number in output like " 26984 \n(1 row)"
@@ -48,8 +56,8 @@ def get_pg_count() -> int:
         return -1
 
 def get_chroma_counts() -> dict[str, int]:
-    host = os.getenv("CHROMA_HOST", "187.77.68.250")
-    port = int(os.getenv("CHROMA_PORT", "8000"))
+    host = os.getenv("CHROMA_HOST", os.getenv("VPS_HOST", "187.77.68.250"))
+    port = int(os.getenv("CHROMA_PORT", "32768"))
     try:
         client = chromadb.HttpClient(host=host, port=port)
         results = {}

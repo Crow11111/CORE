@@ -23,6 +23,8 @@ if _REPO not in sys.path:
 
 from mcp.server.fastmcp import FastMCP
 
+from src.db import event_store_client as _omega_event_store
+
 mcp = FastMCP("OMEGA_STATE_NEXUS")
 PROXY_URL = "http://localhost:8049"
 

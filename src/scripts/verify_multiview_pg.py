@@ -52,7 +52,8 @@ def get_pg_count() -> int:
             if line.isdigit():
                 return int(line)
         return -1
-    except Exception:
+    except Exception as ex:
+        print(f"[DIAG] PostgreSQL SSH/psql: exception={type(ex).__name__}: {ex!s}")
         return -1
 
 def get_chroma_counts() -> dict[str, int]:

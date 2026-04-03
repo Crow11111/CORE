@@ -38,7 +38,14 @@ async def read_core_state() -> str:
             resp.raise_for_status()
             return resp.text
     except Exception as e:
-        return json.dumps({"error": str(e), "message": "Proxy auf Port 8049 nicht erreichbar oder VPS Offline"})
+        return json.dumps({
+            "error": str(e),
+            "message": (
+                "Kein HTTP-Dienst auf localhost:8049 (Sync-Relay/mTLS-State-Proxy). "
+                "Typisch: `state_mtls_proxy` / zugehöriger Daemon ist nicht gestartet — "
+                "nicht automatisch „VPS offline“."
+            ),
+        })
 
 @mcp.tool()
 async def read_handbook(role: str) -> str:

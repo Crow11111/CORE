@@ -488,6 +488,26 @@ async def _async_main() -> None:
             )
             _execute_nmi("ASYSTOLE", full_snap)
 
+        dbg_path = os.environ.get("OMEGA_PACEMAKER_DEBUG_METRICS_FILE", "").strip()
+        if dbg_path:
+            rec = {
+                "V": V,
+                "R": R,
+                "D": D,
+                "RMSSD_star": rmssd_star,
+                "SDNN_star": sdnn_star,
+                "ibi_n": len(ibi_list),
+            }
+            with open(dbg_path, "a", encoding="utf-8") as dfh:
+                dfh.write(json.dumps(rec, sort_keys=True) + "\n")
+                dfh.flush()
+
+        jraw = os.environ.get("OMEGA_PACEMAKER_TEST_TICK_JITTER_SEC_MAX", "").strip()
+        if jraw:
+            jmax = float(jraw)
+            if jmax > 0.0:
+                await asyncio.sleep(secrets.SystemRandom().uniform(0.0, jmax))
+
         await asyncio.sleep(interval)
         tick_end = time.monotonic()
         if last_tick_end_mono is not None:

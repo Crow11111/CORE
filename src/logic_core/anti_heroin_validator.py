@@ -6,6 +6,25 @@ import errno
 class TrustCollapseException(Exception):
     pass
 
+
+class PreFlightVetoException(Exception):
+    """Mandatory epistemic pre-flight failed (e.g. missing or empty memory_hash)."""
+
+
+def validate_agent_preflight(agent_id: str, memory_hash: str | None = None) -> None:
+    """
+    Zwingender Pre-Flight: Agent darf nicht ohne nachweisbaren memory_hash operieren.
+    Wirft PreFlightVetoException bei None oder leerem String.
+    """
+    if memory_hash is None:
+        raise PreFlightVetoException(
+            f"memory_hash required for agent pre-flight (agent_id={agent_id!r})"
+        )
+    if memory_hash == "":
+        raise PreFlightVetoException(
+            f"memory_hash must not be empty (agent_id={agent_id!r})"
+        )
+
 PREFIXES = [
     "get_", "set_", "is_", "has_", "to_", "as_", "serialize_", "default_",
     "config_", "supported_", "create_", "build_", "make_", "swap_",

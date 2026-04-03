@@ -446,12 +446,6 @@ async def _evaluate_value_proof_async() -> bool:
     return pg_ok and ch_ok
 
 
-def _invariants_check_v_used_exp() -> None:
-    if os.environ.get("OMEGA_PACEMAKER_INVARIANTS", "").strip() != "1":
-        return
-    # Laufzeit-Hinweis: wird nach jedem Tick mit gesetztem Flag geprüft (siehe _async_main).
-
-
 async def _async_main() -> None:
     interval = _read_interval_sec()
     R = _clamp_r(_clamp_axiom_float(V_CAP - 0.001))

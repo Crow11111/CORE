@@ -90,7 +90,13 @@ def attractor_evaluate(copy: EfferenceCopy, local_trust_level: float, history_id
         dispatch_pain_signal(reason)
         return VetoToken(reason=reason)
 
-    action_hash = hashlib.sha256(json.dumps(copy.proposed_action, sort_keys=True).encode()).hexdigest()
+    expected_signature = _proposed_action_signature_sha256(copy.proposed_action)
+    if copy.signature != expected_signature:
+        reason = "Trust collapse: efference signature mismatch (A7 zero-trust)"
+        dispatch_pain_signal(reason)
+        return VetoToken(reason=reason)
+
+    action_hash = expected_signature
     return ReleaseToken(action_hash=action_hash)
 
 def execute_action(action: Dict[str, Any], release_token: Union[ReleaseToken, VetoToken]) -> bool:

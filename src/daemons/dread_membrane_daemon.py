@@ -38,6 +38,24 @@ PLANNING_FLAG = Path("/tmp/omega_membrane_planning.flag")
 INTERVAL_SEC = 2.049  # asymmetrischer Takt (A5: nicht 2.0 exakt als „Mitte“)
 GIT_PULL_INTERVAL_SEC = 61.049  # Git-Resonanz: Pull-Rhythmus (asymmetrisch zu 61s)
 
+# Baryonisches Delta (Säule 4 / Kardanischer Operator): Apoptose nur unterhalb dieser Schwelle
+BARYONIC_DELTA = 0.049
+
+
+def purge_noise_event(event_id: str) -> None:
+    """Synaptisches Pruning / Noise-Event-Entfernung (Platzhalter: nur Telemetrie)."""
+    logger.debug("[MEMBRANE] purge_noise_event: {}", event_id)
+
+
+def trigger_apoptosis(entropy_value: float, event_id: str) -> None:
+    """
+    Kardanischer Operator: bei Entropie strikt unter BARYONIC_DELTA Apoptose (Purge) auslösen.
+    A6: Resonanzgröße explizit als float führen.
+    """
+    entropy_f = float(entropy_value)
+    if entropy_f < BARYONIC_DELTA:
+        purge_noise_event(event_id)
+
 
 def _is_py_path(path: Path) -> bool:
     """Nur echte .py-Endung (case-normalisiert), keine .py.txt-Loopholes über Suffix-Ketten."""

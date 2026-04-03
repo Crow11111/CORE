@@ -18,8 +18,8 @@ MONICA_URL = (os.getenv("MONICA_URL") or "").strip() or f"http://{VPS_HOST}:3276
 KONG_ADMIN_URL = (os.getenv("KONG_ADMIN_URL") or "").strip() or f"http://{VPS_HOST}:32773"
 
 def run_ssh(cmd: str) -> tuple[int, str]:
-    full = f'ssh -o ConnectTimeout=5 -o BatchMode=yes -i "{VPS_SSH_KEY}" root@{VPS_HOST} "{cmd}"'
-    r = subprocess.run(full, shell=True, capture_output=True, text=True, timeout=15)
+    full = f'ssh -o ConnectTimeout=15 -o BatchMode=yes -i "{VPS_SSH_KEY}" root@{VPS_HOST} "{cmd}"'
+    r = subprocess.run(full, shell=True, capture_output=True, text=True, timeout=45)
     return r.returncode, (r.stdout or "") + (r.stderr or "")
 
 def _container_up(lines: list[str], substring: str) -> bool:

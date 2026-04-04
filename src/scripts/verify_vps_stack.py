@@ -152,26 +152,25 @@ def _verify_kong_proxy_health(lines: list[str]) -> tuple[bool, str]:
         return False, f"[FAIL] Kong Proxy /health {exc}"
 
 
-def _verify_kong_proxy_status_hint(lines: list[str]) -> tuple[bool, str]:
+def _kong_proxy_status_hint_line(lines: list[str]) -> str:
     """
-    Optional: Kong → omega-core-backend /status. Kein harter Fail (Upstream systemd kann down sein);
-    Admin-Deck-Check bleibt maßgeblich.
+    Optional: Kong → omega-core-backend /status. Nur Hinweis — kein Exit-Fail (Upstream systemd kann down sein).
     """
     if not _container_up(lines, "kong-s7rk-kong"):
-        return True, "[--] Kong Proxy /status Hinweis übersprungen (kein Kong)"
+        return "[--] Kong Proxy /status Hinweis übersprungen (kein Kong)"
     url = f"http://{VPS_HOST}:{KONG_PROXY_HOST_PORT}/status"
     try:
         r = httpx.get(url, timeout=10.0)
         if r.status_code == 200:
             if "event_bus" in r.text:
-                return True, "[OK] Kong Proxy /status (HTTP 200, enthält event_bus)"
-            return True, "[OK] Kong Proxy /status (HTTP 200)"
+                return "[OK] Kong Proxy /status (HTTP 200, enthält event_bus)"
+            return "[OK] Kong Proxy /status (HTTP 200)"
         return (
-            True,
-            f"[--] Kong Proxy /status HTTP {r.status_code} (Admin-Route ok; Upstream ggf. nicht erreichbar)",
+            f"[--] Kong Proxy /status HTTP {r.status_code} "
+            "(Admin-Route separat geprüft; Upstream ggf. nicht erreichbar)"
         )
     except Exception as exc:
-        return True, f"[--] Kong Proxy /status: {exc} (nur Hinweis)"
+        return f"[--] Kong Proxy /status: {exc} (nur Hinweis)"
 
 
 def main():
@@ -213,10 +212,7 @@ def main():
             print(ph_msg)
             if not ph_ok:
                 ok = False
-            st_ok, st_msg = _verify_kong_proxy_status_hint(lines)
-            print(st_msg)
-            if not st_ok:
-                ok = False
+            print(_kong_proxy_status_hint_line(lines))
     # 2) Chroma v2 heartbeat
     try:
         r = httpx.get(

@@ -4,7 +4,7 @@
 **Status:** Kanonisches Soll-/Ist-Konzept (Operator-Audit 2026-04-04) — **§7 mit realem `docker ps` vom VPS befüllt** (Messung 2026-04-04).  
 **Zweck:** Aus **Plan**, **Tickets** und **messbarer Realität** **eine** erzählfähige Ordnung machen: wer darf wen wie erreichen, was „offen“ heißt, und wo Kong/MCP/Gedächtnis **nicht** dasselbe sind.
 
-**Querschnitt:** `LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md` · `VPS_KNOTEN_UND_FLUSSE.md` · **`VPS_HOST_PORT_CONTRACT.md`** · **`VPS_COMPOSE_PATHS.md`** · **`infra/vps/kong/kong-deck-reference.yaml`** · `MACRO_ARCHITECTURE_AUDIT.md` · `OMEGA_RESONANCE_ANCHOR.md` (§ Git-Resonanz) · Tickets **3–12** unter `docs/05_AUDIT_PLANNING/TICKET_*.md`
+**Querschnitt:** `LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md` · `VPS_KNOTEN_UND_FLUSSE.md` · **`VPS_HOST_PORT_CONTRACT.md`** · **`VPS_COMPOSE_PATHS.md`** · **`infra/vps/kong/kong-deck-reference.yaml`** · **`OMEGA_DETAILFLUSS_TICKETS_4_12_PROD_RUNTIME.md`** (Detail Push/Pull/Timing, Prod ohne Dread) · `MACRO_ARCHITECTURE_AUDIT.md` · `OMEGA_RESONANCE_ANCHOR.md` (§ Git-Resonanz) · Tickets **3–12** unter `docs/05_AUDIT_PLANNING/TICKET_*.md`
 
 ### Für den Operator (Architekt / PM)
 

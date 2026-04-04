@@ -51,7 +51,10 @@ def main():
         print(f"  Container gesamt: {len(lines)}")
     # 2) Chroma v2 heartbeat
     try:
-        r = httpx.get(f"http://{VPS_HOST}:{CHROMA_PORT}/api/v2/heartbeat", timeout=5.0)
+        r = httpx.get(
+            f"http://{VPS_HOST}:{CHROMA_PORT}/api/v2/heartbeat",
+            timeout=15.0,
+        )
         if r.status_code == 200 and "heartbeat" in r.text:
             print("[OK] Chroma v2 heartbeat")
         else:

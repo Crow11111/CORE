@@ -48,7 +48,7 @@ flowchart LR
 |--------|--------|---------------------------|
 | **Dreadnought** | 4D_RESONATOR (lokal) | omega-backend (:8000), omega-frontend (:3000), omega-event-bus, omega-watchdog, omega-vision, ollama (:11434) |
 | **Scout (Pi5)** | Edge, HA, Sensoren | Home Assistant (:8123), Ollama (:11434), Tapo/WhatsApp-Addon |
-| **VPS** | OMEGA_ATTRACTOR, OC Brain, Chroma, WhatsApp, CRM, Gateway | chroma-uvmy (:32768), openclaw-admin (:18789), openclaw-spine (:18790), evolution-api (:55775), monica (:32769), kong (:32773), mcp-server (:8001), ha-atlas (:18123) |
+| **VPS** | OMEGA_ATTRACTOR, OC Brain, Chroma, WhatsApp, CRM, Gateway | chroma-uvmy (**32779**), openclaw-admin (:18789), openclaw-spine (:18790), evolution-api (:55775), monica (**32772**), kong Proxy (**32776**), mcp-server (:8001), ha-atlas (:18123) — Vertrag `VPS_HOST_PORT_CONTRACT.md` |
 | **Cloud** | Gemini, Anthropic | API-Key aus .env |
 
 ---
@@ -69,7 +69,7 @@ Kurz: Triage → Ollama (Scout); Heavy → OpenClaw/Gemini bzw. Ollama-Fallback;
 | `curl -s http://localhost:8000/status` | Backend- und Event-Bus-Status |
 | `src/scripts/verify_vps_stack.py` | VPS: SSH, docker ps, Chroma v2 heartbeat |
 | `python -m src.scripts.run_whatsapp_e2e_ha` | WhatsApp E2E (HA → CORE → Antwort) |
-| `chroma_audit.py` | Lokale ChromaDB (falls vorhanden); VPS: curl :32768/api/v2/heartbeat |
+| `chroma_audit.py` | Lokale ChromaDB (falls vorhanden); VPS: `curl http://$VPS_HOST:${CHROMA_PORT:-32779}/api/v2/heartbeat` (Default = Vertrag) |
 
 ---
 
@@ -80,7 +80,7 @@ Kurz: Triage → Ollama (Scout); Heavy → OpenClaw/Gemini bzw. Ollama-Fallback;
 | Dreadnought → Backend | `curl -s http://localhost:8000/status` | JSON mit `event_bus.running` true |
 | Dreadnought → Scout (HA) | `curl -sk -H "Authorization: Bearer $HASS_TOKEN" $HASS_URL/api/` | 200, body „API running“ o. ä. |
 | Dreadnought → VPS (SSH) | `ssh -i $VPS_SSH_KEY root@$VPS_HOST "docker ps"` | Exit 0, Liste Container |
-| Dreadnought → VPS Chroma | `curl http://$VPS_HOST:32768/api/v2/heartbeat` | 200, JSON heartbeat |
+| Dreadnought → VPS Chroma | `curl http://$VPS_HOST:${CHROMA_PORT:-32779}/api/v2/heartbeat` | 200, JSON heartbeat |
 | Dreadnought → GitHub | `git push origin main` | Exit 0 |
 | WhatsApp E2E | `python -m src.scripts.run_whatsapp_e2e_ha` | Exit 0, Antwort im Chat |
 | MCP (Cursor) | MCP-Server „atlas-remote“ starten | Zugriff auf Workspace |

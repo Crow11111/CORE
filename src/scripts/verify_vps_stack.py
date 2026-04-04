@@ -128,6 +128,11 @@ def main():
             else:
                 print(f"[--] (optional) {label} nicht gefunden")
         print(f"  Container gesamt: {len(lines)}")
+        pc_ok, pc_msgs = verify_docker_ps_lines_tabbed(lines)
+        for pm in pc_msgs:
+            print(pm)
+        if not pc_ok:
+            ok = False
         k_ok, k_msg = _verify_kong_matches_deck_reference(lines)
         print(k_msg)
         if not k_ok:

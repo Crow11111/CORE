@@ -65,7 +65,7 @@ def _ssh_remote_shell(
     *,
     capture_output: bool = False,
     text: bool = False,
-) -> subprocess.CompletedProcess[str | bytes]:
+) -> subprocess.CompletedProcess:
     """
     Führt genau *ein* Remote-Kommando wie in der interaktiven Form
     ``ssh root@host 'mkdir -p … && …'`` aus.

@@ -125,4 +125,10 @@ Die Architektur-Dokumente beschreiben eine **breite** Zieltopologie: Dreadnought
 
 ---
 
+## 10. Nachtrag: MASTER-Umsetzung (Operator-Mandat, gleicher Tag)
+
+`MASTER_UMSETZUNG_VPS_PROD_OHNE_DREAD_2026-04-06.md` übersetzt die **Lücken aus §4–§8** in **Work-Pakete (WP-A0, …)** mit messbarer Abnahme; `VPS_ANTI_HEROIN_PIPELINE.md` definiert das VPS-Soll für den Scanner. **Urteil §1 [PARTIAL]** bleibt bestehen, bis die WP nacheinander **grün** sind — nicht nur Skript-Anpassung.
+
+---
+
 *[LEGACY_UNAUDITED]* — Dieses Dokument ist ein **Audit-Artefakt**; keine automatische Freigabe für Implementierung ohne gesonderte Producer-Vorgaben.

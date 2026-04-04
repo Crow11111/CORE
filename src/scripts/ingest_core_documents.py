@@ -200,6 +200,25 @@ def _root() -> Path:
     return Path(os.getenv("CORE_ROOT", "/OMEGA_CORE"))
 
 
+def vps_playbook_ingest_entries() -> list[tuple[Path, str]]:
+    """
+    VPS-Playbook: drei Doku-Dateien → eine logische source_collection (Multi-View / Chroma-Metadaten).
+
+    Collection-Name konsistent mit ingest_core_documents (Präfix core_*); Facetten-Collections
+    bleiben mv_keywords / mv_semantics / mv_media (multi_view_client).
+    """
+    root = _root()
+    coll = "core_vps_playbook"
+    return [
+        (root / "docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md", coll),
+        (root / "docs/03_INFRASTRUCTURE/HANDBOOK_INFRA_VPS_LOCAL_MIRROR.md", coll),
+        (
+            root / "docs/05_AUDIT_PLANNING/OMEGA_BACKEND_VPS_EXECUTION_MASTER_2026-04-04.md",
+            coll,
+        ),
+    ]
+
+
 def _ingest_file_list():
     """Dateiliste fuer Multi-View-Indexierung. OS-unabhaengige Pfade. Erweiterbar."""
     root = _root()
@@ -217,7 +236,7 @@ def _ingest_file_list():
         (root / "docs" / "03_INFRASTRUCTURE" / "VPS_KNOTEN_UND_FLUSSE.md", "core_vps_nodes"),
         (root / "CORE_EICHUNG.md", "core_eichung"),
         (root / "Untitled-1.sty", "core_fraktal_dialog"),
-    ]
+    ] + vps_playbook_ingest_entries()
 
 
 async def main():

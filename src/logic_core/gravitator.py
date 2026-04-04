@@ -116,8 +116,6 @@ def _discover_and_build_sync() -> list[_CollectionNode]:
 
     nodes: list[_CollectionNode] = []
 
-    from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
-
     vps_host = os.getenv("VPS_HOST", "").strip()
     vps_port = int(os.getenv("CHROMA_PORT", str(CHROMA_UVMY_HOST_PORT)))
 

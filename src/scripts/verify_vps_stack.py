@@ -50,6 +50,32 @@ def _container_up(lines: list[str], substring: str) -> bool:
     return any(substring in l and "Up" in l for l in lines)
 
 
+def _kong_service_id_to_name(sdata: list) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for x in sdata:
+        if not isinstance(x, dict):
+            continue
+        sid = x.get("id")
+        name = x.get("name")
+        if sid and name:
+            out[str(sid)] = str(name)
+    return out
+
+
+def _kong_route_service_name(rt: dict, id_to_name: dict[str, str]) -> str | None:
+    svc = rt.get("service")
+    if svc is None:
+        return None
+    if isinstance(svc, dict):
+        n = svc.get("name")
+        if n:
+            return str(n)
+        sid = svc.get("id")
+        if sid is not None:
+            return id_to_name.get(str(sid))
+    return None
+
+
 def _verify_kong_matches_deck_reference(lines: list[str]) -> tuple[bool, str]:
     """
     KONSOLIDIERTER_VERKEHRSPLAN §8.3: Repo-Deck-Referenz vs. Admin-API (keine neuen Routen hier).
@@ -67,6 +93,7 @@ def _verify_kong_matches_deck_reference(lines: list[str]) -> tuple[bool, str]:
         sdata = sr.json().get("data") or []
         rdata = rr.json().get("data") or []
         snames = {x.get("name") for x in sdata if isinstance(x, dict)}
+        id_to_name = _kong_service_id_to_name(sdata)
         paths: list[str] = []
         for rt in rdata:
             if isinstance(rt, dict):
@@ -82,7 +109,28 @@ def _verify_kong_matches_deck_reference(lines: list[str]) -> tuple[bool, str]:
             return False, "Kong: Service omega-kong-health fehlt (Proxy /health)"
         if hp not in paths:
             return False, f"Kong: Route-Pfad {hp} fehlt (Health)"
-        return True, "[OK] Kong Deck-Referenz (evolution-api, /evo, omega-kong-health, /health)"
+        if "omega-core-backend" not in snames:
+            return False, "Kong: Service omega-core-backend fehlt (Deck-Referenz)"
+        if "/status" not in paths:
+            return False, "Kong: Route-Pfad /status fehlt (omega-core-backend)"
+        status_ok = False
+        for rt in rdata:
+            if not isinstance(rt, dict):
+                continue
+            rpaths = rt.get("paths") or []
+            if "/status" not in rpaths:
+                continue
+            if _kong_route_service_name(rt, id_to_name) == "omega-core-backend":
+                status_ok = True
+                break
+        if not status_ok:
+            return (
+                False,
+                "Kong: keine Route mit Pfad /status für Service omega-core-backend (service.id/name)",
+            )
+        return True, (
+            "[OK] Kong Deck-Referenz (evolution, /evo, health, omega-core-backend, /status)"
+        )
     except Exception as exc:
         return False, f"Kong Deck-Check: {exc}"
 

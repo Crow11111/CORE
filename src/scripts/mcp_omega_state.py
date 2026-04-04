@@ -89,6 +89,7 @@ async def read_core_state() -> str:
 async def read_handbook(role: str) -> str:
     """
     Liest das persistente Gedächtnis (Handbuch) für eine spezifische Rolle (z.B. 'system-architect') vom VPS via Proxy.
+    Fallback: Datei `docs/03_INFRASTRUCTURE/handbooks/{role}.md` wenn localhost:8049 nicht erreichbar.
     """
     try:
         async with httpx.AsyncClient() as client:
@@ -96,13 +97,24 @@ async def read_handbook(role: str) -> str:
             resp.raise_for_status()
             return resp.text
     except Exception as e:
-        return f"Fehler beim Lesen des Handbuchs via Proxy: {e}"
+        try:
+            p = _handbook_file_for_role(role)
+        except ValueError as ve:
+            return f"Proxy-Fehler: {e} | {ve}"
+        if not p.is_file():
+            return (
+                f"Fehler beim Lesen des Handbuchs via Proxy: {e}\n"
+                f"Kein lokaler Fallback: {p} fehlt."
+            )
+        body = await asyncio.to_thread(_read_handbook_local, p)
+        return f"[FALLBACK lokal, Proxy down] {p}\n\n{body}"
 
 @mcp.tool()
 async def update_handbook(role: str, content: str) -> str:
     """
     Überschreibt das persistente Gedächtnis (Handbuch) für die angegebene Rolle auf dem VPS.
     PFLICHT für jeden Sub-Agenten vor seiner Terminierung, falls neue Erkenntnisse gewonnen wurden.
+    Fallback: atomar nach `docs/03_INFRASTRUCTURE/handbooks/{role}.md` wenn Proxy down.
     """
     try:
         async with httpx.AsyncClient() as client:
@@ -110,8 +122,18 @@ async def update_handbook(role: str, content: str) -> str:
             resp = await client.post(f"{PROXY_URL}/handbook/{role}", json=payload)
             resp.raise_for_status()
             return f"[SUCCESS] Handbuch für {role} wurde via Proxy erfolgreich aktualisiert."
-    except Exception as e:
-        return f"[FAIL] Fehler beim Aktualisieren des Handbuchs via Proxy: {e}"
+    except Exception:
+        try:
+            p = _handbook_file_for_role(role)
+        except ValueError as ve:
+            return f"[FAIL] Proxy down und ungültige Rolle: {ve}"
+        try:
+            await asyncio.to_thread(_atomic_write_handbook, p, content)
+            return (
+                f"[SUCCESS] lokal (Fallback, Proxy down) — {p}"
+            )
+        except Exception as e2:
+            return f"[FAIL] Proxy und lokaler Fallback: {e2}"
 
 
 @mcp.tool()

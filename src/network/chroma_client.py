@@ -172,8 +172,6 @@ class ResilientChromaClient:
         # Delegiert alle anderen Aufrufe an den internen chromadb Client
         return getattr(self.client, name)
 
-from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
-
 # Remote (VPS): CHROMA_HOST + CHROMA_PORT; lokal ohne CHROMA_HOST → Persistenz-Port 8000
 CHROMA_HOST = os.getenv("CHROMA_HOST", "").strip()
 CHROMA_PORT = int(

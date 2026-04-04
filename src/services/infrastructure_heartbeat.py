@@ -9,6 +9,14 @@ from pathlib import Path
 from loguru import logger
 from dotenv import load_dotenv
 from src.db.multi_view_client import _run_pg_sql
+from src.config.vps_public_ports import (
+    ATLAS_AGI_CORE_HOST_PORT,
+    CHROMA_UVMY_HOST_PORT,
+    EVOLUTION_API_HOST_PORT,
+    KONG_ADMIN_API_HOST_PORT,
+    MONICA_HTTP_HOST_PORT,
+    OPENCLAW_ADMIN_HOST_PORT,
+)
 from src.network import openclaw_client
 
 # TICKET_10 / Tests: gebundenes Symbol für patch.object(ih, "check_gateway_async", ...)

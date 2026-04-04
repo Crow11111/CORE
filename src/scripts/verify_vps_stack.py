@@ -40,6 +40,37 @@ def run_ssh(cmd: str) -> tuple[int, str]:
 def _container_up(lines: list[str], substring: str) -> bool:
     return any(substring in l and "Up" in l for l in lines)
 
+
+def _verify_kong_matches_deck_reference(lines: list[str]) -> tuple[bool, str]:
+    """
+    KONSOLIDIERTER_VERKEHRSPLAN §8.3: Repo-Deck-Referenz vs. Admin-API (keine neuen Routen hier).
+    """
+    if not _container_up(lines, "kong-s7rk-kong"):
+        return True, "[--] Kong-Container nicht Up — Deck-Check übersprungen"
+    base = KONG_ADMIN_URL.rstrip("/")
+    try:
+        sr = httpx.get(f"{base}/services", timeout=10.0)
+        rr = httpx.get(f"{base}/routes", timeout=10.0)
+        if sr.status_code != 200:
+            return False, f"Kong /services HTTP {sr.status_code}"
+        if rr.status_code != 200:
+            return False, f"Kong /routes HTTP {rr.status_code}"
+        sdata = sr.json().get("data") or []
+        rdata = rr.json().get("data") or []
+        snames = {x.get("name") for x in sdata if isinstance(x, dict)}
+        paths: list[str] = []
+        for rt in rdata:
+            if isinstance(rt, dict):
+                paths.extend(rt.get("paths") or [])
+        if "evolution-api" not in snames:
+            return False, "Kong: Service evolution-api fehlt (Deck-Referenz)"
+        if "/evo" not in paths:
+            return False, "Kong: Route-Pfad /evo fehlt (Deck-Referenz)"
+        return True, "[OK] Kong entspricht Deck-Referenz (evolution-api + /evo)"
+    except Exception as exc:
+        return False, f"Kong Deck-Check: {exc}"
+
+
 def main():
     ok = True
     # 1) Docker ps – Pflicht-Container
@@ -63,6 +94,10 @@ def main():
             else:
                 print(f"[--] (optional) {label} nicht gefunden")
         print(f"  Container gesamt: {len(lines)}")
+        k_ok, k_msg = _verify_kong_matches_deck_reference(lines)
+        print(k_msg)
+        if not k_ok:
+            ok = False
     # 2) Chroma v2 heartbeat
     try:
         r = httpx.get(

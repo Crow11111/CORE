@@ -30,6 +30,7 @@ from dataclasses import dataclass, field
 from src.logic_core.takt_gate import check_takt_zero
 from src.logic_core.crystal_grid_engine import CrystalGridEngine
 from src.config.core_state import BARYONIC_DELTA
+from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
 
 logger = logging.getLogger("core.gravitator")
 

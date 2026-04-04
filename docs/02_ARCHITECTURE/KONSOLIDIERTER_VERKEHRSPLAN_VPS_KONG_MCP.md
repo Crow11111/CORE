@@ -4,7 +4,11 @@
 **Status:** Kanonisches Soll-/Ist-Konzept (Operator-Audit 2026-04-04) — **§7 mit realem `docker ps` vom VPS befüllt** (Messung 2026-04-04).  
 **Zweck:** Aus **Plan**, **Tickets** und **messbarer Realität** **eine** erzählfähige Ordnung machen: wer darf wen wie erreichen, was „offen“ heißt, und wo Kong/MCP/Gedächtnis **nicht** dasselbe sind.
 
-**Querschnitt:** `LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md` · `VPS_KNOTEN_UND_FLUSSE.md` · `MACRO_ARCHITECTURE_AUDIT.md` · `OMEGA_RESONANCE_ANCHOR.md` (§ Git-Resonanz) · Tickets **3–12** unter `docs/05_AUDIT_PLANNING/TICKET_*.md`
+**Querschnitt:** `LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md` · `VPS_KNOTEN_UND_FLUSSE.md` · **`VPS_HOST_PORT_CONTRACT.md`** · `MACRO_ARCHITECTURE_AUDIT.md` · `OMEGA_RESONANCE_ANCHOR.md` (§ Git-Resonanz) · Tickets **3–12** unter `docs/05_AUDIT_PLANNING/TICKET_*.md`
+
+### Für den Operator (Architekt / PM)
+
+Du **pflegst** keine Portliste. **Verbindlicher Vertrag:** `docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md` + `src/config/vps_public_ports.py`. **Pflegepflicht:** Agenten/Producer/Infra bei jedem Deploy. **Du** stimmst ab, ob `docker ps` zur Tabelle passt (oder beauftragst einen Check). Der **Anhang A** (`docker ps`-Dump) in diesem Dokument ist ein **Abnahme-Snapshot**, kein tägliches To-do — er wird bei **Vertrags- oder VPS-Wechsel** von der Technik aktualisiert.
 
 ---
 

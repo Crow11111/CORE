@@ -175,24 +175,24 @@ Messung 2026-04-04, Format: `NAMES`, `IMAGE`, `STATUS`, `PORTS`.
 
 ```
 NAMES                           IMAGE                                          STATUS                   PORTS
-mcp-server                      mcp-server-mcp-server                          Up 53 minutes            0.0.0.0:8001->8001/tcp, [::]:8001->8001/tcp
-chroma-uvmy-chromadb-1          chromadb/chroma:1.0.15                         Up 14 hours (healthy)    0.0.0.0:32779->8000/tcp, [::]:32779->8000/tcp
-openclaw-ntw5-openclaw-1        ghcr.io/hostinger/hvps-openclaw:latest         Up 14 hours              0.0.0.0:58105->58105/tcp, [::]:58105->58105/tcp
-evolution-api-yxa5-api-1        evoapicloud/evolution-api:latest               Up 17 hours              0.0.0.0:55775->8080/tcp, [::]:55775->8080/tcp
-evolution-api-yxa5-postgres-1   postgres:15                                    Up 17 hours              5432/tcp
-evolution-api-yxa5-redis-1      redis:latest                                   Up 17 hours              6379/tcp
-kong-s7rk-kong-1                kong:latest                                    Up 17 hours (healthy)    8443-8444/tcp, 0.0.0.0:32776->8000/tcp, [::]:32776->8000/tcp, 0.0.0.0:32777->8001/tcp, [::]:32777->8001/tcp, 0.0.0.0:32778->8002/tcp, [::]:32778->8002/tcp
+mcp-server                      mcp-server-mcp-server                          Up 2 hours               0.0.0.0:8001->8001/tcp, [::]:8001->8001/tcp
+chroma-uvmy-chromadb-1          chromadb/chroma:1.0.15                         Up 15 hours (healthy)    0.0.0.0:32779->8000/tcp, [::]:32779->8000/tcp
+openclaw-ntw5-openclaw-1        ghcr.io/hostinger/hvps-openclaw:latest         Up 15 hours              0.0.0.0:58105->58105/tcp, [::]:58105->58105/tcp
+evolution-api-yxa5-api-1        evoapicloud/evolution-api:latest               Up 18 hours              0.0.0.0:55775->8080/tcp, [::]:55775->8080/tcp
+evolution-api-yxa5-postgres-1   postgres:15                                    Up 18 hours              5432/tcp
+evolution-api-yxa5-redis-1      redis:latest                                   Up 18 hours              6379/tcp
+kong-s7rk-kong-1                kong:latest                                    Up 18 hours (healthy)    8443-8444/tcp, 0.0.0.0:32776->8000/tcp, [::]:32776->8000/tcp, 0.0.0.0:32777->8001/tcp, [::]:32777->8001/tcp, 0.0.0.0:32778->8002/tcp, [::]:32778->8002/tcp
 kong-s7rk-kong-migrations-1     kong:latest                                    Exited (0) 2 weeks ago   
-kong-s7rk-db-1                  postgres:16                                    Up 17 hours (healthy)    5432/tcp
-monica-0mip-monica-1            monica:latest                                  Up 17 hours              0.0.0.0:32772->80/tcp, [::]:32772->80/tcp
-monica-0mip-db-1                mariadb:11                                     Up 17 hours              3306/tcp
-openclaw-wslc-openclaw-1        ghcr.io/hostinger/hvps-openclaw:latest         Up 17 hours              0.0.0.0:55800->55800/tcp, [::]:55800->55800/tcp
-openclaw-admin                  ghcr.io/openclaw/openclaw:main                 Up 17 hours (healthy)    0.0.0.0:18789->18789/tcp, [::]:18789->18789/tcp
-atlas_agi_core                  agi-state-agi-core:fixed                       Up 17 hours              0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
-atlas_postgres_state            pgvector/pgvector:pg15                         Up 17 hours              5432/tcp
-atlas_chroma_state              chromadb/chroma:0.4.24                         Up 17 hours              8000/tcp
-openclaw-spine                  268aaf9fde39                                   Up 17 hours              0.0.0.0:18790->18790/tcp, [::]:18790->18790/tcp
-ha-atlas                        ghcr.io/home-assistant/home-assistant:stable   Up 17 hours              0.0.0.0:18123->8123/tcp, [::]:18123->8123/tcp
+kong-s7rk-db-1                  postgres:16                                    Up 18 hours (healthy)    5432/tcp
+monica-0mip-monica-1            monica:latest                                  Up 18 hours              0.0.0.0:32772->80/tcp, [::]:32772->80/tcp
+monica-0mip-db-1                mariadb:11                                     Up 18 hours              3306/tcp
+openclaw-wslc-openclaw-1        ghcr.io/hostinger/hvps-openclaw:latest         Up 18 hours              0.0.0.0:55800->55800/tcp, [::]:55800->55800/tcp
+openclaw-admin                  ghcr.io/openclaw/openclaw:main                 Up 18 hours (healthy)    0.0.0.0:18789->18789/tcp, [::]:18789->18789/tcp
+atlas_agi_core                  agi-state-agi-core:fixed                       Up 18 hours              0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+atlas_postgres_state            pgvector/pgvector:pg15                         Up 18 hours              5432/tcp
+atlas_chroma_state              chromadb/chroma:0.4.24                         Up 18 hours              8000/tcp
+openclaw-spine                  268aaf9fde39                                   Up 18 hours              0.0.0.0:18790->18790/tcp, [::]:18790->18790/tcp
+ha-atlas                        ghcr.io/home-assistant/home-assistant:stable   Up 18 hours              0.0.0.0:18123->8123/tcp, [::]:18123->8123/tcp
 ```
 
 ---

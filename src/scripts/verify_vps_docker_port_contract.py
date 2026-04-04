@@ -79,8 +79,7 @@ def _rules() -> tuple[_PortRule, ...]:
         ),
         _PortRule(
             "monica",
-            lambda n: ("-monica-" in n.lower() or n.lower().endswith("-monica-1"))
-            and "-db-" not in n.lower(),
+            lambda n: n.lower().endswith("-monica-1"),
             frozenset({MONICA_HTTP_HOST_PORT}),
         ),
     )

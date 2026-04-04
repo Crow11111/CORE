@@ -201,7 +201,7 @@ ha-atlas                        ghcr.io/home-assistant/home-assistant:stable   U
 
 1. **Erledigt (Repo-Lieferung):** Verbindliche Port-Tabelle + Python-Modul `vps_public_ports.py` + Anbindung in `verify_vps_stack`, Heartbeat, Gravitator, `chroma_client`, Vollkreis — siehe `VPS_HOST_PORT_CONTRACT.md`.
 2. **Deploy auf dem VPS:** Docker-Compose **Host-Ports vernageln** (YAML), exakt wie Vertrag — kein zufälliges Re-Mapping durch Panels. **Ist-Pfade:** `docs/03_INFRASTRUCTURE/VPS_COMPOSE_PATHS.md`.
-3. **Kong-Deklaration:** Services+Routes (Evolution-Webhook, ggf. Health, später CORE-Proxy) — **als Code** im Repo (YAML/Deck); nach Änderung Verifikation erweitern. **Artefakt:** `infra/vps/kong/kong-deck-reference.yaml` (+ `README.md`); Abgleich durch `python -m src.scripts.verify_vps_stack`.
+3. **Kong-Deklaration:** Services+Routes (Evolution-Webhook, Health, **omega-core-backend** → Docker-Host `http://172.17.0.1:32800`, Route **`/status`**) — **als Code** im Repo (YAML/Deck); nach Änderung Verifikation erweitern. **Artefakt:** `infra/vps/kong/kong-deck-reference.yaml` (+ `README.md`); Abgleich durch `python -m src.scripts.verify_vps_stack`. Live: deck sync / Admin-API manuell (siehe `infra/vps/kong/README.md`).
 4. **`.env`:** Soll = Vertragsports; Overrides nur bewusst. Optional `VPS_GATEWAY_URL`, wenn alles über Kong soll.
 5. **Snapshot:** Bei Infra-Change **Anhang A** dieses Dokuments + ggf. Session-Log durch Producer ersetzen/ergänzen.
 

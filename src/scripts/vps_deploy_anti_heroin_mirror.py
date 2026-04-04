@@ -58,6 +58,18 @@ def _scp_base(host: str, key: str | None) -> list[str]:
     return cmd
 
 
+def _ssh_remote_shell(host: str, key: str | None, remote_line: str, **kwargs: object) -> subprocess.CompletedProcess[str]:
+    """
+    Führt genau *ein* Remote-Kommando wie in der interaktiven Form
+    ``ssh root@host 'mkdir -p … && …'`` aus.
+
+    OpenSSH setzt die argv-Teile nach dem Host zu *einer* Command-Zeile zusammen.
+    ``['sh', '-c', 'mkdir -p /x && y']`` wird dabei zu ``sh -c mkdir -p /x && y``;
+    dann ist das Argument von ``-c`` nur ``mkdir`` → ``mkdir: missing operand``.
+    """
+    return subprocess.run(_ssh_base(host, key) + [remote_line], **kwargs)  # type: ignore[arg-type]
+
+
 def main() -> int:
     _load_dotenv()
     host = (os.getenv("VPS_HOST") or "").strip()

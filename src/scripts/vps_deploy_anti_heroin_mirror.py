@@ -58,7 +58,14 @@ def _scp_base(host: str, key: str | None) -> list[str]:
     return cmd
 
 
-def _ssh_remote_shell(host: str, key: str | None, remote_line: str, **kwargs: object) -> subprocess.CompletedProcess[str]:
+def _ssh_remote_shell(
+    host: str,
+    key: str | None,
+    remote_line: str,
+    *,
+    capture_output: bool = False,
+    text: bool = False,
+) -> subprocess.CompletedProcess[str | bytes]:
     """
     Führt genau *ein* Remote-Kommando wie in der interaktiven Form
     ``ssh root@host 'mkdir -p … && …'`` aus.
@@ -67,7 +74,11 @@ def _ssh_remote_shell(host: str, key: str | None, remote_line: str, **kwargs: ob
     ``['sh', '-c', 'mkdir -p /x && y']`` wird dabei zu ``sh -c mkdir -p /x && y``;
     dann ist das Argument von ``-c`` nur ``mkdir`` → ``mkdir: missing operand``.
     """
-    return subprocess.run(_ssh_base(host, key) + [remote_line], **kwargs)  # type: ignore[arg-type]
+    return subprocess.run(
+        _ssh_base(host, key) + [remote_line],
+        capture_output=capture_output,
+        text=text,
+    )
 
 
 def main() -> int:

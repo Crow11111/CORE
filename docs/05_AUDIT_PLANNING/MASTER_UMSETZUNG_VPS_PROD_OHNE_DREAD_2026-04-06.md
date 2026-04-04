@@ -1,6 +1,6 @@
 # MASTER-UMSETZUNG: Omega-Prod auf VPS, ohne Dreadnought als Laufzeit
 
-**Status:** OPERATOR-MANDAT (2026-04-06) — verbindlich für Producer, Infra, Audits  
+**Status:** OPERATOR-MANDAT (2026-04-06) — verbindlich für Producer, Infra, Audits
 **Gegenstand:** Alles, was O2 in `O2_AUDIT_KETTEN_KOHAERENZ_2026-04-06.md` als **Lücke** oder **Nicht-Implikation** benennt, wird hier in **Work-Pakete** mit **Abnahme** übersetzt — **keine Simulation** als Ersatz für persistierte/observierbare Wirkung.
 
 ---
@@ -30,8 +30,8 @@ Dokumente, die Dreadnought als **unverzichtbaren** Hub behaupten, sind für **Pr
 
 ## 2. Port / IP / Drift (Operator: „egal wie, aber final“)
 
-**Soll:** Entweder  
-- **A)** feste Host-Ports wie Vertrag + Compose auf VPS **vernagelt**, **oder**  
+**Soll:** Entweder
+- **A)** feste Host-Ports wie Vertrag + Compose auf VPS **vernagelt**, **oder**
 - **B)** ein **einziger** Mechanismus (z. B. `VPS_PUBLIC_HOST` + zentrale `.env` auf Runtime, DuckDNS, Hostinger-API), der zur **Laufzeit** die gleichen Werte liefert wie `vps_public_ports.py` — **ohne** stilles Remapping.
 
 **Abnahme B:** Nach Deploy `verify_vps_stack` Exit 0 **und** Vergleich `docker ps` ↔ Vertragstabelle **automatisiert** (Skript, kein Handauge).
@@ -42,9 +42,9 @@ Dokumente, die Dreadnought als **unverzichtbaren** Hub behaupten, sind für **Pr
 
 **Soll:** Auf dem VPS (CI-Runner-Container oder systemd-Unit) regelmäßig:
 
-1. Repo-Stand (Branch `main`) auschecken  
-2. `python -c "… validate_file …"` über `src/**/*.py` (gleiche Logik wie Block **I** in `run_vollkreis`)  
-3. Ergebnis **loggen**; bei FAIL **Alert** / Pipeline rot  
+1. Repo-Stand (Branch `main`) auschecken
+2. `python -c "… validate_file …"` über `src/**/*.py` (gleiche Logik wie Block **I** in `run_vollkreis`)
+3. Ergebnis **loggen**; bei FAIL **Alert** / Pipeline rot
 
 **Abnahme:** Existenz der Unit + ein **manuell nachvollziehbarer** Lauf mit **Exit 0** auf dem VPS (Log-Pfad dokumentiert).
 
@@ -54,7 +54,7 @@ Dokumente, die Dreadnought als **unverzichtbaren** Hub behaupten, sind für **Pr
 
 ## 4. Tickets: narrativ ≠ fertig
 
-- **Ticket 4 DRAFT** ⇒ **nicht abgenommen** — Postgres-Workspace + Admission live am Prod-Endpunkt + messbare Reflex-Latenz.  
+- **Ticket 4 DRAFT** ⇒ **nicht abgenommen** — Postgres-Workspace + Admission live am Prod-Endpunkt + messbare Reflex-Latenz.
 - **Alle Tickets 4–12:** Abnahme nur durch **dedizierte** Integrations- und E2E-Schritte (nicht nur Unit-Tests im isolierten Modul).
 
 ---

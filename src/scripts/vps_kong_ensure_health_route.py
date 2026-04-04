@@ -99,7 +99,7 @@ def main() -> int:
         return 1
 
     print("[OK] Kong /health angelegt (Service + Route + request-termination).")
-    print("     Test: curl -sS http://", VPS_HOST, ":32776", path, sep="")
+    print(f"     Test: curl -sS http://{VPS_HOST}:32776{path}")
     return 0
 
 

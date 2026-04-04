@@ -106,8 +106,7 @@ async def read_handbook(role: str) -> str:
                 f"Fehler beim Lesen des Handbuchs via Proxy: {e}\n"
                 f"Kein lokaler Fallback: {p} fehlt."
             )
-        body = await asyncio.to_thread(_read_handbook_local, p)
-        return f"[FALLBACK lokal, Proxy down] {p}\n\n{body}"
+        return await asyncio.to_thread(_read_handbook_local, p)
 
 @mcp.tool()
 async def update_handbook(role: str, content: str) -> str:

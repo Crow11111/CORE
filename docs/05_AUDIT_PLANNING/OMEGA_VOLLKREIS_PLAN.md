@@ -82,7 +82,7 @@ Ein **Team** arbeitet die Bereiche ab; ein **Test-Team** prüft den Gesamtkreis;
 - **Dreadnought:** `curl -s http://localhost:8000/status` → event_bus.running true.
 - **Scout:** `curl -sk -H "Authorization: Bearer $HASS_TOKEN" $HASS_URL/api/` → 200.
 - **VPS:** `python -m src.scripts.verify_vps_stack` → Exit 0; optional: Evolution, Monica, Kong prüfen.
-- **Chroma VPS:** `curl http://$VPS_HOST:32768/api/v2/heartbeat` → 200.
+- **Chroma VPS:** `curl http://$VPS_HOST:${CHROMA_PORT:-32779}/api/v2/heartbeat` → 200 (Vertrag: **32779**).
 - **GitHub:** `git push origin main` → Exit 0.
 - **WhatsApp E2E:** `python -m src.scripts.run_whatsapp_e2e_ha` → Antwort im Chat.
 - **MCP:** Config: `mcp_remote_config.json` im Projekt-Root (valide, Eintrag `atlas-remote` mit SSH/Container). Cursor: MCP-Server „atlas-remote“ starten (Einstellungen → MCP / Referenz auf diese Datei); Abnahme: Zugriff auf Workspace prüfen (z. B. MCP-Tool list_dir/read_file auf /workspace).

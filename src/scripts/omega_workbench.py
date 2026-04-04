@@ -1,5 +1,7 @@
 import os
 import time
+
+from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
 import argparse
 import json
 import logging
@@ -22,7 +24,12 @@ def init_topology_store() -> chromadb.Collection:
 
     # Fallback auf lokalen Port falls VPS_HOST / CHROMA_HOST nicht explizit exportiert
     host = os.environ.get("CHROMA_HOST", "localhost")
-    port = os.environ.get("CHROMA_PORT", "32768")
+    _default_port = (
+        "8000"
+        if host in ("localhost", "127.0.0.1", "")
+        else str(CHROMA_UVMY_HOST_PORT)
+    )
+    port = os.environ.get("CHROMA_PORT", _default_port)
 
     try:
         client = chromadb.HttpClient(host=host, port=port)

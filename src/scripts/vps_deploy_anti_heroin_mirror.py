@@ -129,46 +129,34 @@ def main() -> int:
             return 1
 
     env_line = f"OMEGA_MIRROR_ROOT={MIRROR}"
-    wr = subprocess.run(
-        _ssh_base(host, key)
-        + [
-            "sh",
-            "-c",
-            f"echo {shlex.quote(env_line)} > /etc/default/omega-core-anti-heroin",
-        ]
+    wr = _ssh_remote_shell(
+        host,
+        key,
+        f"echo {shlex.quote(env_line)} > /etc/default/omega-core-anti-heroin",
     )
     if wr.returncode != 0:
         print("[FAIL] /etc/default/omega-core-anti-heroin", file=sys.stderr)
         return 1
 
-    boot = subprocess.run(
-        _ssh_base(host, key)
-        + [
-            "sh",
-            "-c",
-            "mkdir -p /var/log && touch /var/log/omega-core-anti-heroin.log "
-            "&& chmod 644 /var/log/omega-core-anti-heroin.log "
-            "&& systemctl daemon-reload "
-            f"&& systemctl enable {TIMER} "
-            f"&& systemctl start {TIMER} "
-            f"&& systemctl start {SERVICE} "
-            f"&& systemctl is-enabled {TIMER}",
-        ],
+    boot_line = (
+        "mkdir -p /var/log && touch /var/log/omega-core-anti-heroin.log "
+        "&& chmod 644 /var/log/omega-core-anti-heroin.log "
+        "&& systemctl daemon-reload "
+        f"&& systemctl enable {TIMER} "
+        f"&& systemctl start {TIMER} "
+        f"&& systemctl start {SERVICE} "
+        f"&& systemctl is-enabled {TIMER}"
     )
+    boot = _ssh_remote_shell(host, key, boot_line)
     if boot.returncode != 0:
         print("[FAIL] systemctl enable/start", file=sys.stderr)
         return 1
 
-    out = subprocess.run(
-        _ssh_base(host, key)
-        + [
-            "sh",
-            "-c",
-            f"/usr/bin/python3 {MIRROR}/src/scripts/run_anti_heroin_scan.py --root {MIRROR}; echo EXIT=$?",
-        ],
-        capture_output=True,
-        text=True,
+    scan_line = (
+        f"/usr/bin/python3 {MIRROR}/src/scripts/run_anti_heroin_scan.py "
+        f"--root {MIRROR}; echo EXIT=$?"
     )
+    out = _ssh_remote_shell(host, key, scan_line, capture_output=True, text=True)
     sys.stdout.write(out.stdout or "")
     if out.stderr:
         sys.stderr.write(out.stderr)

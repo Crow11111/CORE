@@ -69,17 +69,14 @@ def _verify_kong_matches_deck_reference(lines: list[str]) -> tuple[bool, str]:
             return False, "Kong: Service evolution-api fehlt (Deck-Referenz)"
         if "/evo" not in paths:
             return False, "Kong: Route-Pfad /evo fehlt (Deck-Referenz)"
+        hp = KONG_PUBLIC_HEALTH_PATH.strip()
+        if not hp.startswith("/"):
+            hp = "/" + hp
         if "omega-kong-health" not in snames:
             return False, "Kong: Service omega-kong-health fehlt (Proxy /health)"
-        if KONG_PUBLIC_HEALTH_PATH not in paths and (
-            "/" + KONG_PUBLIC_HEALTH_PATH.lstrip("/")
-        ) not in paths:
-            hp = KONG_PUBLIC_HEALTH_PATH
-            if not hp.startswith("/"):
-                hp = "/" + hp
-            if hp not in paths:
-                return False, f"Kong: Route-Pfad {hp} fehlt (Health)"
-        return True, "[OK] Kong entspricht Deck-Referenz (evolution-api + /evo + /health)"
+        if hp not in paths:
+            return False, f"Kong: Route-Pfad {hp} fehlt (Health)"
+        return True, "[OK] Kong Deck-Referenz (evolution-api, /evo, omega-kong-health, /health)"
     except Exception as exc:
         return False, f"Kong Deck-Check: {exc}"
 

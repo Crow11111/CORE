@@ -46,7 +46,7 @@ def _rules() -> tuple[_PortRule, ...]:
         ),
         _PortRule(
             "kong proxy/admin/ui",
-            lambda n: "kong" in n.lower() and "kong-" in n,
+            lambda n: "kong-s7rk-kong" in n,
             frozenset(
                 {
                     KONG_PROXY_HOST_PORT,
@@ -57,7 +57,9 @@ def _rules() -> tuple[_PortRule, ...]:
         ),
         _PortRule(
             "evolution-api",
-            lambda n: "evolution-api" in n.lower(),
+            lambda n: "evolution-api" in n.lower()
+            and "postgres" not in n.lower()
+            and "redis" not in n.lower(),
             frozenset({EVOLUTION_API_HOST_PORT}),
         ),
         _PortRule(
@@ -77,8 +79,8 @@ def _rules() -> tuple[_PortRule, ...]:
         ),
         _PortRule(
             "monica",
-            lambda n: "monica" in n.lower()
-            and ("monica-" in n.lower() or n.lower().startswith("monica")),
+            lambda n: ("-monica-" in n.lower() or n.lower().endswith("-monica-1"))
+            and "-db-" not in n.lower(),
             frozenset({MONICA_HTTP_HOST_PORT}),
         ),
     )

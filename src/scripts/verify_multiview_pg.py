@@ -20,6 +20,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
 from src.db.multi_view_client import _multiview_ssh_config, FACET_TO_COLLECTION
 import chromadb
 
@@ -58,7 +59,7 @@ def get_pg_count() -> int:
 
 def get_chroma_counts() -> dict[str, int]:
     host = os.getenv("CHROMA_HOST", os.getenv("VPS_HOST", "187.77.68.250"))
-    port = int(os.getenv("CHROMA_PORT", "32768"))
+    port = int(os.getenv("CHROMA_PORT", str(CHROMA_UVMY_HOST_PORT)))
     try:
         client = chromadb.HttpClient(host=host, port=port)
         results = {}

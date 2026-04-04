@@ -1,0 +1,24 @@
+# Kong — Deck-Referenz gemäß docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md §8.3
+# Wahrheit auf dem VPS: Kong DB + Admin-API. Diese Datei ist der Repo-Spiegel nach Abnahme.
+# Später (Plannung §8.3): Health-Route, CORE-Proxy — erst nach Spec ergänzen, dann sync.
+_format_version: "3.0"
+_transform: false
+
+services:
+  - name: evolution-api
+    url: http://evolution-api-yxa5-api-1:8080
+    protocol: http
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    retries: 5
+
+routes:
+  - name: evolution-evopath
+    service: evolution-api
+    paths:
+      - /evo
+    strip_path: true
+    protocols:
+      - http
+      - https

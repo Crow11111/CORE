@@ -65,11 +65,13 @@ Gleiches Prinzip für Kong (**32776–32778**), Evolution (**55775:8080**), usw.
 
 Optional Overrides bleiben möglich (`CHROMA_PORT`, `KONG_ADMIN_URL`, …). **Soll:** Werte = Vertrag, damit Defaults aus `vps_public_ports.py` und Skripte **ohne** `.env` korrekt bleiben.
 
+**Plan §8.4:** Overrides nur bewusst; optional `VPS_GATEWAY_URL`, wenn alles über Kong laufen soll (noch nicht global erzwungen). **SSH/Deploy:** `VPS_HOST`, `VPS_SSH_KEY` — siehe `verify_vps_stack.py`. **Compose-Pfade auf dem VPS:** `docs/03_INFRASTRUCTURE/VPS_COMPOSE_PATHS.md`.
+
 ---
 
 ## 5. Verifikation
 
-- `python -m src.scripts.verify_vps_stack` — nutzt Vertrags-Defaults aus `vps_public_ports.py`.
+- `python -m src.scripts.verify_vps_stack` — nutzt Vertrags-Defaults aus `vps_public_ports.py`; prüft bei laufendem Kong die **Deck-Referenz** (`infra/vps/kong/kong-deck-reference.yaml`: Service `evolution-api`, Route `/evo`).
 - `run_vollkreis_abnahme.py` — Block D/Gk Chroma gegen Vertrag.
 - Bei **Infrastructure-Change:** erneut `docker ps` ziehen; wenn Ports gleich → nur Timestamp im Archiv (`KONSOLIDIERTER_VERKEHRSPLAN` Anhang) erneuern; wenn Ports weichen → **Vertrag** oder **Deploy** reparieren — nie stilles Driften.
 

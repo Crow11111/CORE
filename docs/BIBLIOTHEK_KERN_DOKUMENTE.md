@@ -102,6 +102,8 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 | **VPS Full-Stack** | `@docs/03_INFRASTRUCTURE/VPS_FULL_STACK_SETUP.md` | Hostinger, Container, Ports, Firewall. |
 | **VPS-Knoten & Flüsse** | `@docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md` | Monica, Kong, Evolution, DBs: Zweck, Pull/Push-Matrix, Einbindung. |
 | **VPS Host-Port-Vertrag** | `@docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md` | Verbindliche Host-Ports; Pflege durch Agenten/Infra; Code: `src/config/vps_public_ports.py`. |
+| **VPS Compose-Pfade** | `@docs/03_INFRASTRUCTURE/VPS_COMPOSE_PATHS.md` | Ist-Pfade zu `docker-compose.yml` auf dem VPS; Plan KONSOLIDIERTER §8.2. |
+| **Kong Repo-Referenz** | `@infra/vps/kong/kong-deck-reference.yaml` | Deck-Spiegel zu Kong Admin-API; Abgleich: `verify_vps_stack`. |
 | **Backup (final)** | `@docs/03_INFRASTRUCTURE/BACKUP_PLAN_FINAL.md` | Einziges Ziel VPS, daily_backup.py, Chroma Cold-Backup. |
 | **WhatsApp E2E HA** | `@docs/03_INFRASTRUCTURE/WHATSAPP_E2E_HA_SETUP.md` | rest_command, Automation, E2E-Test. |
 | **VPS Ollama** | `@docs/03_INFRASTRUCTURE/VPS_OLLAMA_SETUP.md` | Ollama auf VPS (Strang B). |

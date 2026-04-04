@@ -33,3 +33,13 @@ Host-Ports müssen in **Docker Compose / Hostinger** numerisch fest verdrahtet s
 ## 5. Agos-Takt-Status
 
 Schnittstellen-Doku als **Arbeitsauftrag für Producer/Auditor**: vor/nach Deploy gegen `VPS_HOST_PORT_CONTRACT.md` und `vps_public_ports.py` prüfen; Operator nur bei strategischer Abweichung eingreifen.
+
+## 6. Nachtrag (Plan §8 strikt, keine Neuerfindung)
+
+Umsetzung nur nach `KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md` **§8.2–§8.5**:
+
+- `docs/03_INFRASTRUCTURE/VPS_COMPOSE_PATHS.md` — Ist-Compose-Pfade vom VPS (`docker inspect`).
+- `infra/vps/kong/kong-deck-reference.yaml` + `README.md` — Kong **als Code** (bestehender Stand: `evolution-api` + `/evo`; Platzhalter-Kommentar für Health/CORE-Proxy wie im Plan).
+- `verify_vps_stack.py` — Pflichtcheck Kong vs. Deck-Referenz, wenn Kong-Container Up.
+- Anhang A im Verkehrsplan — `docker ps` erneuert.
+- Vertrag §4/§5, Inventar, Bibliothek — Querverweise ergänzt.

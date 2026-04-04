@@ -34,6 +34,8 @@
 | **Konsolidierter Verkehrsplan VPS/Kong/MCP** | `docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md` | Soll vs. Ist: Kong als Ingress, MCP vs. Gedächtnis (Chroma/PG/Queue), SSH-Nebenbahn, Tickets 3–12 Querschnitt, Pfad-Matrix + Abnahme-Snapshot Anhang A. |
 | **VPS Host-Port-Vertrag** | `docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md` | Verbindliche Docker-Host-Ports; Pflegepflicht Agenten/Infra; Abnahme: `docker ps` gegen Tabelle. |
 | **VPS öffentliche Ports (Code)** | `src/config/vps_public_ports.py` | Single Source of Truth für Defaults in Skripten und Heartbeats. |
+| **VPS Compose-Pfade (Ist)** | `docs/03_INFRASTRUCTURE/VPS_COMPOSE_PATHS.md` | `docker inspect` → Compose-Dateien auf dem VPS; Plan §8.2/§8.5. |
+| **Kong Deck-Referenz (Repo)** | `infra/vps/kong/kong-deck-reference.yaml` | Deklarative Kong-Services/Routes gemäß Verkehrsplan §8.3; `infra/vps/kong/README.md`. |
 | **AI-Modelle** | `docs/02_ARCHITECTURE/AI_MODEL_CAPABILITIES.md` | Modell-IDs, Rollen-Mapping, Kosten 2.5 Flash vs Pro, Token-Richtwerte, Deep Research & Computer Use. |
 | **Deep Research & Computer Use** | `docs/02_ARCHITECTURE/DEEP_RESEARCH_UND_COMPUTER_USE.md` | Deep Research: Projekt-Omega-Verifikation (Vektorisierung, ChromaDB, Abgleich). Computer Use: Linux-Integration. |
 | **Duale Topologie & Vektor-Härtung** | `docs/02_ARCHITECTURE/DUALE_TOPOLOGIE_UND_VEKTOR_HAERTUNG.md` | G-Atlas-Soll; Ist-Zustand; RAG-Einheitlichkeit; Vektor-Härtung. |

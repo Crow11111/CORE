@@ -14,7 +14,9 @@
 | **Neuer Chatbot (UI)** | **`gemini-flash-lite-chat/`** (Root): Port 3005. Primäres Interface für OMEGA Interaction. |
 | **VISION SYNC App** | **`vision-sync-app/`** (Root): Port 3006. Original AI Studio Multimodal Live UI. |
 | Wer pusht/pullt, Cursor vs. VPS vs. HA vs. MCP? | **`docs/02_ARCHITECTURE/LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md`** |
+| **Kong / MCP / Gedächtnis — ein Verkehrsplan (Soll vs. Ist)** | **`docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md`** |
 | VPS-Container, Ports, Monica, Kong, Evolution, … | **`docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md`** |
+| **VPS Host-Ports (verbindlich, nicht driftend)** | **`docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md`** · **`src/config/vps_public_ports.py`** |
 | Infrastruktur-Soll (Lang-Master, kanonisch) | **`docs/00_STAMMDOKUMENTE/00_CORE_INFRASTRUCTURE_MASTER.md`** |
 | Alter Pfad `docs/00_CORE_INFRASTRUCTURE_MASTER.md` | **Nur Stub** → weiter nach `00_STAMMDOKUMENTE/…` (kein zweiter Volltext) |
 | Architektur-Soll (aggregiert) | **`docs/00_STAMMDOKUMENTE/00_CORE_ARCHITECTURE_MASTER.md`** |

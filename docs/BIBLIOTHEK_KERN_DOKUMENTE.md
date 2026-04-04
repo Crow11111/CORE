@@ -73,6 +73,7 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 |----------|------|----------|
 | **Schnittstellen & Kanäle** | `@docs/02_ARCHITECTURE/CORE_SCHNITTSTELLEN_UND_KANAALE.md` | Tesserakt-Topologie, Entry Adapter, Takt 0, Gravitator, Webhooks, 5-Phasen-Motor. |
 | **Landkarte Clients / Knoten / Fluss** | `@docs/02_ARCHITECTURE/LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md` | Eine Seite Ordnung: Cursor, Claude Desktop, ATLAS/KDE, MCP, SSH, HA, OC, Monica, Kong — Ebenen, Push/Pull, geschlossene Kreise; verweist auf VPS-Knoten und Schnittstellen. |
+| **Konsolidierter Verkehrsplan (Kong, MCP, Gedächtnis)** | `@docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md` | Soll vs. Ist: Nord-Süd vs. Ost-West, Kong als Torwart, MCP als Tool-Kabel (nicht SoT), Tickets 3–12 Querschnitt, Pfad-Matrix zum Ausfüllen per SSH-Inventar. |
 | **Entry Adapter** | `@docs/02_ARCHITECTURE/ENTRY_ADAPTER_SPEC.md` | Spezifikation Entry Adapter (F13). |
 | **Gravitator** | `@docs/02_ARCHITECTURE/GRAVITATOR_SPEC.md` | Routing θ=0.22, keine collection=all (F5). |
 | **Event-Bus** | `@docs/02_ARCHITECTURE/CORE_EVENT_BUS.md` | Event-Streaming, HA-Anbindung. |
@@ -100,6 +101,7 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 |----------|------|----------|
 | **VPS Full-Stack** | `@docs/03_INFRASTRUCTURE/VPS_FULL_STACK_SETUP.md` | Hostinger, Container, Ports, Firewall. |
 | **VPS-Knoten & Flüsse** | `@docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md` | Monica, Kong, Evolution, DBs: Zweck, Pull/Push-Matrix, Einbindung. |
+| **VPS Host-Port-Vertrag** | `@docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md` | Verbindliche Host-Ports; Pflege durch Agenten/Infra; Code: `src/config/vps_public_ports.py`. |
 | **Backup (final)** | `@docs/03_INFRASTRUCTURE/BACKUP_PLAN_FINAL.md` | Einziges Ziel VPS, daily_backup.py, Chroma Cold-Backup. |
 | **WhatsApp E2E HA** | `@docs/03_INFRASTRUCTURE/WHATSAPP_E2E_HA_SETUP.md` | rest_command, Automation, E2E-Test. |
 | **VPS Ollama** | `@docs/03_INFRASTRUCTURE/VPS_OLLAMA_SETUP.md` | Ollama auf VPS (Strang B). |
@@ -172,8 +174,8 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 |----------------|-------------|-------------------------|
 | **Dreadnought (lokal)** | `.env` (CORE_API_PORT, CORE_HOST_IP), `src/config/core_path_manager.py` | `systemctl status omega-backend omega-frontend omega-event-bus omega-watchdog omega-vision ollama`; `curl -s http://localhost:8000/status`; `run_verification.sh`; `linux_membrane_check.py` |
 | **Scout (Pi5/HA)** | `.env` (SCOUT_IP, HASS_URL, HASS_TOKEN) | `curl -sk -H "Authorization: Bearer $HASS_TOKEN" $HASS_URL/api/`; HA Config: `rest_command`-URL = CORE-IP:8000; Tapo: nur `tapo_control`-Entry aktiv, `tplink`-Entry disabled |
-| **VPS** | `.env` (VPS_HOST, CHROMA_HOST, CHROMA_PORT, OPENCLAW_*) | `python -m src.scripts.verify_vps_stack` ODER SSH: `ssh -i $VPS_SSH_KEY root@$VPS_HOST "docker ps"`; Chroma: `curl http://$VPS_HOST:32768/api/v2/heartbeat`; OC Admin/Spine: Container „Up“, Logs prüfen |
-| **ChromaDB** | Lokal: `core_path_manager.CHROMA_DB_DIR`; VPS: Port 32768 | Lokal: `chroma_audit.py`; VPS: HTTP v2 heartbeat + collections |
+| **VPS** | `.env` (VPS_HOST, CHROMA_HOST, CHROMA_PORT, OPENCLAW_*) · **Vertrag:** `docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md`, `src/config/vps_public_ports.py` | `python -m src.scripts.verify_vps_stack` ODER SSH: `docker ps` gegen Vertragstabelle; Chroma: `curl http://$VPS_HOST:32779/api/v2/heartbeat` |
+| **ChromaDB** | Lokal: `core_path_manager.CHROMA_DB_DIR`; VPS: Host-Port **32779** (Vertrag) | Lokal: `chroma_audit.py`; VPS: HTTP v2 heartbeat + collections |
 | **Git/GitHub** | `git remote -v`; `.env` GIT_PULL_DIR, GITHUB_WEBHOOK_SECRET | Push von Dreadnought; Webhook-Log auf VPS/Receiver; `git status` in GIT_PULL_DIR nach Webhook |
 | **WhatsApp E2E** | `docs/03_INFRASTRUCTURE/WHATSAPP_E2E_HA_SETUP.md` | `python -m src.scripts.run_whatsapp_e2e_ha` (von Dreadnought); Antwort im Chat |
 | **MCP** | `mcp_remote_config.json` (atlas-remote: SSH, Key, Container) | Cursor: MCP-Server „atlas-remote“ starten, Zugriff auf Workspace prüfen |

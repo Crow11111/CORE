@@ -23,7 +23,10 @@ sys.path.insert(0, str(PROJECT_ROOT))
 os.chdir(PROJECT_ROOT)
 
 from dotenv import load_dotenv
-load_dotenv(PROJECT_ROOT / ".env")
+
+from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
+
+load_dotenv(PROJECT_ROOT / ".env", override=True)
 
 def run(cmd: list[str] | str, timeout: int = 15, env: dict | None = None) -> tuple[int, str]:
     if isinstance(cmd, str):
@@ -111,7 +114,7 @@ def main() -> int:
     # --- D: VPS Chroma Heartbeat (einzeln) ---
     print("D: VPS Chroma Heartbeat")
     vps = (os.getenv("VPS_HOST") or "").strip()
-    chroma_port = os.getenv("CHROMA_PORT", "32768")
+    chroma_port = os.getenv("CHROMA_PORT", str(CHROMA_UVMY_HOST_PORT))
     if vps:
         code, out = run(["curl", "-s", "-o", "/dev/null", "-w", "%{http_code}", f"http://{vps}:{chroma_port}/api/v2/heartbeat"], timeout=8)
         ok = code == 0 and out.strip() == "200"
@@ -183,12 +186,14 @@ def main() -> int:
     if not mv_ok:
         fails += 1
 
-    code, out = run([sys.executable, "-c", """
+    code, out = run(
+        [sys.executable, "-c", """
 import chromadb, os, json
 from dotenv import load_dotenv
-load_dotenv('/OMEGA_CORE/.env')
+load_dotenv('/OMEGA_CORE/.env', override=True)
+from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
 vps = os.getenv('VPS_HOST','').strip()
-port = int(os.getenv('CHROMA_PORT','32768'))
+port = int(os.getenv('CHROMA_PORT', str(CHROMA_UVMY_HOST_PORT)))
 c = chromadb.HttpClient(host=vps, port=port)
 col = c.get_collection('events')
 peek = col.peek(limit=3)
@@ -200,7 +205,10 @@ if embeddings is not None:
             has_zero_vec = True
             break
 print(json.dumps({"count": col.count(), "has_zero_vectors": has_zero_vec}))
-"""], timeout=15)
+"""],
+        timeout=15,
+        env={**os.environ, "PYTHONPATH": str(PROJECT_ROOT)},
+    )
     if code == 0:
         try:
             info = json.loads(out.strip())

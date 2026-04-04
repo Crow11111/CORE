@@ -19,14 +19,14 @@
 | openclaw-admin | 18789 | atlas-core_atlas_net | OC Gehirn; Ollama (qwen2.5:7b), Claude, WhatsApp |
 | openclaw-spine | 18790 | atlas-core_atlas_net | OC Spine; sauberes System, nutzt admin als Gateway |
 | evolution-api | 55775 | evolution-api-yxa5_default | WhatsApp Multi-Device API Hub (Evolution API) |
-| kong | 32773-32775 | kong-s7rk_default | API Gateway (zentrales Traffic-Routing) |
-| monica | 32769 | monica-0mip_default | Personal CRM / Kontaktverwaltung |
+| kong | 32776–32778 | kong-s7rk_default | API Gateway (Proxy 32776, Admin 32777, Manager 32778) — **Vertrag:** `VPS_HOST_PORT_CONTRACT.md` |
+| monica | 32772 | monica-0mip_default | Personal CRM / Kontaktverwaltung |
 | atlas_agi_core | 8080 | atlas_net | AGI-State Persistenz-Layer |
 | atlas_chroma_state | intern | atlas_net | ChromaDB 0.4.24 (Legacy AGI-State) |
 | atlas_postgres_state | intern | atlas_net | pgvector/pg15 (AGI-State DB) |
-| chroma-uvmy | 32768 | chroma-uvmy_default | ChromaDB 1.0.15 (primaere Vektor-DB) |
+| chroma-uvmy | **32779** | chroma-uvmy_default | ChromaDB 1.0.15 (primaere Vektor-DB) |
 | mcp-server | 8001 | bridge | MCP Server fuer Tool-Integration |
-| openclaw-wslc (Hostinger) | 55800 | openclaw-wslc_default | Hostinger One-Click OpenClaw Instanz |
+| openclaw-wslc (Hostinger) | 55800 / 58105 | openclaw-wslc_default / hvps | Hostinger One-Click OpenClaw — siehe Vertrag |
 
 ## Netzwerk-Isolation
 

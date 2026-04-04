@@ -11,24 +11,28 @@
 
 Alle Docker-Dienste auf dem VPS sind **Teil des geschlossenen Kreises**. Jeder Knoten hat einen definierten Zweck; CORE/Dreadnought nutzt sie nativ und regelbasiert (Push/Pull). Ohne geschlossene Kette (Git, Webhooks, VPS) ist das System nicht betriebsfähig (Showstopper).
 
+**Soll-/Ist-Verkehr (Kong, MCP, „offen“):** `@docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md` — konsolidiert, warum Container „Up“ und leeres Kong gleichzeitig vorkommen und wie SSH-MCP vs. Produkt-HTTP zu trennen sind.
+
+**Verbindliche Host-Ports (Deploy darf nicht driftieren):** `@docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md` · **`src/config/vps_public_ports.py`**
+
 ---
 
 ## 1. Inventar VPS-Container
 
-| Container | Port | Zweck (warum da) | CORE-Nutzung |
-|-----------|------|------------------|---------------|
-| **chroma-uvmy** | 32768 | Primäre Vektor-DB (Chroma 1.0.15). RAG, StateAnchor, Embeddings. | Dreadnought/Backend: Embedding-Query, Upsert. `CHROMA_HOST`/`CHROMA_PORT`. |
-| **openclaw-admin** | 18789 | OC Gehirn: LLM (Gemini/Claude), WhatsApp (Baileys), Agenten. | CORE ruft Gateway (Chat, RAG, Channels); WhatsApp-Events → CORE-Webhook. |
-| **openclaw-spine** | 18790 | OC Spine: sauberer Agent ohne Keys; nutzt Admin als Gateway. | Optionale Agenten-Runs; Konfiguration via `check_openclaw_config_vps`. |
-| **evolution-api** | 55775 | WhatsApp Multi-Device API (ein QR, Session auf VPS). | **Bevorzugter WhatsApp-Pfad:** CORE sendet/empfängt via Evolution REST; Webhook → CORE `/webhook/whatsapp`. Kein HA-Addon nötig. |
-| **homeassistant** (ha-atlas) | 18123 | Remote-HA-Instanz; Spiegel Scout-HA für Backup/zentrale Automations. | Optionale zentrale Automations; Scout-HA bleibt primär. |
-| **kong** | 32773–32775 | API-Gateway: zentrales Routing, Rate-Limit, Auth vor Diensten. | Optional: CORE/Agenten rufen VPS-Dienste über Kong (ein Einstieg) statt direkte Ports. |
-| **monica** | 32769 | Personal CRM: Kontakte, Beziehungen, Aktivitäten. | CORE/Agenten: Kontaktkontext für Antworten, Anrede, Beziehungspflege; API-Anbindung. |
-| **atlas_agi_core** | 8080 | AGI-State Persistenz-Layer (App/Service). | State-Anfragen, Kontext-Sync; Skripte wie `deploy_agi_state.py`. |
+| Container | Host-Port(s) | Zweck (warum da) | CORE-Nutzung |
+|-----------|----------------|------------------|---------------|
+| **chroma-uvmy** | **32779**→8000 | Primäre Vektor-DB (Chroma 1.0.15). RAG, StateAnchor, Embeddings. | Dreadnought/Backend: Embedding-Query, Upsert. `CHROMA_HOST`/`CHROMA_PORT`. |
+| **openclaw-admin** | **18789** | OC Gehirn: LLM (Gemini/Claude), WhatsApp (Baileys), Agenten. | CORE ruft Gateway (Chat, RAG, Channels); WhatsApp-Events → CORE-Webhook. |
+| **openclaw-spine** | **18790** | OC Spine: sauberer Agent ohne Keys; nutzt Admin als Gateway. | Optionale Agenten-Runs; Konfiguration via `check_openclaw_config_vps`. |
+| **evolution-api** | **55775**→8080 | WhatsApp Multi-Device API (ein QR, Session auf VPS). | **Bevorzugter WhatsApp-Pfad:** CORE sendet/empfängt via Evolution REST; Webhook → CORE `/webhook/whatsapp`. Kein HA-Addon nötig. |
+| **homeassistant** (ha-atlas) | **18123**→8123 | Remote-HA-Instanz; Spiegel Scout-HA für Backup/zentrale Automations. | Optionale zentrale Automations; Scout-HA bleibt primär. |
+| **kong** | **32776** (Proxy), **32777** (Admin), **32778** (Manager) | API-Gateway: zentrales Routing, Rate-Limit, Auth vor Diensten. | Optional: CORE/Agenten rufen VPS-Dienste über Kong (ein Einstieg) statt direkte Ports. |
+| **monica** | **32772**→80 | Personal CRM: Kontakte, Beziehungen, Aktivitäten. | CORE/Agenten: Kontaktkontext für Antworten, Anrede, Beziehungspflege; API-Anbindung. |
+| **atlas_agi_core** | **8080** | AGI-State Persistenz-Layer (App/Service). | State-Anfragen, Kontext-Sync; Skripte wie `deploy_agi_state.py`. |
 | **atlas_chroma_state** | intern | ChromaDB 0.4.24 (Legacy AGI-State). | Legacy-RAG/State; Migration zu chroma-uvmy möglich. |
 | **atlas_postgres_state** | intern | PostgreSQL 15 + pgvector. Strukturierte AGI-State-Daten. | Multi-View, strukturierte Abfragen; `multi_view_client.py`, `deploy_multiview_schema.py`. |
-| **mcp-server** | 8001 | MCP-Server für Tool-Integration (Cursor, Agenten). | Cursor: MCP „atlas-remote“; Zugriff auf VPS-Workspace, Tools. |
-| **openclaw-wslc** (Hostinger) | 55800 | Hostinger One-Click OpenClaw. | Optionale zweite OC-Instanz. |
+| **mcp-server** | **8001** | MCP-Server für Tool-Integration (Cursor, Agenten). | Cursor: MCP „atlas-remote“; Zugriff auf VPS-Workspace, Tools. |
+| **openclaw-wslc** (Hostinger) | **55800**, **58105** (hvps) | Hostinger One-Click OpenClaw. | Optionale zweite OC-Instanz(en) — kanonisch: eine Instanz definieren. |
 
 ---
 
@@ -79,11 +83,11 @@ Alle Docker-Dienste auf dem VPS sind **Teil des geschlossenen Kreises**. Jeder K
 
 | Knoten | Prüfung |
 |--------|---------|
-| chroma-uvmy | `curl http://$VPS_HOST:32768/api/v2/heartbeat` |
+| chroma-uvmy | `curl http://$VPS_HOST:32779/api/v2/heartbeat` |
 | openclaw-admin | `curl http://$VPS_HOST:18789/api/status` |
 | evolution-api | `curl -H "apikey: $EVOLUTION_API_KEY" http://$VPS_HOST:55775/instance/fetchInstances` (oder Instanz-Status) |
-| monica | `curl -H "Authorization: Bearer $MONICA_TOKEN" http://$VPS_HOST:32769/api/contacts` (wenn konfiguriert) |
-| kong | `curl http://$VPS_HOST:32773/status` (Kong Admin API) |
+| monica | `curl -H "Authorization: Bearer $MONICA_TOKEN" http://$VPS_HOST:32772/api/contacts` (wenn konfiguriert) |
+| kong | `curl http://$VPS_HOST:32777/status` (Kong Admin API) |
 | mcp-server | Cursor MCP „atlas-remote“ starten; Workspace-Zugriff |
 
 Siehe auch: `python -m src.scripts.verify_vps_stack` (optionale Knoten Evolution, Monica, Kong werden bereits geprüft: Container + HTTP-Erreichbarkeit).

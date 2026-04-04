@@ -110,22 +110,86 @@ Das entspricht der **Macro-Kette** (`SPEC_STATE_HOLD.md`, `MACRO_ARCHITECTURE_AU
 
 ---
 
-## 7. Konsolidierter Verkehrsplan (Pfad-Matrix — auszufüllen mit SSH-Inventar)
+## 7. Konsolidierter Verkehrsplan (messbarer Soll-/Ist-Abgleich)
 
-**Pflichtprozess:** Einmalig (und nach jedem Compose-Wechsel) auf dem VPS: `docker ps --format 'table {{.Names}}\t{{.Ports}}'`, Ergebnis in **Anhang** dieser Datei oder `VPS_KNOTEN_UND_FLUSSE.md` §1 spiegeln.
+### 7.1 Messung (Ist-Quelle)
 
+| Feld | Wert |
+|------|------|
+| **Zeitpunkt** | 2026-04-04 (laufender VPS-Betrieb, Container teils „Up 14–17 h“) |
+| **Befehl** | `docker ps -a --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'` |
+| **Zugriff** | SSH `root@<VPS_HOST>` (wie `verify_vps_stack.py` / `.env`: `VPS_SSH_KEY`) |
+| **Volltext** | **Anhang A** (unveränderte Ausgabe) |
 
-| Pfad               | Von       | Nach                     | Transport (Soll)                                                 | Auth (Soll)              | Ist-Status                                  |
-| ------------------ | --------- | ------------------------ | ---------------------------------------------------------------- | ------------------------ | ------------------------------------------- |
-| WhatsApp eingehend | Evolution | CORE `/webhook/whatsapp` | Kong → FastAPI **oder** direkt (nur **eine** Variante festlegen) | Webhook-Secret / API-Key | Teilweise HA-Pfad stärker (`VPS_KNOTEN` §6) |
-| WhatsApp ausgehend | CORE      | Evolution `sendText`     | HTTP intern                                                      | API-Key                  | Implementierungslücke vs. HA                |
-| RAG / Vektoren     | CORE      | chroma-uvmy              | Intern Docker **oder** Gateway                                   | Kein Welt-Port / Tunnel  | Oft nur intern                              |
-| Strukturiert       | CORE      | Postgres                 | Intern Docker                                                    | DB-User                  | Üblich                                      |
-| OC-Gateway         | CORE      | openclaw-admin:18789     | HTTP                                                             | Bearer                   | Zuletzt messbar OK (lokal)                  |
-| GitHub → Pull      | GitHub    | VPS/CORE                 | Webhook POST                                                     | Secret                   | Nur wenn Listener auf VPS erreichbar        |
-| Cursor Cloud MCP   | Cursor    | mcp-server               | **SSH** + `docker exec`                                          | SSH-Key                  | Funktional, **nicht** Kong                  |
-| Operator Admin     | Du        | Kong / Docker            | SSH + optional UI                                                | SSH                      | Unvollständig dokumentiert                  |
+### 7.2 Inventar VPS — Container → Host-Ports (**Ist**)
 
+Öffentlich im Sinne von **Nord–Süd**: alles mit `0.0.0.0:<Port>->…` auf dem Host (sofern Firewall nichts dagegen sperrt).
+
+| Logischer Dienst | Container-Name(n) | Host → Container | Nord–Süd erreichbar |
+|------------------|-------------------|--------------------|------------------------|
+| **Chroma 1.0.15** (primär) | `chroma-uvmy-chromadb-1` | **32779 → 8000** | Ja (HTTP Chroma im Container auf 8000) |
+| **Kong** | `kong-s7rk-kong-1` | **32776 → 8000** (Proxy), **32777 → 8001** (Admin API), **32778 → 8002** (Manager/GUI je nach Setup) | Ja |
+| **Kong DB** | `kong-s7rk-db-1` | kein Host-Mapping (nur 5432/tcp intern) | Nein (nur Ost–West) |
+| **Evolution API** | `evolution-api-yxa5-api-1` | **55775 → 8080** | Ja |
+| **Evolution Postgres/Redis** | `…-postgres-1`, `…-redis-1` | kein Host-Mapping | Nein |
+| **OpenClaw (kanonisch)** | `openclaw-admin` | **18789 → 18789** | Ja |
+| **OpenClaw Spine** | `openclaw-spine` | **18790 → 18790** | Ja |
+| **Hostinger OpenClaw (hvps)** | `openclaw-ntw5-openclaw-1` | **58105 → 58105** | Ja |
+| **Hostinger OpenClaw (wslc)** | `openclaw-wslc-openclaw-1` | **55800 → 55800** | Ja |
+| **MCP-Server** | `mcp-server` | **8001 → 8001** | Ja |
+| **Monica** | `monica-0mip-monica-1` | **32772 → 80** | Ja |
+| **Monica DB** | `monica-0mip-db-1` | kein Host-Mapping | Nein |
+| **Home Assistant (Remote)** | `ha-atlas` | **18123 → 8123** | Ja |
+| **atlas_agi_core** | `atlas_agi_core` | **8080 → 8080** | Ja |
+| **Postgres (atlas_state)** | `atlas_postgres_state` | kein Host-Mapping | Nein |
+| **Chroma (Legacy AGI-State)** | `atlas_chroma_state` | kein Host-Mapping (8000/tcp nur intern) | Nein |
+
+**Abgleich Doku-Drift:** `VPS_KNOTEN_UND_FLUSSE.md` / `verify_vps_stack.py` nennen für Chroma oft **32768** und Kong **32773–32775** — **Ist-Messung** zeigt **32779** bzw. **32776–32778**. Konfiguration und Verifikation auf diese Werte **oder** auf `VPS_GATEWAY_URL` umstellen, sobald Kong routet.
+
+### 7.3 Pfad-Matrix (Soll + **Ist** nach Messung)
+
+| Pfad | Von | Nach | Transport (Soll) | Auth (Soll) | **Ist-Status (2026-04-04)** |
+|------|-----|------|------------------|-------------|----------------------------|
+| WhatsApp eingehend | Evolution | CORE `/webhook/whatsapp` | Kong → FastAPI oder direkt | Webhook-Secret / API-Key | **Evolution lauscht auf Host 55775**; Ziel-CORE meist **Dreadnought**, nicht Container auf VPS — Webhook-URL muss **öffentlich erreichbar** sein (Tunnel/Reverse-DNS). Kong-Routen dafür **nicht** im Dump sichtbar (nur Ports). |
+| WhatsApp ausgehend | CORE | Evolution `sendText` | HTTP zu Evolution-API | API-Key | **Ziel erreichbar:** `http://<VPS_HOST>:55775` (API im Container 8080). |
+| RAG / Vektoren | CORE | Chroma 1.0.15 | Client → Host-Port oder intern | ggf. API-Key/Tunnel | **Host-Port Ist: 32779** (healthy). Dreadnought: `CHROMA_PORT=32779` prüfen; Heartbeat: `GET …:32779/api/v2/heartbeat`. |
+| Strukturiert / pgvector | CORE | `atlas_postgres_state` | Docker-Netz oder SSH-Tunnel | DB-User | **Kein Host-Port** — nur **Ost–West** oder Tunnel; Zugriff von außen nur mit **SSH/Compose-Netzwerk** oder Sidecar. |
+| OC-Gateway | CORE | OpenClaw Admin | HTTP | Bearer | **18789 published** — mit `check_gateway()` von Dreadnought messbar OK (vorherige Messung). |
+| OC alternativ | — | Hostinger-Instanzen | HTTP | je Instanz | **58105** und **55800** zusätzlich live — **welche Instanz Soll ist**, im Kanon festlegen (Zwillings-Risiko). |
+| GitHub → Pull | GitHub | VPS/CORE | Webhook POST | Secret | **Unverändert:** nur wenn FastAPI-Webhook unter **öffentlicher URL** hängt; **nicht** durch `docker ps` allein belegt. |
+| Cursor Cloud MCP | Cursor | `mcp-server` | SSH + `docker exec` | SSH-Key | **Host 8001 published** — zusätzlich zu SSH möglich, aber **aktuell** Cursor-Config nutzt SSH-Pfad; beides dokumentiert. |
+| Operator / Kong Admin | Du | Kong Admin API | HTTPS/HTTP | Admin-Token | **Ist: Host 32777 → 8001** — von außen erreichbar, wenn Firewall offen; **Routes/Inhalt** weiterhin per `deck`/Admin-API prüfen, nicht aus `docker ps` ableitbar. |
+| Monica CRM | CORE / Agent | Monica | HTTP | Token | **Ist: Host 32772 → 80** — Soll-URL `MONICA_URL` auf `:32772` abstimmen. |
+| Remote HA UI | Du / Bridge | HA | HTTP | HA-Auth | **Ist: 18123 → 8123**. |
+| AGI-State-App | intern | `atlas_agi_core` | HTTP | je Deploy | **Ist: 8080 published** — bewusst exponiert; Absicherung klären. |
+
+---
+
+## Anhang A — Rohausgabe `docker ps -a` (VPS)
+
+Messung 2026-04-04, Format: `NAMES`, `IMAGE`, `STATUS`, `PORTS`.
+
+```
+NAMES                           IMAGE                                          STATUS                   PORTS
+mcp-server                      mcp-server-mcp-server                          Up 53 minutes            0.0.0.0:8001->8001/tcp, [::]:8001->8001/tcp
+chroma-uvmy-chromadb-1          chromadb/chroma:1.0.15                         Up 14 hours (healthy)    0.0.0.0:32779->8000/tcp, [::]:32779->8000/tcp
+openclaw-ntw5-openclaw-1        ghcr.io/hostinger/hvps-openclaw:latest         Up 14 hours              0.0.0.0:58105->58105/tcp, [::]:58105->58105/tcp
+evolution-api-yxa5-api-1        evoapicloud/evolution-api:latest               Up 17 hours              0.0.0.0:55775->8080/tcp, [::]:55775->8080/tcp
+evolution-api-yxa5-postgres-1   postgres:15                                    Up 17 hours              5432/tcp
+evolution-api-yxa5-redis-1      redis:latest                                   Up 17 hours              6379/tcp
+kong-s7rk-kong-1                kong:latest                                    Up 17 hours (healthy)    8443-8444/tcp, 0.0.0.0:32776->8000/tcp, [::]:32776->8000/tcp, 0.0.0.0:32777->8001/tcp, [::]:32777->8001/tcp, 0.0.0.0:32778->8002/tcp, [::]:32778->8002/tcp
+kong-s7rk-kong-migrations-1     kong:latest                                    Exited (0) 2 weeks ago   
+kong-s7rk-db-1                  postgres:16                                    Up 17 hours (healthy)    5432/tcp
+monica-0mip-monica-1            monica:latest                                  Up 17 hours              0.0.0.0:32772->80/tcp, [::]:32772->80/tcp
+monica-0mip-db-1                mariadb:11                                     Up 17 hours              3306/tcp
+openclaw-wslc-openclaw-1        ghcr.io/hostinger/hvps-openclaw:latest         Up 17 hours              0.0.0.0:55800->55800/tcp, [::]:55800->55800/tcp
+openclaw-admin                  ghcr.io/openclaw/openclaw:main                 Up 17 hours (healthy)    0.0.0.0:18789->18789/tcp, [::]:18789->18789/tcp
+atlas_agi_core                  agi-state-agi-core:fixed                       Up 17 hours              0.0.0.0:8080->8080/tcp, [::]:8080->8080/tcp
+atlas_postgres_state            pgvector/pgvector:pg15                         Up 17 hours              5432/tcp
+atlas_chroma_state              chromadb/chroma:0.4.24                         Up 17 hours              8000/tcp
+openclaw-spine                  268aaf9fde39                                   Up 17 hours              0.0.0.0:18790->18790/tcp, [::]:18790->18790/tcp
+ha-atlas                        ghcr.io/home-assistant/home-assistant:stable   Up 17 hours              0.0.0.0:18123->8123/tcp, [::]:18123->8123/tcp
+```
 
 ---
 

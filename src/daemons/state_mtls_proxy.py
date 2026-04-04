@@ -169,4 +169,4 @@ def _preflight_cli_or_exit() -> None:
 
 if __name__ == "__main__":
     _preflight_cli_or_exit()
-    uvicorn.run("src.daemons.state_mtls_proxy:app", host="127.0.0.1", port=8049, reload=False)
+    uvicorn.run(app, host="127.0.0.1", port=8049, reload=False)

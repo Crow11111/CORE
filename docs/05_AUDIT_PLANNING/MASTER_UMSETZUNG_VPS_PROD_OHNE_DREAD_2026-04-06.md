@@ -48,7 +48,7 @@ Dokumente, die Dreadnought als **unverzichtbaren** Hub behaupten, sind für **Pr
 
 **Abnahme:** Existenz der Unit + ein **manuell nachvollziehbarer** Lauf mit **Exit 0** auf dem VPS (Log-Pfad dokumentiert).
 
-*Referenz:* `docs/03_INFRASTRUCTURE/VPS_ANTI_HEROIN_PIPELINE.md` (Stub bis Unit live).
+*Referenz:* `docs/03_INFRASTRUCTURE/VPS_ANTI_HEROIN_PIPELINE.md` — Deploy: `python -m src.scripts.vps_deploy_anti_heroin_mirror` (Rechner mit `root@VPS_HOST`-SSH).
 
 ---
 

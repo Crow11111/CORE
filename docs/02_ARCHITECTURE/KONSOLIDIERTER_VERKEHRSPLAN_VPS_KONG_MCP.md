@@ -93,15 +93,15 @@ Das entspricht der **Macro-Kette** (`SPEC_STATE_HOLD.md`, `MACRO_ARCHITECTURE_AU
 | Nr.    | Thema (Kurz)                                     | Wo im Repo / Fokus                                                                          |
 | ------ | ------------------------------------------------ | ------------------------------------------------------------------------------------------- |
 | **3**  | Pacemaker / metabolische Homeostase (VAR_3)      | `MASTERPLAN_REPAIR_TICKETS_3_5_6_7.md`, `SPEC_PACEMAKER_VAR_3.md`, `omega_pacemaker`, Tests |
-| **4**  | Admission Control                                | `TICKET_4_*`, Logic-Core, Einlass vor teurer Arbeit                                         |
-| **5**  | Arbitration / Job-Merge                          | `TICKET_5_*`, `arbitration_engine`, Postgres-Anbindung                                      |
-| **6**  | Efference Veto / Signaturpfad                    | `TICKET_6_*`, `efference_veto`                                                              |
-| **7**  | Temporal Alignment                               | `TICKET_7_*`, `temporal_alignment`, ReleaseToken-Kontrakt                                   |
-| **8**  | Dreadnought-Membrane / Biometrie-Telemetrie      | `TICKET_8_*`, `dread_membrane_daemon`, Pain/Planning-Flags                                  |
+| **4**  | Admission Control                                | `TICKET_4_`*, Logic-Core, Einlass vor teurer Arbeit                                         |
+| **5**  | Arbitration / Job-Merge                          | `TICKET_5_`*, `arbitration_engine`, Postgres-Anbindung                                      |
+| **6**  | Efference Veto / Signaturpfad                    | `TICKET_6_`*, `efference_veto`                                                              |
+| **7**  | Temporal Alignment                               | `TICKET_7_`*, `temporal_alignment`, ReleaseToken-Kontrakt                                   |
+| **8**  | Dreadnought-Membrane / Biometrie-Telemetrie      | `TICKET_8_`*, `dread_membrane_daemon`, Pain/Planning-Flags                                  |
 | **9**  | Git-Resonanz (Auto-Push/Pull)                    | `TICKET_9_GIT_RESONANCE.md`, Membrane — **siehe Anker §5**                                  |
 | **10** | OpenClaw Autarkie / Heal / Gateway-NMI           | `TICKET_10_OPENCLAW_AUTARKIE.md`, `heal_openclaw_vps`, `infrastructure_heartbeat`           |
-| **11** | Kognitive Membran / Event-Sourcing / MCP-State   | `TICKET_11_*`, `event_store`, `mcp_omega_state`, Context-Watchdog                           |
-| **12** | Epistemischer Antrieb / Queue / Sentinel / Traum | `TICKET_12_*`, `ingest_queue_client`, `vps_sentinel`, `vps_dream_worker`, Konzepte          |
+| **11** | Kognitive Membran / Event-Sourcing / MCP-State   | `TICKET_11_`*, `event_store`, `mcp_omega_state`, Context-Watchdog                           |
+| **12** | Epistemischer Antrieb / Queue / Sentinel / Traum | `TICKET_12_`*, `ingest_queue_client`, `vps_sentinel`, `vps_dream_worker`, Konzepte          |
 
 
 **Gestern (Session-Kontext 2026-04-02–04):** Schwerpunkt **8–12** (Membrane-Git, OpenClaw-Heilpfad, kognitive Schicht, Queue + Dream/Sentinel), dazu **Tests** und **Doku** (O2-Split VPS-Autarkie, Masterpläne). Das **ändert nicht automatisch** Kong-Routen auf dem VPS — das ist **eigenes Deploy-Artefakt**.

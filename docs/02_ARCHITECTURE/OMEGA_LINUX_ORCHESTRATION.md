@@ -1,7 +1,7 @@
 # OMEGA Linux Orchestrierung
 
 **Vektor:** 2210 | 2201 | Delta 0.049
-**Stand:** 2026-03-18
+**Stand:** 2026-04-06 (Host-Ports: `docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md`)
 **Referenz:** `@docs/BIBLIOTHEK_KERN_DOKUMENTE.md` (immer einbinden).
 
 ---
@@ -21,12 +21,12 @@ flowchart LR
     OllamaScout[Ollama Scout]
   end
   subgraph VPS [VPS Hostinger]
-    Chroma[Chroma v2 :32768]
+    Chroma[Chroma v2 :32779]
     OC_Admin[OpenClaw Admin]
     OC_Spine[OpenClaw Spine]
     Evolution[Evolution API :55775]
-    Monica[Monica :32769]
-    Kong[Kong :32773]
+    Monica[Monica :32772]
+    Kong[Kong :32776]
     MCP[mcp-server]
     HA_Atlas[ha-atlas]
   end

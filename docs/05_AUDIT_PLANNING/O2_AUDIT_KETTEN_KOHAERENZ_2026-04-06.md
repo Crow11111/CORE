@@ -3,7 +3,7 @@
 **Rolle:** Orchestrator B (O2) — **kein** Zero-Context-Audit; adversarial Kohärenz (Theorie + Masterplan + Detailfluss vs. Skripte/Tests).  
 **Datum:** 2026-04-06  
 **Arbeitsverzeichnis:** `/OMEGA_CORE`  
-**Pflichtlektüre:** `OMEGA_DETAILFLUSS_TICKETS_4_12_PROD_RUNTIME.md`, `OMEGA_VOLLKREIS_PLAN.md`, `KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md` (§2–§3, §7, §8, Anhang A), `MACRO_CHAIN_MASTER_DRAFT.md` (Einleitung, Zustandsmaschine, Phase 1–2), `OMEGA_RESONANCE_ANCHOR.md`, `.cursor/rules/0_SYSTEM_AXIOMS.mdc` (A0, A5, A6, A7), `run_vollkreis_abnahme.py`, Stichprobe `TICKET_4_ADMISSION_CONTROL.md`, `TICKET_12_EPISTEMIC_DRIVE.md`.
+**Pflichtlektüre:** `OMEGA_DETAILFLUSS_TICKETS_4_12_PROD_RUNTIME.md`, `OMEGA_VOLLKREIS_PLAN.md`, `KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md` (§2–§3, §7, §8, Anhang A), `MACRO_CHAIN_MASTER_DRAFT.md` (Einleitung, Zustandsmaschine, Phase 1–2; **Deploy nicht bindend** — siehe Operator-Disclaimer im Draft + `MASTER_UMSETZUNG_VPS_PROD_OHNE_DREAD_2026-04-06.md`), `OMEGA_RESONANCE_ANCHOR.md`, `.cursor/rules/0_SYSTEM_AXIOMS.mdc` (A0, A5, A6, A7), `run_vollkreis_abnahme.py`, Stichprobe `TICKET_4_ADMISSION_CONTROL.md`, `TICKET_12_EPISTEMIC_DRIVE.md`.
 
 ---
 

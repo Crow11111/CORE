@@ -197,7 +197,7 @@ ha-atlas                        ghcr.io/home-assistant/home-assistant:stable   U
 
 1. **SSH-Inventar** (ein Dokument, eine Tabelle): Namen, Host-Ports, Bridge-Ziele, **wer** (Dreadnought / Internet / nur localhost) darf zugreifen.
 2. **Kong-Deklaration:** Minimaler Satz Services+Routes (Evolution-Webhook, ggf. Health, später CORE-Proxy) — **als Code** im Repo (deklarativ YAML/Deck), nicht nur Prosa.
-3. `**.env`-Konsolidierung:** Entweder `**VPS_GATEWAY_URL`** durchsetzen **oder** bewusst „direkte Ports“ mit Tabelle — **kein** Mix ohne Doku.
+3. **`.env`-Konsolidierung:** Entweder **`VPS_GATEWAY_URL`** durchsetzen **oder** bewusst „direkte Ports“ mit Tabelle — **kein** Mix ohne Doku; **Chroma-Port** mindestens auf **32779** (Ist) oder Kong-Upstream angleichen.
 4. **Verifikationsskripte** an **Soll** anbinden: Wenn Chroma nur intern, dann `verify_vps_stack` **Tunnel-Modus** oder „erwarteter Timeout von außen“ dokumentieren.
 5. **Session-Log** mit Datum: Kong-Routen-Stand, offene Lücken — Makro-Audit-Empfehlung (Sequenzdiagramm In→Queue→Out) **einmal** zeichnen.
 
@@ -209,4 +209,4 @@ ha-atlas                        ghcr.io/home-assistant/home-assistant:stable   U
 
 ---
 
-[PASS] Konsolidierter Verkehrsplan — Abgleich Kanon, Tickets 3–12, Kong/MCP/Gedächtnis; Operator-Audit 2026-04-04.
+[PASS] Konsolidierter Verkehrsplan — Kanon, Tickets 3–12, Kong/MCP/Gedächtnis; **§7 + Anhang A mit VPS-`docker ps` 2026-04-04** (messbarer Ist-Stand).

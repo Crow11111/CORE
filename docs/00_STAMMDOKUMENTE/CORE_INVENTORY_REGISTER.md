@@ -205,6 +205,7 @@
 | **Ticket 12 Drei Konzepte** | `docs/05_AUDIT_PLANNING/TICKET_12_DREI_KONZEPTE.md` | Architektur-Alternativen für Sentinel & Epistemic Drive (Proaktives Lernen). |
 | **Ticket 12 Epistemic Drive** | `docs/05_AUDIT_PLANNING/TICKET_12_EPISTEMIC_DRIVE.md` | Hybride, verbindliche Spezifikation (O2 geprüft): Sentinel, Void Detection, Synthese. |
 | **Ticket 11 O2 Audit** | `docs/05_AUDIT_PLANNING/O2_AUDIT_TICKET_11_EXECUTION.md` | Zero-Context Audit von Orchestrator B zu Ticket 11. |
+| **O2 Ketten-Kohärenz (Vollkontext)** | `docs/05_AUDIT_PLANNING/O2_AUDIT_KETTEN_KOHAERENZ_2026-04-06.md` | O2 mit Masterplan + Detailfluss + Axiomen: Soll-Kette vs. `run_vollkreis`/Tests; Urteil **[PARTIAL]**; explizite Nicht-Implikationen. |
 | **Session-Log 2026-04-01 (Membrane)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-01_COGNITIVE_MEMBRANE.md` | Abnahme und Abschluss der Ticket 11 Execution. |
 | **Cursor Status (Context Forcing)** | `docs/05_AUDIT_PLANNING/cursor_status.md` | Dynamisch generierter Status-File via Watchdog (Säule 3). |
 | **Database** | `src/db/core_infrastructure.sql` | 2D Integer-Membran (SQL-Schema) für CORE-Infrastruktur-Monitoring. |

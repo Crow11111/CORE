@@ -43,6 +43,9 @@ HA_ATLAS_HOST_PORT: int = 18123
 # —— atlas_agi_core ——
 ATLAS_AGI_CORE_HOST_PORT: int = 8080
 
+# —— Omega-Backend (FastAPI systemd auf VPS, Phase 1: uvicorn direkt auf diesem Host-Port) ——
+OMEGA_BACKEND_HOST_PORT: int = 32800
+
 # —— Hostinger One-Click OpenClaw (parallel; Architektur: auf eine Instanz fokussieren) ——
 OPENCLAW_HOSTINGER_HVPS_HOST_PORT: int = 58105
 OPENCLAW_HOSTINGER_WSLC_HOST_PORT: int = 55800
@@ -59,5 +62,6 @@ def contract_summary() -> str:
         ("MCP_SERVER", MCP_SERVER_HOST_PORT),
         ("MONICA", MONICA_HTTP_HOST_PORT),
         ("HA_ATLAS", HA_ATLAS_HOST_PORT),
+        ("OMEGA_BACKEND", OMEGA_BACKEND_HOST_PORT),
     )
     return "; ".join(f"{k}={v}" for k, v in pairs)

@@ -1,5 +1,8 @@
 # OMEGA MACRO-CHAIN: Das Biologische Timing & Kausalitäts-Modell
-**Status:** Master Draft (Iteration 10 - MRI Dynamo & Helix-Navigation)
+
+> **OPERATOR-HINWEIS (nicht bindend für Prod-Deploy):** Dieser Text ist ein **Entwurf** (Ideen zu Timing/Kausalität). **Verbindlich** für Laufzeit, Ports, Webhooks und Postgres/Chroma-Platzierung sind: `MASTER_UMSETZUNG_VPS_PROD_OHNE_DREAD_2026-04-06.md`, `OMEGA_DETAILFLUSS_TICKETS_4_12_PROD_RUNTIME.md`, `VPS_HOST_PORT_CONTRACT.md` und die Ticket-Specs. Insbesondere die hier skizzierte **harte Trennung „Postgres nur auf Dreadnought“** widerspricht dem **Operator-Mandat „Omega vollständig ohne Dreadnought als Runtime“** — für Abnahme gilt der MASTER, nicht dieser Draft.
+
+**Status:** Master Draft (Iteration 10 - MRI Dynamo & Helix-Navigation) — **Explorativ, kein Kanon**
 **Fokus:** Konkrete Umsetzung der Ebene 2 (`BIOLOGY_TO_DIGITAL_MAPPING.md`) in die technische Ebene 3.
 **Axiom-Referenz:** `immutable_axioms.py` (A1, A5, A6, A7, A10) und Kanon `AXIOM_A10_OCCAMS_NEGATIVE_RAZOR.md`.
 

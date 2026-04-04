@@ -1,5 +1,3 @@
-
-
 # Kommunikationskanal CORE ↔ OC (OpenClaw)
 
 Damit Infos zwischen CORE (Cursor/4D_RESONATOR (CORE)) und OC ausgetauscht werden können und z. B. Anliegen von OC in den Osmium OMEGA_ATTRACTOR Council eingebracht werden können, gibt es einen **direkten Kommunikationskanal** in beide Richtungen.

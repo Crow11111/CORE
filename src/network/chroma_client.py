@@ -22,6 +22,7 @@ import time
 import logging
 import math
 from dotenv import load_dotenv
+from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
 from src.logic_core.crystal_grid_engine import CrystalGridEngine
 
 load_dotenv("/OMEGA_CORE/.env")
@@ -171,9 +172,16 @@ class ResilientChromaClient:
         # Delegiert alle anderen Aufrufe an den internen chromadb Client
         return getattr(self.client, name)
 
-# Remote (VPS): CHROMA_HOST + CHROMA_PORT (Standard 8000)
+from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
+
+# Remote (VPS): CHROMA_HOST + CHROMA_PORT; lokal ohne CHROMA_HOST → Persistenz-Port 8000
 CHROMA_HOST = os.getenv("CHROMA_HOST", "").strip()
-CHROMA_PORT = int(os.getenv("CHROMA_PORT", "8000"))
+CHROMA_PORT = int(
+    os.getenv(
+        "CHROMA_PORT",
+        str(CHROMA_UVMY_HOST_PORT if CHROMA_HOST else 8000),
+    )
+)
 # Lokal (Dreadnought/Windows), wenn CHROMA_HOST leer
 CHROMA_LOCAL_PATH = os.getenv("CHROMA_LOCAL_PATH", r"/OMEGA_CORE\data\chroma_db")
 

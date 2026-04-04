@@ -133,12 +133,36 @@ class InfrastructureSentinel:
 
         # 3. VPS Checks
         vps_checks = [
-            ("chroma-uvmy", f"http://{self.vps_host}:32768/api/v2/heartbeat", None),
-            ("openclaw-admin", f"http://{self.vps_host}:18789/api/status", None),
-            ("evolution-api", f"http://{self.vps_host}:55775/instance/fetchInstances", {"apikey": self.evolution_key} if self.evolution_key else None),
-            ("kong", f"http://{self.vps_host}:32773/status", None),
-            ("monica", f"http://{self.vps_host}:32769/api/contacts", {"Authorization": f"Bearer {self.monica_token}"} if self.monica_token else None),
-            ("atlas_agi_core", f"http://{self.vps_host}:8080/status", None),
+            (
+                "chroma-uvmy",
+                f"http://{self.vps_host}:{CHROMA_UVMY_HOST_PORT}/api/v2/heartbeat",
+                None,
+            ),
+            (
+                "openclaw-admin",
+                f"http://{self.vps_host}:{OPENCLAW_ADMIN_HOST_PORT}/api/status",
+                None,
+            ),
+            (
+                "evolution-api",
+                f"http://{self.vps_host}:{EVOLUTION_API_HOST_PORT}/instance/fetchInstances",
+                {"apikey": self.evolution_key} if self.evolution_key else None,
+            ),
+            (
+                "kong",
+                f"http://{self.vps_host}:{KONG_ADMIN_API_HOST_PORT}/status",
+                None,
+            ),
+            (
+                "monica",
+                f"http://{self.vps_host}:{MONICA_HTTP_HOST_PORT}/api/contacts",
+                {"Authorization": f"Bearer {self.monica_token}"} if self.monica_token else None,
+            ),
+            (
+                "atlas_agi_core",
+                f"http://{self.vps_host}:{ATLAS_AGI_CORE_HOST_PORT}/status",
+                None,
+            ),
         ]
         
         for svc, url, headers in vps_checks:

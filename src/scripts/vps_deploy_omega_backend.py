@@ -180,7 +180,7 @@ def main() -> int:
         "true",
         "yes",
     ):
-        print(f"[INFO] Health-Check übersprungen (OMEGA_DEPLOY_SKIP_HEALTH)")
+        print("[INFO] Health-Check übersprungen (OMEGA_DEPLOY_SKIP_HEALTH)")
     else:
         health_line = (
             f"curl -sf http://127.0.0.1:{port}/status >/dev/null && echo CURL_OK || echo CURL_FAIL"

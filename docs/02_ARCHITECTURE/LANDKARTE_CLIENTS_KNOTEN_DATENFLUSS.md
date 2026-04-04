@@ -5,6 +5,7 @@
 
 **Detail-Tiefen:**  
 - VPS-Container und Tabellen: `@docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md`  
+- **Kong / MCP / Gedächtnis — ein Verkehrsplan (Soll vs. Ist):** `@docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md`  
 - Tesserakt, Webhooks, Kurbelwelle: `@docs/02_ARCHITECTURE/CORE_SCHNITTSTELLEN_UND_KANAALE.md`  
 - Git-Sync-Kreis: `@docs/02_ARCHITECTURE/G_CORE_CIRCLE.md`  
 - MCP vs. Drehscheibe: `@AGENTS.md` (Abschnitt MCP / Skills)

@@ -120,7 +120,7 @@ Das entspricht der **Macro-Kette** (`SPEC_STATE_HOLD.md`, `MACRO_ARCHITECTURE_AU
 
 | Feld | Wert |
 |------|------|
-| **Zeitpunkt** | 2026-04-04 (laufender VPS-Betrieb, Container teils „Up 14–17 h“) |
+| **Zeitpunkt** | 2026-04-04 (Snapshot erneuert, laufender VPS-Betrieb) |
 | **Befehl** | `docker ps -a --format 'table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}'` |
 | **Zugriff** | SSH `root@<VPS_HOST>` (wie `verify_vps_stack.py` / `.env`: `VPS_SSH_KEY`) |
 | **Volltext** | **Anhang A** (unveränderte Ausgabe) |

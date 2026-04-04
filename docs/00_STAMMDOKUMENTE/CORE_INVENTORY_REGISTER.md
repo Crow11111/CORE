@@ -36,6 +36,10 @@
 | **VPS öffentliche Ports (Code)** | `src/config/vps_public_ports.py` | Single Source of Truth für Defaults in Skripten und Heartbeats. |
 | **VPS Compose-Pfade (Ist)** | `docs/03_INFRASTRUCTURE/VPS_COMPOSE_PATHS.md` | `docker inspect` → Compose-Dateien auf dem VPS; Plan §8.2/§8.5. |
 | **Kong Deck-Referenz (Repo)** | `infra/vps/kong/kong-deck-reference.yaml` | Deklarative Kong-Services/Routes gemäß Verkehrsplan §8.3; `infra/vps/kong/README.md`. |
+| **VPS Backup-Snapshot** | `src/scripts/vps_backup_snapshot.py` | SSH: `/root/omega-core-backups/<UTC>/` vor riskanten Änderungen. |
+| **Kong /health anlegen** | `src/scripts/vps_kong_ensure_health_route.py` | Idempotent: Service `omega-kong-health`, Route `/health`, Plugin request-termination. |
+| **VPS Umsetzungsplan Backup+Health** | `docs/05_AUDIT_PLANNING/VPS_UMSETZUNGSPLAN_BACKUP_KONG_HEALTH.md` | Phasen, Rollback, Nachweis. |
+| **VPS Verify-Evidenz** | `docs/05_AUDIT_PLANNING/VPS_STACK_VERIFY_EVIDENCE_2026-04-04.md` | Auszug grüner Checks nach Einrichtung. |
 | **AI-Modelle** | `docs/02_ARCHITECTURE/AI_MODEL_CAPABILITIES.md` | Modell-IDs, Rollen-Mapping, Kosten 2.5 Flash vs Pro, Token-Richtwerte, Deep Research & Computer Use. |
 | **Deep Research & Computer Use** | `docs/02_ARCHITECTURE/DEEP_RESEARCH_UND_COMPUTER_USE.md` | Deep Research: Projekt-Omega-Verifikation (Vektorisierung, ChromaDB, Abgleich). Computer Use: Linux-Integration. |
 | **Duale Topologie & Vektor-Härtung** | `docs/02_ARCHITECTURE/DUALE_TOPOLOGIE_UND_VEKTOR_HAERTUNG.md` | G-Atlas-Soll; Ist-Zustand; RAG-Einheitlichkeit; Vektor-Härtung. |

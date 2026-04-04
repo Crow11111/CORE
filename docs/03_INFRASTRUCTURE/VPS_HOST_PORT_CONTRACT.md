@@ -71,7 +71,8 @@ Optional Overrides bleiben möglich (`CHROMA_PORT`, `KONG_ADMIN_URL`, …). **So
 
 ## 5. Verifikation
 
-- `python -m src.scripts.verify_vps_stack` — nutzt Vertrags-Defaults aus `vps_public_ports.py`; prüft bei laufendem Kong die **Deck-Referenz** (`infra/vps/kong/kong-deck-reference.yaml`: Service `evolution-api`, Route `/evo`).
+- **Vor Kong-Änderungen:** `python -m src.scripts.vps_backup_snapshot` — Snapshot unter `/root/omega-core-backups/` auf dem VPS (`docs/05_AUDIT_PLANNING/VPS_UMSETZUNGSPLAN_BACKUP_KONG_HEALTH.md`).
+- `python -m src.scripts.verify_vps_stack` — Vertrags-Defaults aus `vps_public_ports.py`; Kong: `evolution-api` + `/evo` + `omega-kong-health` + Proxy-GET `/health` mit Body `OMEGA_KONG_HEALTH_OK` (siehe `kong-deck-reference.yaml`).
 - `run_vollkreis_abnahme.py` — Block D/Gk Chroma gegen Vertrag.
 - Bei **Infrastructure-Change:** erneut `docker ps` ziehen; wenn Ports gleich → nur Timestamp im Archiv (`KONSOLIDIERTER_VERKEHRSPLAN` Anhang) erneuern; wenn Ports weichen → **Vertrag** oder **Deploy** reparieren — nie stilles Driften.
 

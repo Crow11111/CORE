@@ -1,6 +1,6 @@
 # Kong — Deck-Referenz gemäß docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md §8.3
-# Wahrheit auf dem VPS: Kong DB + Admin-API. Diese Datei ist der Repo-Spiegel nach Abnahme.
-# Später (Plannung §8.3): Health-Route, CORE-Proxy — erst nach Spec ergänzen, dann sync.
+# Wahrheit auf dem VPS: Kong DB + Admin-API. Dieses File spiegelt den genehmigten Stand.
+# Anwendung: Änderungen zuerst per Admin-API oder deck sync nach Abnahme; Backup: vps_backup_snapshot.
 _format_version: "3.0"
 _transform: false
 
@@ -13,6 +13,15 @@ services:
     read_timeout: 60000
     retries: 5
 
+  # Proxy-Health ohne echten Upstream (Plugin terminiert sofort). Body = vps_public_ports.KONG_PUBLIC_HEALTH_BODY
+  - name: omega-kong-health
+    url: https://example.com:443
+    protocol: https
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    retries: 0
+
 routes:
   - name: evolution-evopath
     service: evolution-api
@@ -22,3 +31,20 @@ routes:
     protocols:
       - http
       - https
+
+  - name: omega-kong-health-route
+    service: omega-kong-health
+    paths:
+      - /health
+    strip_path: false
+    protocols:
+      - http
+      - https
+
+plugins:
+  - name: request-termination
+    service: omega-kong-health
+    config:
+      status_code: 200
+      body: OMEGA_KONG_HEALTH_OK
+      content_type: text/plain; charset=utf-8

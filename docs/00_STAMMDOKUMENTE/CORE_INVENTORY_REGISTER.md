@@ -32,6 +32,7 @@
 | **OpenClaw Membran** | `docs/02_ARCHITECTURE/OPENCLAW_MEMBRAN_TESSERAKT.md` | Blueprint: Facetten-Atomisierung, isolierte Räume, kreuz-modale Konvergenz, Entkopplung. |
 | **Landkarte Clients / Knoten** | `docs/02_ARCHITECTURE/LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md` | Überblick: KI-Clients vs. CORE-Backend vs. VPS; Push/Pull; geschlossene Kreise; Verweise auf VPS_KNOTEN, SCHNITTSTELLEN, G_CORE_CIRCLE. |
 | **Konsolidierter Verkehrsplan VPS/Kong/MCP** | `docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md` | Soll vs. Ist: Kong als Ingress, MCP vs. Gedächtnis (Chroma/PG/Queue), SSH-Nebenbahn, Tickets 3–12 Querschnitt, Pfad-Matrix + Abnahme-Snapshot Anhang A. |
+| **Detailfluss Tickets 4–12 + Prod** | `docs/02_ARCHITECTURE/OMEGA_DETAILFLUSS_TICKETS_4_12_PROD_RUNTIME.md` | Kanonische Extraktion: wer/was/wo/Timing; Prod-Ziel kanalunabhängig; Kong-Ist + offene Routen. |
 | **VPS Host-Port-Vertrag** | `docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md` | Verbindliche Docker-Host-Ports; Pflegepflicht Agenten/Infra; Abnahme: `docker ps` gegen Tabelle. |
 | **VPS Snapshot-Verifikation** | `docs/03_INFRASTRUCTURE/VPS_SNAPSHOT_VERIFICATION.md` | Drei Prüfungen: `verify_vps_stack`, Chroma v2-`curl`, Kong Admin `/services` (ohne Secrets). |
 | **VPS öffentliche Ports (Code)** | `src/config/vps_public_ports.py` | Single Source of Truth für Defaults in Skripten und Heartbeats. |

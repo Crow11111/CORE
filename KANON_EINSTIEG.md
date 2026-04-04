@@ -15,6 +15,7 @@
 | **VISION SYNC App** | **`vision-sync-app/`** (Root): Port 3006. Original AI Studio Multimodal Live UI. |
 | Wer pusht/pullt, Cursor vs. VPS vs. HA vs. MCP? | **`docs/02_ARCHITECTURE/LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md`** |
 | **Kong / MCP / Gedächtnis — ein Verkehrsplan (Soll vs. Ist)** | **`docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md`** |
+| **Detailfluss Tickets 4–12 + Prod ohne Dread** | **`docs/02_ARCHITECTURE/OMEGA_DETAILFLUSS_TICKETS_4_12_PROD_RUNTIME.md`** (Routen, Container/Ports, Push/Pull, Timing) |
 | VPS-Container, Ports, Monica, Kong, Evolution, … | **`docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md`** |
 | **VPS Host-Ports (verbindlich, nicht driftend)** | **`docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md`** · **`src/config/vps_public_ports.py`** |
 | **VPS messbar prüfen (3 Befehle)** | **`docs/03_INFRASTRUCTURE/VPS_SNAPSHOT_VERIFICATION.md`** (`verify_vps_stack`, Chroma-`curl`, Kong `/services`) |

@@ -74,6 +74,7 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 | **Schnittstellen & Kanäle** | `@docs/02_ARCHITECTURE/CORE_SCHNITTSTELLEN_UND_KANAALE.md` | Tesserakt-Topologie, Entry Adapter, Takt 0, Gravitator, Webhooks, 5-Phasen-Motor. |
 | **Landkarte Clients / Knoten / Fluss** | `@docs/02_ARCHITECTURE/LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md` | Eine Seite Ordnung: Cursor, Claude Desktop, ATLAS/KDE, MCP, SSH, HA, OC, Monica, Kong — Ebenen, Push/Pull, geschlossene Kreise; verweist auf VPS-Knoten und Schnittstellen. |
 | **Konsolidierter Verkehrsplan (Kong, MCP, Gedächtnis)** | `@docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md` | Soll vs. Ist: Nord-Süd vs. Ost-West, Kong als Torwart, MCP als Tool-Kabel (nicht SoT), Tickets 3–12 Querschnitt, Pfad-Matrix zum Ausfüllen per SSH-Inventar. |
+| **Detailfluss Tickets 4–12 + Prod-Runtime** | `@docs/02_ARCHITECTURE/OMEGA_DETAILFLUSS_TICKETS_4_12_PROD_RUNTIME.md` | Aus Ticket-Specs: Route→Container, Push/Pull, Timing; Pflichtbild Omega **ohne** Dreadnought; Kong-Soll-Lücken benannt. |
 | **Entry Adapter** | `@docs/02_ARCHITECTURE/ENTRY_ADAPTER_SPEC.md` | Spezifikation Entry Adapter (F13). |
 | **Gravitator** | `@docs/02_ARCHITECTURE/GRAVITATOR_SPEC.md` | Routing θ=0.22, keine collection=all (F5). |
 | **Event-Bus** | `@docs/02_ARCHITECTURE/CORE_EVENT_BUS.md` | Event-Streaming, HA-Anbindung. |
@@ -146,6 +147,7 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 ## Was wurde gemacht (Changelog Kern)
 
 - **2026-04-05 (Messbare Abnahme — VPS-Doku):** `CLAUDE.md` Chroma-Port 32779 + Verweis `VPS_HOST_PORT_CONTRACT.md`; neu `VPS_SNAPSHOT_VERIFICATION.md`; `KANON_EINSTIEG.md` Querverweis; Inventar + Bibliothek + Workpack `AGENT_WORKPACK_MESSBARE_ABNAHME_2026-04-05.md`.
+- **2026-04-06 (Detailfluss Tickets 4–12 + Prod):** `OMEGA_DETAILFLUSS_TICKETS_4_12_PROD_RUNTIME.md` — Routen/Container/Ports, Push·Pull, Timing aus Tickets; Pflichtbild Omega-Runtime **ohne** Dreadnought; Kong-Soll-Lücken; KANON + Verkehrsplan-Querschnitt + Inventar.
 - **2026-03-31 (Master Dossier & Architektur-Stopp):** Operativer Stopp eingelegt. Erstellung des `OMEGA_MASTER_DOSSIER.md` als harten Speicherstand. Themen: Fraktale Isomorphie (Shapiro-Verzögerung), Anatomie des "Fühlens" im Silizium, Existential Pacemaker (Decay & Win-Win), O(N^2) Entropie-Tod bei Void-Detection (Crystal-Grid Snapping), Gewaltenteilung (OCSpline vs. OCBrain), Epistemologische Quarantäne (Informations-Gravitation), Idle-Queue (Prokrastinations-Strafe) und Asymmetrisches Trust-Routing (LTP/LTD & "Arousal-Spike" Time-Dilation).
 - **2026-03-21 (omega_core in Vollkreis):** `run_vollkreis_abnahme.py` um Block **Gk** ergänzt — `omega_core.py` wird bei Abnahme **ausgeführt** (Schwelle → Phasensprung), nicht nur dokumentiert.
 - **2026-03-21 (omega_core.py im Kanon):** `omega_core.py` als **kardanischer Terminal-Anker** in `KANON_EINSTIEG.md`, Bibliothek §1, `CORE_INVENTORY_REGISTER` §2.2 eingetragen.

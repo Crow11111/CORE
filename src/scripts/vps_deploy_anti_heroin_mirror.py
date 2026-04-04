@@ -24,10 +24,15 @@ def _root() -> Path:
 
 
 def _load_dotenv() -> None:
+    """
+    Projekt-.env muss VPS_* setzen dürfen, auch wenn die IDE eine leere
+    VPS_SSH_KEY exportiert (dotenv override=False würde dann NICHT aus .env laden).
+    Gleiche Linie wie verify_vps_stack.py (override=True).
+    """
     try:
         from dotenv import load_dotenv
 
-        load_dotenv(_root() / ".env", override=False)
+        load_dotenv(_root() / ".env", override=True)
     except ImportError:
         pass
 

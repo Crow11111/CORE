@@ -116,12 +116,13 @@ def main() -> int:
             print(f"[FAIL] scp {local.name}", file=sys.stderr)
             return 1
 
+    env_line = f"OMEGA_MIRROR_ROOT={MIRROR}"
     wr = subprocess.run(
         _ssh_base(host, key)
         + [
             "sh",
             "-c",
-            f"printf '%s\\n' 'OMEGA_MIRROR_ROOT={MIRROR}' > /etc/default/omega-core-anti-heroin",
+            f"echo {shlex.quote(env_line)} > /etc/default/omega-core-anti-heroin",
         ]
     )
     if wr.returncode != 0:

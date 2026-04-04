@@ -37,6 +37,8 @@
 | **VPS öffentliche Ports (Code)** | `src/config/vps_public_ports.py` | Single Source of Truth für Defaults in Skripten und Heartbeats. |
 | **VPS Compose-Pfade (Ist)** | `docs/03_INFRASTRUCTURE/VPS_COMPOSE_PATHS.md` | `docker inspect` → Compose-Dateien auf dem VPS; Plan §8.2/§8.5. |
 | **Kong Deck-Referenz (Repo)** | `infra/vps/kong/kong-deck-reference.yaml` | Deklarative Kong-Services/Routes gemäß Verkehrsplan §8.3; `infra/vps/kong/README.md`. |
+| **Kong Compose Port-Snippet** | `infra/vps/kong/docker-compose.ports-contract.snippet.yaml` | VPS: Kong-Host-Ports 32776–32778 vernageln (keine ephemeren Docker-Ports). |
+| **Pyright / IDE (venv)** | `pyrightconfig.json` | `venv: .venv` — basedpyright findet `python-dotenv` / `dotenv`. |
 | **VPS Backup-Snapshot** | `src/scripts/vps_backup_snapshot.py` | SSH: `/root/omega-core-backups/<UTC>/` vor riskanten Änderungen. |
 | **Kong /health anlegen** | `src/scripts/vps_kong_ensure_health_route.py` | Idempotent: Service `omega-kong-health`, Route `/health`, Plugin request-termination. |
 | **VPS Umsetzungsplan Backup+Health** | `docs/05_AUDIT_PLANNING/VPS_UMSETZUNGSPLAN_BACKUP_KONG_HEALTH.md` | Phasen, Rollback, Nachweis. |

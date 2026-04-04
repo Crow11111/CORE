@@ -1,0 +1,8 @@
+# Ersetzt in /docker/kong-s7rk/docker-compose.yml unter service "kong" -> ports:
+# NICHT "8000"/"8001"/"8002" ohne Host-Zahl (Docker vergibt dann zufällige Ports → Vertrag bricht).
+# Vertrag: docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md
+#
+#    ports:
+#      - "32776:8000"
+#      - "32777:8001"
+#      - "32778:8002"

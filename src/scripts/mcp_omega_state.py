@@ -33,6 +33,37 @@ from src.db import event_store_client as _omega_event_store
 mcp = FastMCP("OMEGA_STATE_NEXUS")
 PROXY_URL = "http://localhost:8049"
 
+_HANDBOOKS_DIR = Path(_REPO) / "docs" / "03_INFRASTRUCTURE" / "handbooks"
+_ROLE_SAFE = re.compile(r"^[\w.-]+$")
+
+
+def _handbook_file_for_role(role: str) -> Path:
+    r = (role or "").strip()
+    if not r or not _ROLE_SAFE.match(r):
+        raise ValueError(f"ungültiger handbook role (nur [A-Za-z0-9_.-]): {role!r}")
+    return _HANDBOOKS_DIR / f"{r}.md"
+
+
+def _read_handbook_local(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
+
+def _atomic_write_handbook(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    parent = path.parent
+    fd, tmp_name = tempfile.mkstemp(prefix=".hb-", suffix=".tmp", dir=str(parent))
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as tf:
+            tf.write(content)
+        os.replace(tmp_name, path)
+    except Exception:
+        try:
+            os.unlink(tmp_name)
+        except OSError:
+            pass
+        raise
+
+
 @mcp.tool()
 async def read_core_state() -> str:
     """

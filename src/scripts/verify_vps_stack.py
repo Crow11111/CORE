@@ -108,6 +108,11 @@ def main():
         print(k_msg)
         if not k_ok:
             ok = False
+        else:
+            ph_ok, ph_msg = _verify_kong_proxy_health(lines)
+            print(ph_msg)
+            if not ph_ok:
+                ok = False
     # 2) Chroma v2 heartbeat
     try:
         r = httpx.get(

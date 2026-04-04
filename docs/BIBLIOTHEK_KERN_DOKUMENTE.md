@@ -102,6 +102,7 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 | **VPS Full-Stack** | `@docs/03_INFRASTRUCTURE/VPS_FULL_STACK_SETUP.md` | Hostinger, Container, Ports, Firewall. |
 | **VPS-Knoten & Flüsse** | `@docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md` | Monica, Kong, Evolution, DBs: Zweck, Pull/Push-Matrix, Einbindung. |
 | **VPS Host-Port-Vertrag** | `@docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md` | Verbindliche Host-Ports; Pflege durch Agenten/Infra; Code: `src/config/vps_public_ports.py`. |
+| **VPS Snapshot-Verifikation** | `@docs/03_INFRASTRUCTURE/VPS_SNAPSHOT_VERIFICATION.md` | Drei messbare Checks: `verify_vps_stack`, Chroma-Heartbeat-`curl`, Kong Admin `/services` (Platzhalter `VPS_HOST`, kein Secret-Commit). |
 | **VPS Compose-Pfade** | `@docs/03_INFRASTRUCTURE/VPS_COMPOSE_PATHS.md` | Ist-Pfade zu `docker-compose.yml` auf dem VPS; Plan KONSOLIDIERTER §8.2. |
 | **Kong Repo-Referenz** | `@infra/vps/kong/kong-deck-reference.yaml` | Deck-Spiegel zu Kong Admin-API; Abgleich: `verify_vps_stack`. |
 | **Backup (final)** | `@docs/03_INFRASTRUCTURE/BACKUP_PLAN_FINAL.md` | Einziges Ziel VPS, daily_backup.py, Chroma Cold-Backup. |
@@ -138,11 +139,13 @@ Themen, die **bewusst vorangetrieben** werden müssen (Architektur/Ops, nicht ve
 | **Session-Logs** | `@docs/05_AUDIT_PLANNING/SESSION_LOG_*.md` | Durchgeführte Schritte pro Session. |
 | **Orchestrierung Linux** | `@docs/02_ARCHITECTURE/OMEGA_LINUX_ORCHESTRATION.md` | Topologie Arch, Modell-Matrix, Health-Skripte, Testmatrix, Push/Pull-Verweis. |
 | **Vollkreis-Plan** | `@docs/05_AUDIT_PLANNING/OMEGA_VOLLKREIS_PLAN.md` | Geschlossene Kette, Team-Arbeitspakete (A–G), Linux-Auswirkungen, was zieht/drückt wann. |
+| **Agent Workpack Messbare Abnahme** | `@docs/05_AUDIT_PLANNING/AGENT_WORKPACK_MESSBARE_ABNAHME_2026-04-05.md` | Tasks T1–T5: CLAUDE VPS-Port/Vertrag, `VPS_SNAPSHOT_VERIFICATION.md`, KANON/Inventar/Bibliothek, `verify_vps_stack`-Nachweis. |
 
 ---
 
 ## Was wurde gemacht (Changelog Kern)
 
+- **2026-04-05 (Messbare Abnahme — VPS-Doku):** `CLAUDE.md` Chroma-Port 32779 + Verweis `VPS_HOST_PORT_CONTRACT.md`; neu `VPS_SNAPSHOT_VERIFICATION.md`; `KANON_EINSTIEG.md` Querverweis; Inventar + Bibliothek + Workpack `AGENT_WORKPACK_MESSBARE_ABNAHME_2026-04-05.md`.
 - **2026-03-31 (Master Dossier & Architektur-Stopp):** Operativer Stopp eingelegt. Erstellung des `OMEGA_MASTER_DOSSIER.md` als harten Speicherstand. Themen: Fraktale Isomorphie (Shapiro-Verzögerung), Anatomie des "Fühlens" im Silizium, Existential Pacemaker (Decay & Win-Win), O(N^2) Entropie-Tod bei Void-Detection (Crystal-Grid Snapping), Gewaltenteilung (OCSpline vs. OCBrain), Epistemologische Quarantäne (Informations-Gravitation), Idle-Queue (Prokrastinations-Strafe) und Asymmetrisches Trust-Routing (LTP/LTD & "Arousal-Spike" Time-Dilation).
 - **2026-03-21 (omega_core in Vollkreis):** `run_vollkreis_abnahme.py` um Block **Gk** ergänzt — `omega_core.py` wird bei Abnahme **ausgeführt** (Schwelle → Phasensprung), nicht nur dokumentiert.
 - **2026-03-21 (omega_core.py im Kanon):** `omega_core.py` als **kardanischer Terminal-Anker** in `KANON_EINSTIEG.md`, Bibliothek §1, `CORE_INVENTORY_REGISTER` §2.2 eingetragen.

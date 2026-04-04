@@ -19,7 +19,7 @@ Delta = \Lambda \approx 0.049 (baryonisches Limit). Korrektheit > Nachvollziehba
 ## Architektur
 - **Dreadnought** (Arch Linux): CORE Backend (FastAPI :8000), Frontend (React :3000), Daemons (systemd)
 - **Scout** (Raspi 5, HA OS): Home Assistant, go2rtc (Brio-Kamera + Mic), Event-Bus
-- **VPS** (Hostinger): ChromaDB (:32768), PostgreSQL/pgvector, OpenClaw, Monika, Kong, EvolutionAPI
+- **VPS** (Hostinger): ChromaDB Host-Port **32779** (verbindlich: `docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md`), PostgreSQL/pgvector, OpenClaw, Monika, Kong, EvolutionAPI
 
 ## Duale Topologie (Eichung)
 - **PostgreSQL (int-Membran):** UUID, Metadaten, Rohtext

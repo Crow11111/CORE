@@ -33,6 +33,7 @@
 | **Landkarte Clients / Knoten** | `docs/02_ARCHITECTURE/LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md` | Überblick: KI-Clients vs. CORE-Backend vs. VPS; Push/Pull; geschlossene Kreise; Verweise auf VPS_KNOTEN, SCHNITTSTELLEN, G_CORE_CIRCLE. |
 | **Konsolidierter Verkehrsplan VPS/Kong/MCP** | `docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md` | Soll vs. Ist: Kong als Ingress, MCP vs. Gedächtnis (Chroma/PG/Queue), SSH-Nebenbahn, Tickets 3–12 Querschnitt, Pfad-Matrix + Abnahme-Snapshot Anhang A. |
 | **VPS Host-Port-Vertrag** | `docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md` | Verbindliche Docker-Host-Ports; Pflegepflicht Agenten/Infra; Abnahme: `docker ps` gegen Tabelle. |
+| **VPS Snapshot-Verifikation** | `docs/03_INFRASTRUCTURE/VPS_SNAPSHOT_VERIFICATION.md` | Drei Prüfungen: `verify_vps_stack`, Chroma v2-`curl`, Kong Admin `/services` (ohne Secrets). |
 | **VPS öffentliche Ports (Code)** | `src/config/vps_public_ports.py` | Single Source of Truth für Defaults in Skripten und Heartbeats. |
 | **VPS Compose-Pfade (Ist)** | `docs/03_INFRASTRUCTURE/VPS_COMPOSE_PATHS.md` | `docker inspect` → Compose-Dateien auf dem VPS; Plan §8.2/§8.5. |
 | **Kong Deck-Referenz (Repo)** | `infra/vps/kong/kong-deck-reference.yaml` | Deklarative Kong-Services/Routes gemäß Verkehrsplan §8.3; `infra/vps/kong/README.md`. |
@@ -78,6 +79,7 @@
 | **Vision Sensor Research** | `docs/05_AUDIT_PLANNING/VISION_SENSOR_RESEARCH.md` | Trade-offs Auflösung (1080p vs 720p) & Mapping MediaPipe Blendshapes (Kognitive Last, Fokus). |
 | **Research Biology Timing** | `docs/05_AUDIT_PLANNING/RESEARCH_BIOLOGY_TIMING.md` | Dossier: Timing/Kausalität (Predictive Coding, Latenzen), Parallel vs. serial, Efferenzkopie, Libet/RP/Veto, Gamma/Phasenverschränkung. |
 | **Agent Refactor Plan** | `docs/05_AUDIT_PLANNING/AGENT_REFACTOR_PLAN.md` | Audit-Bericht und V2-Konzept für das Agenten-System (Schichten, Model-Zwang, MDC-Globs). |
+| **Agent Workpack Messbare Abnahme** | `docs/05_AUDIT_PLANNING/AGENT_WORKPACK_MESSBARE_ABNAHME_2026-04-05.md` | Doku-Sync VPS-Port/Kanon, VPS_SNAPSHOT_VERIFICATION, Inventar/Bibliothek; Producer-Abnahme T1–T5. |
 | **OC Brain Plan** | `docs/05_AUDIT_PLANNING/OC_BRAIN_REAKTIVIERUNG_PLAN.md` | Vollständiger Plan Stränge A–E, Abnahme A1–A7. |
 | **OC Brain Auftrag** | `docs/05_AUDIT_PLANNING/OC_BRAIN_AUFTRAG_AUSFUEHRUNG.md` | Ausführungsauftrag an Team (alles umsetzen lassen). |
 | **OC Brain RAG Spec** | `docs/02_ARCHITECTURE/OC_BRAIN_RAG_SPEC.md` | RAG-Pipeline Query → ChromaDB → Context → LLM (Strang D). |

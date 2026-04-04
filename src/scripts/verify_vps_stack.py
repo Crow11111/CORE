@@ -8,15 +8,28 @@ import subprocess
 import sys
 import httpx
 from dotenv import load_dotenv
+
+from src.config.vps_public_ports import (
+    CHROMA_UVMY_HOST_PORT,
+    EVOLUTION_API_HOST_PORT,
+    KONG_ADMIN_API_HOST_PORT,
+    MONICA_HTTP_HOST_PORT,
+)
+
 load_dotenv("/OMEGA_CORE/.env", override=True)
 
 VPS_HOST = os.getenv("VPS_HOST", "187.77.68.250")
 VPS_SSH_KEY = os.getenv("VPS_SSH_KEY", "/home/mth/.ssh/id_ed25519_hostinger")
-# Default = Host-Port aus VPS docker ps (chroma-uvmy-chromadb-1); bei Compose-Wechsel .env setzen.
-CHROMA_PORT = int(os.getenv("CHROMA_PORT", "32779"))
-EVOLUTION_API_URL = (os.getenv("EVOLUTION_API_URL") or "").strip() or f"http://{VPS_HOST}:55775"
-MONICA_URL = (os.getenv("MONICA_URL") or "").strip() or f"http://{VPS_HOST}:32772"
-KONG_ADMIN_URL = (os.getenv("KONG_ADMIN_URL") or "").strip() or f"http://{VPS_HOST}:32777"
+CHROMA_PORT = int(os.getenv("CHROMA_PORT", str(CHROMA_UVMY_HOST_PORT)))
+EVOLUTION_API_URL = (os.getenv("EVOLUTION_API_URL") or "").strip() or (
+    f"http://{VPS_HOST}:{EVOLUTION_API_HOST_PORT}"
+)
+MONICA_URL = (os.getenv("MONICA_URL") or "").strip() or (
+    f"http://{VPS_HOST}:{MONICA_HTTP_HOST_PORT}"
+)
+KONG_ADMIN_URL = (os.getenv("KONG_ADMIN_URL") or "").strip() or (
+    f"http://{VPS_HOST}:{KONG_ADMIN_API_HOST_PORT}"
+)
 
 def run_ssh(cmd: str) -> tuple[int, str]:
     full = f'ssh -o ConnectTimeout=15 -o BatchMode=yes -i "{VPS_SSH_KEY}" root@{VPS_HOST} "{cmd}"'

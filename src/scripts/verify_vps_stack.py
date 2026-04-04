@@ -81,6 +81,23 @@ def _verify_kong_matches_deck_reference(lines: list[str]) -> tuple[bool, str]:
         return False, f"Kong Deck-Check: {exc}"
 
 
+def _verify_kong_proxy_health(lines: list[str]) -> tuple[bool, str]:
+    """HTTP GET über öffentlichen Proxy-Port — Body muss KONG_PUBLIC_HEALTH_BODY enthalten."""
+    if not _container_up(lines, "kong-s7rk-kong"):
+        return True, "[--] Kong Proxy /health übersprungen (kein Kong)"
+    hp = KONG_PUBLIC_HEALTH_PATH.strip()
+    if not hp.startswith("/"):
+        hp = "/" + hp
+    url = f"http://{VPS_HOST}:{KONG_PROXY_HOST_PORT}{hp}"
+    try:
+        r = httpx.get(url, timeout=10.0)
+        if r.status_code == 200 and KONG_PUBLIC_HEALTH_BODY in r.text:
+            return True, "[OK] Kong Proxy /health (HTTP + Body)"
+        return False, f"[FAIL] Kong Proxy /health HTTP {r.status_code} body={r.text[:120]!r}"
+    except Exception as exc:
+        return False, f"[FAIL] Kong Proxy /health {exc}"
+
+
 def main():
     ok = True
     # 1) Docker ps – Pflicht-Container

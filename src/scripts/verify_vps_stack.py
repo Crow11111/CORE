@@ -12,7 +12,8 @@ load_dotenv("/OMEGA_CORE/.env")
 
 VPS_HOST = os.getenv("VPS_HOST", "187.77.68.250")
 VPS_SSH_KEY = os.getenv("VPS_SSH_KEY", "/home/mth/.ssh/id_ed25519_hostinger")
-CHROMA_PORT = int(os.getenv("CHROMA_PORT", "32768"))
+# Default = Host-Port aus VPS docker ps (chroma-uvmy-chromadb-1); bei Compose-Wechsel .env setzen.
+CHROMA_PORT = int(os.getenv("CHROMA_PORT", "32779"))
 EVOLUTION_API_URL = (os.getenv("EVOLUTION_API_URL") or "").strip() or f"http://{VPS_HOST}:55775"
 MONICA_URL = (os.getenv("MONICA_URL") or "").strip() or f"http://{VPS_HOST}:32769"
 KONG_ADMIN_URL = (os.getenv("KONG_ADMIN_URL") or "").strip() or f"http://{VPS_HOST}:32773"

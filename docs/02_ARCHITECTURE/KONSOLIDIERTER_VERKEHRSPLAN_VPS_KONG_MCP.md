@@ -148,7 +148,7 @@ Das entspricht der **Macro-Kette** (`SPEC_STATE_HOLD.md`, `MACRO_ARCHITECTURE_AU
 | **Postgres (atlas_state)** | `atlas_postgres_state` | kein Host-Mapping | Nein |
 | **Chroma (Legacy AGI-State)** | `atlas_chroma_state` | kein Host-Mapping (8000/tcp nur intern) | Nein |
 
-**Abgleich Doku-Drift:** `VPS_KNOTEN_UND_FLUSSE.md` / `verify_vps_stack.py` nennen für Chroma oft **32768** und Kong **32773–32775** — **Ist-Messung** zeigt **32779** bzw. **32776–32778**. Konfiguration und Verifikation auf diese Werte **oder** auf `VPS_GATEWAY_URL` umstellen, sobald Kong routet.
+**Abgleich Doku-Drift:** Vertrags- und Ist-Hostports: Chroma **32779**, Kong **32776–32778** (`VPS_HOST_PORT_CONTRACT.md`, `verify_vps_stack.py`, `verify_vps_docker_port_contract.py`). Historisch: **32768** / **32773–32775** — nicht mehr kanonisch.
 
 ### 7.3 Pfad-Matrix (Soll + **Ist** nach Messung)
 

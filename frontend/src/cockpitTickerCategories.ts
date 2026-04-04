@@ -11,7 +11,13 @@ export type TickerCategoryId =
 
 export const TICKER_CATEGORY_META: Record<
   TickerCategoryId,
-  { label: string; short: string; color: string; activeBorder: string; inactive: string }
+  {
+    label: string;
+    short: string;
+    color: string;
+    activeBorder: string;
+    inactive: string;
+  }
 > = {
   ha_sensor: {
     label: "HA Sensor (INFO)",
@@ -64,15 +70,17 @@ export const TICKER_CATEGORY_META: Record<
   },
 };
 
-export const TICKER_CATEGORY_IDS = Object.keys(TICKER_CATEGORY_META) as TickerCategoryId[];
+export const TICKER_CATEGORY_IDS = Object.keys(
+  TICKER_CATEGORY_META,
+) as TickerCategoryId[];
 
 /** Standard: alles an — sonst wirkt der Ticker „leer“. */
 export const DEFAULT_TICKER_VISIBILITY: Record<TickerCategoryId, boolean> = {
-  ha_sensor: true,
-  ha_warn: true,
-  ha_crit: true,
-  heuristic: true,
-  system: true,
+  ha_sensor: false,
+  ha_warn: false,
+  ha_crit: false,
+  heuristic: false,
+  system: false,
   core: true,
-  host: true,
+  host: false,
 };

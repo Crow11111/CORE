@@ -1,10 +1,11 @@
 import pytest
+from src.logic_core.efference_veto import ReleaseToken, VetoToken
 from src.logic_core.temporal_alignment import (
     calculate_prediction_error,
     adjust_trust_level,
     apply_kardanic_rescue,
     dispatch_to_evolution,
-    HawkingRadiationDropError
+    HawkingRadiationDropError,
 )
 
 def test_trap_1_semantic_match():
@@ -59,14 +60,17 @@ def test_trap_3_no_rescue():
         apply_kardanic_rescue(context_mass=50.0, trust_level=0.1, pe=0.2)
 
 def test_trap_3_kardanic_rescue():
-    # Test B: Drehimpulsumkehr & Phasensprung + Int-Eingriff
+    # Test B: Drehimpulsumkehr & Phasensprung + P-Vektor (Isolation-Queue) inkrementiert pro Rescue
     context_mass = 50.0
     trust_level = 0.049
     pe = 0.8
-    rescue_vector, queue_counter = apply_kardanic_rescue(context_mass, trust_level, pe)
-    assert isinstance(rescue_vector, complex)
-    assert isinstance(queue_counter, int)
-    assert rescue_vector == (-context_mass) * 1j
+    rescue_vector_1, p1 = apply_kardanic_rescue(context_mass, trust_level, pe)
+    rescue_vector_2, p2 = apply_kardanic_rescue(context_mass, trust_level, pe)
+    assert isinstance(rescue_vector_1, complex)
+    assert isinstance(p1, int)
+    assert rescue_vector_1 == (-context_mass) * 1j
+    assert rescue_vector_2 == rescue_vector_1
+    assert p2 == p1 + 1
 
 def test_trap_3_hawking_radiation():
     # Test C: Zu steiler Absturz
@@ -74,15 +78,19 @@ def test_trap_3_hawking_radiation():
         apply_kardanic_rescue(context_mass=1500.0, trust_level=0.049, pe=0.951)
 
 def test_trap_4_dispatch_success():
-    # Test A: Gültiges Token -> state "sent"
+    # Test A: Exakt ReleaseToken (A7 Typ-Kontrakt) -> state "sent"
     payload = {"data": "test"}
-    token = object()
+    token = ReleaseToken(action_hash="deadbeef")
     result = dispatch_to_evolution(payload, token)
     assert result == "sent"
     assert payload.get("state") == "sent"
 
 def test_trap_4_dispatch_failure():
-    # Test B: Kein valides Token -> Error
+    # Test B: None oder Nicht-ReleaseToken -> ValueError
     payload = {"data": "test"}
     with pytest.raises(ValueError):
         dispatch_to_evolution(payload, None)
+    with pytest.raises(ValueError):
+        dispatch_to_evolution(payload, object())
+    with pytest.raises(ValueError):
+        dispatch_to_evolution(payload, VetoToken(reason="vetoed"))

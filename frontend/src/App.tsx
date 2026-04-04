@@ -5,8 +5,10 @@ import {
   GitBranch,
   AlertTriangle,
   Activity,
+  Volume2,
 } from "lucide-react";
 import HealthBoard from "./components/HealthBoard";
+import ElevenLabsBoard from "./components/ElevenLabsBoard";
 import LiveTicker from "./components/LiveTicker";
 import ThoughtStream from "./components/ThoughtStream";
 import VoiceStrip, { type VoiceMode } from "./components/VoiceStrip";
@@ -35,6 +37,7 @@ export default function App() {
   const [voiceMode, setVoiceMode] = useState<VoiceMode>("live");
   const [isBuildEngineOpen, setIsBuildEngineOpen] = useState(false);
   const [isHealthBoardOpen, setIsHealthBoardOpen] = useState(false);
+  const [isElevenLabsBoardOpen, setIsElevenLabsBoardOpen] = useState(false);
   const [tickerVis, setTickerVis] = useState<Record<TickerCategoryId, boolean>>(
     DEFAULT_TICKER_VISIBILITY,
   );
@@ -142,6 +145,13 @@ export default function App() {
             >
               {minimalMode ? "FULL" : "MINIMAL"}
             </button>
+            <button
+              onClick={() => setIsElevenLabsBoardOpen(true)}
+              className="p-1.5 rounded-lg border border-[#333] bg-[#1A1A1A] text-[#A0A0A0] hover:text-[#E0E0E0] hover:border-[#666] transition-all flex items-center gap-2 ml-2"
+              title="TTS Studio (ElevenLabs / Gemini Live)"
+            >
+              <Volume2 size={16} className="text-[#FFB300]" />
+            </button>
           </div>
 
           {!minimalMode && (
@@ -177,15 +187,39 @@ export default function App() {
 
         <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
           {!minimalMode && (
-            <div className="flex-1 flex min-h-0 min-w-0">
-              <div className="flex-1 flex flex-col min-h-0">
-                <LiveTicker
-                  logs={feedLogs}
-                  feedOk={feedOk}
-                  className="flex-1 min-h-0"
-                  visibleCategories={tickerVis}
-                />
-              </div>
+            <div className="flex-none p-2 border-b border-[#222] bg-[#0A0A0A] flex flex-wrap gap-2">
+              {TICKER_CATEGORY_IDS.map((id) => {
+                const meta = TICKER_CATEGORY_META[id];
+                const active = tickerVis[id];
+                return (
+                  <label
+                    key={id}
+                    className={`flex items-center gap-1.5 px-2 py-1 text-[10px] font-mono rounded border cursor-pointer transition-colors ${
+                      active
+                        ? meta.color + " " + meta.activeBorder
+                        : meta.inactive
+                    }`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={active}
+                      onChange={() => toggleTickerCat(id)}
+                      className="w-3 h-3 accent-current bg-transparent border-current cursor-pointer rounded-sm"
+                    />
+                    {meta.label}
+                  </label>
+                );
+              })}
+            </div>
+          )}
+          {!minimalMode && (
+            <div className="flex-1 flex flex-col min-h-0">
+              <LiveTicker
+                logs={feedLogs}
+                feedOk={feedOk}
+                className="h-1/2 min-h-0 border-b border-[#222]"
+                visibleCategories={tickerVis}
+              />
               <ThoughtStream
                 logs={feedLogs}
                 feedOk={feedOk}
@@ -194,7 +228,7 @@ export default function App() {
             </div>
           )}
           <div
-            className={`${minimalMode ? "flex-1 flex items-center justify-center" : ""}`}
+            className={`${minimalMode ? "flex-1 flex items-center justify-center" : "flex-none"}`}
           >
             <VoiceStrip
               apiBase={apiBase}
@@ -237,6 +271,12 @@ export default function App() {
           onClose={() => setIsHealthBoardOpen(false)}
           apiBase={apiBase}
           chatMode={voiceMode === "live" ? "live" : "deep"}
+        />
+
+        <ElevenLabsBoard
+          isOpen={isElevenLabsBoardOpen}
+          onClose={() => setIsElevenLabsBoardOpen(false)}
+          apiBase={apiBase}
         />
       </div>
     </div>

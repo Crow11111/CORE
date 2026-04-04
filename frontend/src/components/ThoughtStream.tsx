@@ -32,7 +32,11 @@ const catStyle: Partial<Record<TickerCategoryId, string>> = {
   host: "border-l-[#78909C] text-[#CFD8DC]",
 };
 
-export default function ThoughtStream({ logs, feedOk, wsThoughtLines = [] }: Props) {
+export default function ThoughtStream({
+  logs,
+  feedOk,
+  wsThoughtLines = [],
+}: Props) {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   const rows = useMemo(() => {
@@ -53,7 +57,7 @@ export default function ThoughtStream({ logs, feedOk, wsThoughtLines = [] }: Pro
   }, [rows, wsThoughtLines]);
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 bg-[#0C0C0C] border-l border-[#1A1A1A]">
+    <div className="flex flex-col h-1/2 bg-[#0C0C0C] border-t border-[#1A1A1A]">
       <div className="flex-none px-4 py-2 border-b border-[#1A1A1A]">
         <h2 className="text-[11px] font-mono uppercase tracking-[0.15em] text-[#FFB300]">
           Gedanken & Zwischenstände
@@ -65,8 +69,8 @@ export default function ThoughtStream({ logs, feedOk, wsThoughtLines = [] }: Pro
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3 font-mono text-[13px] leading-relaxed">
         {!feedOk && rows.length === 0 && wsThoughtLines.length === 0 && (
           <p className="text-[#555] text-sm">
-            Warte auf Backend — wenn der Kern läuft, erscheinen hier
-            Parser-, Heuristik- und Systemzeilen.
+            Warte auf Backend — wenn der Kern läuft, erscheinen hier Parser-,
+            Heuristik- und Systemzeilen.
           </p>
         )}
         {wsThoughtLines.map((line, i) => (

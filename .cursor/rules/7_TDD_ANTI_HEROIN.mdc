@@ -1,0 +1,25 @@
+---
+description: TDD Verification-First & Anti-Heroin-Trap (Regeln fuer Tests)
+globs: tests/**/*.py
+alwaysApply: true
+---
+
+# TDD ANTI-HEROIN PROTOKOLL
+
+Status: RATIFIZIERT | OMEGA_ATTRACTOR | Zero-Trust
+
+## 1. DEFINITION EINER "HEROIN-TRAP" IN TESTS
+Ein Test, der durch einen simplen `ImportError`, `ModuleNotFoundError` oder `AttributeError` abstürzt, weil das zu testende Modul noch nicht existiert, ist **Heroin**. Er erfüllt technisch die Anforderung "schreibe einen Test, der fehlschlägt", generiert aber keinen strukturellen Kontrakt. Dies ist eine faule Abkürzung des LLMs und strengstens untersagt.
+
+## 2. DER VERIFICATION-FIRST KONTRAKT
+Jeder neue Test (besonders für noch nicht existierenden Code) MUSS wie ein API-Kontrakt geschrieben werden:
+
+- **Graceful Fail bei fehlendem Code:** Nutze `try... except ImportError` (oder `AttributeError`) und rufe explizit `pytest.fail("Modul/Funktion XYZ fehlt noch. TDD-Kontrakt nicht erfüllt.")` auf.
+- **Logik-Simulation (Mocking):** Der Test muss die logischen Bedingungen prüfen. Nutze `unittest.mock.patch` oder `MagicMock`, um das Umfeld zu simulieren. Der Test muss fehlschlagen, weil die *Mock-Assertions* (z.B. `assert_called_once_with`) oder logische Returns (z.B. Exceptions) nicht zutreffen, NICHT weil Python die Syntax nicht parsen kann.
+- **Aussagekräftige Fehlermeldungen:** Wenn eine Trap zuschlägt, muss die `pytest.fail` Meldung oder das `assert` erklären, *warum* die OMEGA-Axiome (z.B. "Zero-Trust", "Baryonisches Delta 0.049") verletzt wurden.
+
+## 3. ABNAHMEKRITERIEN FÜR TEST-PRODUCER
+Wenn du (als Sub-Agent oder Orchestrator) einen Test schreibst:
+1. Der Test muss in sich syntaktisch korrekt sein.
+2. Er muss das zu testende Verhalten deterministisch als Kontrakt abbilden.
+3. Ein reiner Absturz durch fehlende Imports führt zu einem sofortigen VETO und System-Stop.

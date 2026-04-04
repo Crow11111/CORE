@@ -1,6 +1,6 @@
 # Biologisches Primat — OMEGA (reine Kausalgesetze)
 
-**Status:** Kanonische Extraktion aus den langen Planungs-Sessions (vgl. `cursor_status.md`) vor breiter Implementierung.  
+**Status:** Kanonische Extraktion aus den langen Planungs-Sessions (vgl. [cursor_status.md](../cursor_status.md)) vor breiter Implementierung.
 **Ebene:** Warum und wer initiiert — keine Implementierung, keine Infrastruktur-Details.
 
 ---

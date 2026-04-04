@@ -13,8 +13,12 @@ from src.logic_core.efference_veto import (
     ReplayConflictError,
     PointOfNoReturnError,
     EfferenceCopy,
-    dispatch_pain_signal
+    dispatch_pain_signal,
 )
+
+
+def _canonical_action_signature(action: dict) -> str:
+    return hashlib.sha256(json.dumps(action, sort_keys=True).encode()).hexdigest()
 
 def test_efference_copy_missing_fields():
     # Trap 1A: Das Fehlen eines Feldes führt zu einem harten ValueError
@@ -40,21 +44,20 @@ def test_efference_copy_immutability():
         copy.expected_arrival = 9.9
 
 def test_attractor_release():
-    # Trap 2A: Valid trust, new ID -> ReleaseToken
+    # Trap 2A: Valid trust, new ID, matching A7 signature -> ReleaseToken
+    proposed = {"action": "move"}
     copy = create_efference_copy(
         correlation_id="123",
-        proposed_action={"action": "move"},
+        proposed_action=proposed,
         expected_outcome={"result": "success"},
         expected_arrival=1.5,
-        signature="valid_sig"
+        signature=_canonical_action_signature(proposed),
     )
     history_ids = set()
     token = attractor_evaluate(copy, local_trust_level=0.05, history_ids=history_ids)
     
     assert isinstance(token, ReleaseToken)
-    # Token must contain hash of proposed_action
-    expected_hash = hashlib.sha256(json.dumps({"action": "move"}, sort_keys=True).encode()).hexdigest()
-    assert token.action_hash == expected_hash
+    assert token.action_hash == _canonical_action_signature(proposed)
 
 def test_attractor_veto_trust(monkeypatch):
     # Trap 2B: Trust <= 0.049 -> VetoToken
@@ -74,6 +77,26 @@ def test_attractor_veto_trust(monkeypatch):
     
     assert isinstance(token, VetoToken)
     spy.assert_called_once()
+
+def test_attractor_veto_tampered_signature(monkeypatch):
+    # Trap 2E: Manipulierte Signatur trotz Trust > 0.049 -> VetoToken (A7 / Trust collapse)
+    proposed = {"action": "move", "target": "node-7"}
+    good_sig = _canonical_action_signature(proposed)
+    tampered = good_sig[:-1] + ("0" if good_sig[-1] != "0" else "1")
+    copy = create_efference_copy(
+        correlation_id="127",
+        proposed_action=proposed,
+        expected_outcome={"result": "success"},
+        expected_arrival=1.5,
+        signature=tampered,
+    )
+    spy = MagicMock()
+    monkeypatch.setattr("src.logic_core.efference_veto.dispatch_pain_signal", spy)
+    token = attractor_evaluate(copy, local_trust_level=0.05, history_ids=set())
+    assert isinstance(token, VetoToken)
+    assert "signature mismatch" in token.reason
+    spy.assert_called_once()
+
 
 def test_attractor_veto_asymmetry(monkeypatch):
     # Trap 2C: Asymmetry violation -> VetoToken

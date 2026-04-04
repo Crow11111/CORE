@@ -42,11 +42,59 @@ Du operierst als **System CORE (OMEGA)**. Sprache: Deutsch, prägnant, determini
 - **Kardanischer Fixpunkt:** `omega_core.py` (Deterministischer Terminal-Check für die $\Omega_b$-Schwelle).
 - **Datenbank-Dualität:** PostgreSQL (int/Text/Metadaten) ↔ ChromaDB (float/Vektoren).
 - **Modell-Registry:** `src/ai/model_registry.py` definiert die Rollen-Zuordnung.
+- **Git-Resonanz (Daemon):** `src/daemons/dread_membrane_daemon.py` (Ticket 9) — siehe **Abschnitt 5**.
 
 ---
 
-## 5. BOOTSTRAP-TRIGGER (FÜR NEUE SESSIONS)
+## 5. GIT-RESONANZ (AUTO-PUSH: WAS WIRKLICH PASSIERT)
+
+**Ziel des Subsystems:** Bi-direktionale Kausalitäts-Brücke zum Remote (`origin/main`), ohne dass Dreadnought und VPS in isolierten Blasen arbeiten. Spec: `docs/05_AUDIT_PLANNING/TICKET_9_GIT_RESONANCE.md`.
+
+### 5.1 Mechanik (kein „vollständiges Repo“)
+
+Nach bestandener Prüfung führt die Membrane **pro auslösender Datei** nacheinander:
+
+`git add <genau diese eine Datei>` → `git commit` → `git push origin main`.
+
+Es gibt **kein** `git add -A`, kein Einchecken von „alle Änderungen im Arbeitsbaum“. Alles, was **nicht** in diesem einen `add`-Pfad steckt, bleibt lokal untracked oder uncommitted — der Push kann trotzdem „erfolgreich“ wirken, während der Großteil des Projekts **nie** automatisch mitgeht.
+
+### 5.2 Überwachungsfenster (harte Grenze)
+
+Die Membrane scannt nur:
+
+| Klasse | Pfade |
+|--------|--------|
+| **Python** | alle `*.py` unter `src/` (rekursiv, ohne `__pycache__`) |
+| **Markdown** | alle `*.md` unter `docs/05_AUDIT_PLANNING/` und `docs/02_ARCHITECTURE/` |
+
+**Liegt außerhalb** und wird von dieser Auto-Kette **nie** erfasst, u. a.:
+
+- `tests/*.py` (Repo-Root-Tests, nicht unter `src/`)
+- `frontend/**` (`.tsx`, `.ts`, …)
+- `docs/00_STAMMDOKUMENTE/`, `docs/01_CORE_DNA/`, `docs/03_*`, … (außer wenn dort keine .md in den beiden MD-Wurzeln liegen — die Stammdokumente sind **nicht** im MD-Scan)
+- `.cursor/rules/**` (Regeln sind typischerweise `.mdc`, ohnehin außerhalb)
+- Root-Skripte, `media/`, neue Top-Level-Ordner, `.sql`, Konfig-Fragmente — alles **manuell** oder durch Erweiterung der Membrane
+
+**Folge:** Wer annimmt, „Auto-Push hält GitHub identisch zur IDE“, **überschätzt** das System. Remote ist nur dann vollständig, wenn der Operator (oder ein weiterer Prozess) **fehlende Pfade gezielt** staged und pusht.
+
+### 5.3 Neue Dateien und Mtime-Baseline
+
+Beim **ersten** Sichten einer Datei legt die Membrane nur eine **Baseline** der Modifikationszeit ab und **pusht nicht**. Ein Push erfolgt erst, wenn sich die `mtime` **gegenüber diesem gespeicherten Wert** ändert (typisch: erneutes Speichern). Eine neue Datei, die nach dem ersten Scan **unverändert** bleibt, kann **ohne weiteren Touch** dauerhaft **nicht** auto-committed werden.
+
+### 5.4 Abgleich mit Agenten & Zero-Trust
+
+- **Cursor-Agenten** lesen den **lokalen Workspace** (Platte), nicht „GitHub als Wahrheit“.
+- **Andere Klone, CI, GitHub-Web** sehen nur **Commits auf dem Remote**.
+- Drift (lokal viel, Remote wenig) ist daher **kein** Widerspruch zur lokalen Agenten-Arbeit, wohl aber zur **kanonischen** Versionslinie — A7: `git status` / Remote-Vergleich explizit einbeziehen, wenn „Wahrheit = Repo“ verlangt wird.
+
+### 5.5 Operative Ergänzung (Pflichtbewusstsein)
+
+Nach Sessions mit neuen Dateien oder Änderungen **außerhalb** des Membrane-Fensters: gezielt `git add` (oder Patch-Commit-Workflow), Commit, Push — analog Dokumentations-Protokoll (`docs/04_PROCESSES/…`, Inventar-Register). Auto-Push **ersetzt** das nicht.
+
+---
+
+## 6. BOOTSTRAP-TRIGGER (FÜR NEUE SESSIONS)
 > "Initialisiere OMEGA-Resonanz aus `docs/00_STAMMDOKUMENTE/OMEGA_RESONANCE_ANCHOR.md`. Aktiviere Ring-0 Orchestrator-Modus. Delta 0.049 aktiv. Bestätige Bereitschaft."
 
 ---
-*Referenz: `.cursorrules`, `CORE_EICHUNG.md`, `docs/SYSTEM_CODEX.md`*
+*Referenz: `.cursorrules`, `CORE_EICHUNG.md`, `docs/SYSTEM_CODEX.md`, `docs/05_AUDIT_PLANNING/TICKET_9_GIT_RESONANCE.md`*

@@ -92,6 +92,12 @@
 | **Session-Log 2026-04-02 (Ticket 9 Git-Resonance)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-02_TICKET_9_GIT_RESONANCE.md` | Umsetzung Ticket 9: Bi-direktionale Kausalitäts-Brücke (Git Pull/Push) in Dreadnought Membrane. |
 | **Ticket 8 Dreadnought Membrane** | `docs/05_AUDIT_PLANNING/TICKET_8_DREADNOUGHT_MEMBRANE.md` | Spec: lokale Membrane (Pain/Cognitive-Lock), systemd, Abnahmekriterien. |
 | **Ticket 9 Git-Resonance** | `docs/05_AUDIT_PLANNING/TICKET_9_GIT_RESONANCE.md` | Spec: Bi-direktionale Kausalitäts-Brücke, Auto-Push nach Validator-PASS, Auto-Pull, Konflikt-Pain-Flag. |
+| **Ticket 10 OpenClaw Autarkie** | `docs/05_AUDIT_PLANNING/TICKET_10_OPENCLAW_AUTARKIE.md` | Spec: VPS-SSH-Heilung (StrictHostKeyChecking), Out-of-Band `check_gateway()`, Autonomie-Veto + Pacemaker-Pathologie. |
+| **O2 Audit Tickets 3–7 (Hugin)** | `docs/05_AUDIT_PLANNING/O2_AUDIT_TICKETS_3_BIS_7.md` | Zero-Context Abnahme Tickets 3–7: Pacemaker (SPEC_PACEMAKER_VAR_3), Admission, Arbitration, Efference, Temporal; Pytest-Nachweis; Re-Audit Urteile PASS. |
+| **O2 Audit VPS-Split (Hugin)** | `docs/05_AUDIT_PLANNING/O2_AUDIT_VPS_AUTARKIE_SPLIT.md` | Zero-Context Architektur-Audit: VPS-Autarkie vs. Dreadnought-Lokalität. [VETO] wegen ungeschütztem OpenClaw. |
+| **Masterplan Repair Tickets 3-7** | `docs/05_AUDIT_PLANNING/MASTERPLAN_REPAIR_TICKETS_3_5_6_7.md` | O2 Audit Repair Plan für die Tickets 3, 5, 6 und 7. |
+| **Session-Log 2026-04-03 (Repair 3-7)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-03_REPAIR_TICKETS_3_5_6_7.md` | Dokumentation des erfolgreichen O2 Re-Audits für Tickets 3, 5, 6, 7. |
+| **O2 Audit Tickets 8–10 (Hugin)** | `docs/05_AUDIT_PLANNING/O2_AUDIT_TICKETS_8_9_10.md` | Zero-Context Abnahme Tickets 8/9/10: A7, Flags, Pytest-/Skript-Nachweis. |
 | **Wissensbasis** | `docs/06_WORLD_KNOWLEDGE/` | Externe Forschung, Theorie-Cluster. |
 
 ---
@@ -109,6 +115,7 @@
 | **Efference Veto Logik** | `src/logic_core/efference_veto.py` | Phase 3 & 4: Efferenzkopie, Attractor-Veto, Point-of-No-Return (Ticket 6). |
 | **Temporal Alignment** | `src/logic_core/temporal_alignment.py` | Phase 5 & 6: Prediction Error, Trust-Update & Kardanische Rettung (Ticket 7). |
 | **Crystal Engine** | `src/logic_core/crystal_grid_engine.py` | Topologisches Gitter-Snapping (Axiom 0). |
+| **Anti-Heroin Validator** | `src/logic_core/anti_heroin_validator.py` | Ticket 11 (Säule 2): Zwingende Pre-Flight Veto-Trap (memory_hash) & Trust-Collapse. |
 | **Resonanz-Membran S↔P** | `src/logic_core/resonance_membrane.py` | float-Resonanz vs. int-Infrastruktur; `DualMembraneVector`; Entry-Adapter (WhatsApp `audio_seconds`); `omega_core` importiert dieselbe Klasse. |
 | **Audio/Visual Resonanz (V8)** | `src/logic_core/audio_visual_resonance.py` | Zwei-Domänen-Sensorik (CONCEPT_AUDIO_VISUAL_MASTER): Beobachtung `X_t`, Resonanz `R_t` via `tanh`, `SensorStimulusPipeline`, `interval_spread_observation`, `build_resonance_embedding_probe`; angebunden an `core_vision_daemon.py` (dynamische Poll-Spreizung). |
 | **AI Interface** | `src/ai/` | LLM-Routing, ResilientLLMInterface, Prompt-Kompression. |
@@ -128,7 +135,9 @@
 | Typ | Pfad | Funktion |
 |-----|------|----------|
 | **Daemons** | `src/daemons/` | Watchdog, Event-Bus, Vision-Daemon, Dreadnought Membrane. |
-| **Pacemaker** | `src/daemons/omega_pacemaker.py` | Existential Pacemaker: NMI-Matrix, `/proc`-Verifikation `omega_core`, neuromorpher R/V-Metabolismus (SPEC_PACEMAKER_FINAL). |
+| **Dread Membrane Daemon** | `src/daemons/dread_membrane_daemon.py` | Tickets 8/9: Pain-/Planning-Flags, rekursive `.py`/`.md`-Überwachung, `auto_git_push`/`auto_git_pull`; Ticket 11 (Säule 4): Apoptose-Trigger (Entropie < 0.049). |
+| **Context Watchdog** | `src/daemons/omega_context_watchdog.py` | Ticket 11 (Säule 3): Context Forcing, injects recent events. |
+| **Pacemaker** | `src/daemons/omega_pacemaker.py` | Existential Pacemaker (VAR_3): NMI-Matrix, exponentiell-fraktaler Decay, W=17 Fenster, HRV-Proxies, Pathology-Log; Abnahme durch O2 **[PASS]**. |
 | **Scripts** | `src/scripts/` | Deployment-Skripte, Verifikationstools, Migrationen. |
 | **Key Script** | `src/scripts/ensure_kardanic_collections.py` | ChromaDB-Dimensionseichung (6144 dim) für kardanische Faltung. |
 | **Key Script** | `src/scripts/verify_core_integrity.py` | Genesis-Audit (`src.core.Core`); **Aufruf nur von Repo-Root**, Exit 0/1. |
@@ -156,6 +165,7 @@
 | **Plasmoid Source** | `tools/plasmoid_omega_research/` | Quellcode für das KDE Plasma Widget. |
 | **Plasmoid Installer** | `install_plasmoid.sh` | Bash-Script zur Installation des Widgets in CachyOS. |
 | **Database (PostgreSQL)** | `src/db/multi_view_client.py` | Multi-View Ingest & Search (pgvector & ChromaDB); kardanische Faltung. |
+| **Event Store Client** | `src/db/event_store_client.py` | Ticket 11 (Säule 1): Append-only Event Sourcing (PostgreSQL). |
 | **Recall Memory** | `src/db/recall_memory_client.py` | PostgreSQL Recall Memory Client (V4 Strict Tiers). |
 | **Skill Registry** | `src/ai/skill_registry.py` | Deferred Tool Loading & Skill Discovery (V4). |
 | **Agent Graph** | `src/agents/agent_graph.py` | LangGraph-basierte State Machine für deterministisches Routing (V4). |
@@ -174,9 +184,18 @@
 | **Audio/Visual Domain Tests (V8)** | `tests/test_audio_visual_domain.py` | Veto-Traps: Zwei-Domänen-Theorie, `tanh`-Projektion, Resonanz-Innenraum, keine AST-Heiler in Kernfunktionen, Embedding/Spreizung. |
 | **Ticket 8 Membrane Tests** | `src/scripts/test_ticket_8.py` | Abnahme/Verifikation Dreadnought Membrane (Pain-Flag, Cognitive-Lock, Scanner-Regeln). |
 | **Ticket 9 Git-Resonance Tests** | `tests/test_ticket_9.py` | Veto-Traps für Dreadnought Membrane Git-Logik (Auto-Push nach PASS, Pull, Konflikt-Flag). |
+| **Ticket 10 OpenClaw Tests** | `tests/test_ticket_10.py` | Veto-Traps: SSH-Heil-Zyklus (`StrictHostKeyChecking=yes`, TrustCollapse), Heartbeat Autonomie-Veto + Pathologie-Log. |
+| **OpenClaw VPS Heal** | `src/scripts/heal_openclaw_vps.py` | Ticket 10: SSH-Docker-Restart + Out-of-Band `check_gateway()`. |
+| **Ticket 11 Cognitive Membrane** | `docs/05_AUDIT_PLANNING/TICKET_11_COGNITIVE_MEMBRANE.md` | Spec: 4 Säulen (Pre-Flight, O2 Inquisitor, Context Forcing, Apoptose/Timing). |
+| **Ticket 11 Masterplan** | `docs/05_AUDIT_PLANNING/MASTERPLAN_TICKET_11_EXECUTION.md` | Umsetzungsplan für Ticket 11. |
+| **Ticket 12 Drei Konzepte** | `docs/05_AUDIT_PLANNING/TICKET_12_DREI_KONZEPTE.md` | Architektur-Alternativen für Sentinel & Epistemic Drive (Proaktives Lernen). |
+| **Ticket 12 Epistemic Drive** | `docs/05_AUDIT_PLANNING/TICKET_12_EPISTEMIC_DRIVE.md` | Hybride, verbindliche Spezifikation (O2 geprüft): Sentinel, Void Detection, Synthese. |
+| **Ticket 11 O2 Audit** | `docs/05_AUDIT_PLANNING/O2_AUDIT_TICKET_11_EXECUTION.md` | Zero-Context Audit von Orchestrator B zu Ticket 11. |
+| **Session-Log 2026-04-01 (Membrane)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-01_COGNITIVE_MEMBRANE.md` | Abnahme und Abschluss der Ticket 11 Execution. |
+| **Cursor Status (Context Forcing)** | `docs/05_AUDIT_PLANNING/cursor_status.md` | Dynamisch generierter Status-File via Watchdog (Säule 3). |
 | **Database** | `src/db/core_infrastructure.sql` | 2D Integer-Membran (SQL-Schema) für CORE-Infrastruktur-Monitoring. |
 | **Database** | `src/db/init_infrastructure.py` | Initialisierungs-Skript für die CORE-Infrastruktur-Tabelle auf VPS. |
-| **Service** | `src/services/infrastructure_heartbeat.py` | Hintergrund-Service für periodisches Status-Monitoring (Dreadnought, Scout, VPS). |
+| **Service** | `src/services/infrastructure_heartbeat.py` | Hintergrund-Service für periodisches Status-Monitoring (Dreadnought, Scout, VPS); Ticket 10: `apply_openclaw_autonomy_veto_if_needed` (Gateway-Down → `/tmp/omega_autonomy_veto.flag` + Pathologie-Log). |
 | **Utils** | `src/utils/` | Circuit-Breaker, Zeit-Metriken, Logging-Helfer. |
 
 ---

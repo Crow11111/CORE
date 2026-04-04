@@ -102,7 +102,7 @@ def main() -> int:
 
     # --- C: VPS Kern ---
     print("C: VPS (Kern)")
-    code, _ = run([sys.executable, "-m", "src.scripts.verify_vps_stack"], timeout=25)
+    code, _ = run([sys.executable, "-m", "src.scripts.verify_vps_stack"], timeout=60)
     check("verify_vps_stack Exit 0", code == 0, f"exit {code}" if code != 0 else "")
     if code != 0:
         fails += 1
@@ -175,7 +175,8 @@ def main() -> int:
         check("Backend fuer Pool-Check erreichbar", False)
         fails += 1
 
-    code, out = run([sys.executable, "-m", "src.scripts.verify_multiview_pg"], timeout=25)
+    # SSH+VPS+docker+psql braucht oft 10–20s+; 25s löste sporadisch TimeoutExpired aus.
+    code, out = run([sys.executable, "-m", "src.scripts.verify_multiview_pg"], timeout=60)
     mv_ok = code == 0 and "PASS" in out
     check("Multi-View pgvector (verify_multiview_pg)", mv_ok,
           out.strip()[:200] if not mv_ok else "")

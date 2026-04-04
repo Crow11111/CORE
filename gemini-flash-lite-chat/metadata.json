@@ -1,0 +1,5 @@
+{
+  "name": "Gemini Flash Lite Chat",
+  "description": "A real-time chat application powered by Gemini Flash Lite with Google Workspace integration.",
+  "requestFramePermissions": ["microphone"]
+}

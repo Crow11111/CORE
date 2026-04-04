@@ -1,7 +1,7 @@
 # Konsolidierter Verkehrsplan: VPS, Kong, MCP, Gedächtnis
 
 **Vektor:** 2210 | **Delta:** 0.049  
-**Status:** Kanonisches Soll-/Ist-Konzept (Operator-Audit 2026-04-04)  
+**Status:** Kanonisches Soll-/Ist-Konzept (Operator-Audit 2026-04-04) — **§7 mit realem `docker ps` vom VPS befüllt** (Messung 2026-04-04).  
 **Zweck:** Aus **Plan**, **Tickets** und **messbarer Realität** **eine** erzählfähige Ordnung machen: wer darf wen wie erreichen, was „offen“ heißt, und wo Kong/MCP/Gedächtnis **nicht** dasselbe sind.
 
 **Querschnitt:** `LANDKARTE_CLIENTS_KNOTEN_DATENFLUSS.md` · `VPS_KNOTEN_UND_FLUSSE.md` · `MACRO_ARCHITECTURE_AUDIT.md` · `OMEGA_RESONANCE_ANCHOR.md` (§ Git-Resonanz) · Tickets **3–12** unter `docs/05_AUDIT_PLANNING/TICKET_*.md`
@@ -34,7 +34,7 @@
 | **KI-Tooling (MCP / Cursor Cloud)** | Wie kommt ein Agent an Werkzeuge?          | **Stdio/SSH-Tunnel** zum MCP-Prozess — **parallel** zur Produkt-API; **nicht** zwingend über Kong.                                                    |
 
 
-**Wichtig:** „Chroma von Dreadnought nicht per HTTP erreichbar“ kann **Soll** sein (nur intern + Tunnel), während `docker ps` **Up** zeigt. Verifikation muss dann **Tunnel oder VPS-seitigen Client** nutzen — nicht nur `curl öffentliche_IP:32768`.
+**Wichtig:** „Chroma von Dreadnought nicht per HTTP erreichbar“ kann **Soll** sein (nur intern + Tunnel), während `docker ps` **Up** zeigt. Verifikation muss dann **Tunnel oder VPS-seitigen Client** nutzen — nicht nur `curl öffentliche_IP:<Host-Port>`. **Ist (siehe Anhang):** primärer Chroma-1.0.15-Hostport ist **`32779`→8000**, nicht mehr zwingend `32768` wie in älteren Tabellen — `.env` / `verify_vps_stack` an **Ist** anbinden.
 
 ---
 

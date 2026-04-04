@@ -7,6 +7,8 @@ Siehe docs/BIBLIOTHEK_KERN_DOKUMENTE.md, VPS_FULL_STACK_SETUP, VPS_KNOTEN_UND_FL
 import os
 import subprocess
 import sys
+from pathlib import Path
+
 import httpx
 from dotenv import load_dotenv
 
@@ -20,7 +22,10 @@ from src.config.vps_public_ports import (
     MONICA_HTTP_HOST_PORT,
 )
 
-load_dotenv("/OMEGA_CORE/.env", override=True)
+from src.scripts.verify_vps_docker_port_contract import verify_docker_ps_lines_tabbed
+
+_PROJECT_ROOT = Path(__file__).resolve().parents[2]
+load_dotenv(_PROJECT_ROOT / ".env", override=True)
 
 VPS_HOST = os.getenv("VPS_HOST", "187.77.68.250")
 VPS_SSH_KEY = os.getenv("VPS_SSH_KEY", "/home/mth/.ssh/id_ed25519_hostinger")
@@ -101,7 +106,9 @@ def _verify_kong_proxy_health(lines: list[str]) -> tuple[bool, str]:
 def main():
     ok = True
     # 1) Docker ps – Pflicht-Container
-    code, out = run_ssh("docker ps --format '{{.Names}} {{.Status}}'")
+    code, out = run_ssh(
+        "docker ps --format '{{.Names}}\\t{{.Status}}\\t{{.Ports}}'"
+    )
     if code != 0:
         print("[FAIL] VPS SSH oder docker ps:", out[:400])
         ok = False

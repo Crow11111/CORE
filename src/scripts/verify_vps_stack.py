@@ -8,7 +8,7 @@ import subprocess
 import sys
 import httpx
 from dotenv import load_dotenv
-load_dotenv("/OMEGA_CORE/.env")
+load_dotenv("/OMEGA_CORE/.env", override=True)
 
 VPS_HOST = os.getenv("VPS_HOST", "187.77.68.250")
 VPS_SSH_KEY = os.getenv("VPS_SSH_KEY", "/home/mth/.ssh/id_ed25519_hostinger")

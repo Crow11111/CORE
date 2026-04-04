@@ -1,9 +1,4 @@
-<!-- ============================================================
-<!-- CORE-GENESIS: Marc Tobias ten Hoevel
-<!-- VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
-<!-- LOGIC: 2-2-1-0 (NON-BINARY)
-<!-- ============================================================
--->
+
 
 # Kommunikationskanal CORE ↔ OC (OpenClaw)
 
@@ -13,22 +8,26 @@ Damit Infos zwischen CORE (Cursor/4D_RESONATOR (CORE)) und OC ausgetauscht werde
 
 ## Übersicht
 
-| Richtung   | Mechanismus | Beschreibung |
-|-----------|-------------|--------------|
-| **CORE → OC** | HTTP POST an OpenClaw Gateway | CORE sendet Nachrichten an einen OC-Agenten über die OpenResponses-API (`/v1/responses`). |
+
+| Richtung      | Mechanismus                      | Beschreibung                                                                                                                                                                                                     |
+| ------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **CORE → OC** | HTTP POST an OpenClaw Gateway    | CORE sendet Nachrichten an einen OC-Agenten über die OpenResponses-API (`/v1/responses`).                                                                                                                        |
 | **OC → CORE** | Dateien im gemeinsamen Workspace | OC (oder ein Agent) legt JSON-Einreichungen in `workspace/rat_submissions/` ab; CORE liest sie per Skript und übernimmt sie in `data/rat_submissions/` (für den OMEGA_ATTRACTOR Council / weitere Verarbeitung). |
+
 
 ---
 
 ## Schnittstelle im Backend (angeboten)
 
-Das Backend bietet die OC-Schnittstelle unter **`/api/oc/`** an. So können CORE und OC (bzw. Cursor/Cloud Agents) austauschen, ohne dass Skripte von Hand gestartet werden müssen.
+Das Backend bietet die OC-Schnittstelle unter `**/api/oc/`** an. So können CORE und OC (bzw. Cursor/Cloud Agents) austauschen, ohne dass Skripte von Hand gestartet werden müssen.
 
-| Endpoint | Methode | Beschreibung |
-|----------|---------|--------------|
-| `/api/oc/status` | GET | Gateway erreichbar? (Konfiguration + Erreichbarkeit) |
-| `/api/oc/send` | POST | Nachricht an OC senden (Body: `{"text": "...", "agent_id": "main"}`) |
-| `/api/oc/fetch` | GET oder POST | Einreichungen von OC abholen (OC → CORE), speichert in `data/rat_submissions/` |
+
+| Endpoint         | Methode       | Beschreibung                                                                   |
+| ---------------- | ------------- | ------------------------------------------------------------------------------ |
+| `/api/oc/status` | GET           | Gateway erreichbar? (Konfiguration + Erreichbarkeit)                           |
+| `/api/oc/send`   | POST          | Nachricht an OC senden (Body: `{"text": "...", "agent_id": "main"}`)           |
+| `/api/oc/fetch`  | GET oder POST | Einreichungen von OC abholen (OC → CORE), speichert in `data/rat_submissions/` |
+
 
 Backend starten (z. B. über `START_BACKEND_SERVICES.bat` oder `uvicorn`), dann z. B.:  
 `GET http://localhost:8000/api/oc/status` oder `POST http://localhost:8000/api/oc/send` mit JSON-Body.
@@ -47,6 +46,7 @@ Backend starten (z. B. über `START_BACKEND_SERVICES.bat` oder `uvicorn`), dann 
 - **Rückgabe:** `(success, response_text)` – bei Erfolg die Antwort des Agenten (oder Fehlermeldung).
 
 **Beispiel (Skript oder REPL):**
+
 ```python
 from src.network.openclaw_client import send_message_to_agent
 ok, msg = send_message_to_agent("Hallo OC, hier ist CORE. Bitte bestätige Empfang.")
@@ -68,7 +68,7 @@ OC (oder ein Agent auf OC) kann **Themen, Vorschläge oder Fragen** an CORE/den 
 ### Ablageort (auf dem VPS, für OC erreichbar)
 
 - **Verzeichnis:** `/var/lib/openclaw/workspace/rat_submissions/`  
-  (wird beim VPS-Setup und beim Anlegen der Stammdokumente mit angelegt; OC hat Lese-/Schreibzugriff im Workspace.)
+(wird beim VPS-Setup und beim Anlegen der Stammdokumente mit angelegt; OC hat Lese-/Schreibzugriff im Workspace.)
 
 ### Schema einer Einreichung (JSON)
 
@@ -97,10 +97,11 @@ Jede Datei: eine JSON-Datei, z. B. `2025-02-25T14-30-00_oc-1.json`.
 
 - Verbindet per SSH mit dem VPS.
 - Liest alle `.json` in `workspace/rat_submissions/`.
-- Speichert sie lokal unter **`data/rat_submissions/`**.
+- Speichert sie lokal unter `**data/rat_submissions/`**.
 - Verschiebt die gelesenen Dateien auf dem VPS nach `workspace/rat_submissions_archive/`, damit sie nicht doppelt verarbeitet werden.
 
 **Aufruf:**
+
 ```bash
 python -m src.scripts.fetch_oc_submissions
 python -m src.scripts.fetch_oc_submissions --dry-run   # nur anzeigen
@@ -116,12 +117,11 @@ Die abgeholten Dateien in `data/rat_submissions/` können von Marc oder von eine
 
 ## Testen des Kanals
 
-1. **CORE → OC (Gateway erreichbar + Nachricht senden):**  
-   `python -m src.scripts.test_atlas_oc_channel`  
+1. **CORE → OC (Gateway erreichbar + Nachricht senden):**
+  `python -m src.scripts.test_atlas_oc_channel`  
    Prüft `check_gateway()` und optional `send_message_to_agent("Test")`.
-
-2. **OC → CORE:**  
-   Manuell eine Test-JSON-Datei in `rat_submissions/` auf dem VPS anlegen (per SSH oder über einen OC-Agenten), dann `fetch_oc_submissions` ausführen und prüfen, ob die Datei in `data/rat_submissions/` landet.
+2. **OC → CORE:**
+  Manuell eine Test-JSON-Datei in `rat_submissions/` auf dem VPS anlegen (per SSH oder über einen OC-Agenten), dann `fetch_oc_submissions` ausführen und prüfen, ob die Datei in `data/rat_submissions/` landet.
 
 ---
 
@@ -137,6 +137,5 @@ Die abgeholten Dateien in `data/rat_submissions/` können von Marc oder von eine
 
 - OpenClaw OpenResponses API: [docs.openclaw.ai/gateway/openresponses-http-api](https://docs.openclaw.ai/gateway/openresponses-http-api)
 - `openclaw_client.py`, `fetch_oc_submissions.py`, `setup_vps_hostinger.py` (Gateway-Config, rat_submissions-Verzeichnis)
-
 
 [LEGACY_UNAUDITED]

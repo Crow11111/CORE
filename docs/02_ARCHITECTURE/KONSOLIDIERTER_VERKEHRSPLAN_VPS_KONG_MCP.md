@@ -106,6 +106,8 @@ Das entspricht der **Macro-Kette** (`SPEC_STATE_HOLD.md`, `MACRO_ARCHITECTURE_AU
 
 **Gestern (Session-Kontext 2026-04-02–04):** Schwerpunkt **8–12** (Membrane-Git, OpenClaw-Heilpfad, kognitive Schicht, Queue + Dream/Sentinel), dazu **Tests** und **Doku** (O2-Split VPS-Autarkie, Masterpläne). Das **ändert nicht automatisch** Kong-Routen auf dem VPS — das ist **eigenes Deploy-Artefakt**.
 
+**Hinweis „Ticket 1–2“:** Im Ordner `docs/05_AUDIT_PLANNING/` beginnt die **explizite** `TICKET_*.md`-Nummerierung bei **3–12** (v. a. Makro-Kette, Membrane, Git, OC, kognitive Membran, Epistemik). Ältere oder vorgelagerte Arbeiten stecken in **Specs** (`SPEC_PACEMAKER_*`, `VERIFICATION_FIRST_*`, `FULL_CHAT_AUDIT_RESULT`) — inhaltlich **vor** Ticket 3, aber nicht unter denselben Dateinamen.
+
 ---
 
 ## 7. Konsolidierter Verkehrsplan (Pfad-Matrix — auszufüllen mit SSH-Inventar)

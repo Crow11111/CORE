@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 VPS-Stack-Verifikation: Container, Chroma v2 Heartbeat, Kong laut `kong-deck-reference.yaml`
-(evolution-api + /evo + omega-kong-health + HTTP-GET Proxy `/health` mit Body `OMEGA_KONG_HEALTH_OK`).
+(evolution-api + /evo + omega-kong-health + `/health` + omega-core-backend + `/status`;
+Proxy-GET `/health` mit Body `OMEGA_KONG_HEALTH_OK`; optional Hinweis zu `/status`).
 Siehe docs/BIBLIOTHEK_KERN_DOKUMENTE.md, VPS_FULL_STACK_SETUP, VPS_KNOTEN_UND_FLUSSE, KONSOLIDIERTER_VERKEHRSPLAN §8.
 """
 import os

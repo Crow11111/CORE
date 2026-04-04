@@ -19,6 +19,9 @@ CHROMA_UVMY_CONTAINER_PORT: int = 8000
 KONG_PROXY_HOST_PORT: int = 32776
 KONG_ADMIN_API_HOST_PORT: int = 32777
 KONG_MANAGER_UI_HOST_PORT: int = 32778
+# Öffentlicher Proxy-Health (request-termination, kein Upstream-Traffic)
+KONG_PUBLIC_HEALTH_PATH: str = "/health"
+KONG_PUBLIC_HEALTH_BODY: str = "OMEGA_KONG_HEALTH_OK"
 
 # —— Evolution API ——
 EVOLUTION_API_HOST_PORT: int = 55775

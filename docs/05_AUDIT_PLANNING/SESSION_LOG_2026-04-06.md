@@ -33,3 +33,15 @@
 ## Agos-Takt
 
 Drift MACRO vs. Detailfluss: Draft markiert; MASTER bindend für Deploy-Pfad.
+
+---
+
+## Nachtrag 2026-04-08 — VPS Backup, Kong omega-core live, Verify
+
+| Status | Artefakt |
+|--------|----------|
+| done | `src/scripts/vps_kong_ensure_omega_core_backend.py` — Admin-API: Service `omega-core-backend`, Route `omega-core-status-route` `/status`, idempotent |
+| done | `tests/test_vps_kong_ensure_omega_core_backend.py`, `infra/vps/kong/README.md`, `CORE_INVENTORY_REGISTER.md` |
+| done | Ablauf: `vps_backup_snapshot` → ensure-Skript → `verify_vps_stack` (Kong Deck-Referenz inkl. omega-core); `anti_heroin_validator` auf dem neuen Skript |
+
+Exit-Codes und Kong-Zeile: siehe letzte Shell-Ausführung in der Session (keine Secrets im Log).

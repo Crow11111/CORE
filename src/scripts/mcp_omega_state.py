@@ -42,6 +42,11 @@ _HANDBOOKS_DIR = Path(_REPO) / "docs" / "03_INFRASTRUCTURE" / "handbooks"
 _ROLE_SAFE = re.compile(r"^[\w.-]+$")
 
 
+def _env_bootstrap_probe_local_proxy() -> bool:
+    v = (os.getenv("OMEGA_BOOTSTRAP_PROBE_LOCAL_PROXY") or "").strip().lower()
+    return v in ("1", "true", "yes", "on")
+
+
 def _handbook_file_for_role(role: str) -> Path:
     r = (role or "").strip()
     if not r or not _ROLE_SAFE.match(r):
@@ -177,6 +182,11 @@ async def _probe_vps_mcp_http() -> bool | None:
 
 
 async def _probe_local_state_proxy() -> bool | None:
+    """
+    Nur Dev-Workstation. Default: None (nicht geprüft) — siehe Modul-Docstring.
+    """
+    if not _env_bootstrap_probe_local_proxy():
+        return None
     try:
         async with httpx.AsyncClient(timeout=2.5) as client:
             r = await client.get(f"{PROXY_URL}/state")

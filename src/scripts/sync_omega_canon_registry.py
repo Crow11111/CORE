@@ -81,6 +81,10 @@ def _resolve_repo_path(rel: str, root: Path) -> str | None:
         cand = root / "docs" / "05_AUDIT_PLANNING" / rel
         if cand.is_file():
             return cand.relative_to(root).as_posix()
+    if rel.endswith(".sql") and "/" not in rel:
+        cand = root / "src" / "db" / rel
+        if cand.is_file():
+            return cand.relative_to(root).as_posix()
     return None
 
 

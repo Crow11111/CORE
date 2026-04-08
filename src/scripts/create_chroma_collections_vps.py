@@ -21,6 +21,7 @@ from src.network.chroma_client import (
     COLLECTION_INSIGHTS,
     COLLECTION_KNOWLEDGE_GRAPH,
     COLLECTION_CORE_CANON,
+    COLLECTION_CORE_OPERATIONAL,
     is_remote,
 )
 
@@ -48,6 +49,7 @@ def create_collections():
         COLLECTION_ENTITIES,
         COLLECTION_RELATIONSHIPS,
         COLLECTION_CORE_CANON,
+        COLLECTION_CORE_OPERATIONAL,
     ]
 
     for name in default_collections:

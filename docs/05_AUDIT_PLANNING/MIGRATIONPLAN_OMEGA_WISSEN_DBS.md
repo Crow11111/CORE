@@ -55,10 +55,11 @@
 
 ---
 
-## Phase 3 (Backlog): MCP / Tools
+## Phase 3: MCP / Tools (umgesetzt)
 
-- Read-only Tool: `list_canon_documents` (PG).
-- Optional: `record_event` mit `event_type=canon_sync_summary` nach jedem Sync (episodisch).
+- **Read-only:** MCP-Tool **`list_canon_documents`** in `src/scripts/mcp_omega_state.py` → `event_store_client.list_canon_documents` (PostgreSQL).
+- **Prozess + Rule:** `docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md`, `.cursor/rules/8_CANON_REGISTRY_PREFLIGHT.mdc`.
+- Optional: `record_event` mit `event_type=canon_sync_summary` nach jedem Sync (episodisch) — weiterhin empfohlen, nicht automatisiert.
 
 ---
 

@@ -3,7 +3,7 @@
 """
 SSH → VPS: curl Loopback-Health für Omega-Backend (systemd, Host-Port laut Vertrag).
 
-Abnahme: curl -sf http://127.0.0.1:<OMEGA_BACKEND_HOST_PORT>/status
+Abnahme: Remote `bash -lc` mit `set -o pipefail` + curl gegen Loopback (sonst: fehlgeschlagenes curl + `head` = fälschlich Exit 0).
 Keine Secrets.
 """
 from __future__ import annotations

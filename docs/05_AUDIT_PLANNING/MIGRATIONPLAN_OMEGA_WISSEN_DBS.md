@@ -53,7 +53,7 @@
 - **Collection:** `core_canon` (Konstante `COLLECTION_CORE_CANON` in `chroma_client.py`); Default-Embedding **384** + `CrystalGridEngine.snap_to_grid`.
 - **Metadaten (Zero-State-kompatibel):** `type=context`, `source_collection=core_canon`, `source_file`/`repo_path`, `chunk_index`, `anchor_section`, `document_role`, `body_sha256`, `date_added`.
 - **Nach PG-Sync:** optional `OMEGA_CANON_CHROMA_AFTER_SYNC=1` — triggert Ingest nach erfolgreichem `sync_omega_canon_registry` (Chroma-Fehler → **Warnung**, PG bleibt OK).
-- **Abfrage:** MCP **`query_canon_semantic`** auf `user-omega-state-mcp` **oder** `query_chromadb` (`core-chromadb`) mit `collection_name=core_canon`.
+- **Abfrage:** MCP **`query_canon_semantic`** / **`query_operational_semantic`** (`user-omega-state-mcp`) **oder** `query_chromadb` mit `collection_name=core_canon` bzw. `core_operational`.
 - **Migration zu einheitlichem `zero_state_field`:** Backlog — aktuell eigene Collection wie `world_knowledge` / `mth_user_profile`.
 
 ### Phase 2b: `core_operational` (Ist, getrennt von Kanon)

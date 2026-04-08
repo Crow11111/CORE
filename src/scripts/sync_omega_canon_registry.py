@@ -159,6 +159,23 @@ ON CONFLICT (repo_path) DO UPDATE SET
 """.strip()
 
 
+_MIGRATION_FILE = _PROJECT_ROOT / "src" / "db" / "migrations" / "001_omega_canon_documents.sql"
+
+
+async def _ensure_canon_table() -> tuple[bool, str | None]:
+    """Idempotentes DDL (CREATE IF NOT EXISTS) — gleicher Weg wie omega_events."""
+    from src.db.multi_view_client import _run_pg_sql
+
+    if not _MIGRATION_FILE.is_file():
+        return False, f"migration file missing: {_MIGRATION_FILE}"
+    ddl = _MIGRATION_FILE.read_text(encoding="utf-8", errors="replace")
+    # Kommentare und Leerzeilen für psql ok; ein Statement-Block
+    ok, out = await _run_pg_sql(ddl.strip(), timeout=60)
+    if not ok:
+        return False, out or "ddl_failed"
+    return True, None
+
+
 async def _run_all(rows: list[tuple[str, str, str, str, str, int, dict]]) -> tuple[int, str | None]:
     from src.db.multi_view_client import _run_pg_sql
 

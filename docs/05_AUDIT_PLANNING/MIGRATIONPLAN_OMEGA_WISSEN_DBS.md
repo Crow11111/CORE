@@ -60,7 +60,7 @@
 - **Read-only:** **`list_canon_documents`**, **`get_episodic_history`** (bestehend).
 - **Orchestrator-Bundle:** **`get_orchestrator_bootstrap`** — Kanon-Kurzliste, Event-Summaries, Erreichbarkeit VPS-MCP-HTTP; **8049** nur bei Env **`OMEGA_BOOTSTRAP_PROBE_LOCAL_PROXY=1`** (sonst `null` im JSON); **`gaps`**, **`recommendations`**, `task_hint`.
 - **Heartbeat:** `InfrastructureSentinel` schreibt **`mcp-server`** in `core_infrastructure` (HTTP-„any response“ auf Host-Port **8001**).
-- **Prozess + Rule:** `docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md`, `.cursor/rules/8_CANON_REGISTRY_PREFLIGHT.mdc`.
+- **Prozess + Rules:** `docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md`, `.cursor/rules/8_CANON_REGISTRY_PREFLIGHT.mdc`, `.cursor/rules/9_ORCHESTRATOR_BOOTSTRAP_MCP.mdc` (`alwaysApply`).
 - Optional: `record_event` nach Sync — weiterhin empfohlen.
 
 ---

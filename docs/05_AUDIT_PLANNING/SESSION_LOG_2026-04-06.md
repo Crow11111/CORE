@@ -85,3 +85,16 @@ Verifikation: `pytest tests/test_sync_omega_canon_registry.py`; `python -m src.s
 | done | `CANON_REGISTRY_AGENT_BINDUNG.md`, Rule `8_CANON_REGISTRY_PREFLIGHT.mdc`, `MIGRATIONPLAN_OMEGA_WISSEN_DBS.md` §3, KANON, Inventar, Bibliothek |
 
 Verifikation: `pytest tests/test_mcp_omega_state.py tests/test_infrastructure_heartbeat_mcp.py` — PASS.
+
+---
+
+## Nachtrag — Bootstrap 8049 opt-in, Regeln, Skill
+
+| Status | Artefakt |
+|--------|----------|
+| done | `mcp_omega_state.py`: `OMEGA_BOOTSTRAP_PROBE_LOCAL_PROXY`; `dev_workstation_state_proxy_8049`; `reachability_notes`; Modul-Doc Sentinel ≠ 8049 |
+| done | `.cursorrules`, `CLAUDE.md`, Producer-Skill, `9_ORCHESTRAP_BOOTSTRAP_MCP.mdc`, Skill `orchestrator-bootstrap-preflight`, `8_CANON_*` präzisiert |
+| done | Doku: `CANON_REGISTRY_AGENT_BINDUNG.md` §5, `STATE_MTLS_PROXY_START.md`, Inventar, `MIGRATIONPLAN` §3 |
+| done | Tests `test_mcp_omega_state.py` (+ Gap-Test bei simuliertem Proxy-Down) |
+
+Verifikation: `pytest tests/test_mcp_omega_state.py`; `validate_file('src/scripts/mcp_omega_state.py')` — PASS.

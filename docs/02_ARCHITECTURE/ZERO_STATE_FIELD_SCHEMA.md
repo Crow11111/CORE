@@ -7,7 +7,7 @@
 
 # Zero-State-Feld Schema (GQA Refactor F8)
 
-**Status:** Migrationskonzept für einheitliche ChromaDB-Collection.  
+**Status:** Migrationskonzept für einheitliche ChromaDB-Collection.
 **Ziel:** Dynamische Filterung statt starrer Collection-Trennung.
 
 ---

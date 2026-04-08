@@ -110,3 +110,15 @@ Verifikation: `pytest tests/test_mcp_omega_state.py`; `validate_file('src/script
 | done | `MIGRATIONPLAN_OMEGA_WISSEN_DBS.md` Phase 2, `CORE_CHROMADB_SCHEMA`, `CANON_REGISTRY`, `ZERO_STATE_FIELD_SCHEMA`, KANON, Inventar, Bibliothek, `AGENTS.md` |
 
 Verifikation: `pytest tests/test_ingest_omega_canon_chroma.py`; `python -m src.scripts.ingest_omega_canon_chroma --from-disk --dry-run`; `validate_file` auf Ingest-Skript — PASS.
+
+---
+
+## Nachtrag — `core_operational` + Kernarbeiter (Soll/Ist getrennt)
+
+| Status | Artefakt |
+|--------|----------|
+| done | `KERNARBEITER_ORIENTIERUNG.md`, `KERNARBEITER_SURFACE_PATHS.yaml`, `ingest_omega_operational_chroma.py`, `COLLECTION_CORE_OPERATIONAL`, `query_operational_semantic`, `_chroma_semantic_query` |
+| done | Tests `test_ingest_omega_operational_chroma.py`, erweitert `test_mcp_omega_state.py` |
+| done | MIGRATIONPLAN 2b, `CORE_CHROMADB_SCHEMA`, `ZERO_STATE`, CANON_REGISTRY, KANON, Inventar, AGENTS, CLAUDE, Skill, MANAGEMENT_SUMMARY, Bibliothek |
+
+Verifikation: `pytest tests/test_ingest_omega_operational_chroma.py tests/test_mcp_omega_state.py`; `python -m src.scripts.ingest_omega_operational_chroma --dry-run` — PASS.

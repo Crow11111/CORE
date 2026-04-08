@@ -191,6 +191,10 @@ async def _run_all(rows: list[tuple[str, str, str, str, str, int, dict]]) -> tup
 
 
 async def main_async() -> int:
+    ok_ddl, ddl_err = await _ensure_canon_table()
+    if not ok_ddl:
+        print(f"[FAIL] DDL omega_canon_documents: {ddl_err}", file=sys.stderr)
+        return 1
     rows = _collect_entries(_PROJECT_ROOT)
     if not rows:
         print("[FAIL] keine Dateien zum Sync (alle Pfade fehlen?)", file=sys.stderr)

@@ -71,6 +71,7 @@
 | shell_knowledge_graph | arg_ | arg_kg_001 |
 | marc_li_patterns | mlp_ | mlp_001 |
 | core_canon (Kanon-Chunks) | cc_ | SHA256-Kürzel aus `repo_path`+`chunk_index` |
+| core_operational (Ist-Surface) | co_ | SHA256-Kürzel aus `repo_path`+`chunk_index` |
 
 ---
 

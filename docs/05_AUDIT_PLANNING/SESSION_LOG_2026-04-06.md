@@ -72,3 +72,16 @@ Verifikation: `anti_heroin_validator.validate_file('run_vollkreis_abnahme.py')` 
 | done | `tests/test_sync_omega_canon_registry.py`, `OMEGA_RESONANCE_ANCHOR.md` §4, KANON, Inventar, Bibliothek |
 
 Verifikation: `pytest tests/test_sync_omega_canon_registry.py`; `python -m src.scripts.sync_omega_canon_registry` → `[OK] omega_canon_documents: 14 Zeilen synchronisiert.`
+
+---
+
+## Nachtrag — MCP final: `get_orchestrator_bootstrap` + Heartbeat `mcp-server`
+
+| Status | Artefakt |
+|--------|----------|
+| done | `get_orchestrator_bootstrap` in `mcp_omega_state.py` (Kanon + Events + reachability + gaps + recommendations + `task_hint`) |
+| done | `InfrastructureSentinel.check_http_server_up`, VPS-Zeile `mcp-server` in `run_once` |
+| done | Tests `test_mcp_omega_state`, `test_infrastructure_heartbeat_mcp.py` |
+| done | `CANON_REGISTRY_AGENT_BINDUNG.md`, Rule `8_CANON_REGISTRY_PREFLIGHT.mdc`, `MIGRATIONPLAN_OMEGA_WISSEN_DBS.md` §3, KANON, Inventar, Bibliothek |
+
+Verifikation: `pytest tests/test_mcp_omega_state.py tests/test_infrastructure_heartbeat_mcp.py` — PASS.

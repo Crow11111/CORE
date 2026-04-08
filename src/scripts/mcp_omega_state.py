@@ -28,6 +28,7 @@ if _REPO not in sys.path:
 
 from mcp.server.fastmcp import FastMCP
 
+from src.config.vps_public_ports import MCP_SERVER_HOST_PORT as _VPS_MCP_HOST_PORT
 from src.db import event_store_client as _omega_event_store
 
 mcp = FastMCP("OMEGA_STATE_NEXUS")

@@ -87,9 +87,6 @@ def _parse_anchor_paths(anchor_text: str) -> dict[str, tuple[str, str]]:
                 continue
             if "*" in rel or "?" in rel:
                 continue
-            if rel.endswith((".md", ".py")) and "/" not in rel and rel not in ("omega_core.py",):
-                if rel.startswith("*"):
-                    continue
             out.setdefault(rel, ("referenced", current_section))
         for m in _DOCS_PATH.finditer(line):
             rel = m.group(1).strip()

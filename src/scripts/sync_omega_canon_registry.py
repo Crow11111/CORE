@@ -73,7 +73,18 @@ def _title_from_file(p: Path) -> str:
     return ""
 
 
-def _parse_anchor_paths(anchor_text: str) -> dict[str, tuple[str, str]]:
+def _resolve_repo_path(rel: str, root: Path) -> str | None:
+    """Backtick-Pfad auf existierende Repo-Datei abbilden (Hilfe: nackte .md → docs/05_AUDIT_PLANNING/)."""
+    if (root / rel).is_file():
+        return rel
+    if rel.endswith(".md") and "/" not in rel:
+        cand = root / "docs" / "05_AUDIT_PLANNING" / rel
+        if cand.is_file():
+            return cand.relative_to(root).as_posix()
+    return None
+
+
+def _parse_anchor_paths(anchor_text: str, root: Path) -> dict[str, tuple[str, str]]:
     """repo_path -> (document_role, anchor_section)."""
     out: dict[str, tuple[str, str]] = {}
     current_section = "prose"
@@ -87,7 +98,9 @@ def _parse_anchor_paths(anchor_text: str) -> dict[str, tuple[str, str]]:
                 continue
             if "*" in rel or "?" in rel:
                 continue
-            out.setdefault(rel, ("referenced", current_section))
+            resolved = _resolve_repo_path(rel, root)
+            if resolved:
+                out.setdefault(resolved, ("referenced", current_section))
         for m in _DOCS_PATH.finditer(line):
             rel = m.group(1).strip()
             out.setdefault(rel, ("referenced", current_section))
@@ -104,7 +117,7 @@ def _collect_entries(root: Path) -> list[tuple[str, str, str, str, str, int, dic
     merged: dict[str, tuple[str, str]] = {}
     for path, role, sec in STATIC_SEEDS:
         merged[path] = (role, sec)
-    merged.update(_parse_anchor_paths(anchor_text))
+    merged.update(_parse_anchor_paths(anchor_text, root))
 
     if (root / ANCHOR_NAME).is_file():
         merged.pop("docs/00_STAMMDOKUMENTE/OMEGA_RESONANCE_ANCHOR.md", None)

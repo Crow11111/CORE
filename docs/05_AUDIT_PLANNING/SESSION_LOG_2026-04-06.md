@@ -44,4 +44,4 @@ Drift MACRO vs. Detailfluss: Draft markiert; MASTER bindend für Deploy-Pfad.
 | done | `tests/test_vps_kong_ensure_omega_core_backend.py`, `infra/vps/kong/README.md`, `CORE_INVENTORY_REGISTER.md` |
 | done | Ablauf: `vps_backup_snapshot` → ensure-Skript → `verify_vps_stack` (Kong Deck-Referenz inkl. omega-core); `anti_heroin_validator` auf dem neuen Skript |
 
-Exit-Codes und Kong-Zeile: siehe letzte Shell-Ausführung in der Session (keine Secrets im Log).
+Verifikation (2026-04-08, keine Secrets im Log): `vps_backup_snapshot` Exit **0**; `vps_kong_ensure_omega_core_backend` Exit **0** (zweiter Lauf idempotent: `[OK] bereits vorhanden`); `verify_vps_stack` Exit **0**; Kong-Zeile **`[OK] Kong Deck-Referenz (evolution, /evo, health, omega-core-backend, /status)`**; `anti_heroin_validator` auf neuem Skript OK; `pytest tests/test_vps_kong_ensure_omega_core_backend.py` 3 passed.

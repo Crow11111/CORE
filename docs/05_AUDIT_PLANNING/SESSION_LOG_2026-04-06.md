@@ -93,7 +93,7 @@ Verifikation: `pytest tests/test_mcp_omega_state.py tests/test_infrastructure_he
 | Status | Artefakt |
 |--------|----------|
 | done | `mcp_omega_state.py`: `OMEGA_BOOTSTRAP_PROBE_LOCAL_PROXY`; `dev_workstation_state_proxy_8049`; `reachability_notes`; Modul-Doc Sentinel ≠ 8049 |
-| done | `.cursorrules`, `CLAUDE.md`, Producer-Skill, `9_ORCHESTRAP_BOOTSTRAP_MCP.mdc`, Skill `orchestrator-bootstrap-preflight`, `8_CANON_*` präzisiert |
+| done | `.cursorrules`, `CLAUDE.md`, Producer-Skill, `9_ORCHESTRATOR_BOOTSTRAP_MCP.mdc`, Skill `orchestrator-bootstrap-preflight`, `8_CANON_*` präzisiert |
 | done | Doku: `CANON_REGISTRY_AGENT_BINDUNG.md` §5, `STATE_MTLS_PROXY_START.md`, Inventar, `MIGRATIONPLAN` §3 |
 | done | Tests `test_mcp_omega_state.py` (+ Gap-Test bei simuliertem Proxy-Down) |
 

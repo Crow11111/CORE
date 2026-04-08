@@ -59,3 +59,16 @@ Verifikation (2026-04-08, keine Secrets im Log): `vps_backup_snapshot` Exit **0*
 | done | `CORE_INVENTORY_REGISTER.md` |
 
 Verifikation: `anti_heroin_validator.validate_file('run_vollkreis_abnahme.py')` OK; `pytest tests/test_run_vollkreis_core_base_url_block_g.py` 1 passed.
+
+---
+
+## Nachtrag — omega_canon_documents (Anker → PostgreSQL)
+
+| Status | Artefakt |
+|--------|----------|
+| done | `src/db/migrations/001_omega_canon_documents.sql`, Ergänzung `src/db/core_infrastructure.sql` |
+| done | `docs/05_AUDIT_PLANNING/MIGRATIONPLAN_OMEGA_WISSEN_DBS.md` |
+| done | `src/scripts/sync_omega_canon_registry.py` (DDL idempotent + UPSERT) |
+| done | `tests/test_sync_omega_canon_registry.py`, `OMEGA_RESONANCE_ANCHOR.md` §4, KANON, Inventar, Bibliothek |
+
+Verifikation: `pytest tests/test_sync_omega_canon_registry.py`; `python -m src.scripts.sync_omega_canon_registry` → `[OK] omega_canon_documents: 14 Zeilen synchronisiert.`

@@ -271,10 +271,15 @@ async def get_orchestrator_bootstrap(
         "canon_count": len(canon_full),
         "recent_events_summary": [_event_summary_row(r) for r in events_full],
         "events_count": len(events_full),
+        "local_proxy_probe_enabled": _env_bootstrap_probe_local_proxy(),
         "reachability": {
             "vps_mcp_http": vps_mcp,
-            "localhost_state_proxy_8049": proxy_ok,
+            "dev_workstation_state_proxy_8049": proxy_ok,
         },
+        "reachability_notes": [
+            "vps_mcp_http = HTTP auf VPS-Host-Port (Docker mcp-server), nicht der Cursor-stdio-MCP-Prozess.",
+            "dev_workstation_state_proxy_8049 = nur wenn OMEGA_BOOTSTRAP_PROBE_LOCAL_PROXY=1; sonst null (unbekannt). Kein Bestandteil des InfrastructureSentinel.",
+        ],
         "gaps": gaps,
         "recommendations": recommendations,
         "static_pointers": [
@@ -282,6 +287,7 @@ async def get_orchestrator_bootstrap(
             "KANON_EINSTIEG.md",
             "docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md",
             "docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md",
+            "docs/04_PROCESSES/STATE_MTLS_PROXY_START.md",
         ],
         "task_hint_received": (task_hint or "").strip()[:500],
     }

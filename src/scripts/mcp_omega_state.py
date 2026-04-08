@@ -291,28 +291,23 @@ async def get_orchestrator_bootstrap(
             "docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md",
             "docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md",
             "docs/04_PROCESSES/STATE_MTLS_PROXY_START.md",
-            "MCP-Tool query_canon_semantic (core_canon) nach ingest_omega_canon_chroma",
+            "docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md",
+            "MCP: query_canon_semantic (Soll) + query_operational_semantic (Ist)",
         ],
         "task_hint_received": (task_hint or "").strip()[:500],
     }
     return json.dumps(bundle, ensure_ascii=False, default=str)
 
 
-@mcp.tool()
-async def query_canon_semantic(query_text: str, n_results: int = 8) -> str:
-    """
-    Semantisches Kanon-Gedächtnis: ChromaDB **`core_canon`** (Chunks aus `omega_canon_documents`).
-
-    Voraussetzung: erreichbare Chroma-Instanz (`CHROMA_HOST` / lokal) und Lauf von
-    `python -m src.scripts.ingest_omega_canon_chroma` nach dem PG-Sync.
-
-    Output: JSON mit `ids`, `documents`, `metadatas`, `distances` (wie Chroma query) + `collection`.
-    """
-    from src.network.chroma_client import (
-        COLLECTION_CORE_CANON,
-        _get_collection_sync,
-        is_configured,
-    )
+async def _chroma_semantic_query(
+    *,
+    collection: str,
+    query_text: str,
+    n_results: int,
+    ingest_hint: str,
+    missing_hint: str,
+) -> str:
+    from src.network.chroma_client import _get_collection_sync, is_configured
 
     q = (query_text or "").strip()
     if not q:
@@ -322,8 +317,8 @@ async def query_canon_semantic(query_text: str, n_results: int = 8) -> str:
         return json.dumps(
             {
                 "error": "ChromaDB nicht konfiguriert (CHROMA_HOST oder CHROMA_LOCAL_PATH).",
-                "collection": COLLECTION_CORE_CANON,
-                "hint": "Ingest: python -m src.scripts.ingest_omega_canon_chroma — siehe CANON_REGISTRY_AGENT_BINDUNG.md §5",
+                "collection": collection,
+                "hint": ingest_hint,
             },
             ensure_ascii=False,
         )
@@ -333,7 +328,7 @@ async def query_canon_semantic(query_text: str, n_results: int = 8) -> str:
     n = max(1, min(n_results, 25))
 
     def _run_query():
-        col = _get_collection_sync(COLLECTION_CORE_CANON, create_if_missing=False)
+        col = _get_collection_sync(collection, create_if_missing=False)
         return col.query(query_texts=[q], n_results=n)
 
     try:
@@ -342,16 +337,54 @@ async def query_canon_semantic(query_text: str, n_results: int = 8) -> str:
         return json.dumps(
             {
                 "error": str(e),
-                "collection": COLLECTION_CORE_CANON,
-                "hint": "Collection fehlt oder leer? create_chroma_collections_vps + ingest_omega_canon_chroma ausführen.",
+                "collection": collection,
+                "hint": missing_hint,
             },
             ensure_ascii=False,
         )
 
     out = dict(result) if isinstance(result, dict) else {"raw": result}
-    out["collection"] = COLLECTION_CORE_CANON
+    out["collection"] = collection
     out["query_text"] = q[:500]
     return json.dumps(out, ensure_ascii=False, default=str)
+
+
+@mcp.tool()
+async def query_canon_semantic(query_text: str, n_results: int = 8) -> str:
+    """
+    Semantisches **Soll-Kanon**-Gedächtnis: Chroma **`core_canon`** (`omega_canon_documents` / Anker-Ingest).
+
+    Ingest: `python -m src.scripts.ingest_omega_canon_chroma` nach PG-Sync.
+    """
+    from src.network.chroma_client import COLLECTION_CORE_CANON
+
+    return await _chroma_semantic_query(
+        collection=COLLECTION_CORE_CANON,
+        query_text=query_text,
+        n_results=n_results,
+        ingest_hint="Ingest: python -m src.scripts.ingest_omega_canon_chroma — CANON_REGISTRY_AGENT_BINDUNG.md §5",
+        missing_hint="Collection leer/fehlt? create_chroma_collections_vps + ingest_omega_canon_chroma.",
+    )
+
+
+@mcp.tool()
+async def query_operational_semantic(query_text: str, n_results: int = 8) -> str:
+    """
+    Semantisches **Ist-/Laufflächen**-Gedächtnis: Chroma **`core_operational`**
+    (Ports, Kong, Knoten, Messbarkeit — kuratiert via `KERNARBEITER_SURFACE_PATHS.yaml`).
+
+    Ingest: `python -m src.scripts.ingest_omega_operational_chroma`.
+    Orientierung: `docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md`.
+    """
+    from src.network.chroma_client import COLLECTION_CORE_OPERATIONAL
+
+    return await _chroma_semantic_query(
+        collection=COLLECTION_CORE_OPERATIONAL,
+        query_text=query_text,
+        n_results=n_results,
+        ingest_hint="Ingest: python -m src.scripts.ingest_omega_operational_chroma",
+        missing_hint="Collection leer/fehlt? create_chroma_collections_vps + ingest_omega_operational_chroma.",
+    )
 
 
 @mcp.tool()

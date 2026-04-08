@@ -28,6 +28,7 @@
 | relationships | Default (384) | Wer gehört zu wem |
 | world_knowledge | Default (384) | Weltwissen, RAG-Referenzen (z. B. YOUTUBE_TRANSCRIPT_GEMINI_RAG) |
 | mth_user_profile | Default (384) | Operator-Profil MTH, Tiefen-Chunking (Tier 1–3), RAG/OC Brain |
+| **core_canon** | Default (384) | Kanon-Dokumente aus `omega_canon_documents` (Chunk-Ingest), RAG / semantische Suche |
 
 **ChromaDB-Metadaten:** Nur `str`, `int`, `float`, `bool`. Listen als JSON-String speichern.
 

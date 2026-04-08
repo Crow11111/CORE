@@ -368,6 +368,8 @@ async def query_canon_semantic(query_text: str, n_results: int = 8) -> str:
     Semantisches **Soll-Kanon**-Gedächtnis: Chroma **`core_canon`** (`omega_canon_documents` / Anker-Ingest).
 
     Ingest: `python -m src.scripts.ingest_omega_canon_chroma` nach PG-Sync.
+
+    **Zero-Trust:** JSON enthält immer `zero_trust_notice` — Treffer sind keine Fakten ohne Abgleich mit Quelldatei.
     """
     from src.network.chroma_client import COLLECTION_CORE_CANON
 
@@ -388,6 +390,8 @@ async def query_operational_semantic(query_text: str, n_results: int = 8) -> str
 
     Ingest: `python -m src.scripts.ingest_omega_operational_chroma`.
     Orientierung: `docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md`.
+
+    **Zero-Trust:** JSON enthält immer `zero_trust_notice` — auch Ist-Doku kann veraltet sein; Live-Checks wo nötig.
     """
     from src.network.chroma_client import COLLECTION_CORE_OPERATIONAL
 

@@ -242,7 +242,8 @@ async def get_orchestrator_bootstrap(
 ) -> str:
     """
     Ein Aufruf für Orchestrator/Producer: Kanon-Kurzliste + letzte Events + Erreichbarkeit
-    (VPS-MCP-HTTP, optional 8049) + Lücken + Empfehlungen. Basis-Projektinfo ohne volles Repo zu lesen.
+    (VPS-MCP-HTTP auf dem Host) + optional 8049 nur bei Env `OMEGA_BOOTSTRAP_PROBE_LOCAL_PROXY=1`
+    + Lücken + Empfehlungen. Basis-Projektinfo ohne volles Repo zu lesen.
     """
     if isinstance(event_limit, bool) or not isinstance(event_limit, int):
         event_limit = 12

@@ -97,6 +97,20 @@ class InfrastructureSentinel:
         except Exception:
             return False
 
+    async def check_http_server_up(self, url: str, timeout: float = 5.0) -> bool:
+        """
+        True, wenn ein HTTP-Server antwortet (beliebiger Status inkl. 404/401).
+        Nutzen: MCP o. Ä. ohne festen Health-Pfad.
+        """
+        try:
+            async with httpx.AsyncClient(verify=False, timeout=timeout) as client:
+                await client.get(url)
+                return True
+        except httpx.HTTPStatusError:
+            return True
+        except Exception:
+            return False
+
     async def update_status(self, node: str, service: str, status: str, metadata: dict = None):
         """Aktualisiert den Status in der VPS-Datenbank."""
         meta_s = json.dumps(metadata or {}, ensure_ascii=False)

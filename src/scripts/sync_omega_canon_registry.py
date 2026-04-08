@@ -14,6 +14,7 @@ from __future__ import annotations
 import asyncio
 import hashlib
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -218,6 +219,20 @@ async def main_async() -> int:
         print(f"[FAIL] PG upsert: {err}", file=sys.stderr)
         return 1
     print(f"[OK] omega_canon_documents: {n} Zeilen synchronisiert.")
+    if os.getenv("OMEGA_CANON_CHROMA_AFTER_SYNC", "").strip().lower() in (
+        "1",
+        "true",
+        "yes",
+        "on",
+    ):
+        from src.scripts import ingest_omega_canon_chroma as _chroma_ingest
+
+        c = await _chroma_ingest.ingest_from_pg_after_sync(_PROJECT_ROOT)
+        if c != 0:
+            print(
+                f"[WARN] OMEGA_CANON_CHROMA_AFTER_SYNC: Chroma-Ingest Exit {c} (PG-Sync trotzdem OK).",
+                file=sys.stderr,
+            )
     return 0
 
 

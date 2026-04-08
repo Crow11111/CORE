@@ -113,6 +113,12 @@
 - **Embedding:** ChromaDB Default + Gitter-Snap (`CrystalGridEngine`)
 - **Quelle:** `src/scripts/ingest_omega_canon_chroma.py` · Registry: `sync_omega_canon_registry` · siehe `MIGRATIONPLAN_OMEGA_WISSEN_DBS.md` Phase 2
 
+### core_operational
+- **Document:** Text-Chunk aus kuratierten Ist-Pfaden (YAML-Liste)
+- **Metadata:** `type=context`, `source_collection=core_operational`, `layer=operational_ist`, `repo_path`, `focus`, `chunk_index`, `body_sha256`, `date_added`
+- **Embedding:** wie `core_canon`
+- **Quelle:** `src/scripts/ingest_omega_operational_chroma.py` · `docs/00_STAMMDOKUMENTE/KERNARBEITER_SURFACE_PATHS.yaml` · `KERNARBEITER_ORIENTIERUNG.md`
+
 ---
 
 ## Embedding-Dimensionen

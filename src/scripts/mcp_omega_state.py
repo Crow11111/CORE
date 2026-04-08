@@ -7,8 +7,9 @@ OMEGA STATE MCP Server — optional: Proxy zu localhost:8049 (nur Dev-Workstatio
 - **InfrastructureSentinel** (`infrastructure_heartbeat.py`) prüft **kein** 127.0.0.1; nur VPS/Scout/Dreadnought-sichtbare Endpunkte.
 - **get_orchestrator_bootstrap:** Testet 8049 **nur** wenn `OMEGA_BOOTSTRAP_PROBE_LOCAL_PROXY=1` (Default: aus),
   damit keine falsche „Heartbeat-gegen-local“-Semantik entsteht.
-- **query_canon_semantic:** Semantische Abfrage der Chroma-Collection **`core_canon`** (Phase 2 Kanon-Ingest).
-  Parallel weiterhin **`query_chromadb`** (MCP `core-chromadb`) mit `collection_name=core_canon` möglich.
+- **query_canon_semantic:** Semantische Abfrage **`core_canon`** (Soll-Kanon / Anker-Registry-Ingest).
+- **query_operational_semantic:** Semantische Abfrage **`core_operational`** (Ist / Lauffläche laut `KERNARBEITER_SURFACE_PATHS.yaml`).
+  Parallel: **`query_chromadb`** (`core-chromadb`) mit passendem `collection_name`.
 """
 from __future__ import annotations
 

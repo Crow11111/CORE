@@ -136,6 +136,26 @@ async def update_handbook(role: str, content: str) -> str:
 
 
 @mcp.tool()
+async def list_canon_documents(limit: int = 200) -> str:
+    """
+    PostgreSQL omega_canon_documents: registrierte Kanon-Pfade (Resonanz-Anker + Sync).
+    Pre-Flight vor größeren Architektur-/VPS-/Kong-Aufgaben — gleicher PG-Pfad wie omega_events.
+    """
+    if isinstance(limit, bool) or not isinstance(limit, int):
+        limit = 200
+    rows = await _omega_event_store.list_canon_documents(limit=limit)
+    return json.dumps(
+        {
+            "documents": rows,
+            "count": len(rows),
+            "hint": "Quelle: python -m src.scripts.sync_omega_canon_registry; Plan: MIGRATIONPLAN_OMEGA_WISSEN_DBS.md",
+        },
+        ensure_ascii=False,
+        default=str,
+    )
+
+
+@mcp.tool()
 async def get_episodic_history(agent_id: str | None = None, limit: int = 100) -> str:
     """
     Liefert die chronologische Event-Historie aus PostgreSQL (omega_events) für Pre-Flight /

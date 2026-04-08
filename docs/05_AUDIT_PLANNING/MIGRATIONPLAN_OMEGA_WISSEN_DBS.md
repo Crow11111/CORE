@@ -55,11 +55,13 @@
 
 ---
 
-## Phase 3: MCP / Tools (umgesetzt)
+## Phase 3: MCP / Tools (umgesetzt / finalisiert)
 
-- **Read-only:** MCP-Tool **`list_canon_documents`** in `src/scripts/mcp_omega_state.py` → `event_store_client.list_canon_documents` (PostgreSQL).
+- **Read-only:** **`list_canon_documents`**, **`get_episodic_history`** (bestehend).
+- **Orchestrator-Bundle:** **`get_orchestrator_bootstrap`** — Kanon-Kurzliste, Event-Summaries, Erreichbarkeit VPS-MCP + localhost:8049, **`gaps`**, **`recommendations`**, `task_hint`.
+- **Heartbeat:** `InfrastructureSentinel` schreibt **`mcp-server`** in `core_infrastructure` (HTTP-„any response“ auf Host-Port **8001**).
 - **Prozess + Rule:** `docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md`, `.cursor/rules/8_CANON_REGISTRY_PREFLIGHT.mdc`.
-- Optional: `record_event` mit `event_type=canon_sync_summary` nach jedem Sync (episodisch) — weiterhin empfohlen, nicht automatisiert.
+- Optional: `record_event` nach Sync — weiterhin empfohlen.
 
 ---
 

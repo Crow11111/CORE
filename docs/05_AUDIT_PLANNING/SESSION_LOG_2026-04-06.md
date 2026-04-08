@@ -98,3 +98,15 @@ Verifikation: `pytest tests/test_mcp_omega_state.py tests/test_infrastructure_he
 | done | Tests `test_mcp_omega_state.py` (+ Gap-Test bei simuliertem Proxy-Down) |
 
 Verifikation: `pytest tests/test_mcp_omega_state.py`; `validate_file('src/scripts/mcp_omega_state.py')` — PASS.
+
+---
+
+## Nachtrag — Phase 2 Kanon → Chroma `core_canon`
+
+| Status | Artefakt |
+|--------|----------|
+| done | `src/scripts/ingest_omega_canon_chroma.py`, `COLLECTION_CORE_CANON`, `create_chroma_collections_vps`, `OMEGA_CANON_CHROMA_AFTER_SYNC` in `sync_omega_canon_registry` |
+| done | Tests `tests/test_ingest_omega_canon_chroma.py` |
+| done | `MIGRATIONPLAN_OMEGA_WISSEN_DBS.md` Phase 2, `CORE_CHROMADB_SCHEMA`, `CANON_REGISTRY`, `ZERO_STATE_FIELD_SCHEMA`, KANON, Inventar, Bibliothek, `AGENTS.md` |
+
+Verifikation: `pytest tests/test_ingest_omega_canon_chroma.py`; `python -m src.scripts.ingest_omega_canon_chroma --from-disk --dry-run`; `validate_file` auf Ingest-Skript — PASS.

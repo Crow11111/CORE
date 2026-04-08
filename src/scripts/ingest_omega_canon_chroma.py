@@ -220,15 +220,16 @@ def ingest_canon_to_chroma(
             total_chunks += len(chunks)
         except Exception as e:
             warnings.append(f"Chroma add fehlgeschlagen {repo_path}: {e}")
-            return 2, warnings
+            return 2, warnings + [f"[PARTIAL] {total_chunks} Chunks vor Abbruch."]
 
     if dry_run:
         return 0, [f"[dry-run] {total_chunks} Chunks für {len(rows)} Registry-Zeilen (textpfade)."]
 
     msg = [f"[OK] core_canon: {total_chunks} Chunks aus {len(rows)} Registry-Zeilen."]
     msg.extend(warnings)
-    code = 2 if warnings else 0
-    return code, msg
+    if total_chunks == 0:
+        return 1, msg + ["[FAIL] keine Chunks geschrieben (Pfade leer, zu groß oder kein Text)."]
+    return 0, msg
 
 
 async def run_ingest_async(

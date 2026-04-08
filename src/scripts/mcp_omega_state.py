@@ -350,6 +350,7 @@ async def _chroma_semantic_query(
                 "error": str(e),
                 "collection": collection,
                 "hint": missing_hint,
+                "zero_trust_notice": _CHROMA_ZERO_TRUST_NOTICE,
             },
             ensure_ascii=False,
         )
@@ -357,6 +358,7 @@ async def _chroma_semantic_query(
     out = dict(result) if isinstance(result, dict) else {"raw": result}
     out["collection"] = collection
     out["query_text"] = q[:500]
+    out["zero_trust_notice"] = _CHROMA_ZERO_TRUST_NOTICE
     return json.dumps(out, ensure_ascii=False, default=str)
 
 

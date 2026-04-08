@@ -56,6 +56,13 @@
 - **Abfrage:** MCP **`query_canon_semantic`** auf `user-omega-state-mcp` **oder** `query_chromadb` (`core-chromadb`) mit `collection_name=core_canon`.
 - **Migration zu einheitlichem `zero_state_field`:** Backlog — aktuell eigene Collection wie `world_knowledge` / `mth_user_profile`.
 
+### Phase 2b: `core_operational` (Ist, getrennt von Kanon)
+
+- **Skript:** `python -m src.scripts.ingest_omega_operational_chroma` — liest **`docs/00_STAMMDOKUMENTE/KERNARBEITER_SURFACE_PATHS.yaml`** (kuratierte Pfade: Ports, Verkehrsplan, Landkarte, …).
+- **Collection:** `COLLECTION_CORE_OPERATIONAL` = **`core_operational`** — bewusst **nicht** aus `omega_canon_documents`, damit **Plan ≠ Realität** semantisch nicht vermischt wird.
+- **MCP:** **`query_operational_semantic`** (`user-omega-state-mcp`).
+- **Doku:** **`docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md`**.
+
 ---
 
 ## Phase 3: MCP / Tools (umgesetzt / finalisiert)

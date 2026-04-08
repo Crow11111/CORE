@@ -45,3 +45,17 @@ Drift MACRO vs. Detailfluss: Draft markiert; MASTER bindend für Deploy-Pfad.
 | done | Ablauf: `vps_backup_snapshot` → ensure-Skript → `verify_vps_stack` (Kong Deck-Referenz inkl. omega-core); `anti_heroin_validator` auf dem neuen Skript |
 
 Verifikation (2026-04-08, keine Secrets im Log): `vps_backup_snapshot` Exit **0**; `vps_kong_ensure_omega_core_backend` Exit **0** (zweiter Lauf idempotent: `[OK] bereits vorhanden`); `verify_vps_stack` Exit **0**; Kong-Zeile **`[OK] Kong Deck-Referenz (evolution, /evo, health, omega-core-backend, /status)`**; `anti_heroin_validator` auf neuem Skript OK; `pytest tests/test_vps_kong_ensure_omega_core_backend.py` 3 passed.
+
+---
+
+## Nachtrag — Vollkreis Block G (`CORE_BASE_URL`) & Detailplan Nachschub
+
+| Status | Artefakt |
+|--------|----------|
+| done | `run_vollkreis_abnahme.py` — Block **G** Agent-Pool: `curl` gegen **`{CORE_BASE_URL}/status`** (wie Block A, `-sk`, Timeout 10) |
+| done | `tests/test_run_vollkreis_core_base_url_block_g.py` — Kontrakt kein festes `localhost:8000/status` |
+| done | `docs/05_AUDIT_PLANNING/DETAILPLAN_VPS_OMEGA_NACHSCHUB_2026-04-06.md` — Phasen, Rollen, Abgrenzung Kong-Timeout vs. Loopback-Skript |
+| done | `docs/03_INFRASTRUCTURE/OMEGA_BACKEND_VPS_SYSTEMD.md` — `verify_vps_omega_backend_http` vs. Kong Proxy `/status` vs. `CORE_BASE_URL` |
+| done | `CORE_INVENTORY_REGISTER.md` |
+
+Verifikation: `anti_heroin_validator.validate_file('run_vollkreis_abnahme.py')` OK; `pytest tests/test_run_vollkreis_core_base_url_block_g.py` 1 passed.

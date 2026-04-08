@@ -197,6 +197,8 @@ COLLECTION_WORLD_KNOWLEDGE = "world_knowledge"
 COLLECTION_MTH_USER_PROFILE = "mth_user_profile"
 # Kanon-Registry (omega_canon_documents) — semantische Chunks; siehe ingest_omega_canon_chroma.py
 COLLECTION_CORE_CANON = "core_canon"
+# Ist-/Lauffläche (KERNARBEITER_SURFACE_PATHS.yaml) — getrennt von Soll-Kanon; siehe ingest_omega_operational_chroma.py
+COLLECTION_CORE_OPERATIONAL = "core_operational"
 
 CHROMA_MAX_SIZE_MB = int(os.getenv("CHROMA_MAX_SIZE_MB", "5000"))
 

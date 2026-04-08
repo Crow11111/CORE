@@ -106,6 +106,12 @@
 - **Embedding:** ChromaDB Default
 - **Quelle:** ingest_mth_profile_to_chroma.py, MTH_PROFILE_ARCHIVE.md
 
+### core_canon
+- **Document:** Text-Chunk aus Kanon-Datei (Markdown/Code)
+- **Metadata:** `type=context`, `source_collection=core_canon`, `repo_path`, `source_file` (gleich repo_path), `chunk_index`, `anchor_section`, `document_role`, `title`, `body_sha256`, `date_added`
+- **Embedding:** ChromaDB Default + Gitter-Snap (`CrystalGridEngine`)
+- **Quelle:** `src/scripts/ingest_omega_canon_chroma.py` · Registry: `sync_omega_canon_registry` · siehe `MIGRATIONPLAN_OMEGA_WISSEN_DBS.md` Phase 2
+
 ---
 
 ## Embedding-Dimensionen

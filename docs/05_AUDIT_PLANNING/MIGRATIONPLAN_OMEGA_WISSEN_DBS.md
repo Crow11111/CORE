@@ -47,11 +47,14 @@
 
 ---
 
-## Phase 2 (Backlog): Chroma / zero_state_field
+## Phase 2 (umgesetzt): Chroma — Collection `core_canon`
 
-- Pro `omega_canon_documents`-Zeile optional **Chunk-Ingest** in eine Collection `core_canon` (oder Migration zu `zero_state_field` laut `ZERO_STATE_FIELD_SCHEMA.md`).
-- Metadaten: `type=context`, `source_collection=core_canon`, `anchor_section`, `repo_path`.
-- **Nicht** parallel starten, bevor Phase 1 stabil grün ist.
+- **Skript:** `python -m src.scripts.ingest_omega_canon_chroma` — liest **`omega_canon_documents`** per `list_canon_documents` (PG); wenn leer → Fallback wie Sync (**`--from-disk`** / Anker+Seeds).
+- **Collection:** `core_canon` (Konstante `COLLECTION_CORE_CANON` in `chroma_client.py`); Default-Embedding **384** + `CrystalGridEngine.snap_to_grid`.
+- **Metadaten (Zero-State-kompatibel):** `type=context`, `source_collection=core_canon`, `source_file`/`repo_path`, `chunk_index`, `anchor_section`, `document_role`, `body_sha256`, `date_added`.
+- **Nach PG-Sync:** optional `OMEGA_CANON_CHROMA_AFTER_SYNC=1` — triggert Ingest nach erfolgreichem `sync_omega_canon_registry` (Chroma-Fehler → **Warnung**, PG bleibt OK).
+- **Abfrage:** MCP `query_chromadb` mit `collection_name=core_canon` (oder lokal gleicher Client).
+- **Migration zu einheitlichem `zero_state_field`:** Backlog — aktuell eigene Collection wie `world_knowledge` / `mth_user_profile`.
 
 ---
 

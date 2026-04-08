@@ -290,10 +290,67 @@ async def get_orchestrator_bootstrap(
             "docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md",
             "docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md",
             "docs/04_PROCESSES/STATE_MTLS_PROXY_START.md",
+            "MCP-Tool query_canon_semantic (core_canon) nach ingest_omega_canon_chroma",
         ],
         "task_hint_received": (task_hint or "").strip()[:500],
     }
     return json.dumps(bundle, ensure_ascii=False, default=str)
+
+
+@mcp.tool()
+async def query_canon_semantic(query_text: str, n_results: int = 8) -> str:
+    """
+    Semantisches Kanon-Gedächtnis: ChromaDB **`core_canon`** (Chunks aus `omega_canon_documents`).
+
+    Voraussetzung: erreichbare Chroma-Instanz (`CHROMA_HOST` / lokal) und Lauf von
+    `python -m src.scripts.ingest_omega_canon_chroma` nach dem PG-Sync.
+
+    Output: JSON mit `ids`, `documents`, `metadatas`, `distances` (wie Chroma query) + `collection`.
+    """
+    from src.network.chroma_client import (
+        COLLECTION_CORE_CANON,
+        _get_collection_sync,
+        is_configured,
+    )
+
+    q = (query_text or "").strip()
+    if not q:
+        return json.dumps({"error": "query_text leer"}, ensure_ascii=False)
+
+    if not is_configured():
+        return json.dumps(
+            {
+                "error": "ChromaDB nicht konfiguriert (CHROMA_HOST oder CHROMA_LOCAL_PATH).",
+                "collection": COLLECTION_CORE_CANON,
+                "hint": "Ingest: python -m src.scripts.ingest_omega_canon_chroma — siehe CANON_REGISTRY_AGENT_BINDUNG.md §5",
+            },
+            ensure_ascii=False,
+        )
+
+    if isinstance(n_results, bool) or not isinstance(n_results, int):
+        n_results = 8
+    n = max(1, min(n_results, 25))
+
+    def _run_query():
+        col = _get_collection_sync(COLLECTION_CORE_CANON, create_if_missing=False)
+        return col.query(query_texts=[q], n_results=n)
+
+    try:
+        result = await asyncio.to_thread(_run_query)
+    except Exception as e:
+        return json.dumps(
+            {
+                "error": str(e),
+                "collection": COLLECTION_CORE_CANON,
+                "hint": "Collection fehlt oder leer? create_chroma_collections_vps + ingest_omega_canon_chroma ausführen.",
+            },
+            ensure_ascii=False,
+        )
+
+    out = dict(result) if isinstance(result, dict) else {"raw": result}
+    out["collection"] = COLLECTION_CORE_CANON
+    out["query_text"] = q[:500]
+    return json.dumps(out, ensure_ascii=False, default=str)
 
 
 @mcp.tool()

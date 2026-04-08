@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-OMEGA STATE MCP Server - Proxy Client zu localhost:8049
-Verhindert Context-Window-Kollaps durch asynchrone State-Injektion via FastMCP.
-Delegiert die eigentliche Arbeit an den lokalen mTLS-Proxy (state_mtls_proxy.py).
+OMEGA STATE MCP Server — optional: Proxy zu localhost:8049 (nur Dev-Workstation).
+
+- **8049 / state_mtls_proxy:** Relais für `read_core_state` / `read_handbook` → HTTPS+mTLS zum VPS
+  (`/core_api/...`). Läuft auf dem Rechner, auf dem Cursor den MCP startet — **nicht** auf dem VPS.
+- **InfrastructureSentinel** (`infrastructure_heartbeat.py`) prüft **kein** 127.0.0.1; nur VPS/Scout/Dreadnought-sichtbare Endpunkte.
+- **get_orchestrator_bootstrap:** Testet 8049 **nur** wenn `OMEGA_BOOTSTRAP_PROBE_LOCAL_PROXY=1` (Default: aus),
+  damit keine falsche „Heartbeat-gegen-local“-Semantik entsteht.
 """
 from __future__ import annotations
 

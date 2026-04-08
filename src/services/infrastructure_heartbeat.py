@@ -100,14 +100,12 @@ class InfrastructureSentinel:
     async def check_http_server_up(self, url: str, timeout: float = 5.0) -> bool:
         """
         True, wenn ein HTTP-Server antwortet (beliebiger Status inkl. 404/401).
-        Nutzen: MCP o. Ä. ohne festen Health-Pfad.
+        Nutzen: MCP o. Ä. ohne festen Health-Pfad (httpx wirft bei 4xx/5xx nicht ohne raise_for_status).
         """
         try:
             async with httpx.AsyncClient(verify=False, timeout=timeout) as client:
                 await client.get(url)
                 return True
-        except httpx.HTTPStatusError:
-            return True
         except Exception:
             return False
 

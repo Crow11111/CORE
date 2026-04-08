@@ -68,7 +68,10 @@ def main() -> int:
         key = str(kp)
 
     port = int(OMEGA_BACKEND_HOST_PORT)
-    line = f"curl -sf http://127.0.0.1:{port}/status | head -c 400; echo"
+    # pipefail: ohne das liefert eine Pipeline mit fehlschlagendem curl Exit 0 (weil head zuletzt läuft).
+    line = (
+        f'bash -lc "set -o pipefail; curl -sf http://127.0.0.1:{port}/status | head -c 400"'
+    )
     out = _ssh_remote_shell(host, key, line, capture_output=True, text=True)
     if out.stdout:
         sys.stdout.write(out.stdout)

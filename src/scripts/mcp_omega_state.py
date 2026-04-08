@@ -318,7 +318,10 @@ async def _chroma_semantic_query(
 
     q = (query_text or "").strip()
     if not q:
-        return json.dumps({"error": "query_text leer"}, ensure_ascii=False)
+        return json.dumps(
+            {"error": "query_text leer", "zero_trust_notice": _CHROMA_ZERO_TRUST_NOTICE},
+            ensure_ascii=False,
+        )
 
     if not is_configured():
         return json.dumps(
@@ -326,6 +329,7 @@ async def _chroma_semantic_query(
                 "error": "ChromaDB nicht konfiguriert (CHROMA_HOST oder CHROMA_LOCAL_PATH).",
                 "collection": collection,
                 "hint": ingest_hint,
+                "zero_trust_notice": _CHROMA_ZERO_TRUST_NOTICE,
             },
             ensure_ascii=False,
         )

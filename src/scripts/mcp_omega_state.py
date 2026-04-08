@@ -42,9 +42,6 @@ from src.db import event_store_client as _omega_event_store
 mcp = FastMCP("OMEGA_STATE_NEXUS")
 PROXY_URL = "http://localhost:8049"
 
-# Jede Chroma-Suche: explizit im JSON (Operator/Agent darf Treffer nie als bewiesene Fakten behandeln).
-_CHROMA_ZERO_TRUST_NOTICE = CHROMA_ZERO_TRUST_NOTICE
-
 _HANDBOOKS_DIR = Path(_REPO) / "docs" / "03_INFRASTRUCTURE" / "handbooks"
 _ROLE_SAFE = re.compile(r"^[\w.-]+$")
 
@@ -326,7 +323,7 @@ async def _chroma_semantic_query(
                 "error": "ChromaDB nicht konfiguriert (CHROMA_HOST oder CHROMA_LOCAL_PATH).",
                 "collection": collection,
                 "hint": ingest_hint,
-                "zero_trust_notice": _CHROMA_ZERO_TRUST_NOTICE,
+                "zero_trust_notice": CHROMA_ZERO_TRUST_NOTICE,
             },
             ensure_ascii=False,
         )
@@ -347,7 +344,7 @@ async def _chroma_semantic_query(
                 "error": str(e),
                 "collection": collection,
                 "hint": missing_hint,
-                "zero_trust_notice": _CHROMA_ZERO_TRUST_NOTICE,
+                "zero_trust_notice": CHROMA_ZERO_TRUST_NOTICE,
             },
             ensure_ascii=False,
         )
@@ -355,7 +352,7 @@ async def _chroma_semantic_query(
     out = dict(result) if isinstance(result, dict) else {"raw": result}
     out["collection"] = collection
     out["query_text"] = q[:500]
-    out["zero_trust_notice"] = _CHROMA_ZERO_TRUST_NOTICE
+    out["zero_trust_notice"] = CHROMA_ZERO_TRUST_NOTICE
     return json.dumps(out, ensure_ascii=False, default=str)
 
 

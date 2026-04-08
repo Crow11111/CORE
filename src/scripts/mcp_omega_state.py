@@ -136,6 +136,143 @@ async def update_handbook(role: str, content: str) -> str:
             return f"[FAIL] Proxy und lokaler Fallback: {e2}"
 
 
+def _canon_summary_row(row: dict) -> dict:
+    return {
+        "repo_path": row.get("repo_path"),
+        "document_role": row.get("document_role"),
+        "anchor_section": row.get("anchor_section"),
+        "last_synced_at": row.get("last_synced_at"),
+    }
+
+
+def _event_summary_row(row: dict) -> dict:
+    c = row.get("content") or {}
+    if isinstance(c, dict):
+        summ = (c.get("summary") or c.get("task_hint") or str(c)[:120])[:200]
+    else:
+        summ = str(c)[:200]
+    return {
+        "timestamp": row.get("timestamp"),
+        "event_type": row.get("event_type"),
+        "agent_id": row.get("agent_id"),
+        "summary": summ,
+    }
+
+
+async def _probe_vps_mcp_http() -> bool | None:
+    host = (os.getenv("VPS_HOST") or "").strip()
+    if not host:
+        return None
+    url = f"http://{host}:{_VPS_MCP_HOST_PORT}/"
+    try:
+        async with httpx.AsyncClient(verify=False, timeout=4.0) as client:
+            await client.get(url)
+            return True
+    except Exception:
+        return False
+
+
+async def _probe_local_state_proxy() -> bool | None:
+    try:
+        async with httpx.AsyncClient(timeout=2.5) as client:
+            r = await client.get(f"{PROXY_URL}/state")
+            return r.status_code < 500
+    except Exception:
+        return False
+
+
+def _gaps_and_recommendations(
+    canon_rows: list,
+    event_rows: list,
+    vps_mcp: bool | None,
+    proxy_ok: bool | None,
+    task_hint: str,
+) -> tuple[list[str], list[str]]:
+    gaps: list[str] = []
+    rec: list[str] = []
+    if not canon_rows:
+        gaps.append(
+            "omega_canon_documents leer oder PostgreSQL nicht erreichbar — Kanon-Index fehlt."
+        )
+        rec.append("Ausführen: `python -m src.scripts.sync_omega_canon_registry`")
+    if not event_rows:
+        gaps.append(
+            "omega_events (letzte Abfrage) leer — kein episodisches Audit-Fenster für diese Session."
+        )
+        rec.append("Abschluss von Tasks: `record_event` mit gültigem memory_hash.")
+    if vps_mcp is False:
+        gaps.append(
+            f"VPS-Host MCP-HTTP (Port {_VPS_MCP_HOST_PORT}) nicht erreichbar — Remote-Tooling ggf. down."
+        )
+        rec.append("Prüfen: `verify_vps_stack`, Docker `mcp-server`, UFW.")
+    if proxy_ok is False:
+        gaps.append(
+            "localhost:8049 (state_mtls_proxy) nicht erreichbar — read_core_state/read_handbook VPS-Pfad down."
+        )
+        rec.append("Start: siehe `docs/04_PROCESSES/STATE_MTLS_PROXY_START.md`")
+    th = (task_hint or "").lower()
+    if "kong" in th:
+        rec.append("Kontext: `infra/vps/kong/kong-deck-reference.md`, `vps_kong_ensure_omega_core_backend`")
+    if "omega-backend" in th or "32800" in th:
+        rec.append("Kontext: `docs/03_INFRASTRUCTURE/OMEGA_BACKEND_VPS_SYSTEMD.md`")
+    if "chrom" in th:
+        rec.append("Kontext: `VPS_HOST_PORT_CONTRACT.md` Chroma 32779")
+    return gaps, rec
+
+
+@mcp.tool()
+async def get_orchestrator_bootstrap(
+    event_limit: int = 12,
+    canon_limit: int = 80,
+    task_hint: str = "",
+) -> str:
+    """
+    Ein Aufruf für Orchestrator/Producer: Kanon-Kurzliste + letzte Events + Erreichbarkeit
+    (VPS-MCP-HTTP, optional 8049) + Lücken + Empfehlungen. Basis-Projektinfo ohne volles Repo zu lesen.
+    """
+    if isinstance(event_limit, bool) or not isinstance(event_limit, int):
+        event_limit = 12
+    if isinstance(canon_limit, bool) or not isinstance(canon_limit, int):
+        canon_limit = 80
+    event_limit = max(1, min(event_limit, 100))
+    canon_limit = max(1, min(canon_limit, 300))
+
+    canon_full = await _omega_event_store.list_canon_documents(limit=canon_limit)
+    events_full = await _omega_event_store.get_history(agent_id=None, limit=event_limit)
+
+    vps_mcp = await _probe_vps_mcp_http()
+    proxy_ok = await _probe_local_state_proxy()
+
+    gaps, recommendations = _gaps_and_recommendations(
+        canon_full,
+        events_full,
+        vps_mcp,
+        proxy_ok,
+        task_hint,
+    )
+
+    bundle = {
+        "canon_documents_summary": [_canon_summary_row(r) for r in canon_full],
+        "canon_count": len(canon_full),
+        "recent_events_summary": [_event_summary_row(r) for r in events_full],
+        "events_count": len(events_full),
+        "reachability": {
+            "vps_mcp_http": vps_mcp,
+            "localhost_state_proxy_8049": proxy_ok,
+        },
+        "gaps": gaps,
+        "recommendations": recommendations,
+        "static_pointers": [
+            "OMEGA_RESONANCE_ANCHOR.md",
+            "KANON_EINSTIEG.md",
+            "docs/02_ARCHITECTURE/KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md",
+            "docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md",
+        ],
+        "task_hint_received": (task_hint or "").strip()[:500],
+    }
+    return json.dumps(bundle, ensure_ascii=False, default=str)
+
+
 @mcp.tool()
 async def list_canon_documents(limit: int = 200) -> str:
     """

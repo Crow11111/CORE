@@ -43,6 +43,8 @@
 | `lpis_confidence` | float | 0.0–1.0, optional |
 | `lpis_scores` | str | Format: `"L:0.5|P:0.2|I:0.2|S:0.1"` (optional) |
 
+**Hinweis (A5-Domäne):** `lpis_confidence` und die Anteile in `lpis_scores` sind **Chroma-Metadaten / Etiketten**, keine benannten **CORE-Resonanz-Zustände** im Sinne von Axiom 5 — dortige `0.5` usw. sind **kein** Verstoß gegen die Resonanz-Verriegelung im State-Pfad.
+
 **Mapping:** `category` → `lpis_base`:
 - logisch / logisch-mathematisch → L
 - physikalisch → P

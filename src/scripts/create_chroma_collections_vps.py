@@ -46,6 +46,7 @@ def create_collections():
         COLLECTION_CORE_IDENTITY,
         COLLECTION_ENTITIES,
         COLLECTION_RELATIONSHIPS,
+        "core_canon",
     ]
 
     for name in default_collections:

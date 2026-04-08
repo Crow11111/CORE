@@ -156,3 +156,43 @@ FROM (
     if not ok:
         return []
     return _parse_history_payload(out or "")
+
+
+def _normalize_canon_limit(limit: int) -> int:
+    if isinstance(limit, bool) or not isinstance(limit, int):
+        limit = 200
+    return max(1, min(limit, 500))
+
+
+async def list_canon_documents(*, limit: int = 200) -> list[dict[str, Any]]:
+    """
+    Liest omega_canon_documents (Kanon-Registry / Resonanz-Anker-Sync).
+    Leere Liste bei PG-Fehler oder fehlender Tabelle.
+    """
+    lim = _normalize_canon_limit(limit)
+    sql = f"""
+SELECT coalesce(
+  json_agg(
+    json_build_object(
+      'repo_path', repo_path,
+      'document_role', document_role,
+      'anchor_section', anchor_section,
+      'title', title,
+      'body_sha256', body_sha256,
+      'byte_size', byte_size,
+      'last_synced_at', last_synced_at
+    ) ORDER BY document_role, repo_path
+  ),
+  '[]'::json
+)::text
+FROM (
+  SELECT repo_path, document_role, anchor_section, title, body_sha256, byte_size, last_synced_at
+  FROM omega_canon_documents
+  ORDER BY document_role, repo_path
+  LIMIT {lim}
+) sub;
+""".strip()
+    ok, out = await _run_pg_sql(sql)
+    if not ok:
+        return []
+    return _parse_history_payload(out or "")

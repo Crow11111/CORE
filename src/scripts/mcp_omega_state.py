@@ -221,9 +221,9 @@ def _gaps_and_recommendations(
         rec.append("Prüfen: `verify_vps_stack`, Docker `mcp-server`, UFW.")
     if proxy_ok is False:
         gaps.append(
-            "localhost:8049 (state_mtls_proxy) nicht erreichbar — read_core_state/read_handbook VPS-Pfad down."
+            "Dev-Workstation: localhost:8049 (state_mtls_proxy) nicht erreichbar — read_core_state/read_handbook ohne VPS-mTLS-Relais."
         )
-        rec.append("Start: siehe `docs/04_PROCESSES/STATE_MTLS_PROXY_START.md`")
+        rec.append("Start: `docs/04_PROCESSES/STATE_MTLS_PROXY_START.md` (nur lokal, nicht VPS-Heartbeat).")
     th = (task_hint or "").lower()
     if "kong" in th:
         rec.append("Kontext: `infra/vps/kong/kong-deck-reference.md`, `vps_kong_ensure_omega_core_backend`")

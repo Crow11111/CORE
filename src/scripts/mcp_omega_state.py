@@ -41,6 +41,13 @@ from src.db import event_store_client as _omega_event_store
 mcp = FastMCP("OMEGA_STATE_NEXUS")
 PROXY_URL = "http://localhost:8049"
 
+# Jede Chroma-Suche: explizit im JSON (Operator/Agent darf Treffer nie als bewiesene Fakten behandeln).
+_CHROMA_ZERO_TRUST_NOTICE = (
+    "Chroma liefert nur Ähnlichkeits-Treffer (Vektorraum) — keine verifizierten Fakten. "
+    "Pflicht: Text anhand Metadaten (repo_path/source_file) in der echten Datei prüfen; "
+    "bei Zahlen/Ports zusätzlich VPS_HOST_PORT_CONTRACT / vps_public_ports / Live-Check (A7 Zero-Trust)."
+)
+
 _HANDBOOKS_DIR = Path(_REPO) / "docs" / "03_INFRASTRUCTURE" / "handbooks"
 _ROLE_SAFE = re.compile(r"^[\w.-]+$")
 

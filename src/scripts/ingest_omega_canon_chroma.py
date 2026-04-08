@@ -133,7 +133,7 @@ def ingest_canon_to_chroma(
     max_file_chars: int,
 ) -> tuple[int, list[str]]:
     """
-    Returns (exit_code, messages). exit_code 0 = ok, 1 = hard fail, 2 = partial (warnings only).
+    Returns (exit_code, messages). exit_code 0 = ok, 1 = hard fail, 2 = Chroma add abgebrochen.
     """
     from src.logic_core.crystal_grid_engine import CrystalGridEngine
     from src.network.chroma_client import (
@@ -142,6 +142,18 @@ def ingest_canon_to_chroma(
         _get_embedding,
         is_configured,
     )
+
+    if dry_run:
+        total_chunks = 0
+        for row in rows:
+            repo_path = (row.get("repo_path") or "").strip()
+            if not repo_path or not _is_text_canon_path(repo_path):
+                continue
+            text, _ = _read_repo_file(root, repo_path)
+            if not text or len(text) > max_file_chars:
+                continue
+            total_chunks += len(chunk_canon_text(text, max_chars, overlap))
+        return 0, [f"[dry-run] {total_chunks} Chunks für {len(rows)} Registry-Zeilen (textpfade)."]
 
     if not is_configured():
         return 1, ["ChromaDB nicht konfiguriert (CHROMA_HOST oder CHROMA_LOCAL_PATH)."]
@@ -165,11 +177,6 @@ def ingest_canon_to_chroma(
         pg_sha = (row.get("body_sha256") or "").strip()
         if disk_sha and pg_sha and disk_sha != pg_sha:
             warnings.append(f"SHA-Drift PG vs. Platte (ingest trotzdem): {repo_path}")
-
-        if dry_run:
-            chs = chunk_canon_text(text, max_chars, overlap)
-            total_chunks += len(chs)
-            continue
 
         try:
             prev = col.get(where={"repo_path": repo_path}, include=[])
@@ -221,9 +228,6 @@ def ingest_canon_to_chroma(
         except Exception as e:
             warnings.append(f"Chroma add fehlgeschlagen {repo_path}: {e}")
             return 2, warnings + [f"[PARTIAL] {total_chunks} Chunks vor Abbruch."]
-
-    if dry_run:
-        return 0, [f"[dry-run] {total_chunks} Chunks für {len(rows)} Registry-Zeilen (textpfade)."]
 
     msg = [f"[OK] core_canon: {total_chunks} Chunks aus {len(rows)} Registry-Zeilen."]
     msg.extend(warnings)

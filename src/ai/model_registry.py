@@ -60,7 +60,7 @@ ANTHROPIC_HEAVY = _env("ANTHROPIC_HEAVY_MODEL", "claude-opus-4-6")
 ANTHROPIC_FAST = _env("ANTHROPIC_FAST_MODEL", "claude-sonnet-4-6")
 
 # ── Ollama (lokaler Fallback, Scout-Schicht) ──
-OLLAMA_MODEL = _env("OLLAMA_MODEL", "gemma4:e4b")
+OLLAMA_MODEL = _env("OLLAMA_MODEL", "gemma4:9b")
 OLLAMA_HEAVY = _env("OLLAMA_HEAVY_MODEL", "gemma4:31b")
 OLLAMA_HOST = _env("OLLAMA_HOST", "http://192.168.178.54:11434")
 OLLAMA_LOCAL = _env("OLLAMA_LOCAL_HOST", "http://localhost:11434")

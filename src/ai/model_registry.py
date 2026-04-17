@@ -34,7 +34,7 @@ GEMINI_TRIAGE = _env("GEMINI_TRIAGE_MODEL", "gemini-2.5-flash-preview") # Ersetz
 GEMINI_FLASH_LITE = _env("GEMINI_FLASH_LITE_MODEL", "gemini-3.1-flash-lite-preview") 
 
 # ── Gemma 4 (Ollama) ──
-GEMMA_TRIAGE = _env("GEMMA_TRIAGE_MODEL", "gemma4:9b") # Dreadnought Anker
+GEMMA_TRIAGE = _env("GEMMA_TRIAGE_MODEL", "gemma4:e4b") # Dreadnought Anker (9.6GB)
 GEMMA_REASONING = _env("GEMMA_REASONING_MODEL", "gemma4:31b")
 
 # ── Gemini 2.5 (spezialisiert) ──

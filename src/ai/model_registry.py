@@ -96,6 +96,10 @@ def get_model_for_role(role: str) -> Optional[str]:
         "ollama_heavy": OLLAMA_HEAVY,
         "gemma_scout": GEMMA_TRIAGE,
         "gemma_dreadnought": GEMMA_REASONING,
+        "wiki_expert": "claude-code-local", # Spezial-Routing für lokale Wiki-Abfragen
+        "cheap_coder": GEMINI_FLASH_LITE,
+        "stupid_coder": GEMMA_TRIAGE,
+        "heavy_reasoner": GEMINI_HEAVY,
     }
     return m.get(role)
 

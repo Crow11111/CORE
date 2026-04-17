@@ -13,6 +13,7 @@
 | **Stammdokumente** | `docs/00_STAMMDOKUMENTE/` | Management Summary, Inventar, Einstiegspunkte. |
 | **OMEGA Resonance Anchor** | `docs/00_STAMMDOKUMENTE/OMEGA_RESONANCE_ANCHOR.md` (Link im Root: `OMEGA_RESONANCE_ANCHOR.md`) | Komprimierter System-Bootstrap für sofortige Session-Eichung. |
 | **CORE DNA** | `docs/01_CORE_DNA/` | Verfassung, Axiome, 4-Strang-Architektur, Codex. |
+| **Karpathy Wiki Rule** | `.cursor/rules/karpathy_wiki.mdc` | Protokoll für Ingest & Synthese des OMEGA Wissens-Kristalls. |
 | **DNA-Archiv (Legacy Genesis)** | `docs/01_CORE_DNA/_archive/` | Historischer Genesis-/Tesserakt-Text ohne Kanon-Status; Stub: `CORE_GENESIS_FINAL_ARCHIVE.md`. |
 | **Genesis-Stub (Link-Anker)** | `docs/01_CORE_DNA/CORE_GENESIS_FINAL_ARCHIVE.md` | Obsolet-Hinweis; verweist auf SYSTEM_CODEX, Bibliothek, `_archive/`. |
 | **Genesis-Weiterleitung (Root docs/)** | `docs/CORE_GENESIS_FINAL_ARCHIVE.md` | Kurze Weiterleitung auf Stub/Archiv. |
@@ -35,19 +36,44 @@
 | **Detailfluss Tickets 4–12 + Prod** | `docs/02_ARCHITECTURE/OMEGA_DETAILFLUSS_TICKETS_4_12_PROD_RUNTIME.md` | Kanonische Extraktion: wer/was/wo/Timing; Prod-Ziel kanalunabhängig; Kong-Ist + offene Routen. |
 | **VPS Host-Port-Vertrag** | `docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md` | Verbindliche Docker-Host-Ports; Pflegepflicht Agenten/Infra; Abnahme: `docker ps` gegen Tabelle. |
 | **VPS Snapshot-Verifikation** | `docs/03_INFRASTRUCTURE/VPS_SNAPSHOT_VERIFICATION.md` | Drei Prüfungen: `verify_vps_stack`, Chroma v2-`curl`, Kong Admin `/services` (ohne Secrets). |
+| **VPS Docker Host-Port-Vertrag (SSH)** | `src/scripts/verify_vps_docker_port_contract.py` | Parst `docker ps` (Namen/Ports), vergleicht mit `vps_public_ports.py`; eingebunden in `verify_vps_stack`. |
+| **Doku Chroma-Port-Drift** | `src/scripts/verify_docs_chroma_port_drift.py` | `docs/**/*.md` gegen Legacy-Hostport 32768 (gefiltert); Block J in `run_vollkreis_abnahme.py`. |
+| **VPS Anti-Heroin-Pipeline** | `docs/03_INFRASTRUCTURE/VPS_ANTI_HEROIN_PIPELINE.md` | systemd service+timer, rsync-Spiegel, Deploy: `vps_deploy_anti_heroin_mirror.py`. |
+| **systemd VPS (Anti-Heroin)** | `infra/vps/systemd/` | `omega-core-anti-heroin.service`, `.timer`, README. |
+| **Anti-Heroin Scan CLI** | `src/scripts/run_anti_heroin_scan.py` | Gemeinsamer Einstieg: lokal, Vollkreis I, VPS. |
+| **VPS Deploy Anti-Heroin** | `src/scripts/vps_deploy_anti_heroin_mirror.py` | rsync src + systemd install per SSH. |
+| **Omega-Backend VPS systemd** | `docs/03_INFRASTRUCTURE/OMEGA_BACKEND_VPS_SYSTEMD.md` | FastAPI-Runtime auf VPS: Port 32800, Deploy, Rollback, Chroma-Ingest-Hinweis. |
+| **VPS Deploy Omega-Backend** | `src/scripts/vps_deploy_omega_backend.py` | rsync `src/` + `requirements.txt` nach `/opt/omega-backend`, venv, systemd `omega-backend`. |
+| **VPS Verify Omega-Backend HTTP** | `src/scripts/verify_vps_omega_backend_http.py` | SSH + Remote `bash -lc` mit `pipefail` + Loopback-`curl` `/status` auf `OMEGA_BACKEND_HOST_PORT`. |
+| **Ingest VPS Playbook (Chroma/Multi-View)** | `src/scripts/ingest_vps_playbook_chunks.py` | Gezielter Ingest dreier VPS-Dokumente → `core_vps_playbook`; Chroma-Pflicht, Exit 1 bei Fehler. |
+| **systemd omega-backend** | `infra/vps/systemd/omega-backend.service` | uvicorn `src.api.main:app` auf Host-Port 32800. |
+| **systemd omega-backend env template** | `infra/vps/systemd/omega-backend.env.template` | Vorlage `/etc/default/omega-backend` (keine Secrets). |
+| **pytest omega-backend unit** | `tests/test_vps_deploy_omega_backend_unitfile.py` | Pflichtstrings in `omega-backend.service`. |
+| **Ausführungsmaster Omega-Backend VPS** | `docs/05_AUDIT_PLANNING/OMEGA_BACKEND_VPS_EXECUTION_MASTER_2026-04-04.md` | T1–T6 Deliverables, Port 32800, Kong Phase-2-Hinweis. |
+| **MASTER Umsetzung Prod ohne Dread** | `docs/05_AUDIT_PLANNING/MASTER_UMSETZUNG_VPS_PROD_OHNE_DREAD_2026-04-06.md` | Operator-Mandat: WP-A0…, E2E-Abnahmen, Axiom-Matrix, Doku-Drift; überschreibt MACRO-Draft für Deploy. |
+| **Arbeitsplan Worker-Pipeline** | `docs/05_AUDIT_PLANNING/ARBEITSPLAN_WORKER_PIPELINE_OFFENE_PUNKTE_2026-04-06.md` | Phasen 0–4, E1–E3 Gates, Rollen, Backlog-Tabelle, Orchestrator-Ablauf pro WP. |
 | **VPS öffentliche Ports (Code)** | `src/config/vps_public_ports.py` | Single Source of Truth für Defaults in Skripten und Heartbeats. |
+| **Chroma Zero-Trust Notice (MCP)** | `src/config/chroma_zero_trust_notice.py` | Gemeinsamer Hinweistext für `query_chromadb` und OMEGA-State-Chroma-Tools (`CHROMA_ZERO_TRUST_NOTICE`). |
 | **VPS Compose-Pfade (Ist)** | `docs/03_INFRASTRUCTURE/VPS_COMPOSE_PATHS.md` | `docker inspect` → Compose-Dateien auf dem VPS; Plan §8.2/§8.5. |
 | **Kong Deck-Referenz (Repo)** | `infra/vps/kong/kong-deck-reference.yaml` | Deklarative Kong-Services/Routes gemäß Verkehrsplan §8.3; `infra/vps/kong/README.md`. |
 | **Kong Compose Port-Snippet** | `infra/vps/kong/docker-compose.ports-contract.snippet.yaml` | VPS: Kong-Host-Ports 32776–32778 vernageln (keine ephemeren Docker-Ports). |
 | **Pyright / IDE (venv)** | `pyrightconfig.json` | `venv: .venv` — basedpyright findet `python-dotenv` / `dotenv`. |
 | **VPS Backup-Snapshot** | `src/scripts/vps_backup_snapshot.py` | SSH: `/root/omega-core-backups/<UTC>/` vor riskanten Änderungen. |
 | **Kong /health anlegen** | `src/scripts/vps_kong_ensure_health_route.py` | Idempotent: Service `omega-kong-health`, Route `/health`, Plugin request-termination. |
+| **Kong omega-core-backend /status** | `src/scripts/vps_kong_ensure_omega_core_backend.py` | Idempotent: Service `omega-core-backend` → `172.17.0.1:32800`, Route `omega-core-status-route` `/status`. |
+| **pytest Kong ensure omega-core** | `tests/test_vps_kong_ensure_omega_core_backend.py` | Mock-httpx-Kontrakt für `vps_kong_ensure_omega_core_backend` (POST nur wenn nötig). |
+| **Handbuch-Spiegel (MCP-Fallback)** | `docs/03_INFRASTRUCTURE/handbooks/` | `{role}.md` lokal wenn Proxy 8049 aus; Initial `infra-vps.md`. |
+| **State mTLS-Proxy (Operator)** | `docs/04_PROCESSES/STATE_MTLS_PROXY_START.md` | Startbefehl, Env `STATE_PROXY_CERT_*` / `STATE_PROXY_CA`, MCP-Handbuch-Fallback. |
+| **Operator-Rollen Kong/Deck/MCP/SQL** | `docs/04_PROCESSES/OPERATOR_ROLLEN_KONG_DECK_MCP_SQL.md` | PM/Operator ohne Kong-Vorwissen: WER/WAS (Backup, deck sync, Secrets, mTLS, SQL vs MCP vs Chroma). |
 | **VPS Umsetzungsplan Backup+Health** | `docs/05_AUDIT_PLANNING/VPS_UMSETZUNGSPLAN_BACKUP_KONG_HEALTH.md` | Phasen, Rollback, Nachweis. |
 | **VPS Verify-Evidenz** | `docs/05_AUDIT_PLANNING/VPS_STACK_VERIFY_EVIDENCE_2026-04-04.md` | Auszug grüner Checks nach Einrichtung. |
 | **AI-Modelle** | `docs/02_ARCHITECTURE/AI_MODEL_CAPABILITIES.md` | Modell-IDs, Rollen-Mapping, Kosten 2.5 Flash vs Pro, Token-Richtwerte, Deep Research & Computer Use. |
+| **Skill-Based Orch V2** | `docs/02_ARCHITECTURE/SKILL_BASED_ORCHESTRATION_V2.md` | Beschreibung der 4 Skills (Wiki, Heavy, Simple, Stupid) und Claude-Wiki Integration. |
+| **OMEGA WIKI** | `~/OMEGA_WIKI/` | Agentic Knowledge Crystal; dezentrale Wissensbasis, indiziert durch Wiki-Expert. |
 | **Deep Research & Computer Use** | `docs/02_ARCHITECTURE/DEEP_RESEARCH_UND_COMPUTER_USE.md` | Deep Research: Projekt-Omega-Verifikation (Vektorisierung, ChromaDB, Abgleich). Computer Use: Linux-Integration. |
 | **Duale Topologie & Vektor-Härtung** | `docs/02_ARCHITECTURE/DUALE_TOPOLOGIE_UND_VEKTOR_HAERTUNG.md` | G-Atlas-Soll; Ist-Zustand; RAG-Einheitlichkeit; Vektor-Härtung. |
 | **AI Studio Prompt** | `docs/02_ARCHITECTURE/AI_STUDIO_PROMPT.md` | Copy-Paste-Prompt für Google AI Studio (Schnittstellen, Live=Flash, Pro). |
+| **llm.c** | `~/llm.c/` | Physical Intelligence Layer; C/CUDA-basierte LLM-Runtime für Dreadnought. |
 | **Orchestrierung Linux** | `docs/02_ARCHITECTURE/OMEGA_LINUX_ORCHESTRATION.md` | Topologie Arch, Health-Skripte, Testmatrix. |
 | **WhatsApp Closed-Loop** | `docs/02_ARCHITECTURE/WHATSAPP_CLOSED_LOOP_OC_ADMIN.md` | WhatsApp Push-and-Pull Logik; OC Brain als Admin; 5-Phase Engine Loop (Takt 1-4); Traceability. |
 | **Jarvis ↔ OMEGA LLM** | `docs/02_ARCHITECTURE/JARVIS_OMEGA_LLM_VERBINDUNG.md` | Plasmoid Health-URL, falsche `/v1/chat/completions`-Basis, Kompat-Route `/v1/chat/completions/health`. |
@@ -58,6 +84,9 @@
 | **ATLAS Plasma Leiste** | `atlas-omega-voice/scripts/plasma_entferne_flex_hub_applet.py` | Entfernt Applets per `plugin=` (Args, Default: Flex.Hub), z. B. `org.kde.plasma.activitypager` bei kaputtem `plasma-desktop`. |
 | **Bibliothek Kern** | `docs/BIBLIOTHEK_KERN_DOKUMENTE.md` | Zentraler Einstieg; Index 00–05, Operator-Todo (MCP/Extensions), Was wurde gemacht, Wo nachschauen. |
 | **Kanonischer Einstieg** | `KANON_EINSTIEG.md` | Eine Tür: Tabelle „welche Frage → welche Datei“; Abgrenzung Megadatei vs. Index; Pflege-Regeln. |
+| **Agenten-Einstieg (Root)** | `AGENTS.md` | Cloud/Cursor: MCP-Bootstrap-Spiegel für User Rules, Kurz-Verweise, MCP/Skills; ergänzt `.cursorrules`. |
+| **Kernarbeiter-Orientierung** | `docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md` | Soll vs. Ist, PG/Chroma/MCP, Drift-Regel, Pflegehinweise. |
+| **Kernarbeiter Surface (YAML)** | `docs/00_STAMMDOKUMENTE/KERNARBEITER_SURFACE_PATHS.yaml` | Kuratierte Repo-Pfade → Ingest `core_operational`. |
 | **DOCS_INDEX (thematisch)** | `docs/DOCS_INDEX.md` | Ordnerübersicht; ergänzend zu KANON/Bibliothek. |
 | **CoolerControl Setup** | `docs/03_INFRASTRUCTURE/COOLER_CONTROL_SETUP.md` | Lüftersteuerung (it87), Silent-Profile, Gigabyte B560M. |
 | **OS Audio Dictation** | `docs/04_PROCESSES/OS_AUDIO_DICTATION.md` | Headless Start/Stop Diktat-Workflow, Clipboard-Integration. |
@@ -76,6 +105,7 @@
 | **Prozesse** | `docs/04_PROCESSES/` | Workflows, Sicherheitsrat, Deployment-Regeln. |
 | **sudoers OMEGA** | `docs/04_PROCESSES/SUDOERS_OMEGA_DAEMONS.md` | Vorlage `/etc/sudoers.d/` für NOPASSWD `systemctl` auf omega-* Units. |
 | **Audit & Planung** | `docs/05_AUDIT_PLANNING/` | Session Logs, technische Schulden, Roadmaps. |
+| **Audit Domänen-Vermischung** | `docs/05_AUDIT_PLANNING/AUDIT_DOMAIN_MIXING_DIMENSIONS.md` | Resonanz vs. Chroma vs. Infra vs. Doku — falsche Grenzziehungen. |
 | **Concept AV Master** | `docs/05_AUDIT_PLANNING/CONCEPT_AUDIO_VISUAL_MASTER.md` | Physarum-Polycephalum-Architektur: Audio/Video Ressourcen-Allokation. |
 | **Pacemaker VETO 3 (Hugin)** | `docs/05_AUDIT_PLANNING/PACEMAKER_VETO_3.md` | Gegenprüfung SPEC_PACEMAKER Iteration 3 (NMI, Anti-Junk, Test-Doubles). |
 | **SPEC Existential Pacemaker VAR_3** | `docs/05_AUDIT_PLANNING/SPEC_PACEMAKER_VAR_3.md` | Biologisch-neuromorphe Variante Ticket 3: HRV/Latenz-Homeostase, exponentiell-fraktaler Decay, Monotonie-Pathologie, Veto-Traps ohne Mocks. |
@@ -111,6 +141,17 @@
 | **O2 Audit VPS-Split (Hugin)** | `docs/05_AUDIT_PLANNING/O2_AUDIT_VPS_AUTARKIE_SPLIT.md` | Zero-Context Architektur-Audit: VPS-Autarkie vs. Dreadnought-Lokalität. [VETO] wegen ungeschütztem OpenClaw. |
 | **Masterplan Repair Tickets 3-7** | `docs/05_AUDIT_PLANNING/MASTERPLAN_REPAIR_TICKETS_3_5_6_7.md` | O2 Audit Repair Plan für die Tickets 3, 5, 6 und 7. |
 | **Session-Log 2026-04-03 (Repair 3-7)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-03_REPAIR_TICKETS_3_5_6_7.md` | Dokumentation des erfolgreichen O2 Re-Audits für Tickets 3, 5, 6, 7. |
+| **Session-Log 2026-04-06 (MASTER Prod / Vollkreis URL)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-06.md` | MASTER, `CORE_BASE_URL`, MACRO-Disclaimer, VPS Anti-Heroin systemd+Deploy-Skript. |
+| **Detailplan VPS Omega Nachschub** | `docs/05_AUDIT_PLANNING/DETAILPLAN_VPS_OMEGA_NACHSCHUB_2026-04-06.md` | Phasen: verify_vps_stack, Loopback vs. Kong /status, `CORE_BASE_URL`, Rollen; Cloud-Agent vs. Repo-Stand. |
+| **Migrationsplan Wissen DBs** | `docs/05_AUDIT_PLANNING/MIGRATIONPLAN_OMEGA_WISSEN_DBS.md` | PG `omega_canon_documents`, Chroma-Phase 2 Backlog, MCP `list_canon_documents`. |
+| **Kanon-Registry Agent-Bindung** | `docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md` | MCP + Prozess + Rule — DB nur mit Abruf wirksam. |
+| **Cursor Rule Kanon Pre-Flight** | `.cursor/rules/8_CANON_REGISTRY_PREFLIGHT.mdc` | Vor Architektur/VPS/Kong: `get_orchestrator_bootstrap` / `list_canon_documents` o. Ä. |
+| **Cursor Rule Orchestrator Bootstrap MCP** | `.cursor/rules/9_ORCHESTRATOR_BOOTSTRAP_MCP.mdc` | `alwaysApply`: größere Aufgaben → MCP `get_orchestrator_bootstrap` + Task-Text an Producer. |
+| **Skill Orchestrator Bootstrap Pre-Flight** | `.cursor/skills/orchestrator-bootstrap-preflight/SKILL.md` | Kurzprozess: `task_hint`, gaps/recommendations, Abgrenzung 8049 vs. Sentinel. |
+| **SQL Migration Kanon-Dokumente** | `src/db/migrations/001_omega_canon_documents.sql` | Tabelle `omega_canon_documents` (Duplikat-Definition in `core_infrastructure.sql`). |
+| **Sync Kanon-Registry** | `src/scripts/sync_omega_canon_registry.py` | Anker + Referenzen → PostgreSQL UPSERT; idempotentes DDL; optional `OMEGA_CANON_CHROMA_AFTER_SYNC` → Chroma `core_canon`. |
+| **Ingest Kanon → Chroma** | `src/scripts/ingest_omega_canon_chroma.py` | Phase 2: PG oder `--from-disk` → Chunks in `core_canon` (384 dim, Metadaten Zero-State-kompatibel). |
+| **Ingest Ist-Surface → Chroma** | `src/scripts/ingest_omega_operational_chroma.py` | `KERNARBEITER_SURFACE_PATHS.yaml` → `core_operational` (getrennt von Soll-Kanon). |
 | **O2 Audit Tickets 8–10 (Hugin)** | `docs/05_AUDIT_PLANNING/O2_AUDIT_TICKETS_8_9_10.md` | Zero-Context Abnahme Tickets 8/9/10: A7, Flags, Pytest-/Skript-Nachweis. |
 | **Wissensbasis** | `docs/06_WORLD_KNOWLEDGE/` | Externe Forschung, Theorie-Cluster. |
 
@@ -173,7 +214,9 @@
 | **Science Council Profile** | `src/scripts/omega_science_council_profiles.py` | Titanen: `profil` + `kern_anker` (Formel/Prinzip); `num_ctx` Default 65536. |
 | **Science Council Dossiers** | `docs/00_STAMMDOKUMENTE/SCIENCE_COUNCIL_DOSSIERS_FLAT/` | Flache Ordnerstruktur mit detaillierten Dossiers (Biografie, Werke, Interviews, Visuals) für alle 22 Titanen; Dateinamen = Namen der Personen. |
 | **Science Council Gesamt** | `docs/00_STAMMDOKUMENTE/SCIENCE_COUNCIL_DOSSIERS_FLAT/SCIENCE_COUNCIL_DOSSIERS_GESAMT.md` | Konsolidierte Gesamt-Datei aller Titanen-Dossiers. |
-| **MCP stdio** | `src/scripts/mcp_core_chroma_stdio.py` | Cursor/MCP: Tool `query_chromadb` (CORE_EICHUNG) → ChromaDB über `chroma_client`; Eintrag `core-chromadb` in `mcp_remote_config.json`. |
+| **MCP stdio** | `src/scripts/mcp_core_chroma_stdio.py` | Cursor/MCP: Tool `query_chromadb` (CORE_EICHUNG) → ChromaDB über `chroma_client`; JSON immer mit `zero_trust_notice` (`chroma_zero_trust_notice.py`); Eintrag `core-chromadb` in `mcp_remote_config.json`. |
+| **MCP OMEGA State (stdio)** | `src/scripts/mcp_omega_state.py` | Optional localhost:8049 → VPS mTLS; `get_orchestrator_bootstrap`; **`query_canon_semantic`** / **`query_operational_semantic`**; PG-Tools; Fallback Handbooks lokal. |
+| **State mTLS-Proxy (Daemon)** | `src/daemons/state_mtls_proxy.py` | HTTP :8049 → `https://VPS_HOST/core_api/…`; Client-Zertifikat per Env oder `data/certs` (mtho/cursor-Fallback). |
 | **Deep Research CLI** | `src/scripts/omega_deep_research.py` | Asynchrones CLI-Tool zur Kommunikation mit deep-research-pro-preview-12-2025 über die Interactions API. |
 | **Deep Research Shortcut** | `DeepResearch` | Root-Shortcut für Cursor Chat und Plasmoid. |
 | **Plasmoid Source** | `tools/plasmoid_omega_research/` | Quellcode für das KDE Plasma Widget. |
@@ -195,6 +238,17 @@
 | **Arbitration Tests** | `tests/test_arbitration.py` | Veto-Traps für Global Workspace Arbitration (Ticket 5). |
 | **Efference Veto Tests** | `tests/test_efference_veto.py` | Verification-First: Veto-Traps für Ticket 6 (Efferenzkopie, Trust-Collapse, Hash). |
 | **Temporal Alignment Tests** | `tests/test_temporal_alignment.py` | Verification-First: Veto-Traps für Ticket 7 (Phase 5 & 6, PE, Drehimpulsumkehr). |
+| **VPS Docker Port Contract Tests** | `tests/test_vps_docker_port_contract.py` | Zero-Trust: `verify_docker_ps_lines_tabbed` mit synthetischen `docker ps`-Zeilen (kein SSH). |
+| **Kong Deck YAML (omega-core-backend)** | `tests/test_kong_deck_omega_backend_yaml.py` | Parst `kong-deck-reference.yaml`: Service `omega-core-backend`, Route `/status` (kein Netz). |
+| **Vollkreis Block G CORE_BASE_URL** | `tests/test_run_vollkreis_core_base_url_block_g.py` | Kontrakt: Agent-Pool-Check nutzt `CORE_BASE_URL`, kein festes `localhost:8000/status`. |
+| **verify_vps_omega pipefail** | `tests/test_verify_vps_omega_backend_pipefail.py` | Kontrakt: Loopback-Verify nutzt `bash -lc` + `set -o pipefail`. |
+| **sync_omega_canon_registry** | `tests/test_sync_omega_canon_registry.py` | Kontrakt: `_collect_entries` + gemocktes `main_async`. |
+| **ingest_omega_canon_chroma** | `tests/test_ingest_omega_canon_chroma.py` | Chunking, IDs, dry-run, gemocktes Chroma `add`. |
+| **ingest_omega_operational_chroma** | `tests/test_ingest_omega_operational_chroma.py` | YAML-Load, dry-run, gemocktes `add` für `core_operational`. |
+| **MCP get_orchestrator_bootstrap** | `tests/test_mcp_omega_state.py` | Bundle: Kanon, Events, VPS-MCP-HTTP, `dev_workstation_state_proxy_8049` (null/optional), gaps, task_hint. |
+| **MCP core-chromadb Zero-Trust** | `tests/test_mcp_core_chroma_stdio.py` | `query_chromadb`-JSON enthält immer `zero_trust_notice` (Erfolg/Fehler/leer). |
+| **Sentinel mcp-server HTTP** | `tests/test_infrastructure_heartbeat_mcp.py` | `check_http_server_up` (404 = up, refused = down). |
+| **Anti-Heroin Scan Smoke** | `tests/test_run_anti_heroin_scan.py` | `scan_project` auf Repo-Wurzel muss Exit 0 liefern. |
 | **Audio/Visual Domain Tests (V8)** | `tests/test_audio_visual_domain.py` | Veto-Traps: Zwei-Domänen-Theorie, `tanh`-Projektion, Resonanz-Innenraum, keine AST-Heiler in Kernfunktionen, Embedding/Spreizung. |
 | **Ticket 8 Membrane Tests** | `src/scripts/test_ticket_8.py` | Abnahme/Verifikation Dreadnought Membrane (Pain-Flag, Cognitive-Lock, Scanner-Regeln). |
 | **Ticket 9 Git-Resonance Tests** | `tests/test_ticket_9.py` | Veto-Traps für Dreadnought Membrane Git-Logik (Auto-Push nach PASS, Pull, Konflikt-Flag). |

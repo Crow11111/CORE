@@ -8,6 +8,11 @@ Aufruf (aus Projekt-Root):
   .venv/bin/python run_vollkreis_abnahme.py
   python run_vollkreis_abnahme.py   (wenn venv aktiv)
   ./run_vollkreis_abnahme.py        (nach chmod +x; nutzt python3 aus PATH)
+
+Prod/VPS-Abnahme: CORE_BASE_URL setzen (z. B. https://api.example.com oder Kong-URL bis /status — ohne trailing slash).
+Standard (Dev): CORE_BASE_URL unset → http://127.0.0.1:8000. Lokale Ports 8000/3000 werden nur
+geprüft, wenn die Runtime-URL localhost/127.0.0.1 ist.
+Block G (Agent-Pool) nutzt dieselbe CORE_BASE_URL wie Block A — kein separates localhost:8000 mehr.
 """
 from __future__ import annotations
 
@@ -28,6 +33,14 @@ from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
 
 load_dotenv(PROJECT_ROOT / ".env", override=True)
 
+CORE_BASE_URL = (os.getenv("CORE_BASE_URL") or "http://127.0.0.1:8000").strip().rstrip("/")
+
+
+def _runtime_is_localhost() -> bool:
+    u = CORE_BASE_URL.lower()
+    return "127.0.0.1" in u or "localhost" in u
+
+
 def run(cmd: list[str] | str, timeout: int = 15, env: dict | None = None) -> tuple[int, str]:
     if isinstance(cmd, str):
         cmd = ["sh", "-c", cmd]
@@ -43,9 +56,9 @@ def main() -> int:
     fails = 0
     print("=== VOLLKREIS-ABNAHME (Orchestrator prüft selbst) ===\n")
 
-    # --- A: Dreadnought — Backend, Ports, Event-Bus ---
-    print("A: Dreadnought (lokal)")
-    code, out = run(["curl", "-s", "http://localhost:8000/status"], timeout=5)
+    # --- A: Omega-Runtime — Backend /status, optional lokale Ports (nur Dev)
+    print(f"A: Omega-Runtime (CORE_BASE_URL={CORE_BASE_URL})")
+    code, out = run(["curl", "-sk", "-s", f"{CORE_BASE_URL}/status"], timeout=10)
     if code != 0:
         check("Backend /status erreichbar", False, out[:200] or "curl failed")
         fails += 1
@@ -61,11 +74,14 @@ def main() -> int:
             check("Backend /status JSON", False, str(e))
             fails += 1
 
-    code, out = run("ss -tuln 2>/dev/null | grep -E ':8000|:3000' || true", timeout=3)
-    ports_ok = "8000" in out and "3000" in out
-    check("Ports 8000 + 3000 belegt", ports_ok, out.strip() if not ports_ok else "")
-    if not ports_ok:
-        fails += 1
+    if _runtime_is_localhost():
+        code, out = run("ss -tuln 2>/dev/null | grep -E ':8000|:3000' || true", timeout=3)
+        ports_ok = "8000" in out and "3000" in out
+        check("Ports 8000 + 3000 belegt (nur bei lokaler Runtime)", ports_ok, out.strip() if not ports_ok else "")
+        if not ports_ok:
+            fails += 1
+    else:
+        check("Ports 8000/3000 (übersprungen: Remote-CORE_BASE_URL)", True, "")
 
     # Keine Windows-Pfade in zentralen Config-Skripten (beide prüfen falls vorhanden)
     config_checked = False
@@ -162,7 +178,7 @@ def main() -> int:
     # --- G: Substanz-Prüfungen (Agent-Pool, Multi-View, ChromaDB-Format) ---
     print("G: Substanz (Kernel-Mechanik)")
 
-    code, out = run(["curl", "-s", "http://localhost:8000/status"], timeout=5)
+    code, out = run(["curl", "-sk", "-s", f"{CORE_BASE_URL}/status"], timeout=10)
     if code == 0:
         try:
             data = json.loads(out)
@@ -251,23 +267,21 @@ print(json.dumps({"count": col.count(), "has_zero_vectors": has_zero_vec}))
         fails += 1
     print()
 
-    # --- I: Anti-Heroin-Scanner (Code Integrity) ---
+    # --- I: Anti-Heroin-Scanner (Code Integrity) — gleicher Einstieg wie VPS (run_anti_heroin_scan) ---
     print("I: Anti-Heroin-Scanner (Code Integrity)")
-    code, out = run([sys.executable, "-c", """
-import sys
-from pathlib import Path
-from src.logic_core.anti_heroin_validator import validate_file, TrustCollapseException
-fails = 0
-for f in Path('src').rglob('*.py'):
-    if 'anti_heroin_validator.py' in str(f): continue
-    try:
-        validate_file(str(f))
-    except TrustCollapseException as e:
-        print(f"Heroin detektiert in {f}: {e}")
-        fails += 1
-sys.exit(1 if fails > 0 else 0)
-"""], timeout=60)
+    code, out = run(
+        [sys.executable, "-m", "src.scripts.run_anti_heroin_scan", "--root", str(PROJECT_ROOT)],
+        timeout=120,
+    )
     check("Anti-Heroin-Scanner (src/ ohne Fakes)", code == 0, out.strip() if code != 0 else "")
+    if code != 0:
+        fails += 1
+    print()
+
+    # --- J: Doku-Drift Chroma-Host-Port (Legacy 32768 vs. Vertrag) ---
+    print("J: Doku-Drift Chroma-Port (Zero-Trust)")
+    code, out = run([sys.executable, "-m", "src.scripts.verify_docs_chroma_port_drift"], timeout=30)
+    check("docs/ ohne Chroma-32768-Legacy (gefiltert)", code == 0, out.strip() if code != 0 else "")
     if code != 0:
         fails += 1
     print()

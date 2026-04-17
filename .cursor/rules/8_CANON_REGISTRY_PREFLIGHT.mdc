@@ -1,0 +1,24 @@
+---
+description: Kanon-Registry PostgreSQL — Pre-Flight vor größeren Architektur-/VPS-/Kong-Aufgaben
+globs: docs/02_ARCHITECTURE/**,docs/05_AUDIT_PLANNING/**,infra/**,src/scripts/vps_*.py,src/scripts/sync_omega_canon_registry.py,OMEGA_RESONANCE_ANCHOR.md
+alwaysApply: false
+---
+
+# Kanon-Registry Pre-Flight
+
+## Wann
+
+Bei **Arbeit an** Architektur-Doku (`docs/02_ARCHITECTURE`), Audit-Plänen (`docs/05_AUDIT_PLANNING`), **VPS/Kong/Deploy-Skripten**, oder Änderungen am **Resonanz-Anker**:
+
+## Pflicht-Verhalten (wenn MCP `user-omega-state-mcp` aktiv)
+
+1. **`get_orchestrator_bootstrap`** mit kurzem **`task_hint`** (Stichworte zur Aufgabe) aufrufen — **oder** gleichwertig `list_canon_documents` + `get_episodic_history` + begründeter Verzicht im Output.
+2. **`gaps`** und **`recommendations`** aus der Antwort in die Bearbeitung einbeziehen (Sync, `record_event`, VPS-MCP-HTTP). **8049** (`state_mtls_proxy`) nur **Dev-Workstation** — im Bootstrap nur sichtbar/prüfbar bei `OMEGA_BOOTSTRAP_PROBE_LOCAL_PROXY=1`; **kein** VPS-Heartbeat.
+
+## Ohne MCP
+
+- Kurz **`get_episodic_history`** oder lokal **`sync_omega_canon_registry`** + Doku `docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md` beachten.
+
+## Abgrenzung
+
+Ersetzt **nicht** `read_handbook` / `read_core_state` / Datei-`@`-Referenzen — ergänzt nur den **strukturierten Kanon-Index** in PostgreSQL.

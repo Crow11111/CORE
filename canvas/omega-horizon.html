@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OMEGA ARTIFICIAL HORIZON (IMC)</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;500;800&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://esm.sh/three",
+                "three/addons/": "https://esm.sh/three/examples/jsm/"
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg-obsidian: #0A0A0A;
+            --accent-gold: #FFD700;
+            --accent-blue: #00A3FF;
+            --v-red: #FF4B4B;
+            --v-green: #00FF41;
+            --delta: 0.049;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-obsidian);
+            color: white;
+            font-family: 'JetBrains+Mono', monospace;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #cockpit-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            border: 1px solid #333;
+            display: grid;
+            grid-template-columns: 150px 1fr 150px;
+            grid-template-rows: 80px 1fr 100px;
+        }
+
+        #horizon-canvas {
+            grid-column: 1 / span 3;
+            grid-row: 1 / span 3;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        /* HUD Overlays */
+        .overlay {
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            text-transform: uppercase;
+        }
+
+        .header {
+            grid-column: 1 / span 3;
+            grid-row: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+        }
+
+        .system-id {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--accent-gold);
+        }
+
+        .vector-state {
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .instrument-left {
+            grid-column: 1;
+            grid-row: 2;
+            border-right: 1px solid #222;
+            justify-content: center;
+            background: linear-gradient(90deg, rgba(10, 10, 10, 0.9) 0%, transparent 100%);
+        }
+
+        .instrument-right {
+            grid-column: 3;
+            grid-row: 2;
+            border-left: 1px solid #222;
+            justify-content: center;
+            background: linear-gradient(-90deg, rgba(10, 10, 10, 0.9) 0%, transparent 100%);
+        }
+
+        .footer {
+            grid-column: 1 / span 3;
+            grid-row: 3;
+            border-top: 1px solid #222;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background: rgba(10, 10, 10, 0.8);
+        }
+
+        /* Metric Displays */
+        .metric {
+            margin-bottom: 20px;
+        }
+
+        .metric-label {
+            font-size: 0.6rem;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .metric-value {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--accent-blue);
+        }
+
+        .metric-unit {
+            font-size: 0.6rem;
+            margin-left: 2px;
+        }
+
+        /* Wick Indicator */
+        #wick-status {
+            padding: 5px 15px;
+            border: 1px solid var(--accent-blue);
+            color: var(--accent-blue);
+            font-size: 0.7rem;
+            transition: all 0.3s ease;
+        }
+
+        #wick-status.active {
+            background: var(--accent-blue);
+            color: black;
+            box-shadow: 0 0 15px var(--accent-blue);
+        }
+
+        /* Crosshair */
+        #hud-reticle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border: 2px solid rgba(255, 215, 0, 0.2);
+            border-radius: 50%;
+            z-index: 5;
+        }
+
+        #hud-reticle::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: -20px;
+            width: 40px;
+            height: 2px;
+            background: var(--accent-gold);
+        }
+
+        #hud-reticle::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -20px;
+            width: 40px;
+            height: 2px;
+            background: var(--accent-gold);
+        }
+
+        .center-dot {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: var(--v-red);
+            transform: translate(-50%, -50%);
+        }
+
+        /* Pulse Animation */
+        @keyframes delta-breathe {
+            0% { opacity: 0.4; }
+            50% { opacity: 1.0; }
+            100% { opacity: 0.4; }
+        }
+
+        .pulse {
+            animation: delta-breathe 20.4s infinite ease-in-out; /* 1/0.049 s */
+        }
+
+        .status-light {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--v-green);
+            display: inline-block;
+            margin-right: 10px;
+            box-shadow: 0 0 10px var(--v-green);
+        }
+
+        #console-log {
+            font-size: 0.5rem;
+            color: #444;
+            max-height: 50px;
+            overflow: hidden;
+            width: 300px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="cockpit-container">
+        <canvas id="horizon-canvas"></canvas>
+
+        <div id="hud-reticle">
+            <div class="center-dot"></div>
+        </div>
+
+        <div class="header overlay">
+            <div class="system-id">
+                <span class="status-light pulse"></span>
+                OMEGA CORE V4.1
+            </div>
+            <div class="vector-state">
+                VECTOR: 2210 | DELTA: 0.049 | MODE: <span id="flight-mode">VFR</span>
+            </div>
+            <div id="wick-status">MINKOWSKI MODE</div>
+        </div>
+
+        <div class="instrument-left overlay">
+            <div class="metric">
+                <div class="metric-label">Pitch (I/G)</div>
+                <div class="metric-value" id="val-pitch">0.0<span class="metric-unit">°</span></div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Information (I)</div>
+                <div class="metric-value" id="val-info">0.951</div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Gravity (G)</div>
+                <div class="metric-value" id="val-gravity">0.049</div>
+            </div>
+        </div>
+
+        <div class="instrument-right overlay">
+            <div class="metric">
+                <div class="metric-label">Roll (CAR/CDR)</div>
+                <div class="metric-value" id="val-roll">0.0<span class="metric-unit">°</span></div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Heading (W/Z)</div>
+                <div class="metric-value" id="val-heading">049<span class="metric-unit">m</span></div>
+            </div>
+            <div class="metric">
+                <div class="metric-label">Resistance (Z)</div>
+                <div class="metric-value" id="val-resistance">0.490</div>
+            </div>
+        </div>
+
+        <div class="footer overlay">
+            <div id="console-log">
+                [SYSTEM] Initializing Projection Layer...<br>
+                [MORPHISM] Listening on Stream 8001...
+            </div>
+            <div class="metric" style="margin:0">
+                <div class="metric-label">Asymmetry Δ</div>
+                <div class="metric-value" style="color:var(--accent-gold)">0.049</div>
+            </div>
+            <div class="metric" style="margin:0">
+                <div class="metric-label">Resonance</div>
+                <div class="metric-value" id="val-resonance">0.510</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import * as THREE from 'three';
+
+        // --- 1. SETUP CANVAS ---
+        const canvas = document.getElementById('horizon-canvas');
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 5;
+
+        // --- 2. CREATE HORIZON BALL ---
+        const sphereGeometry = new THREE.SphereGeometry(2, 64, 64);
+
+        const horizonMaterial = new THREE.ShaderMaterial({
+            uniforms: {
+                pitch: { value: 0.0 },
+                roll: { value: 0.0 },
+                delta: { value: 0.049 }
+            },
+            vertexShader: `
+                varying vec2 vUv;
+                varying vec3 vNormal;
+                void main() {
+                    vUv = uv;
+                    vNormal = normalize(normalMatrix * normal);
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                }
+            `,
+            fragmentShader: `
+                varying vec2 vUv;
+                varying vec3 vNormal;
+                uniform float pitch;
+                uniform float roll;
+                uniform float delta;
+
+                void main() {
+                    float s = sin(roll);
+                    float c = cos(roll);
+                    mat2 rot = mat2(c, -s, s, c);
+                    vec2 uv = (vUv - 0.5) * rot + 0.5;
+
+                    float horizonLine = 0.5 + (pitch / 90.0);
+
+                    vec3 skyColor = vec3(0.0, 0.4, 0.7);
+                    vec3 earthColor = vec3(0.3, 0.15, 0.0);
+                    vec3 goldAccent = vec3(1.0, 0.84, 0.0);
+
+                    vec3 color;
+                    if (uv.y > horizonLine) {
+                        color = skyColor;
+                        if (mod(uv.y * 20.0, 1.0) < 0.05) color += 0.2;
+                    } else {
+                        color = earthColor;
+                        if (mod(uv.y * 20.0, 1.0) < 0.05) color += 0.1;
+                    }
+
+                    float lineEdge = smoothstep(0.01, 0.0, abs(uv.y - horizonLine));
+                    color = mix(color, goldAccent, lineEdge);
+
+                    float edge = 1.0 - max(0.0, dot(vNormal, vec3(0,0,1)));
+                    color *= (1.0 - pow(edge, 2.0));
+
+                    gl_FragColor = vec4(color, 1.0);
+                }
+            `
+        });
+
+        const horizonSphere = new THREE.Mesh(sphereGeometry, horizonMaterial);
+        scene.add(horizonSphere);
+
+        const gridHelper = new THREE.GridHelper(20, 40, 0x444444, 0x111111);
+        gridHelper.rotation.x = Math.PI / 2;
+        gridHelper.position.z = -2;
+        scene.add(gridHelper);
+
+        let state = {
+            pitch: 0,
+            roll: 0,
+            heading: 49,
+            info: 0.951,
+            gravity: 0.049,
+            resistance: 0.490,
+            resonance: 0.510,
+            isWickRotated: false
+        };
+
+        function updateUI() {
+            document.getElementById('val-pitch').innerHTML = `${state.pitch.toFixed(1)}<span class="metric-unit">°</span>`;
+            document.getElementById('val-roll').innerHTML = `${state.roll.toFixed(1)}<span class="metric-unit">°</span>`;
+            document.getElementById('val-heading').innerText = `${Math.floor(state.heading).toString().padStart(3, '0')}`;
+            document.getElementById('val-info').innerText = state.info.toFixed(3);
+            document.getElementById('val-gravity').innerText = state.gravity.toFixed(3);
+            document.getElementById('val-resistance').innerText = state.resistance.toFixed(3);
+            document.getElementById('val-resonance').innerText = state.resonance.toFixed(3);
+
+            const wickEl = document.getElementById('wick-status');
+            if (state.isWickRotated) {
+                wickEl.innerText = "EUCLIDEAN MODE (τ=it)";
+                wickEl.classList.add('active');
+                document.getElementById('flight-mode').innerText = "IMC";
+            } else {
+                wickEl.innerText = "MINKOWSKI MODE";
+                wickEl.classList.remove('active');
+                document.getElementById('flight-mode').innerText = "VFR";
+            }
+        }
+
+        function simulateStream() {
+            const t = Date.now() / 2000;
+            state.info = 0.51 + Math.sin(t * 0.5) * 0.4;
+            state.gravity = 0.49 + Math.cos(t * 0.3) * 0.2;
+            state.pitch = (state.info - state.gravity) * 45.0;
+            state.roll = Math.sin(t * 0.8) * 15.0;
+            state.resistance = 0.49 + Math.sin(t * 1.1) * 0.1;
+            state.resonance = 0.51 + Math.cos(t * 1.3) * 0.049;
+            state.heading = (state.heading + 0.1) % 360;
+            state.isWickRotated = (Math.abs(state.pitch) > 25);
+
+            updateUI();
+            horizonMaterial.uniforms.pitch.value = state.pitch;
+            horizonMaterial.uniforms.roll.value = state.roll * (Math.PI / 180);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            simulateStream();
+            horizonSphere.rotation.z = -state.roll * (Math.PI / 180);
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
+
+    // === ECHTE MORPHISMUS STREAM ANBINDUNG ===
+    // Anstatt Simulation, lauschen wir auf Port 8001
+    const ws = new WebSocket("ws://localhost:8001");
+
+    ws.onopen = () => {
+        const consoleEl = document.getElementById('console-log');
+        consoleEl.innerHTML = `[${new Date().toLocaleTimeString()}] [COCKPIT] Morphismus-Stream verbunden.<br>` + consoleEl.innerHTML;
+    };
+
+    ws.onmessage = (event) => {
+        try {
+            const data = JSON.parse(event.data);
+            const consoleEl = document.getElementById('console-log');
+            const timeStr = new Date().toLocaleTimeString();
+
+            if (data.type === "INITIAL_STATE") {
+                consoleEl.innerHTML = `[${timeStr}] [COCKPIT] Initial State (6D Tensor) empfangen.<br>` + consoleEl.innerHTML;
+            }
+            else if (data.type === "NATURAL_TRANSFORMATION") {
+                consoleEl.innerHTML = `[${timeStr}] [MORPHISMUS] Shift via ${data.source}. Alpha berechnet.<br>` + consoleEl.innerHTML;
+
+                // Wir mappen die echten Daten auf das Cockpit (S=Weight, P=Delta etc.)
+                const targetState = data.target_state || [0,0,0,0,0,0];
+                const weight = targetState[0] || 0.51;
+                const delta = targetState[1] || 0.049;
+
+                // Mappe echte Vektoren auf Pitch und Roll
+                targetPitch = (weight - 0.5) * Math.PI; // -90 bis +90 Grad
+                targetRoll = (delta - 0.049) * Math.PI * 10; // Sensitiver Roll
+            }
+        } catch(e) {
+            console.error(e);
+        }
+    };
+
+    ws.onerror = (error) => {
+        const consoleEl = document.getElementById('console-log');
+        consoleEl.innerHTML = `[${new Date().toLocaleTimeString()}] [COCKPIT] VETO: Morphismus-Stream nicht erreichbar.<br>` + consoleEl.innerHTML;
+    };
+
+    ws.onclose = () => {
+        const consoleEl = document.getElementById('console-log');
+        consoleEl.innerHTML = `[${new Date().toLocaleTimeString()}] [COCKPIT] Verbindung zum Stream verloren. Blindflug.<br>` + consoleEl.innerHTML;
+    };
+    // ==========================================
+    </script>
+</body>
+</html>

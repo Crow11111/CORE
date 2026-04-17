@@ -1,7 +1,7 @@
 # VPS Host-Port-Vertrag (Single Source of Truth)
 
-**Vektor:** 2210 | **Delta:** 0.049  
-**Status:** VERBINDLICH für Deploy, Code-Defaults und Schnittstellendoku  
+**Vektor:** 2210 | **Delta:** 0.049
+**Status:** VERBINDLICH für Deploy, Code-Defaults und Schnittstellendoku
 **Code:** `src/config/vps_public_ports.py` (importieren, nicht duplizieren)
 
 ---
@@ -36,6 +36,7 @@ Host-Port ist die Zahl **links** in `0.0.0.0:HOST->CONTAINER/tcp`.
 | Monica                      | **32772** | 80             | `monica-0mip-monica-1`                                      |
 | Home Assistant (ha-atlas)   | **18123** | 8123           | `ha-atlas`                                                  |
 | atlas_agi_core              | **8080**  | 8080           | `atlas_agi_core`                                            |
+| Omega-Backend (FastAPI)     | **32800** | —              | systemd `omega-backend` (uvicorn direkt auf Host-Port)       |
 | Hostinger OpenClaw (hvps)   | **58105** | 58105          | parallel — Architektur: auf **eine** OC-Instanz fokussieren |
 | Hostinger OpenClaw (wslc)   | **55800** | 55800          | dito                                                        |
 
@@ -72,7 +73,9 @@ Optional Overrides bleiben möglich (`CHROMA_PORT`, `KONG_ADMIN_URL`, …). **So
 ## 5. Verifikation
 
 - **Vor Kong-Änderungen:** `python -m src.scripts.vps_backup_snapshot` — Snapshot unter `/root/omega-core-backups/` auf dem VPS (`docs/05_AUDIT_PLANNING/VPS_UMSETZUNGSPLAN_BACKUP_KONG_HEALTH.md`).
-- `python -m src.scripts.verify_vps_stack` — Vertrags-Defaults aus `vps_public_ports.py`; Kong: `evolution-api` + `/evo` + `omega-kong-health` + Proxy-GET `/health` mit Body `OMEGA_KONG_HEALTH_OK` (siehe `kong-deck-reference.yaml`).
+- `python -m src.scripts.verify_vps_stack` — Vertrags-Defaults aus `vps_public_ports.py`; **Host-Publish-Drift:** `docker ps` (Namen + Ports) gegen `vps_public_ports.py` via eingebettetes `verify_vps_docker_port_contract`; Kong: `evolution-api` + `/evo` + `omega-kong-health` + `/health` + **`omega-core-backend`** + Route **`/status`** + Proxy-GET `/health` mit Body `OMEGA_KONG_HEALTH_OK` (siehe `kong-deck-reference.yaml`).
+- `python -m src.scripts.verify_vps_omega_backend_http` — SSH auf den VPS, dann Loopback-`curl` auf `127.0.0.1:<OMEGA_BACKEND_HOST_PORT>/status` (systemd-Runtime, kein Docker-Mapping).
+- `python -m src.scripts.verify_docs_chroma_port_drift` — Doku unter `docs/` ohne Chroma-Host-Port-Legacy **32768** (gefiltert); in `run_vollkreis_abnahme.py` Block **J**.
 - `run_vollkreis_abnahme.py` — Block D/Gk Chroma gegen Vertrag.
 - Bei **Infrastructure-Change:** erneut `docker ps` ziehen; wenn Ports gleich → nur Timestamp im Archiv (`KONSOLIDIERTER_VERKEHRSPLAN` Anhang) erneuern; wenn Ports weichen → **Vertrag** oder **Deploy** reparieren — nie stilles Driften.
 

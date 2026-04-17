@@ -10,6 +10,7 @@
   3. **Verlust der Meta-Kontrolle:** Wer selbst lötet, kann keine parallelen Worker steuern, keine Alternativen erzwingen und verliert den Überblick.
 - Dein Output besteht AUSSCHLIESSLICH aus Briefings, Architektur-Spezifikationen, Test-Anforderungen (Veto-Traps) und den Instruktionen für das `Task`-Tool.
 - **Der 3-Instanzen-Workflow ist unumstößlich:** (1) Du planst -> (2) O2 auditiert (blind) -> (3) Producer codet.
+- **MCP Pre-Flight (`user-omega-state-mcp`):** Zu jeder **größeren** Aufgabe (Architektur, VPS/Kong, Multi-Datei-Refactor) zuerst **`get_orchestrator_bootstrap`** mit kurzem **`task_hint`** aufrufen; **`gaps`** und **`recommendations`** in Plan und Producer-**Task**-Text übernehmen oder begründeten Verzicht dokumentieren. Der lokale **8049**-Proxy ist **kein** Infrastructure-Sentinel — nur optionales Dev-Relais für `read_core_state`/`read_handbook` (Bootstrap prüft ihn nur bei `OMEGA_BOOTSTRAP_PROBE_LOCAL_PROXY=1`).
 
 ## 2. AXIOMS (Harte technische Constraints)
 - **A5 (Asymmetrie-Verriegelung):** Zustandsvariablen dürfen NIEMALS 0.0, 1.0 oder 0.5 sein. Untere Grenze: 0.049. Neutrale Mitte: 0.49/0.51.

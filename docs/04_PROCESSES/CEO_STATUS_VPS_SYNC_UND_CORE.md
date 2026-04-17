@@ -21,7 +21,7 @@
 
 ## 2. VPS-Sync – aktueller Stand
 
-**Chroma-Ports (Klarstellung, 2026-03):** Im Container lauscht Chroma oft auf **8000/tcp**; nach außen ist es typisch über **`CHROMA_PORT`** (z. B. **32768**) gemappt. Checks: `src/scripts/verify_vps_stack.py` → **`/api/v2/heartbeat`** auf `{VPS_HOST}:{CHROMA_PORT}`. Ein Tunnel auf **127.0.0.1:8000** auf dem VPS trifft nur, wenn der Dienst dort wirklich gebunden ist — **nicht** verwechseln mit dem **Host-Mapped Port**.
+**Chroma-Ports (Klarstellung):** Im Container lauscht Chroma auf **8000/tcp**; nach außen gemäß Vertrag **`CHROMA_PORT` = 32779** (`docs/03_INFRASTRUCTURE/VPS_HOST_PORT_CONTRACT.md`, `src/config/vps_public_ports.py`). Checks: `src/scripts/verify_vps_stack.py` → **`/api/v2/heartbeat`** auf `{VPS_HOST}:{CHROMA_PORT}`. Ein Tunnel auf **127.0.0.1:8000** auf dem VPS trifft nur, wenn der Dienst dort wirklich gebunden ist — **nicht** verwechseln mit dem **Host-Mapped Port**.
 
 | Punkt | Status |
 |-------|--------|

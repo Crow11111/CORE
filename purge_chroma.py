@@ -1,11 +1,18 @@
-import chromadb
 import os
+import sys
+from pathlib import Path
 
-# Read connection details from environment variables or .env file
-# For simplicity here, we use the values from the user prompt.
-# In a real application, use a library like python-dotenv.
-CHROMA_HOST = "187.77.68.250"
-CHROMA_PORT = 32768
+import chromadb
+
+_ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(_ROOT))
+from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
+
+from dotenv import load_dotenv
+
+load_dotenv(_ROOT / ".env")
+CHROMA_HOST = os.getenv("VPS_HOST", "187.77.68.250").strip()
+CHROMA_PORT = int(os.getenv("CHROMA_PORT", str(CHROMA_UVMY_HOST_PORT)))
 COLLECTION_NAME = "ha_events"
 
 try:

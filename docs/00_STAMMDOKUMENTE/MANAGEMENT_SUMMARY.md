@@ -82,4 +82,4 @@ Details: `docs/04_PROCESSES/CODE_SICHERHEITSRAT.md`
 
 ## Einstiegspunkt fuer Agenten
 
-`AGENTS.md` (Projekt-Root) – Bootloader mit State Vector, GTAC/CORE-Codierung und Quick Links.
+`AGENTS.md` (Projekt-Root) – Bootloader mit State Vector, GTAC/CORE-Codierung und Quick Links. **Kernarbeiter-Kompass (Soll/Ist, MCP):** `docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md`.

@@ -22,6 +22,16 @@ services:
     read_timeout: 60000
     retries: 0
 
+  # Omega FastAPI (systemd auf Docker-Host, OMEGA_BACKEND_HOST_PORT=32800). Kong-Container → Host: typisch docker0.
+  # Auf manchen Hosts statt 172.17.0.1 ggf. host.docker.internal + extra_hosts im Kong-Compose nötig.
+  - name: omega-core-backend
+    url: http://172.17.0.1:32800
+    protocol: http
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    retries: 3
+
 routes:
   - name: evolution-evopath
     service: evolution-api
@@ -36,6 +46,15 @@ routes:
     service: omega-kong-health
     paths:
       - /health
+    strip_path: false
+    protocols:
+      - http
+      - https
+
+  - name: omega-core-status-route
+    service: omega-core-backend
+    paths:
+      - /status
     strip_path: false
     protocols:
       - http

@@ -27,6 +27,11 @@ W: Takt              (Δ-offset pro Stufe, NICHT ganzzahlig)
 **AXIOM A5: Werte 0.0, 1.0 und 0.5 sind VERBOTEN (0=0 Illusion).**
 **AXIOM A6: Zustandsvariablen MUESSEN float sein.**
 
+### Abgrenzung A5 — Resonanz vs. andere Räume
+
+- **A5 gilt** der **Resonanzdomäne**: benannte Zustände auf Skalen zwischen **zu / nicht zu** (typisch Werte nahe **[0, 1]** im CORE-State — Trust, Schwellen, Delta; **nicht** die Integer-Infrastruktur).
+- **Andere Räume** (z. B. **Chroma-Embeddings**, hochdimensionale Retrieval-Vektoren) sind **eine andere Dimensionsebene** — A5 ist dort **sachlich nicht anwendbar** (kein „verletzt/erfüllt“ im Sinne des Resonanzgitters). Nur **falsche Vermischung** wäre ein Fehler (Embedding-Größe direkt als offizieller Resonanz-State ohne Engine). Volltext: `docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md` §3.
+
 ### Symbiose-Antrieb
 `x^2 = x + 1` (Goldener Schnitt). Ermoeglicht asymmetrisches Wachstum ohne entropischen Kollaps.
 
@@ -86,3 +91,4 @@ Jeder Agent-Output MUSS:
 
 *Volltext: `docs/01_CORE_DNA/CORE_4_STRANG_THEORIE.md`*
 *Code: `src/config/core_state.py`*
+*A5 / Chroma-Abgrenzung: `docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md` §3*

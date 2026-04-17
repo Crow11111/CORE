@@ -1,0 +1,21 @@
+---
+description: MCP get_orchestrator_bootstrap — Pflicht-Pre-Flight für größere OMEGA-Aufgaben
+alwaysApply: true
+---
+
+# Orchestrator-Bootstrap (MCP)
+
+## Wenn MCP `user-omega-state-mcp` aktiv ist
+
+1. **Vor** größeren Aufgaben (Architektur, VPS/Kong/Deploy, Multi-Modul-Refactor, Audit-Masterpläne): **`get_orchestrator_bootstrap`** mit kurzem **`task_hint`** (Stichworte zur Aufgabe).
+2. Bei Bedarf semantisch nachschlagen: **`query_operational_semantic`** (Ist / Schnittstellen, `core_operational`) und/oder **`query_canon_semantic`** (Soll-Kanon, `core_canon`) — siehe **`docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md`**.
+3. Antwort **`gaps`** und **`recommendations`** in den **Arbeitsplan** und in **Task-Prompts an Producer** einbauen — oder im Output **kurz begründen**, warum verzichtet wurde.
+
+## Task-Text an Producer
+
+Der Orchestrator kopiert **Zusammenfassung oder JSON-Ausschnitt** aus dem Bootstrap in den `Task`-Prompt **oder** schreibt ausdrücklich: *„Vor Start: MCP `get_orchestrator_bootstrap` mit task_hint=… ausführen; Ergebnis beachten.“* Optional: Hinweis auf **`query_operational_semantic`** bei Infra-/Port-Fragen.
+
+## Technische Klarstellung
+
+- Feld **`dev_workstation_state_proxy_8049`**: nur relevant, wenn `OMEGA_BOOTSTRAP_PROBE_LOCAL_PROXY=1`; sonst `null`. **Kein** Ersatz für Infrastructure-Sentinel.
+- Volltext/Handbook: weiterhin Workspace / `read_handbook` / `@`-Pfade — Bootstrap ersetzt das nicht.

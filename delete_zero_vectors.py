@@ -1,12 +1,19 @@
 import chromadb
-import os
 import json
+import os
+import sys
+from pathlib import Path
+
 from dotenv import load_dotenv
 
-load_dotenv('/OMEGA_CORE/.env')
+_ROOT = Path(__file__).resolve().parent
+sys.path.insert(0, str(_ROOT))
+from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
 
-vps = os.getenv('VPS_HOST', '').strip()
-port = int(os.getenv('CHROMA_PORT', '32768'))
+load_dotenv(_ROOT / ".env")
+
+vps = os.getenv("VPS_HOST", "").strip()
+port = int(os.getenv("CHROMA_PORT", str(CHROMA_UVMY_HOST_PORT)))
 
 print(f"Connecting to ChromaDB at {vps}:{port}...")
 c = chromadb.HttpClient(host=vps, port=port)
@@ -26,14 +33,14 @@ while offset < count:
     res = col.get(include=['embeddings'], limit=batch_size, offset=offset)
     ids = res.get('ids', [])
     embeddings = res.get('embeddings', [])
-    
+
     if not ids:
         break
-        
+
     for i, emb in enumerate(embeddings):
         if emb is not None and all(float(v) == 0.0 for v in emb):
             zero_ids.append(ids[i])
-            
+
     offset += batch_size
 
 print(f"Found {len(zero_ids)} zero-vectors.")
@@ -44,7 +51,7 @@ if zero_ids:
         batch_ids = zero_ids[i:i+batch_size]
         col.delete(ids=batch_ids)
         print(f"Deleted batch of {len(batch_ids)} items.")
-    
+
     print(f"Deletion complete. New count: {col.count()}")
 else:
     print("No zero-vectors found.")

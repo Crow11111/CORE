@@ -1,7 +1,7 @@
 # SESSION LOG: 2026-04-04 — VPS Host-Port-Vertrag & Doku-Konsolidierung
 
-**Datum:** 2026-04-04  
-**Operator:** Marc  
+**Datum:** 2026-04-04
+**Operator:** Marc
 **Thema:** Verbindliche VPS-Host-Ports (Single Source of Truth), Kanon/Bibliothek/Inventar, Vollkreis-Defaults; Commit/Push ohne `.env`.
 
 ## 1. Deliverables (Repo)
@@ -17,13 +17,13 @@
 
 ## 2. Operator vs. Technik
 
-- **Operator:** keine manuelle Portliste pflegen; Abnahme: Realität (Compose/Panel/`docker ps`) muss zur Vertragstabelle passen.  
+- **Operator:** keine manuelle Portliste pflegen; Abnahme: Realität (Compose/Panel/`docker ps`) muss zur Vertragstabelle passen.
 - **Technik/Agenten:** bei jedem Deploy Vertrag, Skripte und ggf. Verkehrsplan-Anhang aktualisieren.
 
 ## 3. Verifikation (lokal, diese Session)
 
-- **Anti-Heroin:** `validate_file` auf relevante `.py`-Module (vorherige Runde) — PASS.  
-- **Pytest:** `PYTHONPATH=/OMEGA_CORE .venv/bin/python -m pytest tests/test_ticket_10.py -v` — **2 passed** (Infrastructure-Heartbeat / Ticket-10-Verträge).  
+- **Anti-Heroin:** `validate_file` auf relevante `.py`-Module (vorherige Runde) — PASS.
+- **Pytest:** `PYTHONPATH=/OMEGA_CORE .venv/bin/python -m pytest tests/test_ticket_10.py -v` — **2 passed** (Infrastructure-Heartbeat / Ticket-10-Verträge).
 - **Gravitator:** dedizierte Testsuite im Repo **fehlt**; Routing/Chroma-Pfad wird indirekt über Integration/Vollkreis abgedeckt — optional Follow-up: Unit-Test für `_discover` mit gemocktem Env.
 
 ## 4. Drift / VPS-Hinweis
@@ -43,3 +43,12 @@ Umsetzung nur nach `KONSOLIDIERTER_VERKEHRSPLAN_VPS_KONG_MCP.md` **§8.2–§8.5
 - `verify_vps_stack.py` — Pflichtcheck Kong vs. Deck-Referenz, wenn Kong-Container Up.
 - Anhang A im Verkehrsplan — `docker ps` erneuert.
 - Vertrag §4/§5, Inventar, Bibliothek — Querverweise ergänzt.
+
+## 7. Nachtrag (Orchestrierung 2026-04-04 — DB, MCP, Omega-Backend VPS)
+
+- **MCP `record_event`:** Erfolg — VPS/SSH/OpenSSH-argv-Erkenntnis in **omega_events** (ID vom MCP zurückgemeldet).
+- **MCP `read_core_state` / `update_handbook`:** fehlgeschlagen — **localhost:8049** (State-Proxy) nicht erreichbar.
+- **Handbuch-Ersatz:** `docs/03_INFRASTRUCTURE/HANDBOOK_INFRA_VPS_LOCAL_MIRROR.md` bis Proxy läuft.
+- **Execution-Master:** `docs/05_AUDIT_PLANNING/OMEGA_BACKEND_VPS_EXECUTION_MASTER_2026-04-04.md`.
+- **Producer:** T1–T6 umgesetzt — u. a. `OMEGA_BACKEND_HOST_PORT=32800`, `infra/vps/systemd/omega-backend.service`, `src/scripts/vps_deploy_omega_backend.py`, `verify_vps_omega_backend_http.py`, `ingest_vps_playbook_chunks.py`, pytest `test_vps_deploy_omega_backend_unitfile.py`, `OMEGA_BACKEND_VPS_SYSTEMD.md`.
+- **Chroma:** Embeddings für VPS-Playbook nur nach erfolgreichem Lauf Ingest-Skript + erreichbare Chroma-Instanz (nicht automatisch bei jedem Commit).

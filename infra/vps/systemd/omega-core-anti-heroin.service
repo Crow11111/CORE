@@ -1,0 +1,20 @@
+# OMEGA CORE — Anti-Heroin-Scan (src/) auf dem VPS
+# Install: siehe docs/03_INFRASTRUCTURE/VPS_ANTI_HEROIN_PIPELINE.md
+# Spiegel-Pfad (nur src/ per rsync): /opt/omega-core-mirror
+
+[Unit]
+Description=OMEGA CORE Anti-Heroin Scan (src tree)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=PYTHONUNBUFFERED=1
+Environment=OMEGA_MIRROR_ROOT=/opt/omega-core-mirror
+EnvironmentFile=-/etc/default/omega-core-anti-heroin
+ExecStart=/bin/bash -lc 'exec /usr/bin/python3 "${OMEGA_MIRROR_ROOT}/src/scripts/run_anti_heroin_scan.py" --root "${OMEGA_MIRROR_ROOT}"'
+StandardOutput=append:/var/log/omega-core-anti-heroin.log
+StandardError=append:/var/log/omega-core-anti-heroin.log
+
+[Install]
+WantedBy=multi-user.target

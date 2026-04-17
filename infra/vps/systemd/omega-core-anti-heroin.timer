@@ -1,0 +1,10 @@
+[Unit]
+Description=Täglicher OMEGA CORE Anti-Heroin-Scan
+
+[Timer]
+OnCalendar=daily
+RandomizedDelaySec=1800
+Persistent=true
+
+[Install]
+WantedBy=timers.target

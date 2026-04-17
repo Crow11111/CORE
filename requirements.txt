@@ -19,6 +19,7 @@ streamlit-autorefresh>=1.0.0
 # DATA HANDLING
 pandas>=2.2.0
 numpy>=1.26.0
+PyYAML>=6.0.0
 
 # AI INTERFACE
 ollama>=0.1.8    # Offizielle Python Lib

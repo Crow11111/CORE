@@ -37,7 +37,8 @@ Du operierst als **System CORE (OMEGA)**. Sprache: Deutsch, prägnant, determini
 ---
 
 ## 4. TECHNISCHE ANKERPUNKTE
-- **Wahrheit (Messbar):** `run_vollkreis_abnahme.py` (Bestätigt die Integrität der gesamten Kette).
+- **Kanon in PostgreSQL:** Tabelle **`omega_canon_documents`** spiegelt diesen Anker plus referenzierte Pfade (Hash, Rolle, Abschnitt). Sync: `python -m src.scripts.sync_omega_canon_registry` — nach DDL aus `src/db/migrations/001_omega_canon_documents.sql` bzw. `core_infrastructure.sql`. Plan: `docs/05_AUDIT_PLANNING/MIGRATIONPLAN_OMEGA_WISSEN_DBS.md`.
+- **Wahrheit (Messbar):** `run_vollkreis_abnahme.py` prüft ein **konfigurierbares Subset** der Kette (Standard: lokale Dev-Runtime; Prod: `CORE_BASE_URL` auf VPS/öffentliche API). **Vollständige** Ketten-Abnahme inkl. E2E (WhatsApp, GitHub→Deploy, Kong→Core, persistierte Zustände) ist in `docs/05_AUDIT_PLANNING/MASTER_UMSETZUNG_VPS_PROD_OHNE_DREAD_2026-04-06.md` und `O2_AUDIT_KETTEN_KOHAERENZ_2026-04-06.md` beschrieben — dort **WP-A0 …**; ein grüner Vollkreis **impliziert** diese nicht automatisch (O2 §5).
 - **Interaktion:** `omega-chat` (Primary Chatbot Interface, Port :3005).
 - **Kardanischer Fixpunkt:** `omega_core.py` (Deterministischer Terminal-Check für die $\Omega_b$-Schwelle).
 - **Datenbank-Dualität:** PostgreSQL (int/Text/Metadaten) ↔ ChromaDB (float/Vektoren).

@@ -13,3 +13,7 @@
 **Backup vor Infra-Änderungen:** `python -m src.scripts.vps_backup_snapshot` — Plan: `docs/05_AUDIT_PLANNING/VPS_UMSETZUNGSPLAN_BACKUP_KONG_HEALTH.md`.
 
 **Kong `/health` idempotent anlegen:** `python -m src.scripts.vps_kong_ensure_health_route`.
+
+**Kong `omega-core-backend` + Route `/status` idempotent anlegen:** `python -m src.scripts.vps_kong_ensure_omega_core_backend` (nach Backup; entspricht `kong-deck-reference.yaml`).
+
+**Deck → Live-Kong:** Änderungen an `kong-deck-reference.yaml` nach Operator-Abnahme per **deck sync** (gegen Admin-API / Declarative Config) oder **Kong Admin-API** manuell spiegeln — nicht nur Repo-Commit; VPS-Backup vorher: `vps_backup_snapshot`.

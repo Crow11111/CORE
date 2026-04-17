@@ -1,7 +1,7 @@
 # Agent-Workpack: Messbare Abnahme (Doku-Sync + VPS-Nachweise)
 
-**Datum:** 2026-04-05  
-**Orchestrator:** Ring 0 (Briefing)  
+**Datum:** 2026-04-05
+**Orchestrator:** Ring 0 (Briefing)
 **Umsetzung:** Producer (Code/Doku), optional O2 vor riskanten Architekturänderungen (hier: nur Doku + Verifikationspfade)
 
 ## Ziel
@@ -47,7 +47,7 @@ PYTHONPATH=/OMEGA_CORE .venv/bin/python -m pytest tests/test_ticket_10.py -q --t
 | T4 | ☑ | `CORE_INVENTORY_REGISTER.md` + `BIBLIOTHEK_KERN_DOKUMENTE.md` ergänzt (Workpack + Snapshot-Doc). |
 | T5 | ☑ | Keine `.py`-Änderung — Anti-Heroin nicht ausgeführt (siehe Task-Tabelle). |
 
-**Ausgabe verify_vps_stack (Auszug, letzte Zeilen):**  
+**Ausgabe verify_vps_stack (Auszug, letzte Zeilen):**
 
 ```
 [OK] openclaw-admin

@@ -1,0 +1,26 @@
+# OMEGA CORE — Omega-Backend (FastAPI) auf dem VPS
+# Install: python -m src.scripts.vps_deploy_omega_backend
+# Code: /opt/omega-backend
+#
+# Port-Variante (Phase 1, dokumentiert): uvicorn bindet direkt an Host-Port 32800
+# (kein Docker-Publish). Abnahme: curl -sf http://127.0.0.1:32800/status
+#
+# ExecStart über /bin/bash (wie omega-core-anti-heroin): systemd-analyze verify
+# prüft nur den ersten Binärpfad — /opt/.../python existiert erst nach Deploy auf dem VPS.
+
+[Unit]
+Description=OMEGA Omega-Backend (FastAPI uvicorn)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+Environment=PYTHONUNBUFFERED=1
+WorkingDirectory=/opt/omega-backend
+EnvironmentFile=-/etc/default/omega-backend
+ExecStart=/bin/bash -lc 'exec /opt/omega-backend/.venv/bin/python -m uvicorn src.api.main:app --host 0.0.0.0 --port 32800'
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

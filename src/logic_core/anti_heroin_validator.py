@@ -248,6 +248,10 @@ def validate_code(code_string: str):
     if "TODO" in upper_code or "FIXME" in upper_code or "HACK" in upper_code:
         raise TrustCollapseException("Marker found")
 
+    lower_code = code_string.lower()
+    if "core-core" in lower_code or "atlas-core" in lower_code:
+        raise TrustCollapseException("Legacy naming ('core-core' or 'atlas-core') detected. Use 'omega-core' or 'CORE' according to NAMING_STRATEGY.md.")
+
     try:
         tree = ast.parse(code_string)
     except SyntaxError:

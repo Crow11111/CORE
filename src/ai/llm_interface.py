@@ -6,11 +6,12 @@
 
 import os
 import asyncio
-from typing import Optional
+import subprocess
+from typing import Optional, List
 from dotenv import load_dotenv
 from langchain_ollama import ChatOllama
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.messages import SystemMessage, HumanMessage, BaseMessage
 from loguru import logger
 from pydantic import BaseModel, Field
 
@@ -18,9 +19,12 @@ from pydantic import BaseModel, Field
 from src.logic_core.z_vector_damper import shell_protected, RuntimeVetoException
 from src.network.openclaw_client import send_message_to_agent_async, is_configured as is_oc_configured
 from src.ai.model_registry import (
+    GEMINI_HEAVY,
+    GEMINI_FLASH,
     GEMINI_TRIAGE, 
     GEMINI_FLASH_LITE,
     GEMMA_TRIAGE,
+    GEMMA_REASONING,
     OLLAMA_MODEL,
     OLLAMA_HOST,
     OLLAMA_LOCAL
@@ -29,291 +33,150 @@ from src.ai.model_registry import (
 load_dotenv("/OMEGA_CORE/.env")
 
 class TriageResult(BaseModel):
-    intent: str = Field(description="The primary intent of the user. Options: 'command', 'deep_reasoning', 'chat', 'unknown'")
-    target_entity: str = Field(description="If 'command', extract the target HA entity or domain, otherwise empty.", default="")
-    action: str = Field(description="If 'command', the action to perform (e.g. turn_on, turn_off), otherwise empty.", default="")
+    intent: str = Field(description="The primary intent. Options: 'home_control', 'omega_work', 'chat', 'unknown'")
+    skill_required: str = Field(description="Required skill: 'simple_coder', 'heavy_reasoner', 'wiki_expert', 'stupid_coder'", default="stupid_coder")
+    target_entity: str = Field(description="If 'home_control', extract the target HA entity or domain, otherwise empty.", default="")
+    action: str = Field(description="If 'home_control', the action to perform (e.g. turn_on, turn_off), otherwise empty.", default="")
+    thought: Optional[str] = Field(None, description="Internal reasoning buffer to prevent thought_signature errors")
 
 class ResilientLLMInterface:
+    """
+    Skill-basiertes Routing & Resilienz-Layer.
+    """
     def __init__(self, ollama_model: str, ollama_base_url: str, local_fallback_url: Optional[str] = None):
-        # Layer 2: Scout (Raspberry Pi)
-        self.scout_llm = ChatOllama(
-            model=ollama_model,
-            base_url=ollama_base_url,
-            temperature=0.7
-        )
-        # Layer 3: Local (Dreadnought GPU)
+        self.scout_llm = ChatOllama(model=ollama_model, base_url=ollama_base_url, temperature=0.7)
         self.local_llm = None
         if local_fallback_url:
             from src.ai.model_registry import OLLAMA_HEAVY
-            self.local_llm = ChatOllama(
-                model=OLLAMA_HEAVY,
-                base_url=local_fallback_url,
-                temperature=0.7
-            )
-        logger.info(f"ResilientLLMInterface initialisiert. Primary: VPS, Secondary: Scout ({ollama_base_url}), Tertiary: Local ({local_fallback_url})")
+            self.local_llm = ChatOllama(model=OLLAMA_HEAVY, base_url=local_fallback_url, temperature=0.7)
+            
+        # Cloud Workers
+        self.cloud_heavy = ChatGoogleGenerativeAI(model=GEMINI_HEAVY, temperature=0.3)
+        self.cloud_flash = ChatGoogleGenerativeAI(model=GEMINI_FLASH, temperature=0.4)
+        self.cloud_lite = ChatGoogleGenerativeAI(model=GEMINI_FLASH_LITE, temperature=0.1)
 
-    async def ainvoke(self, messages: list) -> str:
+    async def ainvoke_by_skill(self, messages: List[BaseMessage], skill: str = "stupid_coder") -> str:
         """
-        Versuchskette: VPS (OpenClaw) -> Scout (Ollama) -> Local (Ollama).
-        Mit integriertem Fraktalem Padding (Axiom 0) vor dem Senden.
+        Wählt den Worker basierend auf dem benötigten Skill.
         """
-        import math
-        from src.api.middleware.friction_guard import FRICTION_STATE
-        from src.config.core_state import BARYONIC_DELTA
+        logger.info(f"[LLM-ORCHESTRATOR] Routing task to skill: {skill}")
+        
+        # 1. Wiki Expert (Claude Code Local)
+        if skill == "wiki_expert":
+            return await self._call_wiki_expert(messages)
 
-        # --- Fraktales Padding (Die Helix - Hardware Bridge) ---
-        # Wir berechnen das Padding basierend auf der ECHTEN physikalischen CPU-Auslastung (Transistor-Hitze)
-        import psutil
-        from src.logic_core.crystal_grid_engine import CrystalGridEngine
-
-        cpu_load_percent = psutil.cpu_percent(interval=0.1)
-        cpu_load_norm = cpu_load_percent / 100.0
-
-        # Mappe Load auf Resonanz (0.951 bis BARYONIC_DELTA)
-        real_resonance = 0.951 - (cpu_load_norm * (0.951 - BARYONIC_DELTA))
-        snapped_resonance = CrystalGridEngine.apply_operator_query(real_resonance)
-
-        phase_shift = 1.0 - snapped_resonance # Naeher an 1.0 = entspannt, tief = gestresst/hohes Padding
-
-        base_delay_sec = 0.049
-        k = 3.58
-        # Nutze abs() für phase_shift, da es komplex sein kann
-        padding_sec = base_delay_sec * math.exp(k * abs(phase_shift))
-
-        logger.info(f"[HARDWARE-BRUECKE] Echte CPU-Last: {cpu_load_percent:.1f}% -> Snapped Vektor: {abs(snapped_resonance):.3f} -> Latenz: {padding_sec:.2f}s")
-        await asyncio.sleep(padding_sec)
-
-        # Formatiere Prompt für OpenClaw
-        system_msg = next((m.content for m in messages if isinstance(m, SystemMessage)), "")
-        human_msg = next((m.content for m in messages if isinstance(m, HumanMessage)), "")
-        full_prompt = f"SYSTEM: {system_msg}\n\nUSER: {human_msg}" if system_msg else human_msg
-
-        # --- LAYER 1: VPS (OpenClaw) ---
-        if is_oc_configured():
+        # 2. Heavy Reasoner (Gemini 3.1 Pro)
+        if skill == "heavy_reasoner":
             try:
-                logger.info("[LLM-Resilience] L1: Versuche VPS-Call (OpenClaw)...")
-                success, response = await asyncio.wait_for(
-                    send_message_to_agent_async(full_prompt, agent_id="main", timeout=5.0),
-                    timeout=5.5
-                )
-
-                if success and "LLM error" not in response and "expired" not in response.lower():
-                    logger.info("[LLM-Resilience] L1 erfolgreich.")
-                    return response
-                logger.warning(f"[LLM-Resilience] L1 fehlgeschlagen oder ungültig: {response}")
-            except (asyncio.TimeoutError, Exception) as e:
-                logger.warning(f"[LLM-Resilience] L1 Timeout/Fehler: {e}")
-
-        # --- LAYER 2: Scout (Ollama) ---
-        try:
-            logger.info("[LLM-Resilience] L2: Versuche Scout-Call (Ollama Edge)...")
-            # Kürzerer Timeout für den Scout
-            response = await asyncio.wait_for(self.scout_llm.ainvoke(messages), timeout=10.0)
-            logger.info("[LLM-Resilience] L2 erfolgreich.")
-            return response.content
-        except (asyncio.TimeoutError, Exception) as e:
-            logger.warning(f"[LLM-Resilience] L2 fehlgeschlagen: {e}")
-
-        # --- LAYER 3: Local (Dreadnought GPU) ---
-        if self.local_llm:
-            try:
-                logger.info("[LLM-Resilience] L3: Versuche lokalen Notfall-Fallback (Dreadnought GPU)...")
-                response = await self.local_llm.ainvoke(messages)
-                logger.info("[LLM-Resilience] L3 erfolgreich.")
-                return response.content
+                res = await self.cloud_heavy.ainvoke(messages)
+                return res.content
             except Exception as e:
-                logger.error(f"[LLM-Resilience] L3 fehlgeschlagen: {e}")
+                logger.error(f"Heavy Reasoner failed, falling back: {e}")
+                skill = "simple_coder" # Auto-Downgrade
 
-        return "KRITISCHER SYSTEMFEHLER: Alle 3 LLM-Layer (VPS, Scout, Local) offline."
+        # 3. Simple Coder (Gemini 3.1 Flash Lite - Tier 2)
+        if skill == "simple_coder":
+            try:
+                res = await self.cloud_lite.ainvoke(messages)
+                return res.content
+            except Exception as e:
+                logger.error(f"Simple Coder failed, falling back: {e}")
+                skill = "stupid_coder"
+
+        # 4. Stupid Coder (Gemma 4 / Ollama Local)
+        if skill == "stupid_coder":
+            # Versuche Local (Dreadnought) -> Scout -> VPS
+            if self.local_llm:
+                try: return (await self.local_llm.ainvoke(messages)).content
+                except: pass
+            try: return (await self.scout_llm.ainvoke(messages)).content
+            except: pass
+            
+        return "FEHLER: Kein passender Worker für Skill '" + skill + "' gefunden."
+
+    async def _call_wiki_expert(self, messages: List[BaseMessage]) -> str:
+        """Ruft das lokale OMEGA-WIKI via Claude Code auf."""
+        prompt = messages[-1].content
+        logger.info(f"[WIKI-EXPERT] Searching OMEGA_WIKI for: {prompt[:50]}...")
+        try:
+            # Karpathy-Style: Claude Code im Wiki-Verzeichnis ausführen
+            cmd = ["claude", "-p", f"Nutze das OMEGA_WIKI um folgende Frage zu beantworten: {prompt}"]
+            result = subprocess.run(cmd, cwd="/home/mth/OMEGA_WIKI", capture_output=True, text=True, timeout=60)
+            if result.returncode == 0:
+                return result.stdout
+            return f"Wiki-Fehler: {result.stderr}"
+        except Exception as e:
+            return f"Wiki-Exception: {e}"
 
 class LLMInterface:
     def __init__(self):
-        # Tier 3 / Tier 4 SLM (Ollama)
-        # Scout (Edge)
         scout_url = OLLAMA_HOST
         scout_model = OLLAMA_MODEL
-        
-        # Dreadnought (Local - Primary Triage Worker)
         local_url = OLLAMA_LOCAL
-        local_model = GEMMA_TRIAGE # gemma4:9b
+        local_model = GEMMA_TRIAGE
 
-        self.triage_slm_scout = ChatOllama(
-            model=scout_model,
-            base_url=scout_url,
-            temperature=0.1,
-        ).with_structured_output(TriageResult)
+        # Triage Engines
+        self.triage_local = ChatOllama(model=local_model, base_url=local_url, temperature=0.1).with_structured_output(TriageResult)
+        self.triage_cloud = ChatGoogleGenerativeAI(model=GEMINI_FLASH_LITE, temperature=0.1).with_structured_output(TriageResult)
 
-        self.triage_slm_local = ChatOllama(
-            model=local_model,
-            base_url=local_url,
-            temperature=0.1,
-        ).with_structured_output(TriageResult)
-
-        # Tier 2 Cloud Triage (Gemini 3.1 Flash Lite - Quota optimized)
-        self.cloud_triage_lite = ChatGoogleGenerativeAI(
-            model=GEMINI_FLASH_LITE,
-            temperature=0.1,
-        ).with_structured_output(TriageResult)
-
-        # Tier 1 Cloud Triage (Gemini 2.5 Flash - Fallback)
-        self.cloud_triage_flash = ChatGoogleGenerativeAI(
-            model=GEMINI_TRIAGE, # gemini-2.5-flash-preview
-            temperature=0.1,
-        ).with_structured_output(TriageResult)
-
-        # Resilientes Heavy Layer (3-Tier)
-        self.heavy_layer = ResilientLLMInterface(
+        self.worker_pool = ResilientLLMInterface(
             ollama_model=scout_model,
             ollama_base_url=scout_url,
             local_fallback_url=local_url
         )
 
-
-    @shell_protected(estimated_tokens_per_call=800)
+    @shell_protected(estimated_tokens_per_call=1000)
     def run_triage(self, user_input: str) -> TriageResult:
-        """
-        Uses the local SLM to rapidly triage the semantic intent of the query.
-        """
-        user_input_lower = user_input.lower()
-        logger.info(f"Running Triage on input: '{user_input}'")
-
-        # --- FAST PATH LEXICAL TRIAGE ---
-        # For the 20-30 most common commands, bypass the AI completely for 100% reliability & speed.
-        fast_path_entities = {
-            "bad": "light.bad",
-            "badezimmer": "light.bad",
-            "küche": "light.led_kuche",
-            "kuche": "light.led_kuche",
-            "kueche": "light.led_kuche",
-            "küchenlicht": "light.led_kuche",
-            "flur": "light.flur",
-            "deckenlampe": "light.deckenlampe",
-            "wohnzimmer decke": "light.deckenlampe",
-            "stehlampe": "light.stehlampe",
-            "schreibtisch": "light.schreibtisch",
-            "schreibtischlicht": "light.schreibtisch",
-            "büro": "light.schreibtisch",
-            "gaming": "light.schreibtisch",
-            "regal": "light.regal",
-            "sofa": "light.sofa",
-        }
-
-        # Check if any known entity is in the string
-        found_entity = None
-        for key, entity in fast_path_entities.items():
-            if key in user_input_lower:
-                found_entity = entity
-                break
-
-        if found_entity:
-            # We found an entity. Now determine action.
-            action = "turn_on" # default
-            if "aus" in user_input_lower or "off" in user_input_lower:
-                action = "turn_off"
-            elif "toggle" in user_input_lower or "umschalten" in user_input_lower:
-                action = "toggle"
-
-            logger.info(f"Fast-Path Lexical Match: intent='command', target='{found_entity}', action='{action}'")
-            return TriageResult(intent="command", target_entity=found_entity, action=action)
-
-        # --- HEAVY LAYER / SLM TRIAGE ---
-        prompt = (
-            "You are an NLP routing agent for a smart home and complex reasoning system. You MUST output a strictly factual classification.\n\n"
-            "RULES:\n"
-            "1. If the user wants to turn a smart home device on/off/toggle, the 'intent' is 'command'.\n"
-            "2. If the user asks a complex question, provides architecture details, requests code, or writes a long text, the 'intent' MUST be 'deep_reasoning'.\n"
-            "3. If 'command', the 'action' MUST be one of: 'turn_on', 'turn_off', 'toggle'.\n"
-            "4. If 'command', the 'target_entity' MUST be EXACTLY chosen from this list:\n"
-            "   - Bad / Badezimmer -> light.bad\n"
-            "   - Küche / Kuche / Kueche -> light.led_kuche\n"
-            "   - Deckenlampe / Wohnzimmer Decke -> light.deckenlampe\n"
-            "   - Stehlampe -> light.stehlampe\n"
-            "   - Flur -> light.flur\n"
-            "If no entity explicitly matches, guess the closest one string from the right side of the arrows.\n\n"
-            "EXAMPLE 1: 'Mach das Bad Licht an' -> intent='command', action='turn_on', target_entity='light.bad'\n"
-            "EXAMPLE 2: 'Wir müssen die Architektur anpassen und Axiom 4 umschreiben' -> intent='deep_reasoning', action='', target_entity=''\n\n"
-            f"User Input: '{user_input}'"
-        )
+        """Semantische Skill-Triage."""
+        logger.info(f"Semantische Triage für: '{user_input}'")
         
-        # --- STAGE 0: Local SLM (Dreadnought/Gemma 4 9b) ---
+        # --- LEXICAL FAST PATH (HOME CONTROL) ---
+        fast_path = {
+            "bad": "light.bad", "küche": "light.led_kuche", "flur": "light.flur",
+            "deckenlampe": "light.deckenlampe", "stehlampe": "light.stehlampe"
+        }
+        for k, v in fast_path.items():
+            if k in user_input.lower():
+                action = "turn_off" if "aus" in user_input.lower() else "turn_on"
+                return TriageResult(intent="home_control", skill_required="stupid_coder", target_entity=v, action=action)
+
+        # --- LLM TRIAGE ---
+        prompt = (
+            "Du bist der OMEGA-Orchestrator. Analysiere die Anfrage und entscheide, welcher Worker-Skill benötigt wird.\n\n"
+            "INTENTS:\n"
+            "- 'home_control': Smart Home Befehle (Licht, Heizung).\n"
+            "- 'omega_work': Produktive Arbeit am OMEGA System, Architektur, Code, Logik.\n"
+            "- 'chat': Smalltalk oder allgemeine Fragen.\n\n"
+            "SKILLS:\n"
+            "- 'wiki_expert': Für tiefes OMEGA-Wissen, Axiome, Theorie (nutzt lokales Wiki).\n"
+            "- 'heavy_reasoner': Für komplexe Code-Änderungen oder Architektur-Entscheidungen (Gemini 3.1 Pro).\n"
+            "- 'simple_coder': Für Standard-Coding oder einfache Logik (Gemini 3.1 Flash Lite).\n"
+            "- 'stupid_coder': Für repetitive Aufgaben oder einfache Home-Befehle (Gemma 4 Lokal).\n\n"
+            f"Anfrage: '{user_input}'"
+        )
+
         try:
-            logger.info("[TRIAGE-L0] Attempting Dreadnought SLM (Local/Gemma4:9b)...")
-            result = self.triage_slm_local.invoke([SystemMessage(content=prompt)])
-            if result and result.intent != "unknown":
-                logger.info(f"[TRIAGE-L0] Success: {result}")
-                return result
-            logger.warning("[TRIAGE-L0] Uncertain or unknown intent.")
-        except Exception as e:
-            logger.error(f"[TRIAGE-L0] Failed: {e}")
+            # 1. Versuch: Cloud (Tier 2)
+            result = self.triage_cloud.invoke([SystemMessage(content=prompt)])
+            if result and result.intent != "unknown": return result
+        except:
+            pass
 
-        # --- STAGE 1: Scout SLM (Edge/Gemma 4 e4b) ---
         try:
-            logger.info("[TRIAGE-L1] Attempting Scout SLM (Edge/Gemma4)...")
-            result = self.triage_slm_scout.invoke([SystemMessage(content=prompt)])
-            if result and result.intent != "unknown":
-                logger.info(f"[TRIAGE-L1] Success: {result}")
-                return result
-            logger.warning("[TRIAGE-L1] Uncertain or unknown intent.")
+            # 2. Versuch: Lokal (Dreadnought)
+            return self.triage_local.invoke([SystemMessage(content=prompt)])
         except Exception as e:
-            logger.error(f"[TRIAGE-L1] Failed: {e}")
+            logger.error(f"Triage komplett fehlgeschlagen: {e}")
+            return TriageResult(intent="unknown", skill_required="stupid_coder")
 
-        # --- STAGE 2: Cloud Lite (Gemini 3.1 Flash Lite) ---
-        try:
-            logger.info("[TRIAGE-L2] Attempting Cloud Lite (Gemini 3.1 Flash Lite)...")
-            result = self.cloud_triage_lite.invoke([SystemMessage(content=prompt)])
-            if result and result.intent != "unknown":
-                logger.info(f"[TRIAGE-L2] Success: {result}")
-                return result
-            logger.warning("[TRIAGE-L2] Uncertain or unknown intent.")
-        except Exception as e:
-            logger.error(f"[TRIAGE-L2] Failed: {e}")
-
-        # --- STAGE 3: Cloud Flash (Gemini 2.5 Flash) ---
-        try:
-            logger.info("[TRIAGE-L3] Attempting Cloud Flash (Gemini 2.5 Flash Fallback)...")
-            result = self.cloud_triage_flash.invoke([SystemMessage(content=prompt)])
-            if result and result.intent != "unknown":
-                logger.info(f"[TRIAGE-L3] Success: {result}")
-                return result
-        except Exception as e:
-            logger.error(f"[TRIAGE-L3] Failed: {e}")
-
-        return TriageResult(intent="unknown")
-
-    MAX_RESPONSE_TOKENS = 4096
-
-    @shell_protected(estimated_tokens_per_call=4000)
     async def invoke_heavy_reasoning(self, system_prompt: str, user_input: str) -> str:
-        """
-        Routes the task to the cloud/Tier 5 LLM (OpenClaw) or local fallback.
-        """
-        logger.info("Invoking Resilient Tier 5 Heavy Reasoning...")
-        try:
-            messages = [
-                SystemMessage(content=system_prompt),
-                HumanMessage(content=user_input)
-            ]
+        """Haupt-Einstiegspunkt für produktive Arbeit."""
+        # 1. Triage
+        triage = self.run_triage(user_input)
+        
+        # 2. Worker auswählen
+        messages = [SystemMessage(content=system_prompt), HumanMessage(content=user_input)]
+        return await self.worker_pool.ainvoke_by_skill(messages, skill=triage.skill_required)
 
-            # Nutzt das resiliente Interface
-            result = await self.heavy_layer.ainvoke(messages)
-
-            word_count = len(result.split())
-            if word_count > self.MAX_RESPONSE_TOKENS:
-                logger.warning(
-                    f"[LLM] Halluzinations-Bremse: {word_count} Woerter > {self.MAX_RESPONSE_TOKENS} Limit -- gekappt"
-                )
-                words = result.split()
-                result = " ".join(words[: self.MAX_RESPONSE_TOKENS])
-
-            return result
-        except RuntimeVetoException as e:
-            logger.error(f"[Z-VETO] in Heavy Reasoning: {e}")
-            return f"System Hard-Stop: Z-Veto getriggert ({e})"
-        except Exception as e:
-            logger.error(f"Heavy Reasoning failed: {e}")
-            return f"Fehler in Heavy Reasoning: {e}"
-
-# Singleton instance for the app
+# Singleton
 core_llm = LLMInterface()
-
-# force reload

@@ -43,8 +43,9 @@ class ResilientLLMInterface:
         # Layer 3: Local (Dreadnought GPU)
         self.local_llm = None
         if local_fallback_url:
+            from src.ai.model_registry import OLLAMA_HEAVY
             self.local_llm = ChatOllama(
-                model=os.getenv("OLLAMA_HEAVY_MODEL", "llama3.1:latest"),
+                model=OLLAMA_HEAVY,
                 base_url=local_fallback_url,
                 temperature=0.7
             )
@@ -206,35 +207,57 @@ class LLMInterface:
             return TriageResult(intent="command", target_entity=found_entity, action=action)
 
         # --- HEAVY LAYER / SLM TRIAGE ---
+        prompt = (
+            "You are an NLP routing agent for a smart home and complex reasoning system. You MUST output a strictly factual classification.\n\n"
+            "RULES:\n"
+            "1. If the user wants to turn a smart home device on/off/toggle, the 'intent' is 'command'.\n"
+            "2. If the user asks a complex question, provides architecture details, requests code, or writes a long text, the 'intent' MUST be 'deep_reasoning'.\n"
+            "3. If 'command', the 'action' MUST be one of: 'turn_on', 'turn_off', 'toggle'.\n"
+            "4. If 'command', the 'target_entity' MUST be EXACTLY chosen from this list:\n"
+            "   - Bad / Badezimmer -> light.bad\n"
+            "   - Küche / Kuche / Kueche -> light.led_kuche\n"
+            "   - Deckenlampe / Wohnzimmer Decke -> light.deckenlampe\n"
+            "   - Stehlampe -> light.stehlampe\n"
+            "   - Flur -> light.flur\n"
+            "If no entity explicitly matches, guess the closest one string from the right side of the arrows.\n\n"
+            "EXAMPLE 1: 'Mach das Bad Licht an' -> intent='command', action='turn_on', target_entity='light.bad'\n"
+            "EXAMPLE 2: 'Wir müssen die Architektur anpassen und Axiom 4 umschreiben' -> intent='deep_reasoning', action='', target_entity=''\n\n"
+            f"User Input: '{user_input}'"
+        )
+        
+        # --- STAGE 1: Local SLM (Gemma 4 e4b) ---
         try:
-            prompt = (
-                "You are an NLP routing agent for a smart home and complex reasoning system. You MUST output a strictly factual classification.\n\n"
-                "RULES:\n"
-                "1. If the user wants to turn a smart home device on/off/toggle, the 'intent' is 'command'.\n"
-                "2. If the user asks a complex question, provides architecture details, requests code, or writes a long text, the 'intent' MUST be 'deep_reasoning'.\n"
-                "3. If 'command', the 'action' MUST be one of: 'turn_on', 'turn_off', 'toggle'.\n"
-                "4. If 'command', the 'target_entity' MUST be EXACTLY chosen from this list:\n"
-                "   - Bad / Badezimmer -> light.bad\n"
-                "   - Küche / Kuche / Kueche -> light.led_kuche\n"
-                "   - Deckenlampe / Wohnzimmer Decke -> light.deckenlampe\n"
-                "   - Stehlampe -> light.stehlampe\n"
-                "   - Flur -> light.flur\n"
-                "If no entity explicitly matches, guess the closest one string from the right side of the arrows.\n\n"
-                "EXAMPLE 1: 'Mach das Bad Licht an' -> intent='command', action='turn_on', target_entity='light.bad'\n"
-                "EXAMPLE 2: 'Wir müssen die Architektur anpassen und Axiom 4 umschreiben' -> intent='deep_reasoning', action='', target_entity=''\n\n"
-                f"User Input: '{user_input}'"
-            )
-            result = self.triage_slm.invoke([
-                SystemMessage(content=prompt)
-            ])
-            logger.info(f"Triage Result: {result}")
-            return result
-        except RuntimeVetoException as e:
-            logger.error(f"[Z-VETO] in Triage: {e}")
-            return TriageResult(intent="unknown")
+            logger.info("[TRIAGE-L1] Attempting Local SLM (Scout/Gemma4)...")
+            result = self.triage_slm.invoke([SystemMessage(content=prompt)])
+            if result and result.intent != "unknown":
+                logger.info(f"[TRIAGE-L1] Success: {result}")
+                return result
+            logger.warning("[TRIAGE-L1] Uncertain or unknown intent.")
         except Exception as e:
-            logger.error(f"SLM Triage failed: {e}")
-            return TriageResult(intent="unknown")
+            logger.error(f"[TRIAGE-L1] Failed: {e}")
+
+        # --- STAGE 2: Cloud Lite (Gemini 3.1 Flash Lite) ---
+        try:
+            logger.info("[TRIAGE-L2] Attempting Cloud Lite (Gemini 3.1 Flash Lite)...")
+            result = self.cloud_triage_lite.invoke([SystemMessage(content=prompt)])
+            if result and result.intent != "unknown":
+                logger.info(f"[TRIAGE-L2] Success: {result}")
+                return result
+            logger.warning("[TRIAGE-L2] Uncertain or unknown intent.")
+        except Exception as e:
+            logger.error(f"[TRIAGE-L2] Failed: {e}")
+
+        # --- STAGE 3: Cloud Flash (Gemini 3 Flash) ---
+        try:
+            logger.info("[TRIAGE-L3] Attempting Cloud Flash (Gemini 3 Flash Fallback)...")
+            result = self.cloud_triage_flash.invoke([SystemMessage(content=prompt)])
+            if result and result.intent != "unknown":
+                logger.info(f"[TRIAGE-L3] Success: {result}")
+                return result
+        except Exception as e:
+            logger.error(f"[TRIAGE-L3] Failed: {e}")
+
+        return TriageResult(intent="unknown")
 
     MAX_RESPONSE_TOKENS = 4096
 

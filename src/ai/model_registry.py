@@ -59,8 +59,8 @@ ANTHROPIC_HEAVY = _env("ANTHROPIC_HEAVY_MODEL", "claude-opus-4-6")
 ANTHROPIC_FAST = _env("ANTHROPIC_FAST_MODEL", "claude-sonnet-4-6")
 
 # ── Ollama (lokaler Fallback, Scout-Schicht) ──
-OLLAMA_MODEL = _env("OLLAMA_MODEL", "llama3.2:1b")
-OLLAMA_HEAVY = _env("OLLAMA_HEAVY_MODEL", "llama3.1:latest")
+OLLAMA_MODEL = _env("OLLAMA_MODEL", "gemma4:e4b")
+OLLAMA_HEAVY = _env("OLLAMA_HEAVY_MODEL", "gemma4:31b")
 OLLAMA_HOST = _env("OLLAMA_HOST", "http://192.168.178.54:11434")
 OLLAMA_LOCAL = _env("OLLAMA_LOCAL_HOST", "http://localhost:11434")
 
@@ -90,9 +90,11 @@ def get_model_for_role(role: str) -> Optional[str]:
         "robotics": GEMINI_ROBOTICS,
         "deep_research": GEMINI_DEEP_RESEARCH,
 
-        # Fallback
+        # Fallback & Local
         "ollama_light": OLLAMA_MODEL,
         "ollama_heavy": OLLAMA_HEAVY,
+        "gemma_scout": GEMMA_TRIAGE,
+        "gemma_dreadnought": GEMMA_REASONING,
     }
     return m.get(role)
 

@@ -35,9 +35,9 @@ KEY_PATH = os.getenv("VPS_SSH_KEY", "").strip()
 PORT = int(os.getenv("VPS_SSH_PORT", "22"))
 TOKEN = (os.getenv("OPENCLAW_GATEWAY_TOKEN", "") or "").strip().strip('"')
 
-# Am Admin-VPS (deploy_vps_full_stack): Config unter /opt/core-core/openclaw-admin/data/
+# Am Admin-VPS (deploy_vps_full_stack): Config unter /opt/omega-core/openclaw-admin/data/
 CONFIG_PATH_HOST = os.getenv("OPENCLAW_CONFIG_PATH", "").strip() or "/var/lib/openclaw/openclaw.json"
-CONFIG_PATH_FULLSTACK = "/opt/core-core/openclaw-admin/data/openclaw.json"
+CONFIG_PATH_FULLSTACK = "/opt/omega-core/openclaw-admin/data/openclaw.json"
 
 
 def _run(ssh: paramiko.SSHClient, cmd: str) -> tuple[int, str, str]:

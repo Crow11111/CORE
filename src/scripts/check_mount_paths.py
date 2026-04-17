@@ -28,7 +28,7 @@ except:
     print(mounts_raw[:500])
 
 print("\n=== Host-Pfad Config (wo ich geschrieben habe) ===")
-print(run("cat /opt/core-core/openclaw-admin/data/openclaw.json 2>/dev/null | grep -i ollama | head -3") or "NICHT_GEFUNDEN")
+print(run("cat /opt/omega-core/openclaw-admin/data/openclaw.json 2>/dev/null | grep -i ollama | head -3") or "NICHT_GEFUNDEN")
 
 print("\n=== Container-Pfad Config (wo Container liest) ===")
 print(run("docker exec openclaw-admin cat /home/node/.openclaw/openclaw.json 2>/dev/null | grep -i ollama | head -3") or "NICHT_GEFUNDEN")

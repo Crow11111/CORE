@@ -235,10 +235,21 @@ class LLMInterface:
             f"User Input: '{user_input}'"
         )
         
-        # --- STAGE 1: Local SLM (Gemma 4 e4b) ---
+        # --- STAGE 0: Local SLM (Dreadnought/Gemma 4 9b) ---
         try:
-            logger.info("[TRIAGE-L1] Attempting Local SLM (Scout/Gemma4)...")
-            result = self.triage_slm.invoke([SystemMessage(content=prompt)])
+            logger.info("[TRIAGE-L0] Attempting Dreadnought SLM (Local/Gemma4:9b)...")
+            result = self.triage_slm_local.invoke([SystemMessage(content=prompt)])
+            if result and result.intent != "unknown":
+                logger.info(f"[TRIAGE-L0] Success: {result}")
+                return result
+            logger.warning("[TRIAGE-L0] Uncertain or unknown intent.")
+        except Exception as e:
+            logger.error(f"[TRIAGE-L0] Failed: {e}")
+
+        # --- STAGE 1: Scout SLM (Edge/Gemma 4 e4b) ---
+        try:
+            logger.info("[TRIAGE-L1] Attempting Scout SLM (Edge/Gemma4)...")
+            result = self.triage_slm_scout.invoke([SystemMessage(content=prompt)])
             if result and result.intent != "unknown":
                 logger.info(f"[TRIAGE-L1] Success: {result}")
                 return result
@@ -257,9 +268,9 @@ class LLMInterface:
         except Exception as e:
             logger.error(f"[TRIAGE-L2] Failed: {e}")
 
-        # --- STAGE 3: Cloud Flash (Gemini 3 Flash) ---
+        # --- STAGE 3: Cloud Flash (Gemini 2.5 Flash) ---
         try:
-            logger.info("[TRIAGE-L3] Attempting Cloud Flash (Gemini 3 Flash Fallback)...")
+            logger.info("[TRIAGE-L3] Attempting Cloud Flash (Gemini 2.5 Flash Fallback)...")
             result = self.cloud_triage_flash.invoke([SystemMessage(content=prompt)])
             if result and result.intent != "unknown":
                 logger.info(f"[TRIAGE-L3] Success: {result}")

@@ -448,7 +448,7 @@ def extract_old_config(dry):
         if not container and not dry:
             print("  Kein OpenClaw-Container gefunden.")
             return result
-        c, raw, _ = run(ssh_old, f"docker exec {container} cat /data/.openclaw/openclaw.json 2>/dev/null || echo ''", check=False, dry=dry)
+        c, raw, _ = run(ssh_old, f"docker exec {container} cat /home/node/.openclaw/openclaw.json 2>/dev/null || echo ''", check=False, dry=dry)
         if not dry and raw and raw.strip() not in ("", "{}"):
             try:
                 cfg = json.loads(raw)

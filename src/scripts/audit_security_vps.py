@@ -55,7 +55,7 @@ def main():
     # 2. Check OpenClaw Config
     # Try multiple locations
     oc_paths = [
-        "/opt/core-core/openclaw-admin/data/openclaw.json",
+        "/opt/omega-core/openclaw-admin/data/openclaw.json",
         "/var/lib/openclaw/openclaw.json",
         "/home/node/.openclaw/openclaw.json" # Container default sometimes
     ]

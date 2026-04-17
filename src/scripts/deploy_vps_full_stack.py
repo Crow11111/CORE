@@ -205,14 +205,14 @@ def _oc_config(token, port, wa_allow, with_providers):
     return cfg
 
 def step_openclaw_admin(ssh, dry, extracted_wa=None):
-    print(f"\n[4] OpenClaw Admin & Spine & HA via Docker Compose (/opt/core-core) ...")
+    print(f"\n[4] OpenClaw Admin & Spine & HA via Docker Compose (/opt/omega-core) ...")
     if not OC_ADMIN_TOKEN:
         print("  OPENCLAW_GATEWAY_TOKEN fehlt - uebersprungen.")
         return
     wa = extracted_wa if extracted_wa else WA_ALLOW
-    base_admin = "/opt/core-core/openclaw-admin"
-    base_spine = "/opt/core-core/openclaw-spine"
-    base_ha    = "/opt/core-core/homeassistant"
+    base_admin = "/opt/omega-core/openclaw-admin"
+    base_spine = "/opt/omega-core/openclaw-spine"
+    base_ha    = "/opt/omega-core/homeassistant"
 
     mkdir(ssh, f"{base_admin}/data/workspace", dry=dry)
     mkdir(ssh, f"{base_admin}/data/workspace/rat_submissions", dry=dry)
@@ -345,7 +345,7 @@ def step_openclaw_admin(ssh, dry, extracted_wa=None):
         f"ANTHROPIC_API_KEY={ANTHROPIC_KEY}\n"
         f"NEXOS_API_KEY={NEXOS_KEY}\n"
     )
-    b64write(ssh, "/opt/core-core/.env", env_admin, dry=dry)
+    b64write(ssh, "/opt/omega-core/.env", env_admin, dry=dry)
 
     compose_yml = f"""
 version: '3.8'
@@ -411,9 +411,9 @@ networks:
   chroma-uvmy_default:
     external: true
 """
-    b64write(ssh, "/opt/core-core/docker-compose.yml", compose_yml.strip(), dry=dry)
+    b64write(ssh, "/opt/omega-core/docker-compose.yml", compose_yml.strip(), dry=dry)
 
-    run(ssh, "cd /opt/core-core && docker compose pull && docker compose up -d", check=False, dry=dry)
+    run(ssh, "cd /opt/omega-core && docker compose pull && docker compose up -d", check=False, dry=dry)
     time.sleep(5)
     run(ssh, "docker ps --format '{{.Names}}' | grep -iE 'openclaw|ha-core'", check=False, dry=dry)
 

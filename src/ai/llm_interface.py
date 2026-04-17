@@ -20,6 +20,7 @@ from src.network.openclaw_client import send_message_to_agent_async, is_configur
 from src.ai.model_registry import (
     GEMINI_TRIAGE, 
     GEMINI_FLASH_LITE,
+    GEMMA_TRIAGE,
     OLLAMA_MODEL,
     OLLAMA_HOST,
     OLLAMA_LOCAL

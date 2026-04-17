@@ -267,9 +267,16 @@ def step_openclaw_admin(ssh, dry, extracted_wa=None):
     # --- MERGE LOGIC END ---
 
     b64write(ssh, f"{base_admin}/data/openclaw.json", json.dumps(cfg_admin_final, indent=2), dry=dry)
-    b64write(ssh, f"{base_admin}/data/workspace/SOUL.md", SOUL_MD, dry=dry)
     b64write(ssh, f"{base_spine}/data/openclaw.json", json.dumps(cfg_spine_final, indent=2), dry=dry)
-    b64write(ssh, f"{base_spine}/data/workspace/SOUL.md", SOUL_MD, dry=dry)
+
+    # Brain (SOUL.md) nur schreiben, wenn es noch nicht existiert! (Verhindert Overwrite)
+    soul_check_cmd = f"test -f {base_admin}/data/workspace/SOUL.md && echo 'EXISTS' || echo 'MISSING'"
+    c, out, _ = run(ssh, soul_check_cmd, check=False, dry=dry)
+    if "MISSING" in out or dry:
+        b64write(ssh, f"{base_admin}/data/workspace/SOUL.md", SOUL_MD, dry=dry)
+        b64write(ssh, f"{base_spine}/data/workspace/SOUL.md", SOUL_MD, dry=dry)
+    else:
+        print("  SOUL.md existiert bereits - ueberspringe Overwrite (Brain gesichert).")
     # ARCHITECTURE.md (CORE Neocortex V1) aus Repo in Workspace legen
     _repo_root = os.path.join(os.path.dirname(__file__), "..", "..")
     _arch_path = os.path.join(_repo_root, "docs", "02_ARCHITECTURE", "CORE_NEOCORTEX_V1.md")

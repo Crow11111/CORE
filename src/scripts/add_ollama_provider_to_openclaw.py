@@ -26,8 +26,8 @@ OLLAMA_PROVIDER = {
 }
 
 CONFIG_PATHS = [
-    "/opt/core-core/openclaw-admin/data/openclaw.json",
-    "/opt/core-core/openclaw-spine/data/openclaw.json",
+    "/opt/omega-core/openclaw-admin/data/openclaw.json",
+    "/opt/omega-core/openclaw-spine/data/openclaw.json",
 ]
 
 

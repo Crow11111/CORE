@@ -17,6 +17,13 @@ from pydantic import BaseModel, Field
 # CORE-Kontext
 from src.logic_core.z_vector_damper import shell_protected, RuntimeVetoException
 from src.network.openclaw_client import send_message_to_agent_async, is_configured as is_oc_configured
+from src.ai.model_registry import (
+    GEMINI_TRIAGE, 
+    GEMINI_FLASH_LITE,
+    OLLAMA_MODEL,
+    OLLAMA_HOST,
+    OLLAMA_LOCAL
+)
 
 load_dotenv("/OMEGA_CORE/.env")
 
@@ -120,21 +127,34 @@ class ResilientLLMInterface:
 class LLMInterface:
     def __init__(self):
         # Tier 3 / Tier 4 SLM (Ollama)
-        ollama_base_url = os.getenv("OLLAMA_HOST", "http://192.168.178.54:11434")
-        ollama_model = os.getenv("OLLAMA_MODEL", "llama3.2:1b")
-        local_ollama_url = os.getenv("OLLAMA_LOCAL_HOST", "http://localhost:11434")
+        # Nutzt jetzt Gemma 4 e4b auf dem Scout
+        scout_url = OLLAMA_HOST
+        scout_model = OLLAMA_MODEL
+        local_url = OLLAMA_LOCAL
 
         self.triage_slm = ChatOllama(
-            model=ollama_model,
-            base_url=ollama_base_url,
+            model=scout_model,
+            base_url=scout_url,
             temperature=0.1,  # Low temp for deterministic routing
+        ).with_structured_output(TriageResult)
+
+        # Tier 2 Cloud Triage (Gemini 3.1 Flash Lite - Quota optimized)
+        self.cloud_triage_lite = ChatGoogleGenerativeAI(
+            model=GEMINI_FLASH_LITE,
+            temperature=0.1,
+        ).with_structured_output(TriageResult)
+
+        # Tier 1 Cloud Triage (Gemini 3 Flash - Fallback)
+        self.cloud_triage_flash = ChatGoogleGenerativeAI(
+            model=GEMINI_TRIAGE,
+            temperature=0.1,
         ).with_structured_output(TriageResult)
 
         # Resilientes Heavy Layer (3-Tier)
         self.heavy_layer = ResilientLLMInterface(
-            ollama_model=ollama_model,
-            ollama_base_url=ollama_base_url,
-            local_fallback_url=local_ollama_url
+            ollama_model=scout_model,
+            ollama_base_url=scout_url,
+            local_fallback_url=local_url
         )
 
 

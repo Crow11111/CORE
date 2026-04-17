@@ -56,14 +56,14 @@ def main():
         return 1
     
     ssh = connect_ssh()
-    run(ssh, "mkdir -p /opt/core-core/mcp-server /opt/core-core/workspace")
+    run(ssh, "mkdir -p /opt/omega-core/mcp-server /opt/omega-core/workspace")
     
     # Files transferieren
-    b64write(ssh, "/opt/core-core/mcp-server/Dockerfile", "docker/mcp-server/Dockerfile")
-    b64write(ssh, "/opt/core-core/mcp-server/docker-compose.yml", "docker/mcp-server/docker-compose.yml")
+    b64write(ssh, "/opt/omega-core/mcp-server/Dockerfile", "docker/mcp-server/Dockerfile")
+    b64write(ssh, "/opt/omega-core/mcp-server/docker-compose.yml", "docker/mcp-server/docker-compose.yml")
     
     # Deploy
-    run(ssh, "cd /opt/core-core/mcp-server && docker compose up -d --build")
+    run(ssh, "cd /opt/omega-core/mcp-server && docker compose up -d --build")
     run(ssh, "docker ps | grep mcp-server")
     ssh.close()
     

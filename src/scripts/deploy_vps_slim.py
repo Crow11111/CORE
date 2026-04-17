@@ -23,7 +23,7 @@ load_dotenv(PROJECT_ROOT / ".env")
 
 VPS_HOST = os.getenv("VPS_HOST", "").strip() or "core-vps"
 VPS_USER = os.getenv("VPS_USER", "root").strip()
-VPS_DEPLOY_PATH = os.getenv("VPS_DEPLOY_PATH", "/opt/core-core").strip()
+VPS_DEPLOY_PATH = os.getenv("VPS_DEPLOY_PATH", "/opt/omega-core").strip()
 VPS_SSH_KEY = os.getenv("VPS_SSH_KEY", "").strip()
 
 

@@ -129,15 +129,24 @@ class ResilientLLMInterface:
 class LLMInterface:
     def __init__(self):
         # Tier 3 / Tier 4 SLM (Ollama)
-        # Nutzt jetzt Gemma 4 e4b auf dem Scout
+        # Scout (Edge)
         scout_url = OLLAMA_HOST
         scout_model = OLLAMA_MODEL
+        
+        # Dreadnought (Local - Primary Triage Worker)
         local_url = OLLAMA_LOCAL
+        local_model = GEMMA_TRIAGE # gemma4:9b
 
-        self.triage_slm = ChatOllama(
+        self.triage_slm_scout = ChatOllama(
             model=scout_model,
             base_url=scout_url,
-            temperature=0.1,  # Low temp for deterministic routing
+            temperature=0.1,
+        ).with_structured_output(TriageResult)
+
+        self.triage_slm_local = ChatOllama(
+            model=local_model,
+            base_url=local_url,
+            temperature=0.1,
         ).with_structured_output(TriageResult)
 
         # Tier 2 Cloud Triage (Gemini 3.1 Flash Lite - Quota optimized)
@@ -146,9 +155,9 @@ class LLMInterface:
             temperature=0.1,
         ).with_structured_output(TriageResult)
 
-        # Tier 1 Cloud Triage (Gemini 3 Flash - Fallback)
+        # Tier 1 Cloud Triage (Gemini 2.5 Flash - Fallback)
         self.cloud_triage_flash = ChatGoogleGenerativeAI(
-            model=GEMINI_TRIAGE,
+            model=GEMINI_TRIAGE, # gemini-2.5-flash-preview
             temperature=0.1,
         ).with_structured_output(TriageResult)
 

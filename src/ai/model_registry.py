@@ -30,7 +30,11 @@ GEMINI_FLASH = _env("GEMINI_FLASH_MODEL", "gemini-3-flash-preview")
 GEMINI_DEV_AGENT = _env("GEMINI_DEV_AGENT_MODEL", "gemini-3-flash-preview")
 
 # ── Gemini 3.1 ──
-GEMINI_TRIAGE = _env("GEMINI_TRIAGE_MODEL", "gemini-3.1-flash-lite-preview")
+GEMINI_TRIAGE = _env("GEMINI_TRIAGE_MODEL", "gemini-1.5-flash") # Stabilisiert gegen thought_signature Fehler
+
+# ── Gemma 4 (Ollama) ──
+GEMMA_TRIAGE = _env("GEMMA_TRIAGE_MODEL", "gemma4:e4b")
+GEMMA_REASONING = _env("GEMMA_REASONING_MODEL", "gemma4:31b")
 
 # ── Gemini 2.5 (spezialisiert) ──
 DICTATE_STT_MODEL = _env("GEMINI_DICTATE_STT_MODEL", "gemini-2.5-flash-preview")

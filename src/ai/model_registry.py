@@ -31,6 +31,7 @@ GEMINI_DEV_AGENT = _env("GEMINI_DEV_AGENT_MODEL", "gemini-3-flash-preview")
 
 # ── Gemini 3.1 ──
 GEMINI_TRIAGE = _env("GEMINI_TRIAGE_MODEL", "gemini-1.5-flash") # Stabilisiert gegen thought_signature Fehler
+GEMINI_FLASH_LITE = _env("GEMINI_FLASH_LITE_MODEL", "gemini-3.1-flash-lite-preview") # Fuer Tier 2 Triage
 
 # ── Gemma 4 (Ollama) ──
 GEMMA_TRIAGE = _env("GEMMA_TRIAGE_MODEL", "gemma4:e4b")

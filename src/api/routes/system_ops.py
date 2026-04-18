@@ -57,6 +57,27 @@ async def write_to_file(request: WriteRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 # ---------------------------------------------------------------------------
+# TRIAGE MODE MANAGEMENT (Ring-0 Protected)
+# ---------------------------------------------------------------------------
+from src.api.auth_webhook import verify_ring0_write
+from fastapi import Depends
+
+class TriageModeRequest(BaseModel):
+    mode: str  # NORMAL, MAXIMAL_LOKAL, OPTIMAL
+
+@router.get("/triage_mode")
+async def get_triage_mode():
+    """Gibt den aktuellen Triage-Modus zurück."""
+    return {"mode": os.getenv("OMEGA_TRIAGE_MODE", "NORMAL")}
+
+@router.post("/triage_mode")
+async def set_triage_mode(request: TriageModeRequest, _auth: None = Depends(verify_ring0_write)):
+    """Setzt den Triage-Modus (erfordert Ring-0 Token)."""
+    os.environ["OMEGA_TRIAGE_MODE"] = request.mode
+    logger.success(f"[SYSTEM] Triage-Modus auf {request.mode} gesetzt.")
+    return {"success": True, "mode": request.mode}
+
+# ---------------------------------------------------------------------------
 # API-Routing (WebSocket für Vision Stream)
 # ---------------------------------------------------------------------------
 from fastapi import WebSocket

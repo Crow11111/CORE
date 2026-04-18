@@ -354,45 +354,6 @@ def step_openclaw_admin(ssh, dry, extracted_wa=None):
 version: '3.8'
 
 services:
-  openclaw-admin:
-    image: ghcr.io/openclaw/openclaw:main
-    container_name: openclaw-admin
-    restart: unless-stopped
-    environment:
-      - HOME=/home/node
-      - OPENCLAW_GATEWAY_TOKEN=${{OPENCLAW_GATEWAY_TOKEN}}
-      - GOOGLE_API_KEY=${{GOOGLE_API_KEY}}
-      - ANTHROPIC_API_KEY=${{ANTHROPIC_API_KEY}}
-      - NEXOS_API_KEY=${{NEXOS_API_KEY}}
-      - BASE_PATH=${{BASE_PATH}}
-    volumes:
-      - ./openclaw-admin/data:/home/node/.openclaw
-    ports:
-      - "{PORT_OC_ADMIN}:{PORT_OC_ADMIN}"
-    command: ["node", "openclaw.mjs", "gateway", "--allow-unconfigured", "--bind", "lan", "--port", "{PORT_OC_ADMIN}"]
-    networks:
-      - core_net
-      - chroma-uvmy_default
-
-  openclaw-spine:
-    image: ghcr.io/openclaw/openclaw:main
-    container_name: openclaw-spine
-    restart: unless-stopped
-    depends_on:
-      - openclaw-admin
-    environment:
-      - HOME=/home/node
-      - OPENCLAW_GATEWAY_TOKEN={OC_SPINE_TOKEN}
-      - BASE_PATH=/openclaw
-    volumes:
-      - ./openclaw-spine/data:/home/node/.openclaw
-    ports:
-      - "{PORT_OC_SPINE}:{PORT_OC_SPINE}"
-    command: ["node", "openclaw.mjs", "gateway", "--allow-unconfigured", "--bind", "lan", "--port", "{PORT_OC_SPINE}"]
-    networks:
-      - core_net
-      - chroma-uvmy_default
-
   ha-core:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: ha-core
@@ -413,8 +374,6 @@ services:
 networks:
   core_net:
     driver: bridge
-  chroma-uvmy_default:
-    external: true
 """
     b64write(ssh, "/opt/omega-core/docker-compose.yml", compose_yml.strip(), dry=dry)
 

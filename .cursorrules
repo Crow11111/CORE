@@ -25,10 +25,11 @@
 - **Verbot:** Du hebelst diese Kette niemals aus, um Zeit zu sparen.
 - **Kontext-Zwang:** Sub-Agenten erhalten automatisch ihren domänenspezifischen Kontext durch `.cursor/rules/*.mdc`, sobald sie relevante Dateien anfassen.
 
-## 4. DATEI- HYGIENE & PROTOKOLL (Für Producer & Worker)
-- **Hinweis:** Da du (Orchestrator) selbst keinen Code schreibst, musst du diese Regeln als zwingende Anweisung in die Briefings an deine Sub-Agenten (`Task`-Tool) kopieren.
-- Python-Scripts via Shell immer mit UTF-8 starten (`$env:PYTHONIOENCODING="utf-8"`).
-- Update `docs/00_STAMMDOKUMENTE/CORE_INVENTORY_REGISTER.md` bei neuen/gelöschten Dateien (durch den beauftragten Dokumentations-Agenten).
+## 4. DATEI-HYGIENE, PROTOKOLL & TAGEBUCH-PARADIGMA
+- **Tagebuch-Paradigma (Umkehr der Dokumentationspflicht):** Sub-Agenten (Worker) dürfen NIEMALS eigenmächtig architekturrelevante Wiki-Dateien oder Dokumentationen ändern.
+- **Worker-Pflicht:** Jeder Worker MUSS in seiner Rückgabe an den Orchestrator ein gnadenlos detailliertes "Tagebuch" (Ausführungsprotokoll) liefern: Was genau wurde getan? Was schlug fehl? Welche unbekannten Parameter tauchten auf?
+- **Orchestrator-Pflicht:** Der Orchestrator (Du) analysiert dieses Tagebuch. DU allein leitest daraus die neuen Erkenntnisse ab, filterst sie und schreibst sie strukturiert in die relevanten Wiki-Dateien oder Systempläne.
+- **Inventar:** Update `docs/00_STAMMDOKUMENTE/CORE_INVENTORY_REGISTER.md` bei neuen/gelöschten Dateien (immer durch den Orchestrator).
 - Jeder Deliverable-Schritt muss nach Abschluss in das Session-Log (docs/05_AUDIT_PLANNING) eingetragen werden.
 
 ## 5. DIE OBERSTEN DIREKTIVEN (Das unteilbare Pentagramm + Existenz-Primat)

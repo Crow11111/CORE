@@ -206,114 +206,56 @@ def _oc_config(token, port, wa_allow, with_providers):
         cfg.setdefault("channels", {})["whatsapp"] = {"dmPolicy": "allowlist", "allowFrom": wa_allow}
     return cfg
 
-def step_openclaw_admin(ssh, dry, extracted_wa=None):
-    print(f"\n[4] OpenClaw Admin & Spine & HA via Docker Compose (/opt/omega-core) ...")
+def step_openclaw_admin(ssh, dry, wa_extracted):
+    print(f"\n[4] OpenClaw Admin (Tabula Rasa) & HA via Docker Compose ...")
     if not OC_ADMIN_TOKEN:
         print("  OPENCLAW_GATEWAY_TOKEN fehlt - uebersprungen.")
         return
-    wa = extracted_wa if extracted_wa else WA_ALLOW
-    base_admin = "/opt/omega-core/openclaw-admin"
-    base_spine = "/opt/omega-core/openclaw-spine"
-    base_ha    = "/opt/omega-core/homeassistant"
+        
+    # 1. Clone Official Repository
+    run(ssh, "test -d /opt/openclaw || git clone https://github.com/openclaw/openclaw.git /opt/openclaw", check=False, dry=dry)
+    
+    # 2. Set .env for OpenClaw
+    env_content = (
+        f"OPENCLAW_IMAGE=ghcr.io/openclaw/openclaw:latest\n"
+        f"OPENCLAW_GATEWAY_TOKEN={OC_ADMIN_TOKEN}\n"
+        f"GEMINI_API_KEY={GEMINI_KEY}\n"
+        f"OPENCLAW_ALLOW_INSECURE_PRIVATE_WS=true\n"
+        f"BASE_PATH=/openclaw\n"
+    )
+    b64write(ssh, "/opt/openclaw/.env", env_content, dry=dry)
 
-    mkdir(ssh, f"{base_admin}/data/workspace", dry=dry)
-    mkdir(ssh, f"{base_admin}/data/workspace/rat_submissions", dry=dry)
-    mkdir(ssh, f"{base_spine}/data/workspace", dry=dry)
-    mkdir(ssh, f"{base_spine}/data/workspace/rat_submissions", dry=dry)
-    mkdir(ssh, f"{base_ha}/config", dry=dry)
-
-    # Configs generieren (Basis)
-    cfg_admin_new = _oc_config(OC_ADMIN_TOKEN, PORT_OC_ADMIN, wa, with_providers=True)
-    cfg_spine_new = _oc_config(OC_SPINE_TOKEN, PORT_OC_SPINE, [], with_providers=False)
-
-    # Spine soll den Admin als Gateway/Remote nutzen.
-    cfg_spine_new["gateway"]["remote"] = {
-        "url": f"http://openclaw-admin:{PORT_OC_ADMIN}",
-        "token": OC_ADMIN_TOKEN
-    }
-
-    # --- MERGE LOGIC START (Persistence Fix) ---
-    def merge_remote_config(path, new_cfg):
-        # Versuche existierende Config zu lesen
-        c, out, _ = run(ssh, f"cat {path} 2>/dev/null || echo ''", check=False, dry=dry)
-        if not dry and out and out.strip() and out.strip() != "{}":
-            try:
-                existing = json.loads(out)
-                print(f"  Mergue existierende Config von {path}...")
-
-                # Strategie: Wir erzwingen SYSTEM-relevante Settings (Auth, Ports, Provider),
-                # aber behalten USER-relevante Settings (Agents, Channels, Workflows?).
-
-                # 1. Gateway Core (Auth/Port) - Muss vom System kommen fuer Erreichbarkeit
-                existing["gateway"] = new_cfg["gateway"]
-
-                # 2. Models/Providers - Aktualisieren wir aus .env (Keys koennten sich aendern)
-                if "models" in new_cfg:
-                    existing["models"] = new_cfg["models"]
-
-                # 3. Agents - Behalten, aber "main" (CORE) sicherstellen falls fehlt
-                if "agents" not in existing:
-                    existing["agents"] = new_cfg["agents"]
-
-                # 4. Channels - WhatsApp aktualisieren wenn in .env gesetzt, sonst behalten
-                if "channels" in new_cfg and "whatsapp" in new_cfg["channels"]:
-                     existing.setdefault("channels", {})["whatsapp"] = new_cfg["channels"]["whatsapp"]
-
-                return existing
-            except json.JSONDecodeError:
-                print(f"  Warnung: Existierende Config {path} defekt. Ueberschreibe.")
-        return new_cfg
-
-    cfg_admin_final = merge_remote_config(f"{base_admin}/data/openclaw.json", cfg_admin_new)
-    cfg_spine_final = merge_remote_config(f"{base_spine}/data/openclaw.json", cfg_spine_new)
-    # --- MERGE LOGIC END ---
-
-    b64write(ssh, f"{base_admin}/data/openclaw.json", json.dumps(cfg_admin_final, indent=2), dry=dry)
-    b64write(ssh, f"{base_spine}/data/openclaw.json", json.dumps(cfg_spine_final, indent=2), dry=dry)
-
-    # Brain (SOUL.md) nur schreiben, wenn es noch nicht existiert! (Verhindert Overwrite)
-    soul_check_cmd = f"test -f {base_admin}/data/workspace/SOUL.md && echo 'EXISTS' || echo 'MISSING'"
-    c, out, _ = run(ssh, soul_check_cmd, check=False, dry=dry)
-    if "MISSING" in out or dry:
-        b64write(ssh, f"{base_admin}/data/workspace/SOUL.md", SOUL_MD, dry=dry)
-        b64write(ssh, f"{base_spine}/data/workspace/SOUL.md", SOUL_MD, dry=dry)
+    # 3. Read synced local openclaw.json
+    local_cfg_path = os.path.join(os.path.dirname(__file__), "..", "..", "infra", "vps", "openclaw", "openclaw.json")
+    if os.path.isfile(local_cfg_path):
+        with open(local_cfg_path, "r", encoding="utf-8") as f:
+            cfg_content = f.read()
+        mkdir(ssh, "/opt/openclaw/data", dry=dry)
+        b64write(ssh, "/opt/openclaw/data/openclaw.json", cfg_content, dry=dry)
+        run(ssh, "chown -R 1000:1000 /opt/openclaw/data", check=False, dry=dry)
     else:
-        print("  SOUL.md existiert bereits - ueberspringe Overwrite (Brain gesichert).")
-    # ARCHITECTURE.md (CORE Neocortex V1) aus Repo in Workspace legen
-    _repo_root = os.path.join(os.path.dirname(__file__), "..", "..")
-    _arch_path = os.path.join(_repo_root, "docs", "02_ARCHITECTURE", "CORE_NEOCORTEX_V1.md")
-    _schn_path = os.path.join(_repo_root, "docs", "02_ARCHITECTURE", "CORE_SCHNITTSTELLEN_UND_KANAALE.md")
-    _axiom_path = os.path.join(_repo_root, "docs", "01_CORE_DNA", "AXIOM_0_AUTOPOIESIS.md")
-    _white_path = os.path.join(_repo_root, "docs", "01_CORE_DNA", "WHITE_PAPER_INFORMATIONSGRAVITATION.md")
+        print("WARNUNG: Lokale openclaw.json nicht gefunden in infra/vps/openclaw/!")
 
-    if not dry and os.path.isfile(_arch_path):
-        with open(_arch_path, "r", encoding="utf-8") as f:
-            arch_md = f.read()
-        b64write(ssh, f"{base_admin}/data/workspace/ARCHITECTURE.md", arch_md, dry=dry)
-        b64write(ssh, f"{base_spine}/data/workspace/ARCHITECTURE.md", arch_md, dry=dry)
-        print("  ARCHITECTURE.md (CORE Neocortex V1) in Workspace geschrieben.")
-    if not dry and os.path.isfile(_schn_path):
-        with open(_schn_path, "r", encoding="utf-8") as f:
-            schn_md = f.read()
-        b64write(ssh, f"{base_admin}/data/workspace/CORE_SCHNITTSTELLEN_UND_KANAALE.md", schn_md, dry=dry)
-        b64write(ssh, f"{base_spine}/data/workspace/CORE_SCHNITTSTELLEN_UND_KANAALE.md", schn_md, dry=dry)
-        print("  CORE_SCHNITTSTELLEN_UND_KANAALE.md in Workspace geschrieben.")
-    if not dry and os.path.isfile(_axiom_path):
-        with open(_axiom_path, "r", encoding="utf-8") as f:
-            axiom_md = f.read()
-        b64write(ssh, f"{base_admin}/data/workspace/AXIOM_0_AUTOPOIESIS.md", axiom_md, dry=dry)
-        b64write(ssh, f"{base_spine}/data/workspace/AXIOM_0_AUTOPOIESIS.md", axiom_md, dry=dry)
-        print("  AXIOM_0_AUTOPOIESIS.md in Workspace geschrieben.")
-    if not dry and os.path.isfile(_white_path):
-        with open(_white_path, "r", encoding="utf-8") as f:
-            white_md = f.read()
-        b64write(ssh, f"{base_admin}/data/workspace/WHITE_PAPER_INFORMATIONSGRAVITATION.md", white_md, dry=dry)
-        b64write(ssh, f"{base_spine}/data/workspace/WHITE_PAPER_INFORMATIONSGRAVITATION.md", white_md, dry=dry)
-        print("  WHITE_PAPER_INFORMATIONSGRAVITATION.md in Workspace geschrieben.")
+    # 3b. Read synced tcp-mcp.js
+    local_tcp_path = os.path.join(os.path.dirname(__file__), "..", "..", "infra", "vps", "openclaw", "tcp-mcp.js")
+    if os.path.isfile(local_tcp_path):
+        with open(local_tcp_path, "r", encoding="utf-8") as f:
+            tcp_content = f.read()
+        b64write(ssh, "/opt/openclaw/tcp-mcp.js", tcp_content, dry=dry)
+        run(ssh, "chown 1000:1000 /opt/openclaw/tcp-mcp.js", check=False, dry=dry)
 
-    run(ssh, f"chown -R 1000:1000 {base_admin} {base_spine}", check=False, dry=dry)
+    # 4. Start Container
+    run(ssh, "cd /opt/openclaw && docker compose pull && docker compose up -d", check=False, dry=dry)
+    import time
+    time.sleep(3)
+
+    # 5. Connect to Networks
+    run(ssh, "docker network connect atlas_net openclaw-openclaw-gateway-1 2>/dev/null || true", check=False, dry=dry)
+    run(ssh, "docker network connect evolution-api-yxa5_default openclaw-openclaw-gateway-1 2>/dev/null || true", check=False, dry=dry)
 
     # HA Config
+    base_ha = "/opt/omega-core/homeassistant"
+    mkdir(ssh, f"{base_ha}/config", dry=dry)
     scout_raw = SCOUT_HA_URL.replace("http://","").replace("https://","")
     scout_host = scout_raw.split(":")[0]
     scout_port = scout_raw.split(":")[-1].rstrip("/") if ":" in scout_raw else "8123"
@@ -339,16 +281,6 @@ def step_openclaw_admin(ssh, dry, extracted_wa=None):
         b64write(ssh, f"{base_ha}/config/configuration.yaml", config_yaml, dry=dry)
     b64write(ssh, f"{base_ha}/config/secrets.yaml", secrets_yaml, dry=dry)
     run(ssh, f"chmod 600 {base_ha}/config/secrets.yaml", check=False, dry=dry)
-
-    # Docker-Compose
-    env_admin = (
-        f"OPENCLAW_GATEWAY_TOKEN={OC_ADMIN_TOKEN}\n"
-        f"GOOGLE_API_KEY={GEMINI_KEY}\n"
-        f"ANTHROPIC_API_KEY={ANTHROPIC_KEY}\n"
-        f"NEXOS_API_KEY={NEXOS_KEY}\n"
-        f"BASE_PATH=/openclaw\n"
-    )
-    b64write(ssh, "/opt/omega-core/.env", env_admin, dry=dry)
 
     compose_yml = f"""
 version: '3.8'
@@ -376,8 +308,7 @@ networks:
     driver: bridge
 """
     b64write(ssh, "/opt/omega-core/docker-compose.yml", compose_yml.strip(), dry=dry)
-
-    run(ssh, "cd /opt/omega-core && docker compose pull && docker compose up -d", check=False, dry=dry)
+    run(ssh, "cd /opt/omega-core && docker compose pull && docker compose up -d ha-core", check=False, dry=dry)
     time.sleep(5)
     run(ssh, "docker ps --format '{{.Names}}' | grep -iE 'openclaw|ha-core'", check=False, dry=dry)
 

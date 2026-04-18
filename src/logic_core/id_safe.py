@@ -3,7 +3,7 @@ import json
 from datetime import datetime
 from typing import Optional, List, Dict
 from pydantic import BaseModel, Field
-from src.network.chroma_client import ChromaClient
+from src.network.chroma_client import ResilientChromaClient as ChromaClient
 from loguru import logger
 
 class IdentityDocument(BaseModel):

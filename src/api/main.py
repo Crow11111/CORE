@@ -68,31 +68,32 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     else:
         logger.info("[API] Event-Bus uebersprungen (HASS_URL/HASS_TOKEN nicht gesetzt)")
 
-    # --- SYNC RELAY ---
+    # --- SYNC RELAY (Native integration via asyncio) ---
     webhook_secret = (os.getenv("CORE_WEBHOOK_SECRET") or "").strip()
     if webhook_secret:
         try:
-            import threading
-            import asyncio as _aio
             from aiohttp import web as _aio_web
+            from src.network.core_sync_relay import app as sync_relay_app
 
-            def _run_sync_relay():
-                from src.network.core_sync_relay import app as sync_relay_app
-                loop = _aio.new_event_loop()
-                _aio.set_event_loop(loop)
+            async def _run_relay_task():
+                runner = _aio_web.AppRunner(sync_relay_app, handle_signals=False)
+                await runner.setup()
+                site = _aio_web.TCPSite(runner, '0.0.0.0', 8050)
                 try:
-                    loop.run_until_complete(_aio_web.run_app(sync_relay_app, port=8050, handle_signals=False, print=lambda *a: None))
-                except OSError as e:
-                    if e.errno == 10048:
-                        logger.warning("[API] Sync Relay Port 8050 bereits belegt (vermutlich alter Reload-Prozess) -- uebersprungen")
-                    else:
-                        raise
+                    await site.start()
+                    logger.info("[API] Sync Relay (Native Task) gestartet auf Port 8050")
+                    # Keep the task alive as long as the lifespan
+                    while True:
+                        await _aio.sleep(3600)
+                except Exception as e:
+                    logger.error("[API] Sync Relay Task Error: {}", e)
+                finally:
+                    await runner.cleanup()
 
-            _sync_relay_thread = threading.Thread(target=_run_sync_relay, daemon=True, name="core-sync-relay")
-            _sync_relay_thread.start()
-            logger.info("[API] Sync Relay gestartet (Port 8050)")
+            import asyncio as _aio
+            _aio.create_task(_run_relay_task())
         except Exception as exc:
-            logger.error("[API] Sync Relay Start fehlgeschlagen: {} – API laeuft weiter", exc)
+            logger.error("[API] Sync Relay Start (Native) fehlgeschlagen: {} – API laeuft weiter", exc)
     else:
         logger.info("[API] Sync Relay uebersprungen (CORE_WEBHOOK_SECRET nicht gesetzt)")
 

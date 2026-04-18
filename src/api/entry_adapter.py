@@ -62,16 +62,22 @@ def _normalize_whatsapp(raw: dict) -> dict:
     """WhatsApp: nested message.conversation, extendedTextMessage.text.
     Unterstützt Evolution API (data-Wrapper) und flache Payloads.
     """
+    # Sicherstellen, dass raw ein dict ist
+    if not isinstance(raw, dict):
+        return {"text": "", "sender": "unknown", "event": "unknown_raw"}
+
     # Evolution API V2 wickelt alles in 'data'
     data = raw.get("data") if isinstance(raw.get("data"), dict) else raw
+    if not isinstance(data, dict):
+        data = {}
 
-    msg = data.get("message") or {}
+    msg = data.get("message")
     if not isinstance(msg, dict):
         msg = {}
 
     text = (
         msg.get("conversation")
-        or (msg.get("extendedTextMessage") or {}).get("text")
+        or (msg.get("extendedTextMessage") or {}).get("text") if isinstance(msg.get("extendedTextMessage"), dict) else None
         or data.get("body")
         or data.get("text")
         or ""
@@ -79,9 +85,12 @@ def _normalize_whatsapp(raw: dict) -> dict:
     if isinstance(text, str):
         text = text.strip()
     else:
-        text = str(text)
+        text = str(text) if text is not None else ""
 
-    key = data.get("key") or {}
+    key = data.get("key")
+    if not isinstance(key, dict):
+        key = {}
+
     sender = (
         key.get("remoteJid")
         or data.get("remoteJid") # V2 messages.update
@@ -93,11 +102,11 @@ def _normalize_whatsapp(raw: dict) -> dict:
     audio_msg = msg.get("audioMessage") or msg.get("pttMessage")
     return {
         "text": text,
-        "sender": sender,
-        "from_me": from_me,
+        "sender": str(sender) if sender else "unknown",
+        "from_me": bool(from_me),
         "id": key.get("id"), # Message ID
         "has_audio": bool(audio_msg),
-        "audio_seconds": (audio_msg or {}).get("seconds") if isinstance(audio_msg, dict) else None,
+        "audio_seconds": (audio_msg if isinstance(audio_msg, dict) else {}).get("seconds") if audio_msg else None,
         "event": raw.get("event"),
         "instance": raw.get("instance"),
     }

@@ -127,7 +127,13 @@ class ResilientChromaClient:
             container_name="chromadb", # Anpassen an exakten Docker-Namen deiner Umgebung
             gravity_weight=MAX_GRAVITY
         )
-        self.client = self._connect_with_paranoia()
+        self._client = None
+
+    @property
+    def client(self):
+        if self._client is None:
+            self._client = self._connect_with_paranoia()
+        return self._client
 
     def _connect_with_paranoia(self):
         import chromadb

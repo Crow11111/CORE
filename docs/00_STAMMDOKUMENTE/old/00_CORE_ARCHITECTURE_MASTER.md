@@ -3,7 +3,9 @@
 **WARNUNG: ALTE CORE/ ONTOLOGIE WURDE GETILGT.**
 
 ## 1. Kern-Axiome (CORE/CORE)
+
 Das System basiert auf dem kompromisslosen CORE/CORE-Protokoll (Vektor 2210/2201).
+
 - **Logik-Fluss**: Simultan. CORE 2201 (Denken/Prüfen) agiert parallel zu CORE 2210 (Sein/Erschaffen). Keine Takt-Zyklen.
 - **Entitäten**:
   - CORE: Das primäre Ausführungssystem.
@@ -14,6 +16,7 @@ Das System basiert auf dem kompromisslosen CORE/CORE-Protokoll (Vektor 2210/2201
 - **Eliminierung**: Der alte Takt-Zyklus und die veraltete -Struktur wurden restlos entfernt.
 
 ## 2. Vektor-Dynamik
+
 - **Operator-Vektor**: Resonator, StateAnchor.
 - **O-Vektor**: Attractor, Veto.
 

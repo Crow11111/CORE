@@ -32,6 +32,22 @@ services:
     read_timeout: 60000
     retries: 3
 
+  - name: omega-backend
+    url: http://172.17.0.1:32800
+    protocol: http
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    retries: 5
+
+  - name: openclaw-admin
+    url: http://172.17.0.1:18789
+    protocol: http
+    connect_timeout: 60000
+    write_timeout: 60000
+    read_timeout: 60000
+    retries: 5
+
 routes:
   - name: evolution-evopath
     service: evolution-api
@@ -55,6 +71,24 @@ routes:
     service: omega-core-backend
     paths:
       - /status
+    strip_path: false
+    protocols:
+      - http
+      - https
+
+  - name: omega-route
+    service: omega-backend
+    paths:
+      - /omega
+    strip_path: true
+    protocols:
+      - http
+      - https
+
+  - name: openclaw-admin-route
+    service: openclaw-admin
+    paths:
+      - /openclaw
     strip_path: false
     protocols:
       - http

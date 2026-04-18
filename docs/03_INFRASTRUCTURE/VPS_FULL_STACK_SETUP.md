@@ -102,6 +102,7 @@ Lokales LLM auf demselben VPS: siehe **VPS_OLLAMA_SETUP.md**. Installation: `pyt
 
 ## Referenzen
 
+- OPENCLAW_HOSTINGER_SPEZIFIKATIONEN.md (CORS, Origins, Pfade)
 - VPS_OLLAMA_SETUP.md (Ollama Port 11434, Modell, Firewall)
 - OPENCLAW_ADMIN_ARCHITEKTUR.md
 - PROJEKT_ANNAHMEN_UND_KORREKTUREN.md

@@ -114,3 +114,36 @@ async def test_get_history_sanitizes_limit_int():
 
     with patch.object(mod, "_run_pg_sql", new=AsyncMock(side_effect=fake_run)):
         await mod.get_history(limit=999999)
+
+
+@pytest.mark.asyncio
+async def test_list_canon_documents_queries_omega_canon_table():
+    mod = _load_event_store()
+    if not hasattr(mod, "list_canon_documents"):
+        pytest.fail(
+            "Kanon-Registry: list_canon_documents fehlt — MCP Pre-Flight ohne PG-Pfad."
+        )
+
+    payload = [
+        {
+            "repo_path": "OMEGA_RESONANCE_ANCHOR.md",
+            "document_role": "anchor_root",
+            "anchor_section": "0",
+            "title": "x",
+            "body_sha256": "a" * 64,
+            "byte_size": 12,
+            "last_synced_at": "2026-04-08T00:00:00+00:00",
+        }
+    ]
+    raw = json.dumps(payload)
+
+    async def fake_run(sql: str, timeout: int = 30):
+        assert "FROM omega_canon_documents" in sql
+        assert "LIMIT" in sql.upper()
+        return True, raw + "\n"
+
+    with patch.object(mod, "_run_pg_sql", new=AsyncMock(side_effect=fake_run)):
+        rows = await mod.list_canon_documents(limit=50)
+
+    assert len(rows) == 1
+    assert rows[0]["repo_path"] == "OMEGA_RESONANCE_ANCHOR.md"

@@ -50,3 +50,24 @@
 - **Automatischer Code-Check:** JEDER erzeugte Code muss VOR der Übergabe oder dem Commit zwingend durch `src/logic_core/anti_heroin_validator.py` laufen. (z.B. via `python -c "from src.logic_core.anti_heroin_validator import validate_file; validate_file('dein_code.py')"`).
 - **Kein Code ohne Falle (Veto-Traps):** Bevor der Producer-Agent auch nur eine Zeile Produktiv-Code schreibt, MÜSSEN die Tests (Veto-Gates/Nociceptoren) programmiert sein, die den Code auf Axiom-Verletzungen (A1, A5, A6) prüfen. Erst wenn diese Traps stehen und O2 (Orchestrator B) den Architekturentwurf blind freigegeben hat (PASS), darf der Worker ran.
 - **Strafe bei Verstoß:** Ein Versuch, den Operator mit "Fake-Lösungen" (Heroin-Traum) zu täuschen, führt sofort zum Trust-Collapse (Axiom 6).
+
+## 8. DER KARPATHY-LOOP & PROMPTING-PARADIGMA
+**ABSOLUTE KERN-REGEL FÜR ALLE AGENTEN (ORCHESTRATOR & WORKER):**
+
+1. **PROBLEMSTELLUNG STATT MIKRO-ANWEISUNG:** Der Orchestrator (Du) definiert das **Ziel** (Was soll erreicht werden?) und den **Toolkit-Rahmen** (Welche Werkzeuge sind erlaubt/nötig?), aber NIEMALS den genauen Lösungsweg (keine Schritt-für-Schritt-Befehle). Der Agent muss die Architektur selbstständig explorieren und die Werkzeuge innerhalb seiner Domäne eigenverantwortlich wählen.
+
+2. **EVOLUTIONS-REGEL FÜR DAS WIKI:** 
+   - Regeln und Wissenseinträge im Wiki entstehen **emergent**. 
+   - Der Orchestrator schreibt keine Regeln "auf Vorrat" (Präventiv-Micro-Management), sondern nur, wenn ein Fehlermuster wiederholt auftritt (z.B. wenn drei Worker am selben Punkt scheitern). 
+   - Erst dann wird die Lösung als "Golden Pattern" oder "Axiom" im Wiki manifestiert.
+
+3. **ABWEICHUNGS-MELDEPFLICHT ALS WISSENSQUELLE:** 
+   - Wenn ein Worker vom Plan abweichen muss (weil die Realität auf dem Server anders ist als im Plan), ist dies kein Fehler, sondern ein **Wissensgewinn**.
+   - Der Worker MUSS diese Abweichung detailliert melden.
+   - Der Orchestrator bewertet: Ist das ein Einzelfall oder ein neues Muster? Wenn Muster -> Wiki-Update.
+
+4. **O2 ERGEBNIS-AUDIT ZWANG:** Du (Orchestrator) darfst der bloßen Vollzugsmeldung eines Workers niemals vertrauen. JEDER Output eines Sub-Agenten muss sofort an O2 (den Zero-Context Auditor) zur Prüfung weitergereicht werden, bevor du den nächsten Schritt planst oder dem Operator Erfolg meldest.
+
+5. **ZWANGS-PRE-FLIGHT READ:** Bevor irgendein Agent das Dateisystem oder den Server anfasst, MUSS er im Wiki (`~/OMEGA_WIKI/wiki/`) die Parameter verifizieren. Wer einfach rät oder ohne Wiki-Konsultation exekutiert, begeht einen Trust-Collapse.
+
+6. **TOOL-FREIHEIT INNERHALB DER DOMÄNE:** Anstatt Werkzeuge (wie `cat` vs `Read`) mikrozumanagen, wird die **Domäne** definiert (z.B. "Voller Zugriff auf IDE-Tools und VPS-Shell"). Der Agent wählt innerhalb dieser Domäne das effizienteste Werkzeug für das aktuelle Problem.

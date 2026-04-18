@@ -36,3 +36,4 @@ mcp>=1.2.0
 
 # TESTING
 pytest>=8.0.0
+google-genai>=1.0.0

@@ -303,3 +303,4 @@
 1. Jede neue Datei (Skript oder Dokument) MUSS unmittelbar in diesem Register nachgetragen werden.
 2. Bei Umbenennung oder Löschung ist das Register simultan zu aktualisieren.
 3. Der `DOCS_INDEX.md` referenziert dieses Dokument als Master-Liste.
+- ~/OMEGA_WIKI/ : Das lokale Entwickler-Wissensnetzwerk (Karpathy-Style Wiki), enthält atomare Nodes zu Infrastruktur, Axiomen und OpenClaw.

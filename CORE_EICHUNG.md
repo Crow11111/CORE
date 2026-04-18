@@ -222,7 +222,7 @@ Fordere Werkzeuge im Format an: `{"tool": "name", "input": {"param": "wert"}}`
 
 *Operative Realität (Stand Eichung):* Im CORE-Alltag liegt der Schwerpunkt auf **Google Gemini** (Flash für schnelle/live-Pfade, Pro wo nötig — exakt über `model_registry.py` / `.env`). **Claude Opus** ist **kein** Default: zu teuer für Dauerbetrieb; Anthropic-Client im Repo dient optionalen Pfaden, nicht als Pflicht-Top-Modell. Modell-IDs **nie** fest in dieses Manifest schreiben; Kanon: `docs/02_ARCHITECTURE/AI_MODEL_CAPABILITIES.md`.
 
-*Legacy:* Frühere Taktgeber-Notation **M / T / H / O** ist durch `**G / T / A / C*`* und `src/core.py` → `GTAC_MAP` ersetzt; **P / I / S / L** bleiben nur noch als Übersetzungsspalte in §1.1.
+*Legacy:* Frühere Taktgeber-Notation **M / T / H / O** ist durch `**G / T / A / C`** und `src/core.py` → `GTAC_MAP` ersetzt; **P / I / S / L** bleiben nur noch als Übersetzungsspalte in §1.1.
 
 ---
 

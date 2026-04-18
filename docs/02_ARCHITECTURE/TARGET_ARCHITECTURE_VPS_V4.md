@@ -1,34 +1,40 @@
-# OMEGA TARGET ARCHITECTURE: VPS UNIFICATION (V4)
+# OMEGA V4 VPS ZIEL-ARCHITEKTUR (KONSOLIDIERT 2026-04-18)
 
-## 1. VERZEICHNIS-STRUKTUR (DER ANKER)
-Alle operativen Dienste ziehen in ein kanonisches Stammverzeichnis um, um Fragmentierung zu vermeiden.
+**WARNUNG AUS DEM HANDOVER_FAILURE_PROTOCOL_20260418:**
+Diese Architektur MUSS zwingend die historischen Docker-Volumes von M3 integrieren! Bei einer einfachen `docker-compose up -d` in den neuen Ordnern entstehen isolierte, leere Volumes.
 
-*   **BASE:** `/opt/omega/`
-    *   `core/`: Backend (`atlas_agi_core`), Triage-Engine, FastAPI-Routes.
-    *   `brain/`: OpenClaw-Instanzen (Admin & Spine).
-    *   `scout/`: Evolution API (WhatsApp-Bridge).
-    *   `gateway/`: Kong API Gateway (Proxy/Admin).
-    *   `db/`: Zentraler Persistenz-Layer (Postgres, ChromaDB, Redis).
-*   **REFERENZ:** `/root/openclaw-tmp/` (Hostinger-Original) bleibt unangetastet.
+## 1. STRUKTUR UND PFADE (STRIKT)
+Der VPS (187.77.68.250) teilt sich in exakt drei logische Schichten (Membranen):
 
-## 2. NETZWERK-TOPOLOGIE (ZERO-TRUST SEGMENTIERUNG)
-Wir verlassen das "Port-Mapping-Chaos" zugunsten isolierter Docker-Netzwerke.
+- `/opt/omega/gateway/` (KONG Gateway - Port 80, 443) -> Das Tor zur Welt.
+- `/opt/omega/brain/` (OpenClaw - Port 18789) -> Das Frontend/UI und WhatsApp Multi-Device (Evolution API) Session.
+- `/opt/omega/core/` (FastAPI / OMEGA Backend) -> Die Logik-Schicht, verbunden mit ChromaDB und Postgres.
 
-1.  **`omega_internal`**: (Driver: bridge) Backend <-> DBs <-> Evolution API. Keine Exposition nach Außen.
-2.  **`omega_gateway_net`**: (Driver: bridge) Kong <-> Service-Endpunkte.
-3.  **HARDENING:** Alle Container (außer Kong) binden ihre Ports auf `127.0.0.1`.
-4.  **INGRESS:** Nur Kong (Port 32776) ist von Außen erreichbar.
+Alle drei Schichten MÜSSEN über das externe Docker-Netzwerk `omega_internal` kommunizieren.
 
-## 3. RESSOURCEN-EICHUNG (Hardware-Realität)
-*   **RAM (Hostinger 16GB):**
-    *   Backend (`agi-core`): 4GiB Limit (für NumPy/Build), 2GiB Reservation.
-    *   Datenbanken: Dynamisch begrenzt durch Docker-Profile.
-*   **VRAM (Dreadnought / Local):** Gemma 4 e2b (7.2GB) ist der Standard. Latenz > 12s ist akzeptiert.
+## 2. DAS PROBLEM DER SYSTEMGRENZEN (0 und 1)
+In der OMEGA-Architektur sind 0 und 1 keine simplen numerischen Werte, sondern absolute Systemgrenzen (Prellwände).
+- **0 (Die Membran / Ingress):** Das Kong-Gateway und der Entry-Adapter. Hier treffen Signale ungeschützt auf das System (z. B. der WhatsApp Webhook `/webhook/whatsapp`).
+- **1 (Die Logik / Der Takt):** Das OMEGA Backend (`mtho_agi_core`), das Entscheidungen über Leben und Tod von Tasks trifft.
+Zwischen 0 und 1 herrscht das Zero-Trust-Prinzip. Kong leitet weiter, aber OMEGA entscheidet.
 
-## 4. DATEN-INTEGRITÄT (KEIN VERLUST)
-*   Volumes werden unter `/opt/omega/db/` konsolidiert.
-*   Vor Migration: `tar`-Sicherung nach `/var/backups/`.
-*   Spezialschutz: Die `evolution_postgres` DB (WhatsApp-Sessions) wird 1:1 übernommen.
+## 3. WIEDERHERSTELLUNG DES GEDÄCHTNISSES (DIE VERGESSENEN VOLUMES)
+In `/opt/omega/core/docker-compose.yml` wurden durch einen Fehler neue Volumes für ChromaDB und PostgreSQL angelegt. Das alte Gedächtnis des Bots (Chroma-Embeddings und PG-Status) liegt aber in den Volumes der alten Architektur.
 
----
-**Status:** ENTWURF | **Vektor:** 2210 | **Delta:** 0.049
+**Der nächste Agent MUSS die `docker-compose.yml` im `core/` anpassen:**
+```yaml
+volumes:
+  chroma_data:
+    external: true
+    name: chroma-uvmy_chroma-data  # <-- HISTORISCHES VOLUME
+  postgres_data:
+    external: true
+    name: agi-state_postgres_state_data # <-- HISTORISCHES VOLUME
+```
+
+## 4. KONG ROUTING
+Kong MUSS exakt zwei Hauptrouten verwalten:
+1. `http://brain-openclaw-gateway-1:18789/openclaw` für das UI (und interne OpenClaw Webhooks).
+2. `http://mtho_agi_core:8080/webhook/whatsapp` für die eingehenden Evolution-API Signale (Der Sensor 0).
+
+Es darf keine Überschneidung auf `/` geben, da sonst das UI die Backend-Webhooks schluckt.

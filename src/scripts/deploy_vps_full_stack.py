@@ -159,7 +159,7 @@ def _oc_config(token, port, wa_allow, with_providers):
             "trustedProxies": ["127.0.0.1/32", "::1/128", "172.16.0.0/12", "172.17.0.0/16"],
             "controlUi": {
                 "basePath": "/openclaw",
-                "allowedOrigins": ["*", "http://localhost:18789", "http://127.0.0.1:18789", https_origin, "https://127.0.0.1"],
+                "allowedOrigins": ["*", "http://localhost:18789", "http://127.0.0.1:18789", https_origin, "https://127.0.0.1", "http://187.77.68.250:32776"],
                 "dangerouslyAllowHostHeaderOriginFallback": True,
                 "allowInsecureAuth": True,
                 "dangerouslyDisableDeviceAuth": True,

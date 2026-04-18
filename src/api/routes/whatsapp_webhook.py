@@ -74,8 +74,8 @@ async def receive_whatsapp(
     request: Request,
     background_tasks: BackgroundTasks,
     event_name: str | None = None,
-    # _auth: None = Depends(verify_whatsapp_auth), # Temporär deaktiviert für Debugging
-):
+    _auth: None = Depends(verify_whatsapp_auth),
+) -> dict:
     """
     Empfängt WhatsApp-Nachrichten über Evolution API oder HA.
     Unterstützt Wildcard-Events (V2 webhookByEvents).
@@ -133,7 +133,7 @@ async def receive_whatsapp(
         # Management Events (Test, Connection)
         if normalized_event in ["test", "connection.update", "connection"]:
             logger.info(f"[WA|{trace_id}] [MANAGEMENT] {actual_event} erhalten.")
-            return {"status": "event_handled", "event": actual_event}
+            return {"status": "event_handled", "event": actual_event, "trace_id": trace_id}
 
         # Gruppen-Events (V2 nutzt oft GROUPS_UPSERT oder GROUP_UPDATE)
         if "group" in normalized_event:

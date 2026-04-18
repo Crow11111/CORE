@@ -15,7 +15,7 @@ from fastapi.staticfiles import StaticFiles
 from loguru import logger
 
 # Temporär auskommentiert wegen ImportError
-# from src.api.routes import id_safe
+from src.api.routes import id_safe
 
 from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, core_knowledge, core_voice, core_events, github_webhook, omega_matrix, omega_thought, telemetry, chat, dictate, voice_bridge, jarvis_mri_coupler, core_state_api, system_ops
 
@@ -160,7 +160,7 @@ app.include_router(voice_bridge.router)
 app.include_router(dictate.router)
 app.include_router(core_state_api.router)
 app.include_router(system_ops.router)
-# app.include_router(id_safe.router)
+app.include_router(id_safe.router)
 
 @app.get("/")
 def read_root():

@@ -130,6 +130,11 @@ async def receive_whatsapp(
             logger.debug(f"[WA|{trace_id}] [SYNC] Message Update: {sender} -> {status}")
             return {"status": "event_handled", "event": actual_event}
 
+        # Management Events (Test, Connection)
+        if normalized_event in ["test", "connection.update", "connection"]:
+            logger.info(f"[WA|{trace_id}] [MANAGEMENT] {actual_event} erhalten.")
+            return {"status": "event_handled", "event": actual_event}
+
         # Gruppen-Events (V2 nutzt oft GROUPS_UPSERT oder GROUP_UPDATE)
         if "group" in normalized_event:
             logger.info(f"[WA|{trace_id}] [GROUP-EVENT] {actual_event} erhalten.")

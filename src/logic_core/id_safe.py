@@ -29,14 +29,20 @@ class IdentityDocument(BaseModel):
 class IDSafe:
     """Verwaltet digitale Identitätsdokumente in ChromaDB."""
     def __init__(self):
-        self.client = ChromaClient()
+        self._client = None
         self.collection_name = "core_identity_documents"
-        self._ensure_collection()
+
+    @property
+    def client(self):
+        if self._client is None:
+            self._client = ChromaClient()
+            self._ensure_collection()
+        return self._client
 
     def _ensure_collection(self):
         """Stellt sicher, dass die ChromaDB Collection existiert."""
         try:
-            self.client.get_or_create_collection(self.collection_name)
+            self._client.client.get_or_create_collection(self.collection_name)
             logger.info(f"[IDSafe] Collection '{self.collection_name}' ist bereit.")
         except Exception as e:
             logger.error(f"[IDSafe] Fehler beim Initialisieren der Collection '{self.collection_name}': {e}")

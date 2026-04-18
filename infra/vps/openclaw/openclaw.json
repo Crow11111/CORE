@@ -1,0 +1,108 @@
+{
+  "gateway": {
+    "bind": "loopback",
+    "port": 18789,
+    "mode": "local",
+    "auth": {
+      "token": "ykKqxCcMM5CPYTS20fxTWyu6RkLkvd5T"
+    },
+    "controlUi": {
+      "dangerouslyAllowHostHeaderOriginFallback": true,
+      "basePath": "/openclaw",
+      "allowedOrigins": [
+        "http://187.77.68.250:32776"
+      ],
+      "enabled": true,
+      "allowInsecureAuth": true,
+      "dangerouslyDisableDeviceAuth": true
+    },
+    "trustedProxies": [
+      "172.16.0.0/12",
+      "127.0.0.1"
+    ]
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "google/gemini-3.1-pro-preview",
+        "fallbacks": [
+          "google/gemini-2.5-pro"
+        ]
+      }
+    }
+  },
+  "plugins": {
+    "entries": {
+      "google": {
+        "enabled": true
+      },
+      "webhooks": {
+        "enabled": true
+      },
+      "whatsapp": {
+        "enabled": true
+      }
+    }
+  },
+  "meta": {
+    "lastTouchedVersion": "2026.4.16",
+    "lastTouchedAt": "2026-04-18T10:12:38.696Z"
+  },
+  "channels": {
+    "whatsapp": {
+      "enabled": true
+    }
+  },
+  "mcp": {
+    "servers": {
+      "mcp-postgres": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-postgres",
+          "postgresql://postgres:password@172.17.0.1:5432/postgres"
+        ]
+      },
+      "mcp-wiki": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-filesystem",
+          "/opt/openclaw/workspace"
+        ]
+      },
+      "mcp-fetch": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-fetch"
+        ]
+      },
+      "postgres": {
+        "command": "npx",
+        "args": [
+          "-y",
+          "@modelcontextprotocol/server-postgres",
+          "postgresql://evolution:uhLkGfm20w8nAxJSmJy9owxog8JoHiDg@evolution-api-yxa5-postgres-1:5432/evolution"
+        ]
+      },
+      "filesystem": {
+        "command": "node",
+        "args": [
+          "/home/node/.openclaw/tcp-mcp.js",
+          "mcp-server",
+          "8001"
+        ]
+      }
+    }
+  },
+  "messages": {
+    "tts": {
+      "providers": {
+        "google": {
+          "model": "gemini-3.1-flash"
+        }
+      }
+    }
+  }
+}

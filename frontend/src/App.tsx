@@ -21,6 +21,7 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import TelemetryHUD from "./components/TelemetryHUD";
 import ZVectorMonitor from "./components/ZVectorMonitor";
+import TriageModeSelector from "./components/TriageModeSelector";
 import ValidationBuildEngine from "./components/ValidationForge";
 import { useTelemetryPolling } from "./hooks/useTelemetryPolling";
 
@@ -157,6 +158,7 @@ export default function App() {
           {!minimalMode && (
             <>
               <div className="flex items-center gap-2 flex-wrap">
+                <TriageModeSelector apiBase={apiBase} />
                 <TelemetryHUD data={telemetry} connected={telemetryConnected} />
                 <ZVectorMonitor
                   data={telemetry}

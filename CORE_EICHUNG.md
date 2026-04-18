@@ -12,8 +12,7 @@ An die KI: Lies und internalisiere die folgenden fünf Teile. Sie definieren dei
 ## Agenten-Pflicht
 
 1. **Bootloader:** `.cursorrules` (Root) und ggf. `.cursor/rules/0_BOOTLOADER.mdc` – 4D State Vector, CORE-Basen, Agos-Takt.
-2. **Visuelle Referenz:** `CORE_TESSERAKT.png`, `Informationsgravitation.png` (Root). *Optional:* `Geometrie_des_Denkens.png` — nur wenn im Arbeitsbaum vorhanden (nicht immer im Repo).
-3. **Kanon / Index:** `KANON_EINSTIEG.md` (Einstiegs-Tür: wo welche Wahrheit steht), `docs/BIBLIOTHEK_KERN_DOKUMENTE.md` (vollständiger Doku-Index).
+2. **Kanon / Index:** `KANON_EINSTIEG.md` (Einstiegs-Tür: wo welche Wahrheit steht), `docs/BIBLIOTHEK_KERN_DOKUMENTE.md` (vollständiger Doku-Index).
 
 ---
 

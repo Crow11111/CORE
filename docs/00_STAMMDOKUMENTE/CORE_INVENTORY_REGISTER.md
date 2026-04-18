@@ -15,6 +15,7 @@
 | **CORE DNA** | `docs/01_CORE_DNA/` | Verfassung, Axiome, 4-Strang-Architektur, Codex. |
 | **Karpathy Wiki Rule** | `.cursor/rules/karpathy_wiki.mdc` | Protokoll für Ingest & Synthese des OMEGA Wissens-Kristalls. |
 | **DNA-Archiv (Legacy Genesis)** | `docs/01_CORE_DNA/_archive/` | Historischer Genesis-/Tesserakt-Text ohne Kanon-Status; Stub: `CORE_GENESIS_FINAL_ARCHIVE.md`. |
+| **Root Legacy Archiv** | `docs/archive/root_legacy/` | Ablage für veraltete Root-Dateien, Logs und Bilder (z.B. CORE.png, Tesserakt). |
 | **Genesis-Stub (Link-Anker)** | `docs/01_CORE_DNA/CORE_GENESIS_FINAL_ARCHIVE.md` | Obsolet-Hinweis; verweist auf SYSTEM_CODEX, Bibliothek, `_archive/`. |
 | **Genesis-Weiterleitung (Root docs/)** | `docs/CORE_GENESIS_FINAL_ARCHIVE.md` | Kurze Weiterleitung auf Stub/Archiv. |
 | **Axiom 0** | `docs/01_CORE_DNA/AXIOM_0_AUTOPOIESIS.md` | Die Autopoiesis des Gitters (x^2=x+1). |

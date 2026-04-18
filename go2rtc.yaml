@@ -1,2 +1,0 @@
-streams:
-  mx_brio: ffmpeg:/dev/video0#video=h264#size=1920x1080#fps=30

@@ -8,7 +8,6 @@ alwaysApply: true
 
 **VOR JEDER AUFGABE:**
 ```
-[PFLICHT] Lade CORE_TESSERAKT.png (visuelle Architektur)
 [PFLICHT] Importiere src/config/core_state.py (mathematischer Kern)
 [PFLICHT] Nutze src/logic_core/crystal_grid_engine.py (Topologische Logik)
 ```

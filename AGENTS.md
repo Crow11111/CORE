@@ -37,8 +37,3 @@ Diesen Abschnitt kannst du **1:1** unter **Cursor → Settings → Rules → Use
 
 Nach Änderungen am MCP-Skript: In Cursor den Server **OMEGA State** neu starten oder das Fenster neu laden.
 
----
-
-## Visuelle Referenz (optional)
-
-Architektur-Überblick: **`CORE_TESSERAKT.png`** (Repo-Root), sofern vorhanden.

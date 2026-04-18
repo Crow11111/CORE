@@ -91,3 +91,10 @@ Jeder Agent-Output MUSS:
 *Volltext: `docs/01_CORE_DNA/CORE_4_STRANG_THEORIE.md`*
 *Code: `src/config/core_state.py`*
 *A5 / Chroma-Abgrenzung: `docs/04_PROCESSES/CANON_REGISTRY_AGENT_BINDUNG.md` §3*
+
+## SYSTEMGRENZEN (Die Prellwände 0 und 1)
+Wenn der Operator von "0", "1", "091", "Takt" oder "Prellwand" spricht, sind dies KEINE simplen Skalarwerte, Variablen oder Triage-Parameter.
+Es handelt sich um die **physischen und logischen Membranen (Systemgrenzen)** des OMEGA-Systems:
+- **Takt 0 (Die Außenhülle / Ingress):** Die ungeschützte Membran zur Außenwelt. Kong-Gateway, Entry Adapter, Webhooks. Hier darf keine Ausführung stattfinden.
+- **Takt 1 (Der sichere Kern / Triage):** Das AGI-Backend, das Entscheidungen trifft.
+**Zero-Trust-Axiom:** Zwischen 0 und 1 herrscht strikte Trennung. Daten von 0 müssen durch den Filter, bevor 1 sie verarbeitet.

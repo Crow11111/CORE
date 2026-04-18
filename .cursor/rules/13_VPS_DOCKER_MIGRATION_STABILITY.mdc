@@ -1,0 +1,27 @@
+---
+description: Handhabung von VPS-Deployments, Docker-Compose, Volumes und Local-Venvs
+globs: docker-compose*.yml, src/requirements.txt, docs/03_INFRASTRUCTURE/*.md
+alwaysApply: true
+---
+
+# VPS & DOCKER ÜBERLEBENSPROTOKOLL (AXIOM: KEINE AMNESIE)
+
+## 1. DOCKER VOLUMES (CHROMA & POSTGRES)
+Wenn du eine `docker-compose.yml` für den VPS schreibst oder migrierst (z.B. nach `/opt/omega/core/`):
+Du MUSST ZWINGEND sicherstellen, dass historische Datenbank-Volumes (ChromaDB, PostgreSQL) weiterverwendet werden!
+**FEHLER-MUSTER (Verboten):** Du schreibst einfach `volumes: - chroma_data:/data`, was dazu führt, dass Docker ein neues, **leeres** Volume anlegt. Das System verliert sofort sein Gedächtnis (RAG/Embeddings sind weg).
+**KORREKTES MUSTER (Pflicht):** Du machst zuerst `docker volume ls` auf dem VPS, suchst das existierende Volume mit den Daten (z.B. `chroma-uvmy_chroma-data` oder `agi-state_chroma_state_data`) und bindest es extern ein:
+```yaml
+volumes:
+  chroma_data:
+    external: true
+    name: name_des_alten_volumes
+```
+
+## 2. LOCAL VENV VS VPS REQUIREMENTS
+Wenn es einen Dependency-Konflikt (z. B. ChromaDB Server vs. Client Versionen) gibt:
+**FEHLER-MUSTER (Verboten):** Du änderst blind die globale `/OMEGA_CORE/src/requirements.txt` im Root-Verzeichnis und machst `pip install` auf der lokalen Maschine (Dreadnought).
+**KONSEQUENZ:** Das lokale `.venv` zerbricht (Pydantic V1/V2 Konflikte), `uvicorn` crasht, die lokale Voice-Dictate-Pipeline (`/api/dictate`) stirbt.
+**KORREKTES MUSTER (Pflicht):**
+Dreadnought (lokal) != VPS (Remote).
+Wenn du etwas für den VPS fixt, ändere es *nur* im Build-Kontext des VPS oder weise darauf hin, dass es eine Abspaltung der Requirements braucht. Teste niemals blind lokale Installs, wenn die Änderung primär für den VPS-Docker-Container gedacht war.

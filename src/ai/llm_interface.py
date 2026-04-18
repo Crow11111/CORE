@@ -51,9 +51,10 @@ class ResilientLLMInterface:
             self.local_llm = ChatOllama(model=OLLAMA_HEAVY, base_url=local_fallback_url, temperature=0.7)
             
         # Cloud Workers
-        self.cloud_heavy = ChatGoogleGenerativeAI(model=GEMINI_HEAVY, temperature=0.3)
-        self.cloud_flash = ChatGoogleGenerativeAI(model=GEMINI_FLASH, temperature=0.4)
-        self.cloud_lite = ChatGoogleGenerativeAI(model=GEMINI_FLASH_LITE, temperature=0.1)
+        gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
+        self.cloud_heavy = ChatGoogleGenerativeAI(model=GEMINI_HEAVY, temperature=0.3, google_api_key=gemini_key)
+        self.cloud_flash = ChatGoogleGenerativeAI(model=GEMINI_FLASH, temperature=0.4, google_api_key=gemini_key)
+        self.cloud_lite = ChatGoogleGenerativeAI(model=GEMINI_FLASH_LITE, temperature=0.1, google_api_key=gemini_key)
 
     async def ainvoke_by_skill(self, messages: List[BaseMessage], skill: str = "stupid_coder") -> str:
         """
@@ -116,8 +117,9 @@ class LLMInterface:
         local_model = GEMMA_TRIAGE
 
         # Triage Engines
+        gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
         self.triage_local = ChatOllama(model=local_model, base_url=local_url, temperature=0.1).with_structured_output(TriageResult)
-        self.triage_cloud = ChatGoogleGenerativeAI(model=GEMINI_FLASH_LITE, temperature=0.1).with_structured_output(TriageResult)
+        self.triage_cloud = ChatGoogleGenerativeAI(model=GEMINI_FLASH_LITE, temperature=0.1, google_api_key=gemini_key).with_structured_output(TriageResult)
 
         self.worker_pool = ResilientLLMInterface(
             ollama_model=scout_model,

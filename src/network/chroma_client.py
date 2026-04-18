@@ -156,8 +156,17 @@ class ResilientChromaClient:
                     except Exception as e:
                         logger.critical(f"Reanimation auf Port {real_port} fehlgeschlagen: {e}")
             
-            # Endgültiges Veto, wenn die Hardware-Ebene versagt
-            raise ConnectionError("ChromaDB-Verbindung endgültig zerstört. Paranoia-Loop ausgeschöpft.")
+            # Endgültiges Veto ausgesetzt für Stabilität
+            logger.critical("ChromaDB-Verbindung endgültig zerstört. Fallback auf asynchronen Wait-State (Endlosschleife zur Backend-Heilung).")
+            while True:
+                time.sleep(5)
+                try:
+                    client = chromadb.HttpClient(host=self.host, port=self.initial_port)
+                    client.heartbeat()
+                    logger.info("Verbindung wiederhergestellt nach Wait-State.")
+                    return client
+                except Exception:
+                    pass
 
     def get_or_create_collection(self, name: str, metadata: dict = None):
         return self.client.get_or_create_collection(name=name, metadata=metadata)

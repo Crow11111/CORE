@@ -153,10 +153,12 @@ def _oc_config(token, port, wa_allow, with_providers):
     cfg = {
         "gateway": {
             "mode": "local", "port": port, "bind": "lan",
+            "basePath": "/openclaw",
             "auth": {"mode": "token", "token": token},
             "remote": {"token": token},
-            "trustedProxies": ["127.0.0.1/32", "::1/128", "172.16.0.0/12"],
+            "trustedProxies": ["127.0.0.1/32", "::1/128", "172.16.0.0/12", "172.17.0.0/16"],
             "controlUi": {
+                "basePath": "/openclaw",
                 "allowedOrigins": ["*", "http://localhost:18789", "http://127.0.0.1:18789", https_origin, "https://127.0.0.1"],
                 "dangerouslyAllowHostHeaderOriginFallback": True,
                 "allowInsecureAuth": True,

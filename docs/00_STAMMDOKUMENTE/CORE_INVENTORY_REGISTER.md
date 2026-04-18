@@ -100,6 +100,7 @@
 | **Biology→Digital Mapping VETO REAL_4 (Hugin)** | `docs/05_AUDIT_PLANNING/MAPPING_VETO_REAL_4.md` | Zero-Context Audit `BIOLOGY_TO_DIGITAL_MAPPING.md` (aktualisiert): A1/A5/A6/A7/A10, A10-Align in §2, §5-A10-Scanner-Lücke; Urteil PASS. |
 | **Infrastruktur** | `docs/03_INFRASTRUCTURE/` | VPS-Setup, Docker-Sandbox, Backup-Pläne. |
 | **VPS-Knoten & Flüsse** | `docs/03_INFRASTRUCTURE/VPS_KNOTEN_UND_FLUSSE.md` | Monica, Kong, Evolution, DBs: Zweck, Pull/Push-Matrix, Einbindung. |
+| **OpenClaw Hostinger Spezifikationen** | `docs/03_INFRASTRUCTURE/OPENCLAW_HOSTINGER_SPEZIFIKATIONEN.md` | Konfiguration, Bootstrap, Modell-Eichung (Gemini 3.1) und bekannte Bugs/Limitationen (OpenClaw/MCP). |
 | **Ollama VPS (Strang B)** | `docs/03_INFRASTRUCTURE/VPS_OLLAMA_SETUP.md` | Ollama auf Hostinger-VPS, Port 11434, Modell, Firewall. |
 | **Vollkreis-Plan** | `docs/05_AUDIT_PLANNING/OMEGA_VOLLKREIS_PLAN.md` | Geschlossene Kette, Team-Arbeitspakete A–G, Linux-Auswirkungen. |
 | **Prozesse** | `docs/04_PROCESSES/` | Workflows, Sicherheitsrat, Deployment-Regeln. |
@@ -120,6 +121,7 @@
 | **OC Brain Strang B Bericht** | `docs/05_AUDIT_PLANNING/OC_BRAIN_STRANG_B_BERICHT.md` | Kurzbericht Ollama auf VPS (Installation, api/tags, Modell). |
 | **Projektplan ATLAS 2026** | `docs/05_AUDIT_PLANNING/PROJECT_PLAN_ATLAS_TRANSFORMATION_2026.md` | Detaillierter Plan (Luminescence, Sentinel, Memory-Core). |
 | **Session-Log 2026-03-26 (DB-Rescue)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-26_DB_RESCUE.md` | Purge korrupter Multi-View Collections, 0-State Wiederherstellung, Ghost-Doc Bereinigung. |
+| **Session-Log 2026-04-18 (OpenClaw Bootstrap)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-04-18.md` | OpenClaw Baseline Setup & Bootstrap abgeschlossen, Gemini 3.1 Pro konfiguriert. |
 | **Session-Log 2026-03-25 (Model Benchmark)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-25_MODEL_BENCHMARK.md` | Validierung der dynamischen Skalierung (T1-T5), Git-Cleanup und Axiom-Compliance. |
 | **Session-Log 2026-03-26 (DB-Rescue)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-26_DB_RESCUE.md` | Purge korrupter Multi-View Collections, 0-State Wiederherstellung, Ghost-Doc Bereinigung. |
 | **Session-Log 2026-03-25 (Thermal/OS)** | `docs/05_AUDIT_PLANNING/SESSION_LOG_2026-03-25_THERMAL_AND_OS_FIXES.md` | Lüftersteuerung (it87), ACPI Standby Fix, Chrome Graceful Exit, Headless Audio Dictation. |

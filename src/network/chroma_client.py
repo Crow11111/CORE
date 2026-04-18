@@ -139,8 +139,8 @@ class ResilientChromaClient:
         except Exception as e:
             logger.warning(f"Statische Port-Annahme ({self.initial_port}) fehlgeschlagen: {e}")
             
-            if self.host not in ["localhost", "127.0.0.1", "0.0.0.0"]:
-                logger.warning(f"[{self.host}] ist remote. Überspringe lokalen Docker-Überlebenskampf.")
+            if self.host not in ["localhost", "127.0.0.1", "0.0.0.0"] and "." in self.host:
+                logger.warning(f"[{self.host}] ist eine externe Remote-Adresse. Überspringe lokalen Docker-Überlebenskampf.")
                 raise ConnectionError(f"Remote ChromaDB-Verbindung zu {self.host}:{self.initial_port} fehlgeschlagen.")
             
             # Singularität detektiert -> Exponentieller Kampf um die Verbindung

@@ -59,7 +59,7 @@ async def _mirror_to_oc_brain(text: str, sender: str, msg_type: str = "whatsapp"
         return
     try:
         payload = f"[{msg_type.upper()}|{sender}] {text}"
-        ok, msg = await send_message_to_agent_async(payload, agent_id="main", user=sender, timeout=10.0)
+        ok, msg = await send_message_to_agent_async(payload, agent_id="main", user=sender, timeout=30.0)
         if ok:
             logger.debug(f"OC Brain Mirror OK: {msg[:80]}")
         else:

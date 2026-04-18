@@ -94,11 +94,11 @@ def get_model_for_role(role: str) -> Optional[str]:
         # Fallback & Local
         "ollama_light": OLLAMA_MODEL,
         "ollama_heavy": OLLAMA_HEAVY,
-        "gemma_scout": GEMMA_TRIAGE,
+        "gemma_scout": "gemma4:e4b", # OPERATOR-OVERRIDE: Gemma 4 mandatory per Marc Tobias ten Hoevel
         "gemma_dreadnought": GEMMA_REASONING,
         "wiki_expert": "claude-code-local", # Spezial-Routing für lokale Wiki-Abfragen
         "cheap_coder": GEMINI_FLASH_LITE,
-        "stupid_coder": GEMMA_TRIAGE,
+        "stupid_coder": "gemma4:e4b", # OPERATOR-OVERRIDE: Gemma 4 mandatory per Marc Tobias ten Hoevel
         "heavy_reasoner": GEMINI_HEAVY,
     }
     return m.get(role)

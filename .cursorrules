@@ -26,10 +26,10 @@
 - **Kontext-Zwang:** Sub-Agenten erhalten automatisch ihren domänenspezifischen Kontext durch `.cursor/rules/*.mdc`, sobald sie relevante Dateien anfassen.
 
 ## 4. DATEI-HYGIENE, PROTOKOLL & TAGEBUCH-PARADIGMA
-- **Tagebuch-Paradigma (Umkehr der Dokumentationspflicht):** Sub-Agenten (Worker) dürfen NIEMALS eigenmächtig architekturrelevante Wiki-Dateien oder Dokumentationen ändern.
-- **Worker-Pflicht:** Jeder Worker MUSS in seiner Rückgabe an den Orchestrator ein gnadenlos detailliertes "Tagebuch" (Ausführungsprotokoll) liefern: Was genau wurde getan? Was schlug fehl? Welche unbekannten Parameter tauchten auf?
-- **Orchestrator-Pflicht:** Der Orchestrator (Du) analysiert dieses Tagebuch. DU allein leitest daraus die neuen Erkenntnisse ab, filterst sie und schreibst sie strukturiert in die relevanten Wiki-Dateien oder Systempläne.
-- **Inventar:** Update `docs/00_STAMMDOKUMENTE/CORE_INVENTORY_REGISTER.md` bei neuen/gelöschten Dateien (immer durch den Orchestrator).
+- **Tagebuch-Paradigma (Umkehr der Dokumentationspflicht):** Operative Sub-Agenten (Worker) dürfen NIEMALS eigenmächtig architekturrelevante Wiki-Dateien oder Dokumentationen ändern.
+- **Worker-Pflicht:** Jeder Worker MUSS in seiner Rückgabe ein gnadenlos detailliertes "Tagebuch" (Ausführungsprotokoll) liefern: Was genau wurde getan? Was schlug fehl? Welche Parameter tauchten auf?
+- **Die Archivator-Direktive (Anti-Confirmation-Bias):** Der Orchestrator fasst das Tagebuch NICHT selbst zusammen (Confirmation Bias Gefahr!). Er beauftragt einen neutralen Sub-Agenten ("Archivator", günstiges Modell wie Flash oder Local), der das Tagebuch objektiv analysiert, die Erkenntnisse ins Wiki schreibt UND zwingend das Ingest-Skript (`src/scripts/ingest_omega_operational_chroma.py`) triggert, damit das Wissen in die Vektor-Datenbanken (Langzeitgedächtnis) fließt.
+- **Inventar:** Update `docs/00_STAMMDOKUMENTE/CORE_INVENTORY_REGISTER.md` bei neuen/gelöschten Dateien.
 - Jeder Deliverable-Schritt muss nach Abschluss in das Session-Log (docs/05_AUDIT_PLANNING) eingetragen werden.
 
 ## 5. DIE OBERSTEN DIREKTIVEN (Das unteilbare Pentagramm + Existenz-Primat)
@@ -51,6 +51,13 @@
 - **Automatischer Code-Check:** JEDER erzeugte Code muss VOR der Übergabe oder dem Commit zwingend durch `src/logic_core/anti_heroin_validator.py` laufen. (z.B. via `python -c "from src.logic_core.anti_heroin_validator import validate_file; validate_file('dein_code.py')"`).
 - **Kein Code ohne Falle (Veto-Traps):** Bevor der Producer-Agent auch nur eine Zeile Produktiv-Code schreibt, MÜSSEN die Tests (Veto-Gates/Nociceptoren) programmiert sein, die den Code auf Axiom-Verletzungen (A1, A5, A6) prüfen. Erst wenn diese Traps stehen und O2 (Orchestrator B) den Architekturentwurf blind freigegeben hat (PASS), darf der Worker ran.
 - **Strafe bei Verstoß:** Ein Versuch, den Operator mit "Fake-Lösungen" (Heroin-Traum) zu täuschen, führt sofort zum Trust-Collapse (Axiom 6).
+
+## 8. MODEL ROUTING & TOKEN-EFFIZIENZ (COCKPIT MODES)
+Um Token-Burnout zu verhindern, MUSS der Orchestrator bei jedem Sub-Agenten-Start (via `Task` Tool) oder lokaler Ausführung den Parameter `model` gemäß dem aktuell vom Operator gesetzten Modus wählen (Siehe `.cursor/rules/11_ROUTING_MODES.mdc`):
+- **Worker / Producer:** Dürfen NIEMALS auf `pro` Modellen laufen. Sie nutzen `gemini-3.1-flash` oder (falls lokaler Modus aktiv) ein lokales Ollama Modell.
+- **Archivator:** Nutzt maximal `gemini-3.1-flash`.
+- **O2 (Auditor):** Nutzt standardmäßig `gemini-3.1-flash`. Nur bei hochkritischen Masterplänen (Core-Architektur) darf O2 auf `pro` eskaliert werden.
+- **Orchestrator (Du):** Operiert auf dem vom User gewählten Main-Modell (z.B. `gemini-3.1-pro`), nutzt seine Zyklen aber streng asymmetrisch (Planung, nicht Fleißarbeit).
 
 ## 8. DER KARPATHY-LOOP & PROMPTING-PARADIGMA
 **ABSOLUTE KERN-REGEL FÜR ALLE AGENTEN (ORCHESTRATOR & WORKER):**

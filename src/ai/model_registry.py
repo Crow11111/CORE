@@ -34,7 +34,7 @@ GEMINI_TRIAGE = _env("GEMINI_TRIAGE_MODEL", "gemini-2.5-flash-preview") # Ersetz
 GEMINI_FLASH_LITE = _env("GEMINI_FLASH_LITE_MODEL", "gemini-3.1-flash-lite-preview") 
 
 # ── Gemma 4 (Ollama) ──
-GEMMA_TRIAGE = _env("GEMMA_TRIAGE_MODEL", "gemma4:e4b") # OPERATOR-OVERRIDE: Gemma 4 mandatory per Marc Tobias ten Hoevel
+GEMMA_TRIAGE = _env("GEMMA_TRIAGE_MODEL", "gemma4:e2b") # OPERATOR-OVERRIDE: Gemma 4 mandatory per Marc Tobias ten Hoevel (VRAM-Resonanz Korrektur auf e2b)
 GEMMA_REASONING = _env("GEMMA_REASONING_MODEL", "gemma4:31b")
 
 # ── Gemini 2.5 (spezialisiert) ──
@@ -60,7 +60,7 @@ ANTHROPIC_HEAVY = _env("ANTHROPIC_HEAVY_MODEL", "claude-opus-4-6")
 ANTHROPIC_FAST = _env("ANTHROPIC_FAST_MODEL", "claude-sonnet-4-6")
 
 # ── Ollama (lokaler Fallback, Scout-Schicht) ──
-OLLAMA_MODEL = _env("OLLAMA_MODEL", "gemma4:e4b")
+OLLAMA_MODEL = _env("OLLAMA_MODEL", "gemma4:e2b")
 OLLAMA_HEAVY = _env("OLLAMA_HEAVY_MODEL", "gemma4:31b")
 OLLAMA_HOST = _env("OLLAMA_HOST", "http://192.168.178.54:11434")
 OLLAMA_LOCAL = _env("OLLAMA_LOCAL_HOST", "http://localhost:11434")
@@ -72,7 +72,7 @@ def get_model_for_role(role: str) -> Optional[str]:
         # Kern-Rollen
         "heavy": GEMINI_HEAVY,
         "flash": GEMINI_FLASH,
-        "triage": "gemma4:e4b", # OPERATOR-OVERRIDE: Gemma 4 mandatory per Marc Tobias ten Hoevel
+        "triage": "gemma4:e2b", # OPERATOR-OVERRIDE: Gemma 4 mandatory per Marc Tobias ten Hoevel (VRAM-Resonanz Korrektur auf e2b)
         "dev_agent": GEMINI_DEV_AGENT,
 
         # Sprache
@@ -94,11 +94,11 @@ def get_model_for_role(role: str) -> Optional[str]:
         # Fallback & Local
         "ollama_light": OLLAMA_MODEL,
         "ollama_heavy": OLLAMA_HEAVY,
-        "gemma_scout": "gemma4:e4b", # OPERATOR-OVERRIDE: Gemma 4 mandatory per Marc Tobias ten Hoevel
+        "gemma_scout": "gemma4:e2b", # OPERATOR-OVERRIDE: Gemma 4 mandatory per Marc Tobias ten Hoevel (VRAM-Resonanz Korrektur auf e2b)
         "gemma_dreadnought": GEMMA_REASONING,
         "wiki_expert": "claude-code-local", # Spezial-Routing für lokale Wiki-Abfragen
         "cheap_coder": GEMINI_FLASH_LITE,
-        "stupid_coder": "gemma4:e4b", # OPERATOR-OVERRIDE: Gemma 4 mandatory per Marc Tobias ten Hoevel
+        "stupid_coder": "gemma4:e2b", # OPERATOR-OVERRIDE: Gemma 4 mandatory per Marc Tobias ten Hoevel (VRAM-Resonanz Korrektur auf e2b)
         "heavy_reasoner": GEMINI_HEAVY,
     }
     return m.get(role)

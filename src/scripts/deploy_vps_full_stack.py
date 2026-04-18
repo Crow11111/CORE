@@ -346,6 +346,7 @@ def step_openclaw_admin(ssh, dry, extracted_wa=None):
         f"GOOGLE_API_KEY={GEMINI_KEY}\n"
         f"ANTHROPIC_API_KEY={ANTHROPIC_KEY}\n"
         f"NEXOS_API_KEY={NEXOS_KEY}\n"
+        f"BASE_PATH=/openclaw\n"
     )
     b64write(ssh, "/opt/omega-core/.env", env_admin, dry=dry)
 
@@ -363,6 +364,7 @@ services:
       - GOOGLE_API_KEY=${{GOOGLE_API_KEY}}
       - ANTHROPIC_API_KEY=${{ANTHROPIC_API_KEY}}
       - NEXOS_API_KEY=${{NEXOS_API_KEY}}
+      - BASE_PATH=${{BASE_PATH}}
     volumes:
       - ./openclaw-admin/data:/home/node/.openclaw
     ports:
@@ -381,6 +383,7 @@ services:
     environment:
       - HOME=/home/node
       - OPENCLAW_GATEWAY_TOKEN={OC_SPINE_TOKEN}
+      - BASE_PATH=/openclaw
     volumes:
       - ./openclaw-spine/data:/home/node/.openclaw
     ports:

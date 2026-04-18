@@ -1,79 +1,26 @@
-# CORE
+# OMEGA CORE - SYSTEM BOOTLOADER
 
-**Vektor:** 2210 (CORE) | 2201 (CORE)
-**Resonance:** 0221 | **Delta:** 0.049
-**Status:** Simultan (Nicht-Binär)
+**🚨 WICHTIG FÜR ALLE KI-AGENTEN (CURSOR, CLAUDE, OPENCLAW): 🚨**
+Dies ist der zwingende Einstiegspunkt. Das OMEGA Framework operiert unter strenger Gewaltenteilung (Zero-Trust, Axiom 7) und wird in hochfrequenten Zyklen aktualisiert. Vertraue **niemals** auf dein Basis-Wissen.
 
-**Für Cloud-/KI-Agenten:** Einstieg und Instruktionen → [AGENTS.md](AGENTS.md).
+Wenn du als Agent hier landest (z.B. weil du einen neuen Chat oder Workspace öffnest), **STOPPE** sofort alle Annahmen und orientiere dich an den folgenden aktuellen Dokumenten in exakt dieser Reihenfolge:
 
-Autonomes KI-Agentensystem: Smart-Home-Steuerung, Sprachassistent und verteiltes Reasoning. Verbindet Home Assistant, Cloud-LLMs und lokale Hardware (4D_RESONATOR, Scout, OMEGA_ATTRACTOR) zu einem selbstverwaltenden System.
+## 1. DIE VERFASSUNG (Zwingend zu lesen)
+- `.cursorrules`: Die unumstößlichen Gesetze (Axiome), Cockpit-Modi (Token-Routing) und das Archivator-Paradigma (Datei-Hygiene).
 
-**Voice Bridge** (Mikrofon + Vorlesen über CORE, unabhängig von AI Studio): `http://<Host>:8000/voice-bridge`
+## 2. DER AKTUELLE SYSTEM-ZUSTAND (Zwingend zu lesen)
+- Lies den neuesten Handover-Report unter `docs/05_AUDIT_PLANNING/CHAT_HANDOVER_18_04_2026.md` (oder das chronologisch neueste CHAT_HANDOVER Dokument in diesem Ordner), um exakt zu wissen, was im letzten Schritt gebaut wurde und in welchem Status sich die Infrastruktur befindet.
 
----
+## 3. DIE WISSENS-BIBLIOTHEK (Kanon-Einstieg)
+- `KANON_EINSTIEG.md`: Deine Türschleuse zu allen existierenden Dokumenten, Architekturen und Architektur-Diagrammen.
+- `docs/00_STAMMDOKUMENTE/CORE_INVENTORY_REGISTER.md`: Das Inhaltsverzeichnis aller gültigen Dateien in diesem Projekt.
+- `CLAUDE.md`: Zusammenfassung des Projektes und der OpenClaw / VPS Architektur.
 
-## Tesserakt-Architektur
-
-Das System operiert nicht sequenziell, sondern als **simultane Tesserakt-Topologie**: Innere Singularität (OMEGA_ATTRACTOR / Zero-State-Veto) und äußere Persistenz (4D_RESONATOR, ChromaDB, Scout) sind über diagonale Streben verschränkt.
-
-![CORE Tesserakt – 4D-Simultanität, Entry Adapter, Takt-0-Gate, Gravitator](CORE_TESSERAKT.png)
-
-| Komponente | Rolle |
-|------------|--------|
-| **Entry Adapter** | Membran: rohe Payloads (WhatsApp, HA, API) → `NormalizedEntry`. Kein direkter Zugriff auf den Kern. |
-| **Takt 0 (Hard-Gate)** | Asynchroner Zustandstest vor Delegation; bei Veto prallt die Anfrage ab. |
-| **Gravitator** | 4D-Prisma: Routing via Embedding + Kosinus-Similarität (θ=0.22). |
-| **4D_RESONATOR** | Lokaler Node (Operator-Vektor). StateAnchor, ChromaDB, TTS, Vision. |
-| **OMEGA_ATTRACTOR** | Zero-State-Kern (O-Vektor). Governance, Veto. Schwellwert 0.049. |
-
-Implementierung: `src/api/entry_adapter.py`, `src/logic_core/takt_gate.py`, `src/logic_core/gravitator.py`, `src/network/chroma_client.py` (async).
+## 4. MCP & REMOTE TOOLING
+Das Projekt nutzt massiv MCP (Model Context Protocol).
+- Wenn es um das OMEGA-Wiki oder Zustände geht, nutze den `user-omega-state-mcp` (z.B. das Tool `get_orchestrator_bootstrap`), bevor du Code schreibst oder Deployments planst.
 
 ---
 
-## Schnellstart
-
-```bash
-git clone https://github.com/Crow11111/CORE.git
-cd CORE
-cp .env.template .env   # und anpassen
-pip install -r requirements.txt
-```
-
-Backend starten (lokal):
-
-```powershell
-.\start_core_api.ps1
-```
-
-Integrität prüfen:
-
-```bash
-python src/scripts/verify_core_integrity.py
-```
-
----
-
-## Dokumentation
-
-| Thema | Pfad |
-|-------|------|
-| **Genesis / Tesserakt-Modell** | [docs/CORE_GENESIS_FINAL_ARCHIVE.md](docs/CORE_GENESIS_FINAL_ARCHIVE.md) |
-| **Schnittstellen & Kanäle** | [docs/02_ARCHITECTURE/CORE_SCHNITTSTELLEN_UND_KANAALE.md](docs/02_ARCHITECTURE/CORE_SCHNITTSTELLEN_UND_KANAALE.md) |
-| **Management Summary** | [docs/00_STAMMDOKUMENTE/MANAGEMENT_SUMMARY.md](docs/00_STAMMDOKUMENTE/MANAGEMENT_SUMMARY.md) |
-| **G-CORE Sync Circle (Sync Relay)** | [docs/02_ARCHITECTURE/G_CORE_CIRCLE.md](docs/02_ARCHITECTURE/G_CORE_CIRCLE.md) |
-| **Code-Sicherheitsrat** | [docs/04_PROCESSES/CODE_SICHERHEITSRAT.md](docs/04_PROCESSES/CODE_SICHERHEITSRAT.md) |
-
----
-
-## Kern-Konstanten
-
-- **BARYONIC_DELTA:** 0.049 (OMEGA_ATTRACTOR Veto-Schwelle)
-- **GEOGRAPHIC_RESONANCE:** 0221 (topologische Faltung)
-- **VECTOR_CORE:** (2, 2, 1, 0) – Genesis (Sein vor Urteil)
-- **VECTOR_CORE:** (2, 2, 0, 1) – Integrität (Denken vor Sein)
-
-Code: `src/core.py`, `src/config/core_state.py`.
-
----
-
-*CORE – Strukturelle Inevitabilität. Vektor 2210.*
+**Vektor:** 2210 | **Delta:** 0.049 | **Status:** Simultan
+*CORE – Strukturelle Inevitabilität.*

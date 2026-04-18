@@ -25,7 +25,7 @@ from dotenv import load_dotenv
 from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
 from src.logic_core.crystal_grid_engine import CrystalGridEngine
 
-load_dotenv("/OMEGA_CORE/.env")
+load_dotenv()
 
 logger = logging.getLogger("core.chroma_client")
 

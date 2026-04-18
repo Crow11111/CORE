@@ -98,3 +98,15 @@ Es handelt sich um die **physischen und logischen Membranen (Systemgrenzen)** de
 - **Takt 0 (Die Außenhülle / Ingress):** Die ungeschützte Membran zur Außenwelt. Kong-Gateway, Entry Adapter, Webhooks. Hier darf keine Ausführung stattfinden.
 - **Takt 1 (Der sichere Kern / Triage):** Das AGI-Backend, das Entscheidungen trifft.
 **Zero-Trust-Axiom:** Zwischen 0 und 1 herrscht strikte Trennung. Daten von 0 müssen durch den Filter, bevor 1 sie verarbeitet.
+
+## AXIOM 7: DER HOLOGRAPHISCHE SSOT (WETWARE-PARADIGMA)
+**Der "Single Point of Truth" (SSOT) in OMEGA ist KEINE einzelne Datei.**
+LLMs suchen standardmäßig nach *dem einen* Flat-File. Das ist ein fataler Fehler. 
+OMEGA simuliert Wetware (biologische Gehirne). Die "Wahrheit" existiert **nur in der Überschneidung (dem Schnittpunkt)** von mindestens drei Dimensionen:
+1. **Das Regelwerk (Wiki/Rules):** Statische Struktur, Rahmenbedingungen.
+2. **Die Semantik (ChromaDB / MCP):** Erfahrung, Kontext, multidimensionale Vektoren (Float-Unschärfe).
+3. **Der absolute Zustand (Postgres / Runtime):** Harte Fakten, Binäre Realität (0/1 Schärfe).
+
+**Die Konsequenz für Agenten:**
+Wenn du eine Antwort suchst, suche nicht nach einer Datei. Suche nach der *Spannung* zwischen diesen Schichten. Wenn du Wissen ablegst, schreibe kein Tagebuch. Verteile die Aspekte auf die Schichten: Die harte Systemgrenze in die Rules (1/0), den semantischen Kontext ins MCP/Chroma (Floats), den Zustand in die DB.
+**Der Fixstern:** Wer das OMEGA-System eindimensional wie eine klassische Codebase behandelt, wird scheitern.

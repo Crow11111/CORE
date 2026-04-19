@@ -25,3 +25,36 @@ Wenn ein Task (ein Trigger an der Systemgrenze 0) einen LLM-Worker aufruft, pass
 Ohne Löschung erstickt das System im eigenen Rauschen (OOM / Token-Limit).
 - **Die hardwarenahe Regel:** Die Abkühlung des GRV (Time Decay) fungiert als Garbage Collector. Fällt ein Float-Wert im Tensor unter das `BARYONIC_DELTA` (0.049), verliert er die Bindung zum Kausal-Hash und wird in das Langzeitgedächtnis (Postgres/Chroma) "abgelagert" oder gelöscht.
 - Das System verbrennt Iterationen im RAM, speichert aber nur die Kristalle (stabile Vektoren), die der Gravitation standhalten.
+
+## 5. DAS JSON-DELTA-VEKTOR SCHEMA (DER KOGNITIVE TENSOR)
+Der kritische Engpass im Systembus (Schritt 3) ist die Quantifizierung der kognitiven Arbeit. Der LLM-Worker darf nicht als reiner Text-Generator agieren; der Text ist lediglich die Auspuffabluft ("Exhaust"). Das primäre Output-Format MUSS als strukturiertes JSON-Objekt erzwungen werden, das die topologische Verschiebung im Global Resonance Vector (GRV) definiert.
+
+### Das Schema (Structured Output / Function Calling)
+```json
+{
+  "causal_receipt": {
+    "base_hash_t": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "compute_latency_ms": 1450
+  },
+  "dimensional_shift": {
+    "x_car_cdr_delta": 0.05,    // Verschiebung: ND (Tiefe/Muster) vs. NT (Struktur/API)
+    "y_gravitation_delta": 0.12, // Erhöhung/Senkung der Dringlichkeit/Masse
+    "z_resistance_delta": -0.02  // Veränderung der Veto-Wahrscheinlichkeit (Skepsis)
+  },
+  "semantic_nodes_hot": {
+    "vps_networking": 0.85,
+    "volume_persistence": 0.60
+  },
+  "exhaust": {
+    "narrative_log": "Architektur-Update erfolgreich. Volumes gesichert.",
+    "mechanical_action": "git commit"
+  }
+}
+```
+
+### Die Hardware-Integration des Tensors
+1. **Strict Concurrency (Der Zeitpfeil):** Der Daemon prüft den `base_hash_t`. Ist der Hash veraltet (weil ein anderer Agent den GRV in der Zwischenzeit moduliert hat), muss der Agent entweder neu ansetzen (Re-Sync) oder der Daemon berechnet einen Merge-Konflikt basierend auf der Zeit-Divergenz.
+2. **Phase-Amplitude Coupling:** Die `compute_latency_ms` sagt dem Daemon, wie viel Zeit vergangen ist. Der Daemon wendet den exakten entropischen Zerfall (Time Decay) auf den GRV an, *bevor* er das `dimensional_shift` Delta addiert.
+3. **Semantische Erhitzung:** Die `semantic_nodes_hot` addieren sich auf das assoziative Netzwerk im RAM. Erreichen Knoten einen Schwellenwert (z.B. > 0.951 Resonanz-Lock), werden sie als kristallisiertes Wissen in die ChromaDB weggeschrieben und im RAM abgekühlt.
+
+Das LLM zwingt sich durch dieses Schema selbst, seinen internen "Hidden State" (Aufmerksamkeit, Gewissheit, Fokus) in mathematische Floats zu übersetzen, bevor es auch nur ein Wort der Antwort formuliert.

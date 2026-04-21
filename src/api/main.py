@@ -97,6 +97,25 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     else:
         logger.info("[API] Sync Relay uebersprungen (CORE_WEBHOOK_SECRET nicht gesetzt)")
 
+    # --- SYSTEM BUS ENTROPY DAEMON ---
+    try:
+        from src.daemons.system_bus_daemon import bus_instance
+        import asyncio as _aio
+        
+        async def _run_bus_entropy():
+            logger.info("[API] SystemBus Entropy Tick Loop gestartet (100ms Takt)")
+            while True:
+                try:
+                    bus_instance.entropy_tick()
+                    await _aio.sleep(0.1) # 100ms Takt gemäß Hardware-Regel
+                except Exception as e:
+                    logger.error("[API] SystemBus Entropy Error: {}", e)
+                    await _aio.sleep(1)
+
+        _aio.create_task(_run_bus_entropy())
+    except Exception as exc:
+        logger.error("[API] SystemBus Start fehlgeschlagen: {}", exc)
+
     yield
 
     if _event_bus is not None:
@@ -160,6 +179,7 @@ app.include_router(voice_bridge.router)
 app.include_router(dictate.router)
 app.include_router(core_state_api.router)
 app.include_router(system_ops.router)
+app.include_router(system_bus.router)
 app.include_router(id_safe.router)
 
 @app.get("/")

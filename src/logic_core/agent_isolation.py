@@ -44,13 +44,12 @@ class SafeExecMembrane:
         # network_disabled=True, no mounts, remove=True
         # Resource limits: cpus=0.49, mem_limit="256m"
         
-        container = None
         try:
             container = self.client.containers.run(
                 image=image_name,
                 command=command,
                 network_disabled=True,
-                remove=True,               
+                remove=False,              # We use False during execution so we can get logs safely, then remove manually to mimic remove=True while preventing race conditions in docker-py
                 detach=True,               
                 mem_limit="256m",          
                 nano_cpus=int(0.49 * 1e9)  
@@ -61,32 +60,40 @@ class SafeExecMembrane:
 
         timeout = 30
         start_time = time.time()
+        timeout_exceeded = False
         
-        output_buffer = []
+        def enforce_timeout():
+            nonlocal timeout_exceeded
+            time.sleep(timeout)
+            try:
+                container.reload()
+                if container.status == "running":
+                    timeout_exceeded = True
+                    logger.error("TIMEOUT (Apoptosis): Container exceeded 30s. Sending SIGKILL.")
+                    container.kill()
+            except docker.errors.NotFound:
+                pass
+            except Exception:
+                pass
+
+        timer_thread = threading.Thread(target=enforce_timeout, daemon=True)
+        timer_thread.start()
 
         try:
-            # We can stream logs while the container is running
-            for line in container.logs(stream=True, stdout=True, stderr=True):
-                output_buffer.append(line.decode("utf-8"))
-                
-                # Check timeout during log streaming
-                if time.time() - start_time > timeout:
-                    logger.error("TIMEOUT (Apoptosis): Container exceeded 30s. Sending SIGKILL.")
-                    try:
-                        container.kill()
-                    except docker.errors.APIError:
-                        pass
-                    return "ERROR: Timeout exceeded. Container killed (Apoptosis)."
-
-            return "".join(output_buffer)
-
-        except docker.errors.NotFound:
-            # Container was already removed (normal if it finished before we iterate logs, though stream=True usually catches it)
-            return "".join(output_buffer)
+            exit_code = container.wait()
+            logs = container.logs(stdout=True, stderr=True).decode("utf-8")
+        except docker.errors.APIError as e:
+            logs = f"ERROR reading container: {e}"
         except Exception as e:
-            logger.error(f"Error reading container logs: {e}")
+            logs = f"ERROR execution failed: {e}"
+        finally:
+            # Ensure container is removed (matches remove=True logic safely)
             try:
-                container.kill()
-            except docker.errors.APIError:
+                container.remove(force=True)
+            except Exception:
                 pass
-            return f"ERROR: Execution failed: {e}"
+
+        if timeout_exceeded:
+            return "ERROR: Timeout exceeded. Container killed (Apoptosis)."
+
+        return logs

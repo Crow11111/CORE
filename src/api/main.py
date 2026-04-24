@@ -17,7 +17,7 @@ from loguru import logger
 # Temporär auskommentiert wegen ImportError
 from src.api.routes import id_safe
 
-from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, core_knowledge, core_voice, core_events, github_webhook, omega_matrix, omega_thought, telemetry, chat, dictate, voice_bridge, core_state_api, system_ops, system_bus
+from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, core_knowledge, core_voice, core_events, github_webhook, omega_matrix, omega_thought, telemetry, chat, dictate, voice_bridge, core_state_api, system_ops, system_bus, mri_resonance_coupler
 
 from src.api.middleware.veto_gate import VetoGateMiddleware
 from src.api.middleware.friction_guard import FrictionGuardMiddleware

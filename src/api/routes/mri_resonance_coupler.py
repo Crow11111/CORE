@@ -25,7 +25,7 @@ async def resonance_chat_endpoint(request: Request):
     """
     payload = await request.json()
     api_key = os.getenv("GEMINI_API_KEY")
-    
+
     if not api_key:
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY missing")
 
@@ -33,7 +33,7 @@ async def resonance_chat_endpoint(request: Request):
     # Wir entfernen alles, was nicht in der Google v1beta Spezifikation steht.
     model_id = payload.get("model", "gemini-3.1-pro-preview")
     messages = payload.get("messages", [])
-    
+
     # 2. Modell-Weiche (Asymmetrische Logik)
     is_flash_lite = "flash-lite" in model_id.lower()
     is_pro = "pro" in model_id.lower()
@@ -60,13 +60,13 @@ async def resonance_chat_endpoint(request: Request):
 
     # 4. API-Call an Google
     target_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}"
-    
+
     async with httpx.AsyncClient() as client:
         try:
             resp = await client.post(target_url, json=gemini_payload, timeout=60.0)
             resp.raise_for_status()
             data = resp.json()
-            
+
             # 5. Rücktransformation in OpenAI-Format für Cursor
             # (Hier reduzierte Logik für den Ingress)
             text_parts = []
@@ -76,7 +76,7 @@ async def resonance_chat_endpoint(request: Request):
                 for p in parts:
                     if "text" in p:
                         text_parts.append(p["text"])
-            
+
             return {
                 "choices": [{
                     "message": {
@@ -86,7 +86,7 @@ async def resonance_chat_endpoint(request: Request):
                     "finish_reason": "stop"
                 }]
             }
-            
+
         except Exception as e:
             logger.error(f"[MRI-RC] Google API Error: {e}")
             return JSONResponse({"error": str(e)}, status_code=502)

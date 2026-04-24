@@ -19,6 +19,7 @@ def _env(key: str, default: str = "") -> str:
 GEMINI_HEAVY = _env("GEMINI_HEAVY_MODEL", "gemini-3.1-pro-preview")
 GEMINI_FLASH = _env("GEMINI_FLASH_MODEL", "gemini-3.1-flash-preview")
 GEMINI_FLASH_LITE = _env("GEMINI_FLASH_LITE_MODEL", "gemini-3.1-flash-lite-preview")
+GEMINI_TRIAGE = "gemini-3.1-flash-lite-preview" # Missing constant
 
 # ── Claude 4.6 Generation ──
 ANTHROPIC_HEAVY = _env("ANTHROPIC_HEAVY_MODEL", "claude-opus-4-6")

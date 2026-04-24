@@ -36,10 +36,6 @@ async def resonance_chat_endpoint(request: Request):
     """
     try:
         raw_payload = await request.json()
-        # DEBUG-LOG (Physikalische Verifikation)
-        with open("/tmp/mri_debug.log", "a") as f:
-            import json
-            f.write(f"\n--- INCOMING REQUEST ---\n{json.dumps(raw_payload, indent=2)}\n")
     except Exception as e:
         logger.error(f"[MRI-RC] Invalid JSON Request: {e}")
         raise HTTPException(status_code=400, detail="Invalid JSON")

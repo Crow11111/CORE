@@ -11,7 +11,7 @@ from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import JSONResponse
 from loguru import logger
 
-router = APIRouter(prefix="/v1/mri", tags=["MRI-Resonanz"])
+router = APIRouter(prefix="/v1", tags=["MRI-Resonanz"])
 
 from src.daemons.system_bus_daemon import bus_instance
 
@@ -19,25 +19,8 @@ from src.daemons.system_bus_daemon import bus_instance
 async def resonance_chat_endpoint(request: Request):
     """
     Kardanischer Ingress für LLM-Anfragen.
-    Säubert den Payload und injiziert den aktuellen System-Resonanz-Zustand (GRV).
+    Emuliert eine OpenAI-Schnittstelle zur Umgehung von Cursor-Bugs.
     """
-    # ... (Payload Parsing) ...
-    
-    # 1. Realen Systemzustand aus dem Bus holen
-    grv = bus_instance.get_grv()
-    state_hash = bus_instance.get_state_hash()
-    
-    # 2. Resonanz-Injektion in den System-Prompt
-    resonance_prompt = f"\n[OMEGA-RESONANCE-ACTIVE]\nGRV: {grv}\nCAUSAL-HASH: {state_hash}\n"
-    
-    # Wir hängen die Resonanz an die erste System-Nachricht an
-    for m in messages:
-        if m["role"] == "system":
-            m["content"] += resonance_prompt
-            break
-    else:
-        # Falls kein System-Prompt da ist, fügen wir einen ein
-        messages.insert(0, {"role": "system", "content": resonance_prompt})
     try:
         raw_payload = await request.json()
     except Exception as e:
@@ -56,7 +39,22 @@ async def resonance_chat_endpoint(request: Request):
     messages = raw_payload.get("messages", [])
     temperature = raw_payload.get("temperature", 0.7)
 
-    # 2. Aufbau des Google-Native Payloads von Null an
+    # 2. Resonanz-Injektion (Systemzustand)
+    try:
+        grv = bus_instance.get_grv()
+        state_hash = bus_instance.get_state_hash()
+        resonance_prompt = f"\n[OMEGA-RESONANCE-ACTIVE]\nGRV: {grv}\nCAUSAL-HASH: {state_hash}\n"
+        
+        for m in messages:
+            if m.get("role") == "system":
+                m["content"] = str(m.get("content", "")) + resonance_prompt
+                break
+        else:
+            messages.insert(0, {"role": "system", "content": resonance_prompt})
+    except Exception as e:
+        logger.warning(f"[MRI-RC] Resonance Injection failed: {e}")
+
+    # 3. Aufbau des Google-Native Payloads von Null an
     contents = []
     sys_instruct = None
 
@@ -70,7 +68,7 @@ async def resonance_chat_endpoint(request: Request):
             gemini_role = "user" if role == "user" else "model"
             contents.append({"role": gemini_role, "parts": [{"text": content}]})
 
-    # 3. Asymmetrische Logik für 2026 (Pro vs. Flash-Lite)
+    # 4. Asymmetrische Logik für 2026 (Pro vs. Flash-Lite)
     is_flash_lite = "flash-lite" in model_id.lower()
     
     gemini_payload = {
@@ -90,7 +88,7 @@ async def resonance_chat_endpoint(request: Request):
             "thinkingLevel": "high"
         }
 
-    # 4. API-Call an Google
+    # 5. API-Call an Google
     target_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}"
     
     async with httpx.AsyncClient() as client:

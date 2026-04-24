@@ -1,19 +1,32 @@
 """
-MRI Resonance Coupler (MRI-RC)
+MRI Resonance Coupler (MRI-RC) v2.0
 Rein funktionale Brücke zur Google Gemini API (Stand 2026).
-Eliminiert inkompatible Cursor-Parameter (z.B. disable_thought_tag) autonom.
+Nutzt das offizielle google-genai SDK für maximale Stabilität.
 """
 
 import os
-import httpx
-import json
+import asyncio
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import JSONResponse
 from loguru import logger
+from google import genai
+from google.genai import types
 
 router = APIRouter(prefix="/v1", tags=["MRI-Resonanz"])
 
 from src.daemons.system_bus_daemon import bus_instance
+
+# Globaler Client-Singleton für Ressourceneffizienz
+_client = None
+
+def get_genai_client():
+    global _client
+    if _client is None:
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY missing")
+        _client = genai.Client(api_key=api_key)
+    return _client
 
 @router.post("/chat/completions")
 async def resonance_chat_endpoint(request: Request):
@@ -27,15 +40,14 @@ async def resonance_chat_endpoint(request: Request):
         logger.error(f"[MRI-RC] Invalid JSON Request: {e}")
         raise HTTPException(status_code=400, detail="Invalid JSON")
 
-    api_key = os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        raise HTTPException(status_code=500, detail="GEMINI_API_KEY missing")
+    try:
+        client = get_genai_client()
+    except ValueError as e:
+        logger.error(f"[MRI-RC] {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
     # 1. RADIKALE SANIERUNG (Axiom A7)
-    # Wir extrahieren NUR die Felder, die Google v1beta wirklich kennt.
-    # Wir ignorieren 'extra_body', 'disable_thought_tag' und anderen IDE-Dreck.
-    # Wir STREICHEN 'tools' und 'tool_choice', um den Signatur-Zwang zu umgehen.
-    
+    # Whitelist-Extraktion zur Vermeidung von IDE-Dross (disable_thought_tag)
     model_id = raw_payload.get("model", "gemini-3.1-pro-preview")
     messages = raw_payload.get("messages", [])
     temperature = raw_payload.get("temperature", 0.7)
@@ -46,6 +58,7 @@ async def resonance_chat_endpoint(request: Request):
         state_hash = bus_instance.get_state_hash()
         resonance_prompt = f"\n[OMEGA-RESONANCE-ACTIVE]\nGRV: {grv}\nCAUSAL-HASH: {state_hash}\n"
         
+        # Injektion in den System-Prompt (Axiom A7: Resonanz-Pflicht)
         for m in messages:
             if m.get("role") == "system":
                 m["content"] = str(m.get("content", "")) + resonance_prompt
@@ -55,7 +68,7 @@ async def resonance_chat_endpoint(request: Request):
     except Exception as e:
         logger.warning(f"[MRI-RC] Resonance Injection failed: {e}")
 
-    # 3. Aufbau des Google-Native Payloads von Null an
+    # 3. Transformation OpenAI -> Gemini SDK (Whitelisted)
     contents = []
     sys_instruct = None
 
@@ -64,72 +77,57 @@ async def resonance_chat_endpoint(request: Request):
         content = str(m.get("content", ""))
         
         if role == "system":
-            sys_instruct = {"parts": [{"text": content}]}
+            sys_instruct = content
         else:
             gemini_role = "user" if role == "user" else "model"
-            contents.append({"role": gemini_role, "parts": [{"text": content}]})
+            contents.append(types.Content(role=gemini_role, parts=[types.Part(text=content)]))
 
     # 4. Asymmetrische Logik (Axiom A5)
     raw_temp = float(temperature)
     safe_temp = max(0.049, min(0.951, raw_temp))
     if abs(safe_temp - 0.5) < 0.01: safe_temp = 0.499
 
-    gemini_payload = {
-        "contents": contents,
-        "generationConfig": {
-            "temperature": safe_temp
-        }
-    }
-    
-    if sys_instruct:
-        gemini_payload["systemInstruction"] = sys_instruct
-
-    # 5. API-Call an Google
-    target_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}"
-    
-    async with httpx.AsyncClient() as client:
-        try:
-            logger.info(f"[MRI-RC] Path A: Forwarding to Google (Tool-Stripped)")
-            resp = await client.post(target_url, json=gemini_payload, timeout=90.049)
-            
-            if resp.status_code != 200:
-                error_data = resp.json()
-                logger.error(f"[MRI-RC] Google Error: {error_data}")
-                return JSONResponse(content=error_data, status_code=resp.status_code)
-                
-            data = resp.json()
-            
-            # 6. Egress-Transformation (A7)
-            text_parts = []
-            candidates = data.get("candidates", [])
-            if candidates:
-                parts = candidates[0].get("content", {}).get("parts", [])
-                for p in parts:
-                    if "text" in p:
-                        text_parts.append(p["text"])
-            
-            full_text = "".join(text_parts)
-            
-            return {
-                "id": f"mri-{os.urandom(4).hex()}",
-                "object": "chat.completion",
-                "created": 1776758400,
-                "model": model_id,
-                "choices": [{
-                    "index": 0,
-                    "message": {
-                        "role": "assistant",
-                        "content": full_text
-                    },
-                    "finish_reason": "stop"
-                }],
-                "usage": {
-                    "prompt_tokens": 0,
-                    "completion_tokens": 0,
-                    "total_tokens": 0
-                }
+    # 5. SDK-Aufruf (Axiom A7: Keine IDE-Parameter)
+    try:
+        logger.info(f"[MRI-RC] Forwarding via SDK v1.0+: {model_id}")
+        
+        # Generierung mit expliziter Konfiguration
+        response = await client.aio.models.generate_content(
+            model=model_id,
+            contents=contents,
+            config=types.GenerateContentConfig(
+                system_instruction=sys_instruct,
+                temperature=safe_temp,
+                # Tool-Use wird hier explizit nicht konfiguriert (Pfad A)
+            )
+        )
+        
+        # 6. Egress-Transformation (A7)
+        full_text = response.text
+        
+        return {
+            "id": f"mri-{os.urandom(4).hex()}",
+            "object": "chat.completion",
+            "created": 1776758400,
+            "model": model_id,
+            "choices": [{
+                "index": 0,
+                "message": {
+                    "role": "assistant",
+                    "content": full_text
+                },
+                "finish_reason": "stop"
+            }],
+            "usage": {
+                "prompt_tokens": response.usage_metadata.prompt_token_count if response.usage_metadata else 0,
+                "completion_tokens": response.usage_metadata.candidates_token_count if response.usage_metadata else 0,
+                "total_tokens": response.usage_metadata.total_token_count if response.usage_metadata else 0
             }
-            
-        except Exception as e:
-            logger.error(f"[MRI-RC] Connection Error: {e}")
-            return JSONResponse({"error": "Gateway Connection Failed", "detail": str(e)}, status_code=502)
+        }
+        
+    except Exception as e:
+        logger.error(f"[MRI-RC] SDK Execution Error: {e}")
+        return JSONResponse(
+            {"error": "SDK-Execution-Failure", "detail": str(e)}, 
+            status_code=502
+        )

@@ -230,7 +230,7 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
     schemas = registry.get_schemas()
 
     try:
-        # --- OLLAMA / GEMINI CALLS ---
+        # --- OLLAMA / GEMINI / ANTHROPIC CALLS ---
         if config["type"] == "ollama":
             ollama_tools = [{"type": "function", "function": schema} for schema in schemas]
 

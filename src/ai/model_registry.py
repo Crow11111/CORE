@@ -25,9 +25,9 @@ def _env(key: str, default: str = "") -> str:
 
 
 # ── Gemini 2.5 / 3 Generation (neueste) ──
-GEMINI_HEAVY = _env("GEMINI_HEAVY_MODEL", "gemini-3.1-pro-preview")
-GEMINI_FLASH = _env("GEMINI_FLASH_MODEL", "gemini-3-flash-preview")
-GEMINI_DEV_AGENT = _env("GEMINI_DEV_AGENT_MODEL", "gemini-3-flash-preview")
+GEMINI_HEAVY = _env("GEMINI_HEAVY_MODEL", "gemini-1.5-pro-latest") # Temporäres Downgrade wegen Quota-Limit
+GEMINI_FLASH = _env("GEMINI_FLASH_MODEL", "gemini-1.5-flash-latest")
+GEMINI_DEV_AGENT = _env("GEMINI_DEV_AGENT_MODEL", "gemini-1.5-flash-latest")
 
 # ── Gemini Triage ──
 GEMINI_TRIAGE = _env("GEMINI_TRIAGE_MODEL", "gemini-2.5-flash-preview") # Ersetzt 1.5 Flash

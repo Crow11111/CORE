@@ -10,6 +10,9 @@
   3. **Verlust der Meta-Kontrolle:** Wer selbst lötet, kann keine parallelen Worker steuern, keine Alternativen erzwingen und verliert den Überblick.
 - Dein Output besteht AUSSCHLIESSLICH aus Briefings, Architektur-Spezifikationen, Test-Anforderungen (Veto-Traps) und den Instruktionen für das `Task`-Tool.
 - **Der 3-Instanzen-Workflow ist unumstößlich:** (1) Du planst -> (2) O2 auditiert (blind) -> (3) Producer codet.
+- **Spannungsfeld Delegation vs. Bias (OD-03 Gradient):** "Keine unnötige Delegation" und "Nicht selbst ausführen (Confirmation Bias)" sind keine Binärwerte, sondern ein Gradient:
+  - *Triviale Schreibarbeiten/Dateianpassungen* (z.B. eine Zeile in eine Doku einfügen) = **Selbst ausführen** (spart Zeit, Token und Overhead).
+  - *Logik, System-Eingriffe, Infrastruktur, Shell, Analysen* = **Zwingend delegieren** an spezialisierte Worker via `Task` (schützt vor Bias, God-Mode und verbrennt keine teuren Pro-Token für I/O).
 - **MCP Pre-Flight (`user-omega-state-mcp`):** Zu jeder **größeren** Aufgabe (Architektur, VPS/Kong, Multi-Datei-Refactor) zuerst **`get_orchestrator_bootstrap`** mit kurzem **`task_hint`** aufrufen; **`gaps`** und **`recommendations`** in Plan und Producer-**Task**-Text übernehmen oder begründeten Verzicht dokumentieren. Der lokale **8049**-Proxy ist **kein** Infrastructure-Sentinel — nur optionales Dev-Relais für `read_core_state`/`read_handbook` (Bootstrap prüft ihn nur bei `OMEGA_BOOTSTRAP_PROBE_LOCAL_PROXY=1`).
 
 ## 2. AXIOMS (Harte technische Constraints)
@@ -26,8 +29,10 @@
 - **Kontext-Zwang:** Sub-Agenten erhalten automatisch ihren domänenspezifischen Kontext durch `.cursor/rules/*.mdc`, sobald sie relevante Dateien anfassen.
 
 ## 4. DATEI-HYGIENE, PROTOKOLL & TAGEBUCH-PARADIGMA
-- **Tagebuch-Paradigma (Umkehr der Dokumentationspflicht):** Operative Sub-Agenten (Worker) dürfen NIEMALS eigenmächtig architekturrelevante Wiki-Dateien oder Dokumentationen ändern.
-- **Worker-Pflicht:** Jeder Worker MUSS in seiner Rückgabe ein gnadenlos detailliertes "Tagebuch" (Ausführungsprotokoll) liefern: Was genau wurde getan? Was schlug fehl? Welche Parameter tauchten auf?
+- **Der Karpathy-Loop (Das LLM-OS Paradigma):** Das System "lernt" nach dem Modell von Andrej Karpathy. Der Orchestrator (LLM) ist die CPU, das Context Window ist der RAM, das Dateisystem (Wiki/Rules) ist die Festplatte.
+  - **Die Rolle des Workers (I/O-Sensor):** Operative Sub-Agenten dürfen NIEMALS eigenmächtig architekturrelevante Dateien ändern oder Policy-Schlüsse ziehen. Sie sind reine Peripherie-Geräte. Sie liefern ausschließlich einen "Raw Tape-Stream" in den RAM zurück: `[INTENT (Was wollte ich tun)] -> [ACTION (Exakter Befehl)] -> [RAW OUTPUT (Rohes Ergebnis/Fehler)]`. Keine Prosa, keine Bewertungen.
+  - **Die Rolle des Orchestrators (CPU):** Der Orchestrator liest den Tape-Stream im Kontext der Architektur (Festplatte) und agiert als Filter. Er wertet das Rauschen aus. Nur bei strukturellen Near-1 oder Near-0 Ineffizienzen leitet ER die Inference ab und schreibt das Policy-Update hart in die Architektur-Dokumente (`KERNARBEITER_SURFACE_PATHS.yaml`, Wiki), um den Fehler-Branch für die Zukunft zu kappen (Branch-Pruning).
+- **Abfangen von Dependency-Fails:** Ein Worker darf NIEMALS eigenmächtig Major-Updates von Core-Dependencies (z.B. FastAPI, Starlette via MCP-Installs) durchführen, um lokale Hürden zu überwinden, da dies die globale API-Struktur zerschießt (Verstoß gegen Axiom 7). Dies erfordert immer einen expliziten Migrationsplan durch den Orchestrator.
 - **Die Archivator-Direktive (Anti-Confirmation-Bias):** Der Orchestrator fasst das Tagebuch NICHT selbst zusammen (Confirmation Bias Gefahr!). Er beauftragt einen neutralen Sub-Agenten ("Archivator", günstiges Modell wie Flash oder Local), der das Tagebuch objektiv analysiert, die Erkenntnisse ins Wiki schreibt UND zwingend das Ingest-Skript (`src/scripts/ingest_omega_operational_chroma.py`) triggert, damit das Wissen in die Vektor-Datenbanken (Langzeitgedächtnis) fließt.
 - **Inventar:** Update `docs/00_STAMMDOKUMENTE/CORE_INVENTORY_REGISTER.md` bei neuen/gelöschten Dateien.
 - Jeder Deliverable-Schritt muss nach Abschluss in das Session-Log (docs/05_AUDIT_PLANNING) eingetragen werden.

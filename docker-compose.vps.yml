@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  agi-core:
+    build:
+      context: ./
+      dockerfile: docker/agi-state/Dockerfile
+    container_name: mtho_agi_core
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:8080"
+    networks:
+      - omega_internal
+    env_file:
+      - .env
+    volumes:
+      - ./src/network/chroma_client.py:/app/src/network/chroma_client.py:ro
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 1G
+
+  postgres-state:
+    image: pgvector/pgvector:pg15
+    container_name: mtho_postgres_state
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-mtho_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mtho_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-mtho_state}
+    volumes:
+      - postgres_state_data:/var/lib/postgresql/data
+      - ./src/db/init_postgres.sql:/docker-entrypoint-initdb.d/init_postgres.sql:ro
+    networks:
+      - omega_internal
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 1G
+
+  chroma-state:
+    image: chromadb/chroma:0.4.24
+    container_name: mtho_chroma_state
+    restart: unless-stopped
+    expose:
+      - "8000"
+    environment:
+      - IS_PERSISTENT=TRUE
+      - PERSIST_DIRECTORY=/chroma/chroma
+      - CHROMA_SERVER_CORS_ALLOW_ORIGINS=["*"]
+    volumes:
+      - chroma_state_data:/chroma/chroma
+    networks:
+      - omega_internal
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+        reservations:
+          memory: 1G
+
+volumes:
+  postgres_state_data:
+  chroma_state_data:
+
+networks:
+  omega_internal:
+    external: true

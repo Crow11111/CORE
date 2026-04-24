@@ -1,0 +1,12 @@
+[Unit]
+Description=go2rtc service
+After=network.target
+
+[Service]
+ExecStart=/usr/local/bin/go2rtc -config /OMEGA_CORE/go2rtc.yaml
+WorkingDirectory=/OMEGA_CORE
+Restart=always
+User=mth
+
+[Install]
+WantedBy=multi-user.target

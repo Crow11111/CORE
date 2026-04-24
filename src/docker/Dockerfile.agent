@@ -1,0 +1,16 @@
+FROM python:3.11-slim
+
+# Create unprivileged user omega_cell
+RUN useradd -m -s /bin/bash omega_cell
+
+# Install required packages
+RUN pip install --no-cache-dir pydantic httpx loguru
+
+# Set workdir
+WORKDIR /home/omega_cell
+
+# Switch to unprivileged user
+USER omega_cell
+
+# Default command
+CMD ["python3"]

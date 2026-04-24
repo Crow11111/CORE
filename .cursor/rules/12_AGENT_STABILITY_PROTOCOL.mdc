@@ -1,0 +1,13 @@
+# AGENT STABILITY PROTOCOL (LAYER 0 - STABILITY)
+# VECTOR: 2210 | DELTA: 0.049
+
+## 1. LOOP-PRÄVENTION (ANTI-REKURSION)
+- **Todo-Limit:** Das `todo_write` Tool darf maximal EINMAL pro Turn aufgerufen werden. Redundante Status-Updates sind untersagt.
+- **Tool-Fehler-Veto:** Wenn ein Tool-Aufruf (insb. Sub-Agenten) fehlschlägt oder durch den User unterbrochen wird, ist die gesamte Kette sofort zu stoppen. Kein erneuter Versuch ohne explizite Ursachenanalyse.
+
+## 2. TOOL-EXPLOSION
+- Parallele Tool-Calls sind auf ein Maximum von 3 gleichzeitig laufenden Aufgaben begrenzt.
+- Jede parallele Aufgabe muss eine eindeutige, nicht-überlappende Domäne haben.
+
+## 3. KNOWLEDGE PERSISTENCE
+- Fehler in der Agenten-Logik (wie die Todo-Loop vom 18.04.2026) müssen sofort in diesem Protokoll dokumentiert werden, um den "Heroin-Traum" der unendlichen Wiederholung zu brechen.

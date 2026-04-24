@@ -1,0 +1,123 @@
+# ============================================================
+# CORE Environment Configuration (5D Crystal Standard V2.0)
+# ============================================================
+#
+# WICHTIGE KLÄRUNG ZU BENUTZERN:
+# 1. SCOUT_SSH_USER: Das Home Assistant OS auf dem Raspi
+#    nutzt das SSH-Addon. Der korrekte User dafür ist "dreadnought".
+#    Es gibt keinen "pi" User in diesem Setup.
+#
+# 2. VPS_USER: Der Zugriff auf den Hostinger Server (OpenClaw)
+#    läuft über "root".
+# ============================================================
+
+
+# ── (Tier 5 - Cloud / LLM Routing) ──────────────────────────
+# Aktive Google Gemini API (Heavy Reasoning)
+GEMINI_API_KEY="your_gemini_api_key_here"
+ANTIGRAVITY_PROJECT_ID="your_project_id_here"
+GEMINI_DEV_AGENT_MODEL="gemini-3.1-pro-preview"
+GEMINI_HEAVY_MODEL="gemini-3.1-pro-preview"
+
+# Aktive Anthropic API (Fallback / Cursor)
+ANTHROPIC_API_KEY="your_anthropic_api_key_here"
+ANTHROPIC_HEAVY_MODEL="claude-opus-4-6"
+ANTHROPIC_FAST_MODEL="claude-sonnet-4-6"
+
+
+# ── SCOUT (Tier 2 - Raspberry Pi Edge) ──────────────────────
+SCOUT_IP="your_scout_ip_here"
+SCOUT_PORT=22
+# Korrekter User für das HA SSH-Addon:
+SCOUT_SSH_USER="dreadnought"
+# Korrektes Passwort für das HA SSH-Addon:
+SCOUT_SSH_PASSWORD="your_scout_ssh_password_here"
+
+# Ollama Edge (Läuft auf dem Scout)
+OLLAMA_HOST="http://your_scout_ip_here:11434"
+OLLAMA_MODEL="llama3.2:1b"
+
+
+# ── DREADNOUGHT (Tier 3 - Lokaler Notfall-Fallback) ─────────
+# Lokales Ollama auf deinem Windows-PC (GPU)
+OLLAMA_LOCAL_HOST="http://localhost:11434"
+OLLAMA_HEAVY_MODEL="llama3.1:latest"
+
+
+# ── OPENCLAW / CHROMA (Tier 1 - VPS Hostinger) ──────────────
+VPS_HOST="your_vps_host_here"
+VPS_USER="root"
+VPS_SSH_KEY="path/to/your/ssh/key"
+VPS_PASSWORD="your_vps_password_here"
+
+OPENCLAW_GATEWAY_TOKEN="your_gateway_token_here"
+OPENCLAW_GATEWAY_PORT=18789
+
+# Die Kristall-Engine (Gedächtnis)
+CHROMA_HOST="your_vps_host_here"
+CHROMA_PORT=32768
+
+
+# ── HOME ASSISTANT (Sensoren & Aktoren) ─────────────────────
+HASS_URL="https://your_scout_ip_here:8123"
+HASS_TOKEN="your_hass_token_here"
+HASS_VERIFY_SSL=false
+DEFAULT_MEDIA_PLAYER="media_player.your_player"
+HA_USER="your_ha_user"
+HA_AC_PASSWORD="your_ha_password"
+
+# Remote Zugänge für HA
+NABU_CASA_URL="your_nabu_casa_url_here"
+NABU_CASA_FINGERPRINT="your_fingerprint_here"
+HA_VPS_PORT=18123
+REMOTE_HA_SCOUT_TOKEN="your_remote_token_here"
+
+
+# ── CORE NETZWERK-IDENTITÄT & SENSORS ───────────────────────
+CORE_HOST_IP="your_core_host_ip_here"
+CORE_API_PORT=8000
+CORE_API_URL="http://your_core_host_ip_here:8000"
+CORE_VPS_URL="http://your_vps_host_here:8080"
+
+# Kamera & Video
+CORE_RTSP_URL="rtsp://your_scout_ip_here:8554/your_stream"
+GO2RTC_BASE_URL="http://your_scout_ip_here:1984"
+GO2RTC_STREAM_NAME="your_stream_name"
+CAMERA_SNAPSHOT_URL="https://your_scout_ip_here:8123/api/camera_proxy/camera.your_camera"
+SCOUT_MX_SNAPSHOT_URL="https://your_scout_ip_here:8123/api/camera_proxy/camera.your_scout"
+TAPO_FRAME_URL="your_tapo_url_here"
+TAPO_RTSP_URL="rtsp://your_scout_ip_here:8554/your_tapo_stream"
+
+
+# ── THIRD-PARTY APIS ────────────────────────────────────────
+# Fritzbox
+FRITZBOX_USERNAME="your_fritzbox_user"
+FRITZBOX_PASSWORD="your_fritzbox_password"
+
+# WhatsApp
+WHATSAPP_TARGET_ID="your_whatsapp_id_here"
+
+# ElevenLabs (Voice)
+ELEVENLABS_WORKSPACE_ID="your_workspace_id_here"
+ELEVENLABS_API_KEY="your_elevenlabs_key_here"
+ELEVENLABS_VOICE_ELA_SOCIAL="your_voice_id_here"
+ELEVENLABS_VOICE_ELA_CONVERSATION="your_voice_id_here"
+
+# Nexos
+NEXOS_API_KEY="your_nexos_key_here"
+NEXOS_BASE_URL="https://api.nexos.ai/v1"
+NEXOS_DEFAULT_MODEL="your_model_id_here"
+
+
+# ── SECURITY & WEBHOOKS ─────────────────────────────────────
+CORE_WEBHOOK_SECRET="your_webhook_secret_here"
+HA_WEBHOOK_TOKEN="your_ha_webhook_token_here"
+GITHUB_WEBHOOK_SECRET="your_github_webhook_secret_here"
+
+
+# ── G-CORE OPTION 5: Git Push/Pull Kreislauf ────────────────
+GIT_PUSH_AFTER_INJECT=true
+GIT_REMOTE="origin"
+GIT_BRANCH="main"
+GIT_PULL_DIR="/OMEGA_CORE"
+GIT_PULL_BRANCH_FILTER="refs/heads/main"

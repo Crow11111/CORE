@@ -188,7 +188,7 @@ Ein Python-Skript (`scripts/daily_backup.py`) wird erstellt, das folgende Schrit
 
 ### 7. Überwachung & Benachrichtigung
 - Protokollierung in Log-Datei; bei Fehlern E-Mail oder Slack.
-
+r
 ### 8. Wiederherstellungstest
 - Mindestens einmal pro Monat vollständiger Wiederherstellungstest auf Staging.
 
@@ -254,14 +254,14 @@ ChromaDB läuft im Container auf dem VPS. Ein Cold-Backup (Container kurz stoppe
 
 - **Zeitpunkt:** Täglich, z. B. 04:00 Uhr (Windows: Task Scheduler; Linux: cron).
 - **Windows (Task Scheduler):**
-  - **Programm:** `/OMEGA_CORE\scripts\run_daily_backup.bat`  
-  - **Arbeitsverzeichnis:** `/OMEGA_CORE`  
+  - **Programm:** `/OMEGA_CORE\scripts\run_daily_backup.bat`
+  - **Arbeitsverzeichnis:** `/OMEGA_CORE`
   - Oder direkt: Programm `python`, Argument `/OMEGA_CORE\src\scripts\daily_backup.py`, Starten in `/OMEGA_CORE`.
-- **Linux (cron):**  
+- **Linux (cron):**
   `0 4 * * * cd /pfad/zu/CORE && python3 src/scripts/daily_backup.py >> logs/backup.log 2>&1`
-- **Windows Task Scheduler (einmalig anlegen):**  
-  Als Administrator in cmd/PowerShell:  
-  `schtasks /create /tn "CORE Daily Backup" /tr "/OMEGA_CORE\scripts\run_daily_backup.bat" /sc daily /st 04:00 /ru SYSTEM`  
+- **Windows Task Scheduler (einmalig anlegen):**
+  Als Administrator in cmd/PowerShell:
+  `schtasks /create /tn "CORE Daily Backup" /tr "/OMEGA_CORE\scripts\run_daily_backup.bat" /sc daily /st 04:00 /ru SYSTEM`
   (Oder GUI: Aufgabenplanung → Aufgabe erstellen → Trigger täglich 04:00, Aktion: Batch-Datei oder `python …\daily_backup.py`.)
 
 ### 7. Aufbewahrung (Retention)
@@ -413,13 +413,13 @@ Die **Tapo-Kamera** am Balkon eignet sich für den Erkennungstest, weil sie daue
 
 **go2rtc-Streams (Beispiel HA-Config):** Typische Stream-Namen sind z. B. **Balkon_HD** (Tapo) und **DCS6100** (andere Kamera). Die Quelle für Balkon_HD ist der RTSP-Stream der Tapo; go2rtc stellt dann u. a. `frame.mp4` und **`frame.jpeg`** bereit.
 
-**Einzelbild-Quelle:** go2rtc liefert den Frame über die HTTP-API. Über HA hassio_ingress z. B.  
-- **frame.jpeg** (empfohlen): direkt JPEG, keine Extraktion nötig  
-  `https://home:8123/api/hassio_ingress/<TOKEN>/api/frame.jpeg?src=Balkon_HD`  
-- **frame.mp4**:  
-  `https://home:8123/api/hassio_ingress/<TOKEN>/api/frame.mp4?src=rtsp://home:8554/Balkon_HD?mp4`  
+**Einzelbild-Quelle:** go2rtc liefert den Frame über die HTTP-API. Über HA hassio_ingress z. B.
+- **frame.jpeg** (empfohlen): direkt JPEG, keine Extraktion nötig
+  `https://home:8123/api/hassio_ingress/<TOKEN>/api/frame.jpeg?src=Balkon_HD`
+- **frame.mp4**:
+  `https://home:8123/api/hassio_ingress/<TOKEN>/api/frame.mp4?src=rtsp://home:8554/Balkon_HD?mp4`
 
-→ in .env **`TAPO_FRAME_URL`** setzen (mit deinem Token). Bei **frame.jpeg** liefert das Skript sofort ein JPEG; bei frame.mp4 wird ein Frame per FFmpeg extrahiert. Bei 401 (Ingress-Auth) nutzt das Skript automatisch **`TAPO_RTSP_URL`** (z. B. `rtsp://<Scout-IP>:8554/Balkon_HD`); dafür braucht der PC FFmpeg. Wenn FFmpeg auf dem PC abbricht (z. B. DLL fehlt), **frame.jpeg** über Ingress nutzen oder Ingress-Token prüfen.  
+→ in .env **`TAPO_FRAME_URL`** setzen (mit deinem Token). Bei **frame.jpeg** liefert das Skript sofort ein JPEG; bei frame.mp4 wird ein Frame per FFmpeg extrahiert. Bei 401 (Ingress-Auth) nutzt das Skript automatisch **`TAPO_RTSP_URL`** (z. B. `rtsp://<Scout-IP>:8554/Balkon_HD`); dafür braucht der PC FFmpeg. Wenn FFmpeg auf dem PC abbricht (z. B. DLL fehlt), **frame.jpeg** über Ingress nutzen oder Ingress-Token prüfen.
 Skript: `python src/scripts/tapo_garden_recognize.py` (Frame → `data/tapo_garden/` + optional Erkennung).
 
 ---
@@ -428,8 +428,8 @@ Skript: `python src/scripts/tapo_garden_recognize.py` (Frame → `data/tapo_gard
 
 Damit CORE **zur Laufzeit** erkennen kann, ob etwas nicht stimmt (Anwesenheit, Auffälligkeiten), muss **mindestens einmal pro Minute** ein Bild ausgewertet werden – ein Intervall von 50 Minuten wäre für solche Zwecke wertlos (z.B. Erkennung von Notfällen). Für den ersten Test kannst du das Intervall per .env auf 50 min stellen; für den eigentlichen Betrieb ist **1× pro Minute** der sinnvolle Standard.
 
-- **Skript:** `python src/scripts/brio_scenario_periodic.py`  
-  - **Standard:** alle **1 Minute** ein Zyklus, **60 Minuten** lang (also 60 Zyklen).  
+- **Skript:** `python src/scripts/brio_scenario_periodic.py`
+  - **Standard:** alle **1 Minute** ein Zyklus, **60 Minuten** lang (also 60 Zyklen).
   - Ein Zyklus: 1 Snapshot → Gemini Vision (Person ja/nein, STATE, NEED_MORE) → bei NEED_MORE bis zu 5 weitere Snapshots → erneute Auswertung → Eintrag ins Protokoll.
 - **Einmaliger Test:** `python src/scripts/brio_scenario_periodic.py once`
 - **Protokoll:** `data/brio_scenario/protocol.jsonl` (eine Zeile pro Zyklus, JSON mit `ts`, `person_visible`, `state`, `images_used`, `image_paths`).
@@ -765,7 +765,7 @@ Wenn die Meldung kommt „Sie sind nicht mit Ihrer FRITZ!Box im Heimnetz verbund
 
 Wenn sich eine **Geräte-IP** geändert hat (z. B. Scout, HA, 4D_RESONATOR (CORE)), passt das Zertifikat oft nicht mehr (ausgestellt für alte IP).
 
-- **In der Fritzbox:**  
+- **In der Fritzbox:**
   **Heimnetz → Netzwerk → Netzwerkverbindung** (oder **Heimnetz → Netzwerk → Geräte**): Liste der Geräte und zugewiesene IPv4-Adressen. Prüfen, ob z. B. Scout/HA noch 192.168.178.54 haben oder ob die IP gestern/heute gewechselt hat.
 - **Statische Zuordnung (DHCP-Reservierung):** Damit sich die IP nicht ändert: In der Fritzbox für das Gerät (z. B. Scout) eine feste IP zuweisen („Diesem Netzwerkgerät immer die gleiche IPv4-Adresse zuweisen“).
 
@@ -804,7 +804,7 @@ Wenn die **IP** eines Dienstes (HA, Scout) sich geändert hat:
 
 ## Fritzbox Netzwerk-Konfiguration
 
-**Stand:** 2026-03-02  
+**Stand:** 2026-03-02
 **Ausgelesen via:** `src/scripts/_fetch_fritzbox_info.py` (TR-064 API)
 
 ---
@@ -1228,7 +1228,7 @@ Erzeugt CA, Server- und Client-Zertifikate für Entwicklung und erste Tests.
 
 ## MX-Kamera (Logitech Brio) – CORE hören und sehen
 
-Kurzanleitung: So nutzt CORE die MX/Brio am 4D_RESONATOR (CORE)-PC zum **Sehen** und (optional) zum **Hören**.  
+Kurzanleitung: So nutzt CORE die MX/Brio am 4D_RESONATOR (CORE)-PC zum **Sehen** und (optional) zum **Hören**.
 **Scout-MX:** USB-MX am Scout (Raspi/HA) → Proof „Sehen“ mit Quelle `scout_mx` (siehe Abschnitt „Scout-MX einbinden“).
 
 ---
@@ -1947,7 +1947,7 @@ Damit wird das Event von deinem PC an OMEGA_ATTRACTOR gesendet (gleicher Kanal w
 Nach dem Start der Add-ons erscheinen die Dienste unter **Einstellungen → Geräte & Dienste → Entdeckt**. Für jede Komponente:
 
 1. **Wyoming (Whisper)** – Configure → Submit
-2. **Wyoming (Piper)** – Configure → Submit  
+2. **Wyoming (Piper)** – Configure → Submit
 3. **Wyoming (openWakeWord)** – Configure → Submit
 
 #### 1.2 Manuell (falls kein Auto-Discovery)
@@ -1986,7 +1986,7 @@ Nach dem Start der Add-ons erscheinen die Dienste unter **Einstellungen → Ger�
 3. **Streaming Wake Word Engine:** openwakeword
 4. **Wake Word:** z.B. **ok nabu** (zum Testen) oder ein anderes vordefiniertes Modell
 
-**Vordefinierte Modelle:** alexa, hey_mycroft, hey_jarvis, hey_rhasspy, timer, weather.  
+**Vordefinierte Modelle:** alexa, hey_mycroft, hey_jarvis, hey_rhasspy, timer, weather.
 **„computer“** und **„core“** sind nicht vordefiniert – siehe [OPENWAKEWORD_MODELS.md](OPENWAKEWORD_MODELS.md) und 3.2.
 
 #### 3.2 Eigenes Wake Word „hey core“ und „computer“
@@ -2000,12 +2000,12 @@ Nach dem Start der Add-ons erscheinen die Dienste unter **Einstellungen → Ger�
 7. HA neu starten oder openWakeWord-Add-on neu starten
 8. Assistent bearbeiten → Wake Word: eigenes Modell wählen
 
-**Detaillierte Anleitung:** [CUSTOM_WAKE_WORD_TRAINING.md](CUSTOM_WAKE_WORD_TRAINING.md)  
+**Detaillierte Anleitung:** [CUSTOM_WAKE_WORD_TRAINING.md](CUSTOM_WAKE_WORD_TRAINING.md)
 **Dokumentation:** [HA Wake Words erstellen](https://www.home-assistant.io/voice_control/create_wake_word/)
 
 #### 3.3 Zwei Wake Words gleichzeitig (ab HA 2025.10)
 
-Ab Home Assistant 2025.10 unterstützen Voice Satellites **bis zu zwei Wake Words** pro Gerät.  
+Ab Home Assistant 2025.10 unterstützen Voice Satellites **bis zu zwei Wake Words** pro Gerät.
 → Zwei verschiedene Assistenten/Pipelines mit unterschiedlichen Wake Words (z.B. „hey core“ und „computer“) können parallel aktiv sein.
 
 #### 3.4 Setup-Skripte (CORE)
@@ -2287,7 +2287,7 @@ Backend läuft dann auf: `http://localhost:8000`
     // === CORE KONFIGURATION ===
     const LOCAL_PORT = 8000;
     const ENDPOINT_URL = `http://127.0.0.1:${LOCAL_PORT}/api/core/speak`;
-    
+
     // Verfügbare Rollen: atlas_dialog, atlas_info, therapeut, analyst, atlas_high_density
     const DEFAULT_ROLE = "atlas_dialog";
 
@@ -2295,7 +2295,7 @@ Backend läuft dann auf: `http://localhost:8000`
         GM_xmlhttpRequest({
             method: "POST",
             url: ENDPOINT_URL,
-            data: JSON.stringify({ 
+            data: JSON.stringify({
                 text: text,
                 role: DEFAULT_ROLE
             }),
@@ -2321,9 +2321,9 @@ Backend läuft dann auf: `http://localhost:8000`
     document.addEventListener('keydown', function(e) {
         if (e.ctrlKey && e.shiftKey && e.code === 'KeyS') {
             e.preventDefault(); // Verhindert Browser-Save-Dialog
-            
+
             let selectedText = window.getSelection().toString().trim();
-            
+
             if (selectedText.length > 0) {
                 console.log("CORE-TTS: Sende", selectedText.length, "Zeichen...");
                 pushToATLAS(selectedText);
@@ -2335,7 +2335,7 @@ Backend läuft dann auf: `http://localhost:8000`
             }
         }
     });
-    
+
     console.log("CORE TTS Push geladen. Shortcut: Strg+Shift+S");
 })();
 ```
@@ -2449,7 +2449,7 @@ Für Power-User: Verschiedene Shortcuts für verschiedene Stimmen:
 
 ```javascript
 // Strg+Shift+S = atlas_dialog
-// Strg+Shift+T = therapeut  
+// Strg+Shift+T = therapeut
 // Strg+Shift+A = analyst
 
 document.addEventListener('keydown', function(e) {
@@ -2458,7 +2458,7 @@ document.addEventListener('keydown', function(e) {
         if (e.code === 'KeyS') role = 'atlas_dialog';
         if (e.code === 'KeyT') role = 'therapeut';
         if (e.code === 'KeyA') role = 'analyst';
-        
+
         if (role) {
             e.preventDefault();
             let text = window.getSelection().toString().trim();
@@ -2683,9 +2683,9 @@ Physisches Gerät mit Mikro, verbindet sich per Wyoming mit HA. Ersetzt Software
 | **Ollama (Haupt-Inferenz)** | Scout (Pi) / Dreadnought (PC) | **Nein** | **3-Tier-Strategie:** 1. VPS (OpenClaw), 2. Scout (Ollama), 3. Dreadnought (Fallback). GPU auf Dreadnought wird entlastet. |
 | **TTS/STT (Piper/Whisper)** | Scout (Pi) | **Nein** | Läuft lokal auf dem Scout zur Latenzminimierung und Dreadnought-Entlastung. |
 
-**Faustregel:**  
-- **VPS:** Öffentlich erreichbare Dienste (OpenClaw, ggf. Webhook-Empfang), zentrale DB (Chroma), Backup-Ziel.  
-- **Dreadnought (PC):** Cursor/Cloud Agents, schwere Inferenz-Fallbacks, Gaming/Workstation-Ressourcen.  
+**Faustregel:**
+- **VPS:** Öffentlich erreichbare Dienste (OpenClaw, ggf. Webhook-Empfang), zentrale DB (Chroma), Backup-Ziel.
+- **Dreadnought (PC):** Cursor/Cloud Agents, schwere Inferenz-Fallbacks, Gaming/Workstation-Ressourcen.
 - **Scout (Pi):** Home Assistant, primäres lokales AI-Offloading (Ollama, Piper, Whisper), lokale Sensoren.
 
 ---
@@ -3153,8 +3153,8 @@ Siehe auch: `python -m src.scripts.verify_vps_stack` (optionale Knoten Evolution
 
 ## Ollama auf Hostinger-VPS (Strang B – OC Brain)
 
-**Bezug:** [OC_BRAIN_AUFTRAG_AUSFUEHRUNG.md](../05_AUDIT_PLANNING/OC_BRAIN_AUFTRAG_AUSFUEHRUNG.md) (Strang B)  
-**Skript:** `src/scripts/install_ollama_vps.py`  
+**Bezug:** [OC_BRAIN_AUFTRAG_AUSFUEHRUNG.md](../05_AUDIT_PLANNING/OC_BRAIN_AUFTRAG_AUSFUEHRUNG.md) (Strang B)
+**Skript:** `src/scripts/install_ollama_vps.py`
 **VPS:** OPENCLAW_ADMIN_VPS_HOST (z. B. 187.77.68.250)
 
 ---
@@ -3191,8 +3191,8 @@ Das Skript:
 ### Firewall
 
 - **Standard:** Port 11434 ist **nur lokal** erreichbar (nicht in ufw freigegeben). OpenClaw-Container auf demselben Host nutzen `http://localhost:11434` bzw. `http://127.0.0.1:11434`.
-- **Optional (gezielt öffnen):**  
-  `python -m src.scripts.install_ollama_vps --open-firewall`  
+- **Optional (gezielt öffnen):**
+  `python -m src.scripts.install_ollama_vps --open-firewall`
   setzt `ufw allow 11434/tcp`. Nur verwenden, wenn externer Zugriff gewollt ist.
 
 ---
@@ -3201,12 +3201,12 @@ Das Skript:
 
 Das Skript gibt im Kurzbericht aus:
 
-- **Installation durchgeführt:** ja/nein  
-- **Ollama-Status:** ok / fehler  
-- **api/tags:** Rohausgabe (Auszug)  
-- **Modell:** z. B. qwen2.5:7b  
-- **Installationspfad:** z. B. /usr/local/bin/ollama  
-- **Service-Status:** active / inactive / no-systemd  
+- **Installation durchgeführt:** ja/nein
+- **Ollama-Status:** ok / fehler
+- **api/tags:** Rohausgabe (Auszug)
+- **Modell:** z. B. qwen2.5:7b
+- **Installationspfad:** z. B. /usr/local/bin/ollama
+- **Service-Status:** active / inactive / no-systemd
 
 Bei Fehlern: exakte Meldung im Bericht und ggf. in `api_tags_output` (inkl. `ollama list` / systemctl).
 
@@ -3320,7 +3320,7 @@ curl http://187.77.68.250:8001/
 
 ### Scout-Konfiguration
 
-Scout/atlas_conversation Failover-URL: `http://187.77.68.250:8001/webhook/forwarded_text`  
+Scout/atlas_conversation Failover-URL: `http://187.77.68.250:8001/webhook/forwarded_text`
 Header: `Authorization: Bearer <HA_WEBHOOK_TOKEN>`
 
 
@@ -3481,10 +3481,10 @@ Use a Google Home Mini ("Hey Google") to capture a voice command, send the trans
 **Direct interception is currently NOT possible using software alone.**
 
 #### Nabu Casa vs Manual Integration
-It does not matter whether you use Nabu Casa (Home Assistant Cloud) or set up the manual Google Assistant integration (using Google Cloud Console and setting up your own OAuth/fulfillment). 
+It does not matter whether you use Nabu Casa (Home Assistant Cloud) or set up the manual Google Assistant integration (using Google Cloud Console and setting up your own OAuth/fulfillment).
 
 Both methods share the same limitation:
-The integration *only* allows Google Assistant to control Home Assistant devices (e.g., "Hey Google, turn on the living room light"). 
+The integration *only* allows Google Assistant to control Home Assistant devices (e.g., "Hey Google, turn on the living room light").
 Home Assistant **cannot** intercept the raw audio or the text of what you say to the Google Mini. Google processes the voice and determines the intent. You cannot route custom conversational text directly to Ollama through the Mini's microphone using official APIs.
 
 ### Alternatives and Workarounds
@@ -3494,7 +3494,7 @@ Project **Onju Voice**: A community hardware project where you open up a Google 
 
 #### 2. Dedicated Local Voice Satellites (The recommended Home Assistant way)
 Instead of using the Google Mini's microphone, the modern Home Assistant approach uses dedicated, open hardware.
-- **Hardware:** Build or buy an ESP32-based "Voice Satellite" (like the Atom Echo, ESP32-S3-BOX). 
+- **Hardware:** Build or buy an ESP32-based "Voice Satellite" (like the Atom Echo, ESP32-S3-BOX).
 - **Flow:** "Hey Jarvis" -> ESP32 Satellite -> Home Assistant (Whisper) -> **Ollama LLM** -> Home Assistant (Piper) -> ESP32 Satellite Speaker.
 
 ### Conclusion
@@ -3542,8 +3542,8 @@ The pipeline looks like this:
 3. **Configure Voice Assistant:** Go to Settings -> Voice Assistants and create a new pipeline that uses Whisper, Piper, and your Ollama conversation agent.
 
 ### Hardware Considerations
-- **Raspberry Pi 4 Performance:** A Pi 4 can run Whisper and Piper, but it will be slightly slow (a few seconds delay between speaking and the response). 
-- **Ollama Performance:** You are already pulling `llama3.1`. Running an LLM *and* voice processing tools on a single Raspberry Pi will be very heavy. Responses might take 10-30 seconds depending on the model size and quantization. 
+- **Raspberry Pi 4 Performance:** A Pi 4 can run Whisper and Piper, but it will be slightly slow (a few seconds delay between speaking and the response).
+- **Ollama Performance:** You are already pulling `llama3.1`. Running an LLM *and* voice processing tools on a single Raspberry Pi will be very heavy. Responses might take 10-30 seconds depending on the model size and quantization.
 
 ### Recommended USB Microphones
 - Jabra Speak 410/510 (Excellent because it includes a speaker and great echo cancellation).

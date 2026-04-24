@@ -74,7 +74,7 @@ def get_model_for_role(role: str) -> Optional[str]:
     """Rollen-Mapping: Jede Rolle → optimales Modell."""
     m = {
         # Kern-Rollen
-        "heavy": GEMINI_HEAVY,
+        "heavy": STABLE_HEAVY, # Wechsel auf stabilen Anker (Claude 3.5 Sonnet)
         "flash": GEMINI_FLASH,
         "triage": "gemma4:e2b", # OPERATOR-OVERRIDE: Gemma 4 mandatory per Marc Tobias ten Hoevel (VRAM-Resonanz Korrektur auf e2b)
         "dev_agent": GEMINI_DEV_AGENT,

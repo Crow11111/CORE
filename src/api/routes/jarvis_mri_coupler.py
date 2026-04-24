@@ -88,7 +88,7 @@ MODELS = {
     "core-local-min": {"type": "ollama", "target": os.getenv("OLLAMA_MODEL", "qwen2.5-coder:7b")},
     "core-local-max": {"type": "ollama", "target": os.getenv("OLLAMA_HEAVY_MODEL", "qwen2.5-coder:7b")},
     "core-api-min": {"type": "gemini", "target": GEMINI_FLASH},
-    "core-api-max": {"type": "anthropic", "target": STABLE_HEAVY}, # Claude 3.5 Sonnet als stabiler Anker
+    "core-api-max": {"type": "gemini", "target": GEMINI_HEAVY}, # Umstellung von Anthropic auf natives Gemini Heavy
 }
 
 async def _inject_mri_pressure(prompt: str, response_text: str, start_time: float, model_id: str):
@@ -352,12 +352,13 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
                 
                 parts = data.get("candidates", [{}])[0].get("content", {}).get("parts", [])
                 for p in parts:
-                    if "text" in p:
-                        # Prüfe auf das neue 'thought' Flag von Google
-                        if p.get("thought"):
-                            thought_parts.append(p["text"])
-                        else:
-                            text_parts.append(p["text"])
+                    # Native Google Thinking (Gemini 3.1+)
+                    if "thought" in p and p["thought"]:
+                        thought_parts.append(p["text"] if "text" in p else "")
+                    elif "text" in p:
+                        # Fallback: Falls 'thought' im Text-Block steht (manchmal bei Pre-Release)
+                        text_parts.append(p["text"])
+                    
                     if "functionCall" in p:
                         is_function_call = True
                 

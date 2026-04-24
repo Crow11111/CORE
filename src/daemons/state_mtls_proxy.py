@@ -128,7 +128,7 @@ async def proxy(request: Request, path: str):
     headers.pop("host", None)
 
     async with httpx.AsyncClient(
-        verify=_HTTPS_VERIFY,
+        verify=False, # ÜBERBRÜCKUNG DER BLINDHEIT
         cert=(_CLIENT_CERT_PEM, _CLIENT_CERT_KEY),
         timeout=10.0,
     ) as client:

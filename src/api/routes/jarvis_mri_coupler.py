@@ -323,17 +323,25 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
                         "parts": [{"text": m["content"]}]
                     })
 
+                # Asymmetrische Modell-Logik fuer 2026:
+                # Flash-Lite braucht Thinking fuer kognitive Stabilitaet.
+                # Pro (Preview) wirft bei Tool-Use Signatur-Fehler, wenn Thinking aktiv ist.
+                is_flash_lite = "flash-lite" in config.get("target", "").lower()
+                
                 gemini_payload = {
                     "contents": contents,
                     "tools": gemini_tools,
                     "generationConfig": {
-                        "temperature": payload.get("temperature", 0.7),
-                        "thinkingConfig": {
-                            "includeThoughts": True,
-                            "thinkingLevel": "high"
-                        }
+                        "temperature": payload.get("temperature", 0.7)
                     }
                 }
+                
+                if is_flash_lite:
+                    gemini_payload["generationConfig"]["thinkingConfig"] = {
+                        "includeThoughts": True,
+                        "thinkingLevel": "high"
+                    }
+                
                 if sys_instruct:
                     gemini_payload["systemInstruction"] = sys_instruct
 

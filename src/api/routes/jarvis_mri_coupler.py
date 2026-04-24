@@ -415,6 +415,134 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
             usage_data["completion_tokens"] = usage.get("candidatesTokenCount", 0)
             usage_data["total_tokens"] = usage.get("totalTokenCount", 0)
 
+        elif config["type"] == "anthropic":
+            api_key = os.getenv("ANTHROPIC_API_KEY")
+            if not api_key:
+                return JSONResponse({"error": "ANTHROPIC_API_KEY is missing"}, status_code=500)
+
+            # Anthropic Tools Mapping
+            anthropic_tools = []
+            for s in schemas:
+                anthropic_tools.append({
+                    "name": s["name"],
+                    "description": s["description"],
+                    "input_schema": s["parameters"]
+                })
+
+            async def _call_anthropic(msgs):
+                anth_messages = []
+                anth_system = ""
+                for m in msgs:
+                    if m["role"] == "system":
+                        anth_system = m["content"]
+                        continue
+                    if m["role"] == "tool":
+                        # Anthropic tool result must follow the assistant message
+                        # We need the tool_use_id, which we store in the content or name
+                        tool_use_id = m.get("tool_use_id") or f"tool_use_{m.get('name')}"
+                        anth_messages.append({
+                            "role": "user",
+                            "content": [{
+                                "type": "tool_result",
+                                "tool_use_id": tool_use_id,
+                                "content": str(m["content"])
+                            }]
+                        })
+                        continue
+                    
+                    role = "assistant" if m["role"] == "assistant" else "user"
+                    
+                    if m.get("tool_calls"):
+                        content = []
+                        if m.get("content"):
+                            content.append({"type": "text", "text": m["content"]})
+                        for tc in m["tool_calls"]:
+                            content.append({
+                                "type": "tool_use",
+                                "id": tc.get("id") or f"tool_use_{tc['function']['name']}",
+                                "name": tc["function"]["name"],
+                                "input": tc["function"].get("arguments", {})
+                            })
+                        anth_messages.append({"role": role, "content": content})
+                    else:
+                        anth_messages.append({"role": role, "content": m["content"]})
+
+                payload_anth = {
+                    "model": config["target"],
+                    "max_tokens": 4096,
+                    "messages": anth_messages,
+                    "system": anth_system,
+                    "tools": anthropic_tools
+                }
+                
+                async with httpx.AsyncClient() as client:
+                    resp = await client.post(
+                        "https://api.anthropic.com/v1/messages",
+                        headers={
+                            "x-api-key": api_key,
+                            "anthropic-version": "2023-06-01",
+                            "content-type": "application/json"
+                        },
+                        json=payload_anth,
+                        timeout=120.0
+                    )
+                    resp.raise_for_status()
+                    return resp.json()
+
+            anth_data = await _call_anthropic(messages)
+            
+            while anth_data.get("stop_reason") == "tool_use":
+                content = anth_data.get("content", [])
+                text_content = ""
+                tool_calls_for_msg = []
+                
+                for c in content:
+                    if c["type"] == "text":
+                        text_content += c["text"]
+                    if c["type"] == "tool_use":
+                        tool_calls_for_msg.append({
+                            "id": c["id"],
+                            "function": {
+                                "name": c["name"],
+                                "arguments": c["input"]
+                            }
+                        })
+                
+                messages.append({
+                    "role": "assistant",
+                    "content": text_content,
+                    "tool_calls": tool_calls_for_msg
+                })
+                
+                for tc in tool_calls_for_msg:
+                    func_name = tc["function"]["name"]
+                    args = tc["function"]["arguments"]
+                    logger.info(f"[JARVIS-MRI] Anthropic Tool Call: {func_name}({args})")
+                    try:
+                        result = await registry.execute(func_name, **args)
+                    except Exception as e:
+                        result = f"Error: {e}"
+                    logger.info(f"[JARVIS-MRI] Tool Result: {result}")
+                    messages.append({
+                        "role": "tool",
+                        "name": func_name,
+                        "tool_use_id": tc["id"],
+                        "content": str(result)
+                    })
+                
+                anth_data = await _call_anthropic(messages)
+
+            # Final response
+            final_content = anth_data.get("content", [])
+            for c in final_content:
+                if c["type"] == "text":
+                    assistant_reply += c["text"]
+            
+            usage = anth_data.get("usage", {})
+            usage_data["prompt_tokens"] = usage.get("input_tokens", 0)
+            usage_data["completion_tokens"] = usage.get("output_tokens", 0)
+            usage_data["total_tokens"] = usage_data["prompt_tokens"] + usage_data["completion_tokens"]
+
         # Gedanken einbetten, falls vorhanden
         if thought_log:
             assistant_reply = f"<thought>{thought_log}</thought>\n{assistant_reply}"

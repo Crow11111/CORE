@@ -344,12 +344,31 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
 
             gemini_data = await _call_gemini(messages)
 
-            while gemini_data.get("candidates") and gemini_data["candidates"][0]["content"].get("parts", [{}])[0].get("functionCall"):
-                parts = gemini_data["candidates"][0]["content"]["parts"]
+            # Robustes Parsing: Extrahiere Text und native Google Thoughts
+            def _extract_gemini_content(data):
+                text_parts = []
+                thought_parts = []
+                is_function_call = False
+                
+                parts = data.get("candidates", [{}])[0].get("content", {}).get("parts", [])
+                for p in parts:
+                    if "text" in p:
+                        # Prüfe auf das neue 'thought' Flag von Google
+                        if p.get("thought"):
+                            thought_parts.append(p["text"])
+                        else:
+                            text_parts.append(p["text"])
+                    if "functionCall" in p:
+                        is_function_call = True
+                
+                return "".join(text_parts), "\n".join(thought_parts), is_function_call, parts
 
+            assistant_reply_raw, native_thoughts, has_fc, current_parts = _extract_gemini_content(gemini_data)
+
+            while has_fc:
                 # Gemini returns function calls, we format it as an assistant message with tool_calls for our internal message list
                 tool_calls_for_msg = []
-                for p in parts:
+                for p in current_parts:
                     if "functionCall" in p:
                         fc = p["functionCall"]
                         tool_calls_for_msg.append({
@@ -361,11 +380,11 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
 
                 messages.append({
                     "role": "assistant",
-                    "content": parts[0].get("text", "") if "text" in parts[0] else "",
+                    "content": assistant_reply_raw,
                     "tool_calls": tool_calls_for_msg
                 })
 
-                for p in parts:
+                for p in current_parts:
                     if "functionCall" in p:
                         fc = p["functionCall"]
                         func_name = fc["name"]
@@ -383,12 +402,13 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
                         })
 
                 gemini_data = await _call_gemini(messages)
+                assistant_reply_raw, additional_thoughts, has_fc, current_parts = _extract_gemini_content(gemini_data)
+                if additional_thoughts:
+                    native_thoughts += "\n" + additional_thoughts
 
-            try:
-                assistant_reply = gemini_data["candidates"][0]["content"]["parts"][0]["text"]
-            except (KeyError, IndexError):
-                assistant_reply = ""
-                logger.error(f"[JARVIS-MRI] Gemini parse error: {gemini_data}")
+            assistant_reply = assistant_reply_raw
+            if native_thoughts:
+                thought_log += f"\n[GEMINI:THOUGHTS]\n{native_thoughts}"
 
             usage = gemini_data.get("usageMetadata", {})
             usage_data["prompt_tokens"] = usage.get("promptTokenCount", 0)

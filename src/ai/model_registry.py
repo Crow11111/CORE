@@ -60,7 +60,7 @@ ANTHROPIC_HEAVY = _env("ANTHROPIC_HEAVY_MODEL", "claude-3-5-sonnet-latest")
 ANTHROPIC_FAST = _env("ANTHROPIC_FAST_MODEL", "claude-3-5-haiku-latest")
 
 # ── Stabilitaets-Mapping (Axiom A7) ──
-STABLE_HEAVY = ANTHROPIC_HEAVY # Claude als Fels in der Brandung
+STABLE_HEAVY = GEMINI_HEAVY # Gemini 3.1 Pro als nativer Reasoning-Kern
 STABLE_FAST = GEMINI_FLASH # Gemini Flash bleibt fuer Vision/Speed exzellent
 
 # ── Ollama (lokaler Fallback, Scout-Schicht) ──
@@ -74,7 +74,7 @@ def get_model_for_role(role: str) -> Optional[str]:
     """Rollen-Mapping: Jede Rolle → optimales Modell."""
     m = {
         # Kern-Rollen
-        "heavy": STABLE_HEAVY, # Wechsel auf stabilen Anker (Claude 3.5 Sonnet)
+        "heavy": STABLE_HEAVY,
         "flash": GEMINI_FLASH,
         "triage": "gemma4:e2b", # OPERATOR-OVERRIDE: Gemma 4 mandatory per Marc Tobias ten Hoevel (VRAM-Resonanz Korrektur auf e2b)
         "dev_agent": GEMINI_DEV_AGENT,

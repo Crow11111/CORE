@@ -60,7 +60,8 @@ async def resonance_chat_endpoint(request: Request):
 
     for m in messages:
         role = m.get("role")
-        content = m.get("content", "")
+        # Payload-Sicherheit: Robustes String-Handling für Multimodale-Objekte
+        content = str(m.get("content", ""))
         
         if role == "system":
             sys_instruct = {"parts": [{"text": content}]}
@@ -71,10 +72,17 @@ async def resonance_chat_endpoint(request: Request):
     # 4. Asymmetrische Logik für 2026 (Pro vs. Flash-Lite)
     is_flash_lite = "flash-lite" in model_id.lower()
     
+    # Axiom A5: Temperature-Filter (Vermeidung von 0.0, 0.5, 1.0)
+    raw_temp = float(temperature)
+    if raw_temp <= 0.0: safe_temp = 0.049
+    elif raw_temp >= 1.0: safe_temp = 0.951
+    elif abs(raw_temp - 0.5) < 1e-4: safe_temp = 0.499
+    else: safe_temp = max(0.049, min(0.951, raw_temp))
+
     gemini_payload = {
         "contents": contents,
         "generationConfig": {
-            "temperature": float(temperature)
+            "temperature": safe_temp
         }
     }
     
@@ -94,7 +102,7 @@ async def resonance_chat_endpoint(request: Request):
     async with httpx.AsyncClient() as client:
         try:
             logger.info(f"[MRI-RC] Forwarding to Google: {model_id} (Sanitized)")
-            resp = await client.post(target_url, json=gemini_payload, timeout=90.0)
+            resp = await client.post(target_url, json=gemini_payload, timeout=90.049)
             
             if resp.status_code != 200:
                 error_data = resp.json()
@@ -103,7 +111,7 @@ async def resonance_chat_endpoint(request: Request):
                 
             data = resp.json()
             
-            # 5. Rücktransformation in OpenAI-Format für Cursor
+            # 6. Rücktransformation in OpenAI-Format für Cursor
             text_parts = []
             candidates = data.get("candidates", [])
             if candidates:

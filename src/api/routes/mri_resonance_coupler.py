@@ -1,16 +1,12 @@
-# ============================================================
-# CORE-GENESIS: Marc Tobias ten Hoevel
-# VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
-# LOGIC: 2-2-1-0 (NON-BINARY)
-# ============================================================
 """
 MRI Resonance Coupler (MRI-RC)
 Rein funktionale Brücke zur Google Gemini API (Stand 2026).
-Eliminiert inkompatible Cursor-Parameter und erzwingt Reasoning-Resonanz.
+Eliminiert inkompatible Cursor-Parameter (z.B. disable_thought_tag) autonom.
 """
 
 import os
 import httpx
+import json
 from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import JSONResponse
 from loguru import logger
@@ -21,37 +17,54 @@ router = APIRouter(prefix="/v1/mri", tags=["MRI-Resonanz"])
 async def resonance_chat_endpoint(request: Request):
     """
     Kardanischer Ingress für LLM-Anfragen.
-    Säubert den Payload von Cursor-Altlasten.
+    Säubert den Payload von Cursor-Parametern, die Google nicht versteht.
     """
-    payload = await request.json()
-    api_key = os.getenv("GEMINI_API_KEY")
+    try:
+        raw_payload = await request.json()
+    except Exception as e:
+        logger.error(f"[MRI-RC] Invalid JSON Request: {e}")
+        raise HTTPException(status_code=400, detail="Invalid JSON")
 
+    api_key = os.getenv("GEMINI_API_KEY")
     if not api_key:
         raise HTTPException(status_code=500, detail="GEMINI_API_KEY missing")
 
-    # 1. Parameter-Sanierung (Axiom A7)
-    # Wir entfernen alles, was nicht in der Google v1beta Spezifikation steht.
-    model_id = payload.get("model", "gemini-3.1-pro-preview")
-    messages = payload.get("messages", [])
+    # 1. RADIKALE SANIERUNG (Axiom A7)
+    # Wir extrahieren NUR die Felder, die Google v1beta wirklich kennt.
+    # Wir ignorieren 'extra_body', 'disable_thought_tag' und anderen IDE-Dreck.
+    
+    model_id = raw_payload.get("model", "gemini-3.1-pro-preview")
+    messages = raw_payload.get("messages", [])
+    temperature = raw_payload.get("temperature", 0.7)
 
-    # 2. Modell-Weiche (Asymmetrische Logik)
-    is_flash_lite = "flash-lite" in model_id.lower()
-    is_pro = "pro" in model_id.lower()
-
-    # 3. Aufbau des Google-Native Payloads
+    # 2. Aufbau des Google-Native Payloads von Null an
     contents = []
-    for m in messages:
-        role = "user" if m["role"] == "user" else "model"
-        contents.append({"role": role, "parts": [{"text": m["content"]}]})
+    sys_instruct = None
 
+    for m in messages:
+        role = m.get("role")
+        content = m.get("content", "")
+        
+        if role == "system":
+            sys_instruct = {"parts": [{"text": content}]}
+        else:
+            gemini_role = "user" if role == "user" else "model"
+            contents.append({"role": gemini_role, "parts": [{"text": content}]})
+
+    # 3. Asymmetrische Logik für 2026 (Pro vs. Flash-Lite)
+    is_flash_lite = "flash-lite" in model_id.lower()
+    
     gemini_payload = {
         "contents": contents,
         "generationConfig": {
-            "temperature": payload.get("temperature", 0.7)
+            "temperature": float(temperature)
         }
     }
+    
+    if sys_instruct:
+        gemini_payload["systemInstruction"] = sys_instruct
 
-    # Thoughts nur für Flash-Lite oder explizit angefordert (ohne Signatur-Zwang für Pro)
+    # Thoughts-Handling
     if is_flash_lite:
         gemini_payload["generationConfig"]["thinkingConfig"] = {
             "includeThoughts": True,
@@ -60,15 +73,20 @@ async def resonance_chat_endpoint(request: Request):
 
     # 4. API-Call an Google
     target_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}"
-
+    
     async with httpx.AsyncClient() as client:
         try:
-            resp = await client.post(target_url, json=gemini_payload, timeout=60.0)
-            resp.raise_for_status()
+            logger.info(f"[MRI-RC] Forwarding to Google: {model_id} (Sanitized)")
+            resp = await client.post(target_url, json=gemini_payload, timeout=90.0)
+            
+            if resp.status_code != 200:
+                error_data = resp.json()
+                logger.error(f"[MRI-RC] Google Error: {error_data}")
+                return JSONResponse(content=error_data, status_code=resp.status_code)
+                
             data = resp.json()
-
+            
             # 5. Rücktransformation in OpenAI-Format für Cursor
-            # (Hier reduzierte Logik für den Ingress)
             text_parts = []
             candidates = data.get("candidates", [])
             if candidates:
@@ -76,17 +94,29 @@ async def resonance_chat_endpoint(request: Request):
                 for p in parts:
                     if "text" in p:
                         text_parts.append(p["text"])
-
+            
+            full_text = "".join(text_parts)
+            
             return {
+                "id": f"mri-{os.urandom(4).hex()}",
+                "object": "chat.completion",
+                "created": 1776758400, # April 2026
+                "model": model_id,
                 "choices": [{
+                    "index": 0,
                     "message": {
                         "role": "assistant",
-                        "content": "".join(text_parts)
+                        "content": full_text
                     },
                     "finish_reason": "stop"
-                }]
+                }],
+                "usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0
+                }
             }
-
+            
         except Exception as e:
-            logger.error(f"[MRI-RC] Google API Error: {e}")
-            return JSONResponse({"error": str(e)}, status_code=502)
+            logger.error(f"[MRI-RC] Connection Error: {e}")
+            return JSONResponse({"error": "Gateway Connection Failed", "detail": str(e)}, status_code=502)

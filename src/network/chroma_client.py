@@ -162,9 +162,10 @@ class ResilientChromaClient:
                     except Exception as e:
                         logger.critical(f"Reanimation auf Port {real_port} fehlgeschlagen: {e}")
             
-            # Endgültiges Veto ausgesetzt für Stabilität
-            logger.critical("ChromaDB-Verbindung endgültig zerstört. Fallback auf asynchronen Wait-State (Endlosschleife zur Backend-Heilung).")
-            while True:
+            # Endgültiges Veto ausgesetzt für Stabilität, aber mit Timeout zur Thread-Sicherung (Axiom A7)
+            logger.critical("ChromaDB-Verbindung endgültig zerstört. Fallback auf asynchronen Wait-State (begrenzte Heilungsschleife).")
+            max_wait_attempts = 12 # 12 * 5s = 60s max Blockade
+            for wait_attempt in range(max_wait_attempts):
                 time.sleep(5)
                 try:
                     client = chromadb.HttpClient(host=self.host, port=self.initial_port)
@@ -172,7 +173,9 @@ class ResilientChromaClient:
                     logger.info("Verbindung wiederhergestellt nach Wait-State.")
                     return client
                 except Exception:
-                    pass
+                    logger.warning(f"Heilungsversuch {wait_attempt+1}/{max_wait_attempts} fehlgeschlagen.")
+            
+            raise ConnectionError(f"ChromaDB-Heilung nach {max_wait_attempts*5}s fehlgeschlagen. VETO.")
 
     def get_or_create_collection(self, name: str, metadata: dict = None):
         return self.client.get_or_create_collection(name=name, metadata=metadata)

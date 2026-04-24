@@ -32,7 +32,7 @@ def get_genai_client():
 async def resonance_chat_endpoint(request: Request):
     """
     Kardanischer Ingress für LLM-Anfragen.
-    Emuliert eine OpenAI-Schnittstelle zur Umgehung von Cursor-Bugs.
+    Säubert Payload radikal (Entfernung von IDE-Dross wie extra_body).
     """
     try:
         raw_payload = await request.json()
@@ -47,11 +47,11 @@ async def resonance_chat_endpoint(request: Request):
         raise HTTPException(status_code=500, detail=str(e))
 
     # 1. RADIKALE SANIERUNG (Axiom A7)
-    # Whitelist-Extraktion zur Vermeidung von IDE-Dross (disable_thought_tag)
+    # Whitelist-Extraktion zur Vermeidung von IDE-Dross (extra_body/disable_thought_tag)
     model_id = raw_payload.get("model", "gemini-3.1-pro-preview")
     messages = raw_payload.get("messages", [])
     temperature = raw_payload.get("temperature", 0.7)
-
+    
     # 2. Resonanz-Injektion (Systemzustand)
     try:
         grv = bus_instance.get_grv()
@@ -89,7 +89,7 @@ async def resonance_chat_endpoint(request: Request):
 
     # 5. SDK-Aufruf (Axiom A7: Keine IDE-Parameter)
     try:
-        logger.info(f"[MRI-RC] Forwarding via SDK v1.0+: {model_id}")
+        logger.info(f"[MRI-RC] Forwarding sanitized payload: {model_id}")
         
         # Generierung mit expliziter Konfiguration
         response = await client.aio.models.generate_content(
@@ -98,7 +98,6 @@ async def resonance_chat_endpoint(request: Request):
             config=types.GenerateContentConfig(
                 system_instruction=sys_instruct,
                 temperature=safe_temp,
-                # Tool-Use wird hier explizit nicht konfiguriert (Pfad A)
             )
         )
         

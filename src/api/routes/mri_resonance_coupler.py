@@ -49,9 +49,19 @@ async def resonance_chat_endpoint(request: Request):
     # 1. RADIKALE SANIERUNG (Axiom A7)
     # Whitelist-Extraktion zur Vermeidung von IDE-Dross (extra_body/disable_thought_tag)
     model_id = raw_payload.get("model", "gemini-3.1-pro-preview")
-    messages = raw_payload.get("messages", [])
+    raw_messages = raw_payload.get("messages", [])
     temperature = raw_payload.get("temperature", 0.7)
     system_instruction = raw_payload.get("systemInstruction")
+
+    # Explizite Nachrichten-Rekonstruktion (Anti-Heroin-Sieve)
+    messages = []
+    for m in raw_messages:
+        if not isinstance(m, dict): continue
+        role = m.get("role")
+        content = m.get("content")
+        if role and content:
+            # Nur role und content zulassen, alles andere (extra_body/disable_thought_tag) verwerfen
+            messages.append({"role": role, "content": str(content)})
     
     # 2. Resonanz-Injektion (Systemzustand)
     try:

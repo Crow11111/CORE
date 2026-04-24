@@ -13,12 +13,31 @@ from loguru import logger
 
 router = APIRouter(prefix="/v1/mri", tags=["MRI-Resonanz"])
 
+from src.daemons.system_bus_daemon import bus_instance
+
 @router.post("/chat/completions")
 async def resonance_chat_endpoint(request: Request):
     """
     Kardanischer Ingress für LLM-Anfragen.
-    Säubert den Payload von Cursor-Parametern, die Google nicht versteht.
+    Säubert den Payload und injiziert den aktuellen System-Resonanz-Zustand (GRV).
     """
+    # ... (Payload Parsing) ...
+    
+    # 1. Realen Systemzustand aus dem Bus holen
+    grv = bus_instance.get_grv()
+    state_hash = bus_instance.get_state_hash()
+    
+    # 2. Resonanz-Injektion in den System-Prompt
+    resonance_prompt = f"\n[OMEGA-RESONANCE-ACTIVE]\nGRV: {grv}\nCAUSAL-HASH: {state_hash}\n"
+    
+    # Wir hängen die Resonanz an die erste System-Nachricht an
+    for m in messages:
+        if m["role"] == "system":
+            m["content"] += resonance_prompt
+            break
+    else:
+        # Falls kein System-Prompt da ist, fügen wir einen ein
+        messages.insert(0, {"role": "system", "content": resonance_prompt})
     try:
         raw_payload = await request.json()
     except Exception as e:

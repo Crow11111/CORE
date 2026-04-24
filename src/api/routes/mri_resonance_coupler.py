@@ -11,6 +11,9 @@ from fastapi import APIRouter, Request, HTTPException
 from fastapi.responses import JSONResponse
 from loguru import logger
 
+# --- CAUSAL-SIEVE: GLOBAL CACHE (Axiom A7) ---
+CAUSAL_ANCHOR_CACHE = {} # key: conversation_id, value: thought_signature
+
 router = APIRouter(prefix="/v1", tags=["MRI-Resonanz"])
 
 from src.daemons.system_bus_daemon import bus_instance

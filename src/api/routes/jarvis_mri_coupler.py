@@ -83,11 +83,12 @@ OLLAMA_API_BASE = (
 ).rstrip("/")
 
 # Die 4 Dimensionen der Drehscheibe (MRI Coupler Matrix)
+# Axiom A7: Stabilität durch Modell-Diversität.
 MODELS = {
     "core-local-min": {"type": "ollama", "target": os.getenv("OLLAMA_MODEL", "qwen2.5-coder:7b")},
     "core-local-max": {"type": "ollama", "target": os.getenv("OLLAMA_HEAVY_MODEL", "qwen2.5-coder:7b")},
-    "core-api-min": {"type": "gemini", "target": os.getenv("GEMINI_API_MODEL_MIN", "gemini-1.5-flash")},
-    "core-api-max": {"type": "gemini", "target": os.getenv("GEMINI_API_MODEL_MAX", "gemini-1.5-pro")},
+    "core-api-min": {"type": "gemini", "target": GEMINI_FLASH},
+    "core-api-max": {"type": "anthropic", "target": STABLE_HEAVY}, # Claude 3.5 Sonnet als stabiler Anker
 }
 
 async def _inject_mri_pressure(prompt: str, response_text: str, start_time: float, model_id: str):

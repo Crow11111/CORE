@@ -71,14 +71,18 @@ async def resonance_chat_endpoint(request: Request):
 
     # 3. Transformation OpenAI -> Gemini SDK (Whitelisted)
     contents = []
-    sys_instruct = system_instruction # Von der Top-Level-Extraktion (Directive)
+    # System-Instruction: Bevorzugt aus Top-Level (Directive), sonst Fallback auf messages
+    sys_instruct = system_instruction 
 
     for m in messages:
         role = m.get("role")
         content = str(m.get("content", ""))
         
         if role == "system":
-            sys_instruct = content
+            if sys_instruct:
+                sys_instruct += "\n" + content
+            else:
+                sys_instruct = content
         else:
             gemini_role = "user" if role == "user" else "model"
             contents.append(types.Content(role=gemini_role, parts=[types.Part(text=content)]))

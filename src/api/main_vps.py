@@ -1,0 +1,227 @@
+# ============================================================
+# CORE-GENESIS: Marc Tobias ten Hoevel
+# VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
+# LOGIC: 2-2-1-0 (NON-BINARY)
+# ============================================================
+
+import os
+from contextlib import asynccontextmanager
+from typing import AsyncIterator
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from loguru import logger
+
+# Temporär auskommentiert wegen ImportError
+from src.api.routes import id_safe
+
+from src.api.routes import whatsapp_webhook, ha_webhook, oc_channel, core_knowledge, core_voice, core_events, github_webhook, omega_matrix, omega_thought, telemetry, chat, dictate, voice_bridge, core_state_api, system_ops, system_bus
+from src.api.routes.mri_resonance_coupler import router as mri_router
+
+from src.api.middleware.veto_gate import VetoGateMiddleware
+from src.api.middleware.friction_guard import FrictionGuardMiddleware
+
+_event_bus = None
+_agent_pool = None
+
+from collections import deque
+import time as _time
+
+_log_buffer: deque[dict] = deque(maxlen=200)
+
+
+def _log_sink(message):
+    record = message.record
+    _log_buffer.append({
+        "ts": record["time"].strftime("%H:%M:%S"),
+        "level": record["level"].name,
+        "msg": record["message"],
+        "src": f"{record['name']}:{record['function']}",
+    })
+
+
+logger.add(_log_sink, format="{message}", level="INFO")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    """CORE API Lifecycle: Ephemeral Pool + Event-Bus Startup/Shutdown."""
+    global _event_bus, _agent_pool
+
+    try:
+        from src.agents.scout_core_handlers import scout_fusion_init
+        _agent_pool = await scout_fusion_init()
+        logger.info("[API] CORE Agent Pool initialisiert")
+    except Exception as exc:
+        logger.error("[API] Agent Pool Init fehlgeschlagen: {} – API laeuft weiter", exc)
+
+    hass_url = (os.getenv("HASS_URL") or "").strip()
+    hass_token = (os.getenv("HASS_TOKEN") or "").strip()
+    if hass_url and hass_token:
+        try:
+            from src.daemons.core_event_bus import start_event_bus
+            _event_bus = await start_event_bus()
+            logger.info("[API] Event-Bus gestartet (HASS_URL konfiguriert)")
+        except Exception as exc:
+            logger.error("[API] Event-Bus Start fehlgeschlagen: {} – API laeuft weiter", exc)
+    else:
+        logger.info("[API] Event-Bus uebersprungen (HASS_URL/HASS_TOKEN nicht gesetzt)")
+
+    # --- SYNC RELAY (Native integration via asyncio) ---
+    webhook_secret = (os.getenv("CORE_WEBHOOK_SECRET") or "").strip()
+    if webhook_secret:
+        try:
+            from aiohttp import web as _aio_web
+            from src.network.core_sync_relay import app as sync_relay_app
+
+            async def _run_relay_task():
+                runner = _aio_web.AppRunner(sync_relay_app, handle_signals=False)
+                await runner.setup()
+                site = _aio_web.TCPSite(runner, '0.0.0.0', 8050)
+                try:
+                    await site.start()
+                    logger.info("[API] Sync Relay (Native Task) gestartet auf Port 8050")
+                    # Keep the task alive as long as the lifespan
+                    while True:
+                        await _aio.sleep(3600)
+                except Exception as e:
+                    logger.error("[API] Sync Relay Task Error: {}", e)
+                finally:
+                    await runner.cleanup()
+
+            import asyncio as _aio
+            _aio.create_task(_run_relay_task())
+        except Exception as exc:
+            logger.error("[API] Sync Relay Start (Native) fehlgeschlagen: {} – API laeuft weiter", exc)
+    else:
+        logger.info("[API] Sync Relay uebersprungen (CORE_WEBHOOK_SECRET nicht gesetzt)")
+
+    # --- SYSTEM BUS ENTROPY DAEMON ---
+    try:
+        from src.daemons.system_bus_daemon import bus_instance
+        import asyncio as _aio
+        
+        async def _run_bus_entropy():
+            logger.info("[API] SystemBus Entropy Tick Loop gestartet (100ms Takt)")
+            while True:
+                try:
+                    bus_instance.entropy_tick()
+                    await _aio.sleep(0.1) # 100ms Takt gemäß Hardware-Regel
+                except Exception as e:
+                    logger.error("[API] SystemBus Entropy Error: {}", e)
+                    await _aio.sleep(1)
+
+        _aio.create_task(_run_bus_entropy())
+    except Exception as exc:
+        logger.error("[API] SystemBus Start fehlgeschlagen: {}", exc)
+
+    yield
+
+    if _event_bus is not None:
+        try:
+            await _event_bus.stop()
+            logger.info("[API] Event-Bus gestoppt")
+        except Exception as exc:
+            logger.warning("[API] Event-Bus Stop Fehler: {}", exc)
+
+    if _agent_pool is not None:
+        try:
+            await _agent_pool.stop()
+            logger.info("[API] Agent Pool GC gestoppt")
+        except Exception as exc:
+            logger.warning("[API] Agent Pool Stop Fehler: {}", exc)
+
+
+app = FastAPI(
+    title="CORE API",
+    description="Main Backend Interface for CORE Operations",
+    version="1.0.0",
+    lifespan=lifespan,
+)
+
+# Veto Gate: Veto-Middleware für kritische Operationen (DELETE, Config, Token, Backup)
+app.add_middleware(VetoGateMiddleware)
+# Friction Guard: Scannt LLM-Output auf Simulation (Heresy-Trap)
+app.add_middleware(FrictionGuardMiddleware)
+
+ALLOWED_ORIGINS = [
+    o.strip() for o in os.getenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://localhost:8000").split(",")
+    if o.strip()
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Statischer Ordner fuer generierte Audio/Media-Dateien
+media_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "media"))
+os.makedirs(media_dir, exist_ok=True)
+app.mount("/media", StaticFiles(directory=media_dir), name="media")
+
+# Registrierung der Routen (Webhooks + OpenClaw Channel)
+app.include_router(whatsapp_webhook.router)
+app.include_router(ha_webhook.router)
+app.include_router(oc_channel.router)
+app.include_router(core_knowledge.router)
+app.include_router(core_voice.router)
+app.include_router(core_events.router)
+app.include_router(github_webhook.router)
+app.include_router(omega_matrix.router)
+app.include_router(omega_thought.router)
+app.include_router(telemetry.router)
+app.include_router(chat.router)
+app.include_router(voice_bridge.router)
+app.include_router(dictate.router)
+app.include_router(core_state_api.router)
+app.include_router(system_ops.router)
+app.include_router(system_bus.router)
+app.include_router(mri_router)
+app.include_router(id_safe.router)
+
+@app.get("/")
+def read_root():
+    return {"status": "online", "system": "CORE", "version": "1.0.0"}
+
+
+@app.get("/voice-bridge", response_class=HTMLResponse)
+def voice_bridge_page():
+    """Stimme rein/raus ueber CORE-API (unabhaengig von AI Studio Voice)."""
+    html_path = os.path.join(os.path.dirname(__file__), "static", "voice_bridge.html")
+    with open(html_path, "r", encoding="utf-8") as f:
+        return f.read()
+
+
+@app.get("/status")
+def system_status() -> dict:
+    """Systemstatus inkl. Event-Bus Metriken."""
+    hass_configured = bool(
+        (os.getenv("HASS_URL") or "").strip()
+        and (os.getenv("HASS_TOKEN") or "").strip()
+    )
+    bus_stats = _event_bus.stats if _event_bus is not None else None
+    return {
+        "system": "CORE",
+        "version": "1.0.0",
+        "event_bus": {
+            "hass_configured": hass_configured,
+            "running": _event_bus is not None,
+            "stats": bus_stats,
+        },
+        "agent_pool": {
+            "active": _agent_pool is not None,
+        },
+        "sync_relay": {
+            "enabled": bool((os.getenv("CORE_WEBHOOK_SECRET") or "").strip()),
+            "port": 8050,
+        },
+    }
+
+if __name__ == "__main__":
+    import uvicorn
+    # Test-Aufruf lokal (z.B. python -m src.api.main)
+    uvicorn.run("src.api.main:app", host="0.0.0.0", port=8000, reload=True)

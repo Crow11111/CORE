@@ -51,6 +51,7 @@ async def resonance_chat_endpoint(request: Request):
     model_id = raw_payload.get("model", "gemini-3.1-pro-preview")
     messages = raw_payload.get("messages", [])
     temperature = raw_payload.get("temperature", 0.7)
+    system_instruction = raw_payload.get("systemInstruction")
     
     # 2. Resonanz-Injektion (Systemzustand)
     try:
@@ -70,7 +71,7 @@ async def resonance_chat_endpoint(request: Request):
 
     # 3. Transformation OpenAI -> Gemini SDK (Whitelisted)
     contents = []
-    sys_instruct = None
+    sys_instruct = system_instruction # Von der Top-Level-Extraktion (Directive)
 
     for m in messages:
         role = m.get("role")

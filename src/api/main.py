@@ -179,6 +179,7 @@ app.include_router(dictate.router)
 app.include_router(core_state_api.router)
 app.include_router(system_ops.router)
 app.include_router(system_bus.router)
+app.include_router(mri_resonance_coupler.router)
 app.include_router(id_safe.router)
 
 @app.get("/")

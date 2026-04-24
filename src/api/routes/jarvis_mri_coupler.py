@@ -357,10 +357,13 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
                 parts = data.get("candidates", [{}])[0].get("content", {}).get("parts", [])
                 for p in parts:
                     # Native Google Thinking (Gemini 3.1+)
-                    if "thought" in p and p["thought"]:
-                        thought_parts.append(p["text"] if "text" in p else "")
+                    # Ein Part kann 'thought': True haben ODER der Key selbst heißt 'thought' (inhaltlich)
+                    # Je nach API-Version:
+                    if p.get("thought") is True:
+                        thought_parts.append(p.get("text", ""))
+                    elif "thought" in p and isinstance(p["thought"], str):
+                        thought_parts.append(p["thought"])
                     elif "text" in p:
-                        # Fallback: Falls 'thought' im Text-Block steht (manchmal bei Pre-Release)
                         text_parts.append(p["text"])
                     
                     if "functionCall" in p:

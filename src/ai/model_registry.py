@@ -55,9 +55,13 @@ VOICE_BRIDGE_MODEL = _env("GEMINI_VOICE_BRIDGE_MODEL", "gemini-3-flash-preview")
 # ── Vision ──
 VISION_DAEMON_MODEL = _env("GEMINI_VISION_MODEL", "gemini-3-flash-preview")
 
-# ── Anthropic (Cursor-Kontext, nicht API-gesteuert) ──
-ANTHROPIC_HEAVY = _env("ANTHROPIC_HEAVY_MODEL", "claude-opus-4-6")
-ANTHROPIC_FAST = _env("ANTHROPIC_FAST_MODEL", "claude-sonnet-4-6")
+# ── Anthropic (Stabilitaets-Anker) ──
+ANTHROPIC_HEAVY = _env("ANTHROPIC_HEAVY_MODEL", "claude-3-5-sonnet-latest")
+ANTHROPIC_FAST = _env("ANTHROPIC_FAST_MODEL", "claude-3-5-haiku-latest")
+
+# ── Stabilitaets-Mapping (Axiom A7) ──
+STABLE_HEAVY = ANTHROPIC_HEAVY # Claude als Fels in der Brandung
+STABLE_FAST = GEMINI_FLASH # Gemini Flash bleibt fuer Vision/Speed exzellent
 
 # ── Ollama (lokaler Fallback, Scout-Schicht) ──
 OLLAMA_MODEL = _env("OLLAMA_MODEL", "gemma4:e2b")

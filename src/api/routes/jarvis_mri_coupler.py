@@ -9,6 +9,13 @@ import httpx
 from src.db.multi_view_client import embed_local, ingest_document, search_multi_view, _run_pg_sql
 from src.logic_core.crystal_grid_engine import CrystalGridEngine
 from src.config.core_state import BARYONIC_DELTA
+from src.ai.model_registry import (
+    GEMINI_FLASH,
+    GEMINI_HEAVY,
+    STABLE_HEAVY,
+    STABLE_FAST,
+    get_model_for_role
+)
 
 router = APIRouter()
 

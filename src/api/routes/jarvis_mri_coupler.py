@@ -327,7 +327,11 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
                     "contents": contents,
                     "tools": gemini_tools,
                     "generationConfig": {
-                        "temperature": payload.get("temperature", 0.7)
+                        "temperature": payload.get("temperature", 0.7),
+                        "thinkingConfig": {
+                            "includeThoughts": True,
+                            "thinkingLevel": "high"
+                        }
                     }
                 }
                 if sys_instruct:

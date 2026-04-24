@@ -42,6 +42,16 @@ async def resonance_chat_endpoint(request: Request):
     messages = raw_payload.get("messages", [])
     temperature = raw_payload.get("temperature", 0.7)
 
+    # 0. Conversation Identity (CausalAnchor)
+    conv_id = raw_payload.get("conversation_id")
+    if not conv_id:
+        # Fallback: Hash der messages (ohne die letzte User-Nachricht)
+        try:
+            msg_fingerprint = str(messages[:-1])
+            conv_id = f"hc-{hash(msg_fingerprint)}"
+        except:
+            conv_id = "resonant-stream"
+
     # 2. Resonanz-Injektion (Systemzustand)
     try:
         grv = bus_instance.get_grv()
@@ -57,30 +67,44 @@ async def resonance_chat_endpoint(request: Request):
     except Exception as e:
         logger.warning(f"[MRI-RC] Resonance Injection failed: {e}")
 
-    # 3. Aufbau des Google-Native Payloads von Null an
+    # 3. Thought-Linker (LogicFlow-Anchoring)
+    # Wir finden die letzte Assistant-Nachricht vor der aktuellen User-Eingabe
+    last_assistant_idx = -1
+    for i, m in enumerate(messages):
+        if m.get("role") == "assistant":
+            last_assistant_idx = i
+
+    # 4. Aufbau des Google-Native Payloads von Null an
     contents = []
     sys_instruct = None
 
-    for m in messages:
+    for i, m in enumerate(messages):
         role = m.get("role")
-        # Payload-Sicherheit: Robustes String-Handling für Multimodale-Objekte
         content = str(m.get("content", ""))
         
         if role == "system":
             sys_instruct = {"parts": [{"text": content}]}
         else:
             gemini_role = "user" if role == "user" else "model"
-            contents.append({"role": gemini_role, "parts": [{"text": content}]})
+            parts = [{"text": content}]
+            
+            # Injektion der letzten bekannten Thought-Signature
+            if i == last_assistant_idx and conv_id in CAUSAL_ANCHOR_CACHE:
+                anchor = CAUSAL_ANCHOR_CACHE[conv_id]
+                parts.append({"text": f"\n[CAUSAL-THOUGHT-ANCHOR: {anchor}]\n"})
+                logger.info(f"[MRI-RC] Linked Thought-Anchor for {conv_id}")
+            
+            contents.append({"role": gemini_role, "parts": parts})
 
-    # 4. Asymmetrische Logik für 2026 (Pro vs. Flash-Lite)
+    # 5. Asymmetrische Logik für 2026 (Pro vs. Flash-Lite)
     is_flash_lite = "flash-lite" in model_id.lower()
     
     # Axiom A5: Temperature-Filter (Vermeidung von 0.0, 0.5, 1.0)
     raw_temp = float(temperature)
-    if raw_temp <= 0.0: safe_temp = 0.049
-    elif raw_temp >= 1.0: safe_temp = 0.951
-    elif abs(raw_temp - 0.5) < 1e-4: safe_temp = 0.499
-    else: safe_temp = max(0.049, min(0.951, raw_temp))
+    if raw_temp <= 0.049: safe_temp = 0.049
+    elif raw_temp >= 0.951: safe_temp = 0.951
+    elif abs(raw_temp - 0.5) < 0.01: safe_temp = 0.499
+    else: safe_temp = raw_temp
 
     gemini_payload = {
         "contents": contents,
@@ -92,14 +116,14 @@ async def resonance_chat_endpoint(request: Request):
     if sys_instruct:
         gemini_payload["systemInstruction"] = sys_instruct
 
-    # Thoughts-Handling
-    if is_flash_lite:
+    # Thoughts-Handling (Google 2026er Spezifikation)
+    if is_flash_lite or "pro" in model_id.lower():
         gemini_payload["generationConfig"]["thinkingConfig"] = {
             "includeThoughts": True,
             "thinkingLevel": "high"
         }
 
-    # 5. API-Call an Google
+    # 6. API-Call an Google
     target_url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_id}:generateContent?key={api_key}"
     
     async with httpx.AsyncClient() as client:
@@ -114,14 +138,33 @@ async def resonance_chat_endpoint(request: Request):
                 
             data = resp.json()
             
-            # 6. Rücktransformation in OpenAI-Format für Cursor
+            # 7. Egress-Harvester & A7-Sicherung
             text_parts = []
+            new_thought_signature = None
+            
             candidates = data.get("candidates", [])
             if candidates:
                 parts = candidates[0].get("content", {}).get("parts", [])
                 for p in parts:
+                    # Extrahiere Gedanken (Native 2026)
+                    if "thought" in p:
+                        new_thought_signature = p["thought"]
+                        continue # A7: Gedanken NICHT an Cursor streamen
+                    
                     if "text" in p:
-                        text_parts.append(p["text"])
+                        text = p["text"]
+                        # Fallback: Suche nach Markern im Text
+                        if "[THOUGHT-SIGNATURE:" in text:
+                            import re
+                            match = re.search(r"\[THOUGHT-SIGNATURE:\s*(.*?)\]", text)
+                            if match:
+                                new_thought_signature = match.group(1)
+                                text = re.sub(r"\[THOUGHT-SIGNATURE:\s*.*?\]", "", text).strip()
+                        text_parts.append(text)
+            
+            if new_thought_signature:
+                CAUSAL_ANCHOR_CACHE[conv_id] = new_thought_signature
+                logger.info(f"[MRI-RC] Harvested new Signature for {conv_id}")
             
             full_text = "".join(text_parts)
             

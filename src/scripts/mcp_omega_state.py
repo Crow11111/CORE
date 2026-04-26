@@ -176,11 +176,14 @@ async def _probe_vps_mcp_http() -> bool | None:
     host = (os.getenv("VPS_HOST") or "").strip()
     if not host:
         return None
-    url = f"http://{host}:{_VPS_MCP_HOST_PORT}/"
     try:
-        async with httpx.AsyncClient(verify=False, timeout=4.0) as client:
-            await client.get(url)
-            return True
+        reader, writer = await asyncio.wait_for(
+            asyncio.open_connection(host, _VPS_MCP_HOST_PORT),
+            timeout=4.0
+        )
+        writer.close()
+        await writer.wait_closed()
+        return True
     except Exception:
         return False
 

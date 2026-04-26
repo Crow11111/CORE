@@ -97,6 +97,22 @@ class InfrastructureSentinel:
         except Exception:
             return False
 
+    async def check_tcp_port_up(self, host: str, port: int, timeout: float = 5.0) -> bool:
+        """
+        True, wenn der TCP-Port erreichbar ist.
+        Nutzen: MCP o. Ä., die raw TCP (z.B. stdio via socat) sprechen.
+        """
+        try:
+            reader, writer = await asyncio.wait_for(
+                asyncio.open_connection(host, port),
+                timeout=timeout
+            )
+            writer.close()
+            await writer.wait_closed()
+            return True
+        except Exception:
+            return False
+
     async def check_http_server_up(self, url: str, timeout: float = 5.0) -> bool:
         """
         True, wenn ein HTTP-Server antwortet (beliebiger Status inkl. 404/401).

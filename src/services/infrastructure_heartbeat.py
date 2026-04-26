@@ -198,13 +198,13 @@ class InfrastructureSentinel:
             ok = await self.check_http(url, headers=headers)
             await self.update_status("VPS", svc, "active" if ok else "inactive")
 
-        mcp_url = f"http://{self.vps_host}:{MCP_SERVER_HOST_PORT}/"
-        mcp_ok = await self.check_http_server_up(mcp_url)
+        mcp_url = f"tcp://{self.vps_host}:{MCP_SERVER_HOST_PORT}/"
+        mcp_ok = await self.check_tcp_port_up(self.vps_host, MCP_SERVER_HOST_PORT)
         await self.update_status(
             "VPS",
             "mcp-server",
             "active" if mcp_ok else "inactive",
-            {"check": "http_any_response", "url": mcp_url},
+            {"check": "tcp_port_open", "url": mcp_url},
         )
 
         await apply_openclaw_autonomy_veto_if_needed()

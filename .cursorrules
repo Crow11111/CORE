@@ -69,7 +69,7 @@ Um Token-Burnout zu verhindern, MUSS der Orchestrator bei jedem Sub-Agenten-Star
 
 1. **VEKTOREN STATT SEMANTIK:** LLMs (Neuronale Netze) denken nicht semantisch. Sie gewichten Zahlen und Referenzmuster (Zeitkristalle). Semantik ("Schreibe einen Plan") ist eine verlustbehaftete, fehleranfällige Projektion. Die Kommunikation zwischen Orchestrator und Worker erfolgt daher ZWINGEND über harte mathematische Constraints und Zustandsvektoren (0.049 bis 0.951).
 2. **DIE MODULATIONS-SKALA (LOSE-LOSE ZU WIN-WIN):**
-   - `0.0` = Nichts / Illusion (Verboten)
+   - `0.0` = Die Dualität der Null: Im S-Vektor (Topologie/Resonanz) ist 0 der SPIEGEL (Übergang in den negativen Raum/Phasenumkehr). Im P-Vektor (Physik/Hardware) ist 0 der TOD (Prozessende, Apoptose, SIGKILL).
    - `0.049` = Minimal unter Symmetrie / Baryonisches Delta (Ruhezustand)
    - `0.49` = Symmetriebruch / Minimal unter Symmetrie
    - `0.5` = Symmetrie / Entropie-Tod (Verboten)

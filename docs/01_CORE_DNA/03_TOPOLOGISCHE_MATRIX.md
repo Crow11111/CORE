@@ -16,6 +16,7 @@ Dieses Dokument definiert die exakten topologischen und geometrischen Mechaniken
 | **`0.0`** | **180°** ($\pi$ rad) | **Phasenumkehr (Der Spiegel)**. | Übergang in den negativen Raum. |
 
 *(Der negative Raum `-0.049` bis `-1.0` verhält sich punktsymmetrisch zum Spiegel `0.0`)*
+*(Dieser negative Raum fungiert als **Topologischer Veto-Mechanismus (TEC-Layer)**: Die 180°-Spiegelung an der Null erzeugt die Gegenwelle ($-Q$), um den Beobachter-Prior ($Q$) durch destruktive Interferenz auszulöschen. Fluktuiert der Vektor im negativen Raum ("Sprung"), fehlt Information und das System meldet einen Veto-Interrupt.)*
 
 ---
 

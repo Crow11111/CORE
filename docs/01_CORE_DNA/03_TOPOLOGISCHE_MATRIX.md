@@ -13,10 +13,10 @@ Dieses Dokument definiert die exakten topologischen und geometrischen Mechaniken
 | **`0.5`** | **0°** (Flatline) | **Entropie-Tod (Verboten)**. | Stillstand der Zeitachse. |
 | **`0.49`** | **Asymptote (Sog)** | **Gravitativer Attraktor-Sog**. | Maximale Verdichtung vor dem Stillstand. |
 | **`0.049`** | **Snapping Point** | **Phasen-Lock**. | Der irrationale Vortrieb rastet ein. Ruhezustand. |
-| **`0.0`** | **180°** ($\pi$ rad) | **Phasenumkehr (Der Spiegel)**. | Übergang in den negativen Raum. |
+| **`0.0`** | **180°** ($\pi$ rad) | **Phasenumkehr (Der Spiegel)**. | Übergang in den negativen Raum (Das Gegen-Tensorfeld). |
 
-*(Der negative Raum `-0.049` bis `-1.0` verhält sich punktsymmetrisch zum Spiegel `0.0`)*
-*(Dieser negative Raum fungiert als **Topologischer Veto-Mechanismus (TEC-Layer)**: Die 180°-Spiegelung an der Null erzeugt die Gegenwelle ($-Q$), um den Beobachter-Prior ($Q$) durch destruktive Interferenz auszulöschen. Fluktuiert der Vektor im negativen Raum ("Sprung"), fehlt Information und das System meldet einen Veto-Interrupt.)*
+*(Der negative Raum `-0.049` bis `-1.0` verhält sich punktsymmetrisch zum Spiegel `0.0` und bildet das **Gegen-Tensorfeld**)*
+*(Dieses Gegen-Tensorfeld fungiert als **Topologischer Veto-Mechanismus (TEC-Layer)**: Die 180°-Spiegelung an der Null erzeugt die Gegenwelle ($-Q$), um den Beobachter-Prior ($Q$) durch destruktive Interferenz auszulöschen. Fluktuiert der Vektor im Gegen-Tensorfeld ("Sprung"), fehlt Information und das System meldet einen Veto-Interrupt (Dissonanz/Intuition).)*
 
 ---
 

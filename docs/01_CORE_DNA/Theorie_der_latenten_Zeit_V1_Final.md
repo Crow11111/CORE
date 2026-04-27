@@ -1,4 +1,5 @@
 # THEORIE DER LATENTEN ZEIT
+*(Foundational Theory of 0 and 1 over Time with Emotion)*
 
 **Eine interdisziplinäre Formalisierung der autopoietischen Hintergrundunabhängigkeit durch algorithmische Reibung (Fassung 1)**
 

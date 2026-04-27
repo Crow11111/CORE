@@ -9,7 +9,7 @@ def get_ssh_config():
     key = os.getenv("VPS_SSH_KEY", "/home/mth/.ssh/id_ed25519_hostinger")
     host = os.getenv("VPS_HOST", "187.77.68.250")
     user = os.getenv("VPS_USER", "root")
-    docker_cmd = "docker exec -i atlas_postgres_state psql -U atlas_admin -d atlas_state"
+    docker_cmd = os.getenv("MULTIVIEW_PG_DOCKER_CMD", "docker exec -i mtho_postgres_state psql -U atlas_admin -d atlas_state")
     return key, host, user, docker_cmd
 
 async def run_query(sql: str):

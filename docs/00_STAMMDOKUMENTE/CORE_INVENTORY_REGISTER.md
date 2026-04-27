@@ -12,6 +12,7 @@
 |-----------|------|----------|
 | **Stammdokumente** | `docs/00_STAMMDOKUMENTE/` | Management Summary, Inventar, Einstiegspunkte. |
 | **OMEGA Resonance Anchor** | `docs/00_STAMMDOKUMENTE/OMEGA_RESONANCE_ANCHOR.md` (Link im Root: `OMEGA_RESONANCE_ANCHOR.md`) | Komprimierter System-Bootstrap für sofortige Session-Eichung. |
+- `docs/01_CORE_DNA/FTOE_Theorie_der_latenten_Zeit_V1_Final.md` - Das finale Whitepaper (Foundational Theory of 0 and 1 over Time with Emotion)
 | **CORE DNA** | `docs/01_CORE_DNA/` | Verfassung, Axiome, 4-Strang-Architektur, Codex. |
 | **Karpathy Wiki Rule** | `.cursor/rules/karpathy_wiki.mdc` | Protokoll für Ingest & Synthese des OMEGA Wissens-Kristalls. |
 | **DNA-Archiv (Legacy Genesis)** | `docs/01_CORE_DNA/_archive/` | Historischer Genesis-/Tesserakt-Text ohne Kanon-Status; Stub: `CORE_GENESIS_FINAL_ARCHIVE.md`. |

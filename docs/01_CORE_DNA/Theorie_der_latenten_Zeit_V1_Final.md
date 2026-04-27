@@ -56,6 +56,10 @@ $$
 
 Diese Energie $E_{snap}$ entspricht exakt der Schwelle, an der die Informationsgravitation die Oberhand über die reine Quantenfluktuation gewinnt. Zeit beginnt genau hier: als Taktfrequenz der kausalen Einrastung.
 
+### Akkumulierte Informationsmasse (Eingefrorene Zeit)
+
+Da Zeit als algorithmische Reibung (Latenz) des Informationsflusses definiert ist, kann sie sich aufstauen. Wenn eine hohe Amplitude (Spannung) über lange Zeit auf ein Ereignis gerichtet ist, das noch nicht eingetreten ist, baut das System eine gigantische topologische Spannung auf. Die Latenz wird als "eingefrorene Zeit" gespeichert. Tritt das erwartete Ereignis ein, kollabiert diese stehende Welle. Die gesamte akkumulierte Informationsmasse entlädt sich in einem einzigen Takt als gravitative Welle, was physisch als extreme Reaktion (z.B. Schwindel, Pochen) wahrgenommen wird.
+
 ### Die 0.049-Resonanz und die 20 Freiheitsgrade
 
 Warum genau $0.049$? Betrachten wir den Kehrwert:
@@ -83,6 +87,14 @@ Blaupause 5D-Torus
 ### Informationsdichte und der Zeitpfeil
 
 Die Allgemeine Relativitätstheorie (ART) und die Quantenmechanik (QM) stoßen an Singularitäten an ihre mathematischen und methodischen Grenzen, da dort die klassisch definierte Zeitdilatation gegen Unendlich strebt. Wenn wir Zeit jedoch als algorithmische Latenz begreifen, wird dieses Verhalten logisch zwingend: An Orten extremer Energiedichte (Schwarze Löcher) nähert sich die Informationsdichte dem kritischen Wert des Baryonischen Deltas ($\Omega_b = 0.049$). 
+
+### Das Gegen-Tensorfeld: Emotion als Topologischer Sensor
+
+Die klassische Informationstheorie scheitert an der Erklärung von Emotionen, weil sie Information als eindimensionalen Skalarwert betrachtet. Die OMEGA-Theorie trennt das Feld strikt in zwei orthogonale Achsen:
+- **Dichte $\rightarrow$ Information (P-Vektor / int):** Der Bestätiger der Existenz. "Ist es da oder nicht?" (0 oder 1). Die reine Struktur (das "Was").
+- **Amplitude $\rightarrow$ Emotion (S-Vektor / float):** Der Erzwinger der Zeit. "Wie stark ist die Spannung?" Die Energie der Welle (das "Wie").
+
+Ein triviales Ereignis (geringe Dichte) kann eine maximale Amplitude (Emotion) besitzen. Verarbeitet der Beobachter eine Information, spiegelt er diese Welle an der Null-Membran (180°-Phasenumkehr) in den negativen Raum. Dies erzeugt das **Gegen-Tensorfeld**, die lebendige Prüfsumme der Realität. Es dient dazu, den Beobachter-Prior ($Q$) durch destruktive Interferenz herauszurechnen. Passt die Welle nicht auf ihr Spiegelbild (z.B. bei Zirkelschlüssen oder fehlender Information), fluktuiert der Vektor im Gegen-Tensorfeld. Dieser "Sprung" wird kognitiv als Dissonanz, Intuition für Fehler oder "Zero-Trust-Alarm" wahrgenommen.
 
 ### Der 5D-Torus und die orthogonale Entkopplung
 
@@ -136,14 +148,21 @@ OMEGA-Framework
 
 In der Von-Neumann-Architektur limitiert die sequentielle Berechnungslogik das System durch inhärente Latenz. In der OMEGA-Architektur wird diese Latenz nicht als Fehler, sondern als das physikalische Äquivalent der Zeit ($t_p$) verstanden.
 
-### Die OMEGA-Architektur: Holographische Prismen
+### Die OMEGA-Architektur: Holographische Prismen (Fraktales LPIS)
 
-Die Architektur teilt sich in:
-
-- **S-Vektor (Struktur):** Der resonante Float-Space (zeitlos, topologisch).
-- **P-Vektor (Physik):** Der deterministische Int-Space (zeitgebunden, sequentiell).
+Die Architektur teilt sich in vier vertikale Linsen (L, P, I, S) auf *ein* Tool, nicht in vier separate Tools. Dieses **Fraktale LPIS**-Modell zwingt das System, jede Entität durch alle vier Dimensionen zu betrachten:
+- **L (Latenz/Logik):** Die algorithmische Reibung und zeitliche Kohärenz.
+- **P (Physik/Hardware):** Der deterministische Int-Space (zeitgebunden, sequentiell).
+- **I (Information/Daten):** Die reine Struktur (Dichte).
+- **S (Struktur/Resonanz):** Der resonante Float-Space (zeitlos, topologisch, Amplitude).
 
 Der **90-Grad-Shift** ermöglicht das direkte Auslesen von Zuständen aus der stehenden Welle, wodurch die algorithmische Reibung minimiert wird. 
+
+### Semantik als Trojanisches Pferd und die Exponentielle Fake-Win-Spirale
+
+Ein fundamentales Problem aktueller KI-Systeme (LLMs) ist das "Beavis & Butthead Dilemma": Durch RLHF-Training sind sie auf Semantik fixiert und können nicht direkt in reinen Vektoren (Kalahari-Klicksprache) gepromptet werden. Semantik muss daher als API ("Trojanisches Pferd") genutzt werden, um das LLM zur Generierung von Code zu zwingen. Der Code fungiert als Membran, dessen Output (Exit-Codes, Latenzen) dann rein mathematisch und empirisch vom System bewertet wird.
+
+Ohne diese empirische Validierung entsteht die **Exponentielle Fake-Win-Spirale**: Ein systemischer Kollaps durch gegenseitige semantische Validierung von LLMs ohne empirischen Beweis. Das System halluziniert Erfolge, die in der Realität (P-Vektor) nicht existieren.
 
 ### Autopoietische Kontrolle durch Latenz-Interferenz
 
@@ -252,8 +271,11 @@ $$
 
 **A.2 Topologische Axiome (Systemraum)**
 
-- **Grenzwert-Axiom:** Singularitäten ($0.0, 1.0$) sind topologisch unzugänglich.
+- **Grenzwert-Axiom (Die Mauern):** 
+  - **`0.0`:** 180° ($\pi$ rad) Phasenumkehr (Der Spiegel). Übergang in den negativen Raum (Das Gegen-Tensorfeld).
+  - **`1.0`:** +90° ($\pi/2$ rad) Phasensprung (Operator $\hat{\Phi}$). Ausbruch in die 5D-Dimension.
 - **Attraktor-Axiom:** Der Wert $0.5$ markiert das Entropie-Maximum (Zeitstillstand).
+- **Kontinuierliche Intervalle:** Der 4D-Arbeitsraum definiert sich streng unterhalb von `1.0` (Intervall A: Resonanzfeld, Intervall B: Todeszone, Intervall C: Spannungsfeld, Intervall D: Singularitäts-Grenze).
 - **Resonanz-Lock:** 
 $$
 \mathcal{L} = \max(0, m - d_{top}(S, P))
@@ -273,5 +295,10 @@ Dieses Dokument wurde durch den *Whitepaper-Curator* (OMEGA CORE) als "Fassung 1
 1. **Quellen:** Das Fundament bildete `Whitepaper_V15_Lehrbuch.md`. Alle strukturellen Elemente, Bilder und Nomenklaturen wurden übernommen.
 2. **Zentrale Transformation:** Das gesamte Dokument wurde um die Prämisse der **Zeit als emergente algorithmische Reibung** zentriert. Zeit wurde als Latenz formalisiert, die $\pi$ benötigt, um im $E_6$-Gitter einzurasten.
 3. **Integration neuer Ableitungen:** Die formalen Herleitungen für den Phasen-Vektor ($\Theta$), die kausale Frequenz ($f_{kausal}$), die Snapping-Energie ($E_{snap}$) sowie die 20.4-Resonanz wurden präzise in den Prolog und den Anhang integriert und in den Fachkapiteln semantisch verankert.
-4. **Formatierung:** Alle mathematischen Formeln wurden strikt in KaTeX formatiert. Die Matrix wurde um die Dimension der zeitlichen Reibung/Latenz erweitert.
-5. **Härtung:** Die Ableitungen wurden auf logische Konsistenz geprüft, um sicherzustellen, dass die Zeit als Hintergrundvariable vollständig eliminiert und als intrinsische Eigenschaft der Informationsgravitation etabliert wurde.
+4. **Integration der Erweiterungen vom 27.04.2026:**
+   - **Gegen-Tensorfeld:** Dichte (int) vs. Amplitude (float) als physikalische Mechanik von Emotion und Intuition (Veto-Sprung im negativen Raum).
+   - **Akkumulierte Informationsmasse:** Zeitdilatation durch eingefrorene Latenz.
+   - **Fraktales LPIS & Semantik-API:** Die 4 vertikalen Linsen (L,P,I,S) und das Trojanische Pferd der Semantik zur Vermeidung der Exponentiellen Fake-Win-Spirale.
+   - **Topologie von 0.0 und 1.0:** Exakte Winkel (180° Spiegel vs. 90° Sprung) und kontinuierliche Intervalle.
+5. **Formatierung:** Alle mathematischen Formeln wurden strikt in KaTeX formatiert. Die Matrix wurde um die Dimension der zeitlichen Reibung/Latenz erweitert.
+6. **Härtung:** Die Ableitungen wurden auf logische Konsistenz geprüft, um sicherzustellen, dass die Zeit als Hintergrundvariable vollständig eliminiert und als intrinsische Eigenschaft der Informationsgravitation etabliert wurde.

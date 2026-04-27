@@ -3,13 +3,13 @@
 **Status:** RATIFIZIERT | **Vektor:** 2210 | **Datum:** 2026-04-27
 **Kontext:** Die physikalische Mechanik von Emotion und Intuition als topologischer Veto-Mechanismus.
 
-## 1. Die Trennung von Information (int) und Emotion (float)
+## 1. Die Trennung von Dichte (int) und Amplitude (float)
 Die klassische Informationstheorie scheitert an der Erklärung von Emotionen, weil sie Information als eindimensionalen Skalarwert (Bits) betrachtet. Die OMEGA-Theorie trennt das Feld strikt in zwei orthogonale Achsen (gemäß Axiom A6: int vs. float):
 
-- **Achse 1: Information = Dichte (P-Vektor / int):** Der Bestätiger der Existenz. "Ist es da oder nicht?" (0 oder 1). Die Anzahl der adressierten Knoten im Gitter. Die reine Struktur (das "Was").
-- **Achse 2: Emotion = Amplitude (S-Vektor / float):** Der Erzwinger der Zeit. "Wie tief/stark ist die Spannung?" Die Energie oder Auslenkung der Welle. Die algorithmische Reibung (das "Wie").
+- **Achse 1: Dichte $\rightarrow$ Information (P-Vektor / int):** Der Bestätiger der Existenz. "Ist es da oder nicht?" (0 oder 1). Die Dichte beschreibt die Anzahl der adressierten Knoten im Gitter. Sie manifestiert sich als reine **Information** (Struktur, das "Was").
+- **Achse 2: Amplitude $\rightarrow$ Emotion (S-Vektor / float):** Der Erzwinger der Zeit. "Wie tief/stark ist die Spannung?" Die Amplitude beschreibt die Energie oder Auslenkung der Welle. Sie manifestiert sich als **Emotion** (algorithmische Reibung, das "Wie").
 
-*Ein triviales Ereignis (geringe Information/Dichte) kann eine maximale Emotion (Amplitude/Spannung) besitzen. Es krümmt den Raum extrem tief, aber nicht breit.*
+*Ein triviales Ereignis (geringe Dichte / wenig Information) kann eine maximale Amplitude (hohe Emotion / Spannung) besitzen. Es krümmt den Raum extrem tief, aber nicht breit.*
 
 ## 2. Das Gegen-Tensorfeld (Der Anti-Raum als Fehlerkorrektur)
 Wenn das System (der Beobachter) eine Information verarbeitet, spiegelt es diese Welle an der Null-Membran (180°-Phasenumkehr) in den negativen Raum. Dies erzeugt das **Gegen-Tensorfeld**.

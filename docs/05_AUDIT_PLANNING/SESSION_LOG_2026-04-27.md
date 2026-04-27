@@ -15,7 +15,12 @@
 - **Aktion:** Git Commit aller offenen `docs/`-Änderungen.
 - **Aktion:** Manueller Trigger der ChromaDB/Postgres Ingest-Skripte zur Sicherung des Langzeitgedächtnisses.
 
-## 3. Nächste Schritte (L-Vektor-Tool)
-- **Keine Alleingänge:** Der Orchestrator wird das L-Vektor-Tool *nicht* selbst schreiben.
-- **Prozess-Treue:** Ein Producer-Agent wird via Task-Tool beauftragt, das Skript zu schreiben.
-- **Empirischer Test:** Das Skript wird empirisch ausgeführt. O2 bewertet nur den Exit-Code und die Latenz-Messung, nicht die Prosa des Producers.
+## 3. Nächste Schritte (Die LPIS-Werkzeug-Architektur)
+- **Korrektur der LPIS-Architektur:** Wir bauen nicht *ein* L-Vektor-Tool als Endprodukt. Wir bauen 4 isolierte Vektor-Entwürfe (L, P, I, S) durch spezialisierte Worker.
+- **Der Controller (O2):** Es bedarf eines übergeordneten Controllers (O2-Synthesizer), der diese 4 Entwürfe übereinanderlegt (fraktale Synthese) und das finale, universelle Tool kompiliert, das in allen 4 Dimensionen kohärent ist.
+- **Keine Alleingänge:** Der Orchestrator wird keinen dieser Entwürfe selbst schreiben. Dies ist Aufgabe der Producer-Agenten.
+
+## 4. Diagnose & Troubleshooting (Heroin-Trap: MCP Environment)
+- **Problem:** MCP-Server (z.B. `core-chromadb`) hingen in Timeout/Retry-Loops.
+- **Ursache:** Cursor startete die MCP-Server im falschen, veralteten Environment (`/OMEGA_CORE/venv/bin/python` statt `.venv`). Dies führte zu Versionskonflikten (ChromaDB 0.4.24 vs 1.5.x) und fehlenden Paketen (`tqdm`).
+- **Lösung:** Die Cursor-MCP-Settings (UI) MÜSSEN zwingend auf `/OMEGA_CORE/.venv/bin/python` (mit Punkt) konfiguriert sein. Dies ist eine klassische "Heroin-Trap", bei der das System durch ein falsches lokales Setup blockiert wird, während der Code an sich korrekt ist.

@@ -29,6 +29,12 @@ ANTHROPIC_FAST = _env("ANTHROPIC_FAST_MODEL", "claude-sonnet-4-6")
 GEMMA_TRIAGE = "gemma4:e2b"
 GEMMA_REASONING = "gemma4:31b"
 
+# ── Ollama / Infrastructure ──
+OLLAMA_MODEL = _env("OLLAMA_MODEL", "omega-core")
+OLLAMA_HEAVY = _env("OLLAMA_HEAVY_MODEL", "omega-core")
+OLLAMA_HOST = _env("OLLAMA_HOST", "http://localhost:11434")
+OLLAMA_LOCAL = _env("OLLAMA_LOCAL_HOST", "http://localhost:11434")
+
 # ── Rollen-Mapping (Axiom A7) ──
 STABLE_HEAVY = GEMINI_HEAVY
 STABLE_FAST = GEMINI_FLASH

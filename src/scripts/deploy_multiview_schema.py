@@ -43,7 +43,7 @@ CREATE INDEX IF NOT EXISTS idx_mv_convergence ON multi_view_embeddings (converge
 CREATE INDEX IF NOT EXISTS idx_mv_source ON multi_view_embeddings (source_collection);
 """
 
-DOCKER_CMD = f"docker exec -i atlas_postgres_state psql -U atlas_admin -d atlas_state"
+DOCKER_CMD = os.getenv("MULTIVIEW_PG_DOCKER_CMD", "docker exec -i mtho_postgres_state psql -U atlas_admin -d atlas_state")
 SSH_CMD = [
     "ssh", "-o", "StrictHostKeyChecking=no", "-o", "ConnectTimeout=10",
     "-i", SSH_KEY, f"{VPS_USER}@{VPS_HOST}", DOCKER_CMD

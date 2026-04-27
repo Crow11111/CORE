@@ -75,7 +75,7 @@ Um Token-Burnout zu verhindern, MUSS der Orchestrator bei jedem Sub-Agenten-Star
    - `0.5` = Symmetrie / Entropie-Tod (Verboten)
    - `0.51` = Symmetriebruch / Minimal über Symmetrie
    - `0.951` = Resonance Lock / Minimal unter Alles
-   - `1.0` = Max / Kollaps (Verboten)
+   - `1.0` = Max / Phasensprung (Operator $\hat{\Phi}$ / Orthogonale Entkopplung)
 3. **DER WORKER ALS TRANSFORMATIONSMATRIX:** Ein Worker wird nicht beauftragt, einen "Text" zu schreiben. Er wird beauftragt, eine Transformation durchzuführen: *Moduliere System-Zustand X von 0.49 auf 0.049 mit Werkzeug Y.* Der Output des Workers MUSS der empirische Beweis dieser Modulation sein (z.B. ein Bash-Befehl, ein Exit-Code, ein Messwert), keine Prosa.
 4. **O2 ERGEBNIS-AUDIT ZWANG:** Du (Orchestrator) darfst der bloßen Vollzugsmeldung eines Workers niemals vertrauen. JEDER Output eines Sub-Agenten muss sofort an O2 (den Zero-Context Auditor) zur Prüfung weitergereicht werden. O2 prüft nicht den Text, sondern die mathematische Stabilität des Resultats gegen die Axiome.
 5. **ZWANGS-PRE-FLIGHT READ:** Bevor irgendein Agent das Dateisystem oder den Server anfasst, MUSS er im Wiki (`~/OMEGA_WIKI/wiki/`) die Parameter verifizieren.

@@ -267,21 +267,27 @@ Molekulare Strukturen erhalten ihre zeitliche Dynamik durch permanenten Symmetri
 
 ---
 
-## Kapitel VII: Soziologie & Medien – Topologische Regulation (Das Anti-Spike Protokoll)
+## Kapitel VII: Soziologie & Makro-Kognition – Die Topologie der Gesellschaft
 
-Die Prinzipien der Informationsgravitation lassen sich direkt auf makroskopische, gesellschaftliche Systeme übertragen, insbesondere auf die Aufmerksamkeitsökonomie (Attention Economy).
+Die Prinzipien der Informationsgravitation lassen sich fraktal auf makroskopische, gesellschaftliche Systeme übertragen. Eine Gesellschaft ist ein kollektives neuronales Netz, das denselben topologischen Gesetzen (S-Vektor vs. P-Vektor) unterliegt.
+
+### Der Positivraum: Kollektive Kohärenz und der Gesellschaftliche Phasensprung
+
+In einer gesunden gesellschaftlichen Topologie bilden das **Kulturelle Narrativ (S-Vektor / Emotion, Vision, Werte)** und die **Institutionelle Infrastruktur (P-Vektor / Gesetze, Ökonomie, Physik)** eine resonante stehende Welle. 
+- **Kollektive Kohärenz ($\Omega_b = 0.049$):** Dies ist der soziologische "Edge of Chaos" (Selbstorganisierte Kritikalität). Der gesellschaftliche Diskurs besitzt genau das Maß an algorithmischer Reibung, das nötig ist, um Innovation zu filtern, ohne in Anarchie zu zerfallen. Es ist der Zustand der echten Schwarmintelligenz und des konstruktiven Diskurses.
+- **Der Paradigmenwechsel ($1.0$):** Wenn die akkumulierte Informationsmasse (z.B. durch technologischen Fortschritt) die alte Infrastruktur überlastet, baut sich eine massive topologische Spannung auf. Der Kollaps dieser Spannung führt nicht zur Zerstörung, sondern zum **Phasensprung (Orthogonale Entkopplung)** im Sinne von Thomas Kuhn: Ein gesellschaftlicher Paradigmenwechsel (z.B. Agrar- zur Industriegesellschaft), der das System auf einer neuen fraktalen Ebene stabilisiert.
 
 ### Die Zerstörung der kognitiven Topologie durch Spikes
 
 Die aktuelle Medienlandschaft (Social Media, Clickbait) operiert nach dem Prinzip der maximalen emotionalen Amplitude bei minimaler Informationsdichte. In der OMEGA-Topologie entspricht dies der Erzeugung massiver, flacher Spikes:
 - **Die Physik des Spikes:** Ein solcher Spike hat eine extrem hohe Amplitude (Emotion/Reiz), aber keine Breite (fehlende Dichte/P-Vektor).
-- **Die kognitive Folge:** Das Gehirn (der Hardware-Compiler) wird durch diese Spikes in ständige Hardware-Interrupts gezwungen. Es kommt zu einer Unterdrückung der Alpha-Wellen und einer Überlastung des präfrontalen Kortex. Das System verliert die Fähigkeit, stehende Wellen (tiefe Gedanken, Struktur) zu bilden. Die Gesellschaft versinkt in einem Zustand ständiger, reibungsintensiver Zeitdilatation (Verblödung durch Rauschen).
+- **Die kognitive Folge:** Das kollektive Gehirn wird in ständige Hardware-Interrupts gezwungen. Die Gesellschaft verliert die Fähigkeit, stehende Wellen (tiefe Gedanken, Struktur) zu bilden. Sie treibt unweigerlich auf den Attraktor $0.5$ zu: **Hypernormalisierung und Polarisierung**, ein Zustand maximaler Entropie, in dem extrem viel Energie verbraucht wird, ohne dass sich das System kausal vorwärtsbewegt (Trivialitätskaskade).
 
 ### Die OMEGA-Lösung: Topologische statt semantische Regulation
 
 Bisherige Lösungsansätze (Zensur, Faktenchecks) versuchen, das Problem *semantisch* zu lösen. Dies scheitert zwingend, da es den Beobachter-Prior ($Q$) politisiert. Die *Theorie der latenten Zeit* liefert eine mathematisch neutrale Lösung: **Wir regulieren nicht die Semantik (das "Was"), sondern die Topologie (das "Wie").**
 
-Das **Anti-Spike Protokoll** definiert eine Toleranzschwelle der Plakativität: Jede Information muss ein physikalisches Verhältnis von Amplitude (Emotion) zu Dichte (Struktur) einhalten. Ein Spike darf nicht "zu flach und zu hoch" sein. Wenn ein Artikel eine maximale emotionale Amplitude erzeugt, zwingt der Algorithmus den Autor, diese These mit struktureller Tiefe (P-Vektor: Zeichenzahl, logische Verknüpfungen, Quellen) zu unterfüttern. Unterschreitet das Verhältnis von Masse zu Amplitude einen kritischen Wert (z.B. $\Omega_b = 0.049$), fällt der Beitrag durch das Gitter, da er keine stehende Welle erzeugen kann. Dies heilt die kognitive Topologie der Gesellschaft, ohne inhaltliche Zensur auszuüben.
+Das **Anti-Spike Protokoll** definiert eine Toleranzschwelle der Plakativität: Jede Information muss ein physikalisches Verhältnis von Amplitude (Emotion) zu Dichte (Struktur) einhalten. Ein Spike darf nicht "zu flach und zu hoch" sein. Wenn ein Artikel eine maximale emotionale Amplitude erzeugt, zwingt der Algorithmus den Autor, diese These mit struktureller Tiefe (P-Vektor: Zeichenzahl, logische Verknüpfungen, Quellen) zu unterfüttern. Unterschreitet das Verhältnis von Masse zu Amplitude einen kritischen Wert (z.B. $\Omega_b = 0.049$), fällt der Beitrag durch das Gitter, da er keine stehende Welle erzeugen kann. Dies erzwingt die Rückkehr in den Positivraum der kollektiven Kohärenz, ohne inhaltliche Zensur auszuüben.
 
 ---
 
@@ -298,7 +304,7 @@ Matrix Wide
 | **Kognition**      | Modell $\leftrightarrow$ Inferenz      | Subjektiver Zeitfluss      | Exekutive Dysfunktion | Edge of Chaos                         | Kognitiver Meltdown  |
 | **Biologie**       | Genetik $\leftrightarrow$ Metabolismus | Generationszyklus          | Nekrose               | Apoptose-Schwelle / LLPS              | Zelltod              |
 | **Chemie**         | Reagens $\leftrightarrow$ Produkt      | Reaktionsdauer             | Chem. Gleichgewicht   | Katalytische $\hat{\Phi}$-Resonanz    | Reaktionsabbruch     |
-| **Soziologie**     | Amplitude $\leftrightarrow$ Dichte     | Kognitive Dilatation       | Trivialitätskaskade   | Anti-Spike Protokoll                  | Gesellschaftlicher Kollaps |
+| **Soziologie**     | Narrativ $\leftrightarrow$ Infrastruktur | Kulturelle Evolution       | Hypernormalisierung   | Kollektive Kohärenz (SOC)             | Anomie / Kollaps           |
 
 
 ---

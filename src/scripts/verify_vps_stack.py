@@ -80,7 +80,7 @@ def _verify_kong_matches_deck_reference(lines: list[str]) -> tuple[bool, str]:
     """
     KONSOLIDIERTER_VERKEHRSPLAN §8.3: Repo-Deck-Referenz vs. Admin-API (keine neuen Routen hier).
     """
-    if not _container_up(lines, "kong-s7rk-kong"):
+    if not _container_up(lines, "kong"):
         return True, "[--] Kong-Container nicht Up — Deck-Check übersprungen"
     base = KONG_ADMIN_URL.rstrip("/")
     try:
@@ -137,7 +137,7 @@ def _verify_kong_matches_deck_reference(lines: list[str]) -> tuple[bool, str]:
 
 def _verify_kong_proxy_health(lines: list[str]) -> tuple[bool, str]:
     """HTTP GET über öffentlichen Proxy-Port — Body muss KONG_PUBLIC_HEALTH_BODY enthalten."""
-    if not _container_up(lines, "kong-s7rk-kong"):
+    if not _container_up(lines, "kong"):
         return True, "[--] Kong Proxy /health übersprungen (kein Kong)"
     hp = KONG_PUBLIC_HEALTH_PATH.strip()
     if not hp.startswith("/"):
@@ -156,7 +156,7 @@ def _kong_proxy_status_hint_line(lines: list[str]) -> str:
     """
     Optional: Kong → omega-core-backend /status. Nur Hinweis — kein Exit-Fail (Upstream systemd kann down sein).
     """
-    if not _container_up(lines, "kong-s7rk-kong"):
+    if not _container_up(lines, "kong"):
         return "[--] Kong Proxy /status Hinweis übersprungen (kein Kong)"
     url = f"http://{VPS_HOST}:{KONG_PROXY_HOST_PORT}/status"
     try:
@@ -184,7 +184,7 @@ def main():
         ok = False
     else:
         lines = [l for l in out.strip().split("\n") if l]
-        expected = ["openclaw-admin", "chroma-uvmy-chromadb", "mcp-server", "ha-atlas"]
+        expected = ["openclaw", "chroma-uvmy-chromadb", "mcp-server", ]
         for name in expected:
             if _container_up(lines, name):
                 print(f"[OK] {name}")
@@ -192,7 +192,7 @@ def main():
                 print(f"[WARN] {name} nicht Up oder fehlt")
                 ok = False
         # Optionale VPS-Knoten (nur Hinweis, kein ok=False)
-        for label, sub in [("evolution-api", "evolution"), ("monica", "monica"), ("kong", "kong")]:
+        for label, sub in [("evolution-api", "scout-api"), ("monica", "monica"), ("kong", "kong")]:
             if _container_up(lines, sub):
                 print(f"[OK] (optional) {label}")
             else:

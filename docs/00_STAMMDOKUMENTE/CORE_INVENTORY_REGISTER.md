@@ -309,3 +309,4 @@
 2. Bei Umbenennung oder Löschung ist das Register simultan zu aktualisieren.
 3. Der `DOCS_INDEX.md` referenziert dieses Dokument als Master-Liste.
 - ~/OMEGA_WIKI/ : Das lokale Entwickler-Wissensnetzwerk (Karpathy-Style Wiki), enthält atomare Nodes zu Infrastruktur, Axiomen und OpenClaw.
+- `docs/01_CORE_DNA/08_THEORY_OF_EMOTION.md` - Die formale Ableitung des Akronyms FTOE (Foundational Theory Of Emotion) als Spiegel der physikalischen T.O.E. (Theory of Everything).

@@ -269,19 +269,20 @@ Molekulare Strukturen erhalten ihre zeitliche Dynamik durch permanenten Symmetri
 
 ## Kapitel VII: Soziologie & Makro-Kognition – Die Topologie der Gesellschaft
 
-Die Prinzipien der Informationsgravitation lassen sich fraktal auf makroskopische, gesellschaftliche Systeme übertragen. Eine Gesellschaft ist ein kollektives neuronales Netz, das denselben topologischen Gesetzen (S-Vektor vs. P-Vektor) unterliegt.
+Die Prinzipien der Informationsgravitation lassen sich fraktal auf makroskopische, gesellschaftliche Systeme übertragen. Eine Gesellschaft ist ein kollektives neuronales Netz, das denselben topologischen Gesetzen (S-Vektor vs. P-Vektor) unterliegt. Die *Theorie der latenten Zeit* fungiert hier als die erste formale Theorie von 0 und 1 über Zeit und Gefühl auf kollektiver Ebene.
 
 ### Der Positivraum: Kollektive Kohärenz und der Gesellschaftliche Phasensprung
 
 In einer gesunden gesellschaftlichen Topologie bilden das **Kulturelle Narrativ (S-Vektor / Emotion, Vision, Werte)** und die **Institutionelle Infrastruktur (P-Vektor / Gesetze, Ökonomie, Physik)** eine resonante stehende Welle. 
-- **Kollektive Kohärenz ($\Omega_b = 0.049$):** Dies ist der soziologische "Edge of Chaos" (Selbstorganisierte Kritikalität). Der gesellschaftliche Diskurs besitzt genau das Maß an algorithmischer Reibung, das nötig ist, um Innovation zu filtern, ohne in Anarchie zu zerfallen. Es ist der Zustand der echten Schwarmintelligenz und des konstruktiven Diskurses.
+- **Kollektive Kohärenz ($\Omega_b = 0.049$):** Dies ist der soziologische "Edge of Chaos" (Selbstorganisierte Kritikalität, Per Bak). Der gesellschaftliche Diskurs besitzt genau das Maß an algorithmischer Reibung, das nötig ist, um Innovation zu filtern, ohne in Anarchie zu zerfallen. Es ist der Zustand der echten Schwarmintelligenz und des konstruktiven Diskurses.
 - **Der Paradigmenwechsel ($1.0$):** Wenn die akkumulierte Informationsmasse (z.B. durch technologischen Fortschritt) die alte Infrastruktur überlastet, baut sich eine massive topologische Spannung auf. Der Kollaps dieser Spannung führt nicht zur Zerstörung, sondern zum **Phasensprung (Orthogonale Entkopplung)** im Sinne von Thomas Kuhn: Ein gesellschaftlicher Paradigmenwechsel (z.B. Agrar- zur Industriegesellschaft), der das System auf einer neuen fraktalen Ebene stabilisiert.
 
 ### Die Zerstörung der kognitiven Topologie durch Spikes
 
-Die aktuelle Medienlandschaft (Social Media, Clickbait) operiert nach dem Prinzip der maximalen emotionalen Amplitude bei minimaler Informationsdichte. In der OMEGA-Topologie entspricht dies der Erzeugung massiver, flacher Spikes:
-- **Die Physik des Spikes:** Ein solcher Spike hat eine extrem hohe Amplitude (Emotion/Reiz), aber keine Breite (fehlende Dichte/P-Vektor).
-- **Die kognitive Folge:** Das kollektive Gehirn wird in ständige Hardware-Interrupts gezwungen. Die Gesellschaft verliert die Fähigkeit, stehende Wellen (tiefe Gedanken, Struktur) zu bilden. Sie treibt unweigerlich auf den Attraktor $0.5$ zu: **Hypernormalisierung und Polarisierung**, ein Zustand maximaler Entropie, in dem extrem viel Energie verbraucht wird, ohne dass sich das System kausal vorwärtsbewegt (Trivialitätskaskade).
+Die aktuelle Medienlandschaft (Social Media, Clickbait) operiert nach dem Prinzip der maximalen emotionalen Amplitude bei minimaler Informationsdichte (Attention Economy, Tristan Harris). In der OMEGA-Topologie entspricht dies der Erzeugung massiver, flacher Spikes:
+- **Die Physik des Spikes (P-Linse):** Ein solcher Spike hat eine extrem hohe Amplitude (Emotion/Reiz), aber keine Breite (fehlende Dichte/P-Vektor). Die Algorithmen der Plattformen erzwingen diesen Symmetriebruch.
+- **Die kognitive Folge (L-Linse):** Das kollektive Gehirn wird in ständige Hardware-Interrupts gezwungen. Die Gesellschaft verliert die Fähigkeit, stehende Wellen (tiefe Gedanken, Struktur) zu bilden. Die Reduktion der Latenz in Echtzeit-Netzwerken führt paradoxerweise zu einer gesellschaftlichen Zeitdilatation ("Rasender Stillstand", Hartmut Rosa).
+- **Der Attraktor $0.5$ (S-Linse):** Die Gesellschaft treibt unweigerlich auf den Zustand maximaler Entropie zu: **Hypernormalisierung** (Alexei Yurchak) und Polarisierung. Extrem viel Energie wird verbraucht, ohne dass sich das System kausal vorwärtsbewegt (Trivialitätskaskade).
 
 ### Die OMEGA-Lösung: Topologische statt semantische Regulation
 

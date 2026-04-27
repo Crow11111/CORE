@@ -20,7 +20,8 @@
 | **Genesis-Weiterleitung (Root docs/)** | `docs/CORE_GENESIS_FINAL_ARCHIVE.md` | Kurze Weiterleitung auf Stub/Archiv. |
 | **Axiom 0** | `docs/01_CORE_DNA/AXIOM_0_AUTOPOIESIS.md` | Die Autopoiesis des Gitters (x^2=x+1). |
 | **White Paper** | `docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION.md` | Theorie-Synthese & Topologie (Kurzfassung). |
-| **White Paper vollständig** | `docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION_VOLLSTANDIG.md` | Herleitungs-Ausgabe: Ω_b, x=x-Kaskade, MRI, Teil F Konsolidierung. |
+| **Gegen-Tensorfeld** | `docs/01_CORE_DNA/06_GEGEN_TENSORFELD_EMOTION_ZEIT.md` | Formalisierung der Emotion als physikalischer Sensor im negativen Raum (Intuition, kognitive Dissonanz, akkumulierte Zeit). |
+    23|| **White Paper vollständig** | `docs/01_CORE_DNA/WHITE_PAPER_INFORMATIONSGRAVITATION_VOLLSTANDIG.md` | Herleitungs-Ausgabe: Ω_b, x=x-Kaskade, MRI, Teil F Konsolidierung. |
 | **Biologisches Primat** | `docs/01_CORE_DNA/BIOLOGICAL_PRIMAT.md` | Kondensierte Kausalgesetze: Push/Pull, Gehirn–Rückenmark–Hand, Purgatorium/Gravity Index, logarithmisches Trust-Routing (Session-Extrakt). |
 | **Biologie→Digital Mapping** | `docs/01_CORE_DNA/BIOLOGY_TO_DIGITAL_MAPPING.md` | Tool-agnostischer Mapping-Layer: Reiz/Afferenz, Kognition/Kausalität, Efferenzkopie/Forward Model, Existenz/Metabolismus — ohne Infrastruktur-Framing. |
 | **Whitepaper 5D (Split)** | `docs/01_CORE_DNA/5d/WHITEPAPER/` | Kapitel I–IV + Vollständig; `README.md` → NotebookLM-Workflow. |

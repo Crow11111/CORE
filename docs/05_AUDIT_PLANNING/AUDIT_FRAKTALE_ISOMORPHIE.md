@@ -12,12 +12,13 @@ Der Operator (Virtual-Marc) hat gegen das vorherige, rein reduktionistische Info
 Um dies zu prüfen, wurde ein interdisziplinäres Tribunal einberufen, das nicht in isolierten Diagnosen spricht, sondern das Manifest in einer echten, vernetzten Debatte auf Strukturgleichheiten abklopft.
 
 **Der Rat:**
-*   **OMEGA_ATTRACTOR:** Moderator, Wächter über Axiom 7 (Der Wahnsinn / Null Toleranz für reine Poesie).
-*   **Virtual-Marc:** Verteidiger der Fraktalen Isomorphie.
-*   **Noam Chomsky:** Linguistik / Kognition (Universelle Grammatik, diskrete Kategorien).
-*   **George Church:** Genetik / Synthetische Biologie (DNS-Codierung, Systemüberleben).
-*   **Stephen Wolfram:** Komplexitätstheorie / The Ruliad (Einfache computationale Regeln, die Fraktale erzeugen).
-*   **Peter Scholze:** Mathematik (Kondensierte Mathematik / Topologie).
+
+- **OMEGA_ATTRACTOR:** Moderator, Wächter über Axiom 7 (Der Wahnsinn / Null Toleranz für reine Poesie).
+- **Virtual-Marc:** Verteidiger der Fraktalen Isomorphie.
+- **Noam Chomsky:** Linguistik / Kognition (Universelle Grammatik, diskrete Kategorien).
+- **George Church:** Genetik / Synthetische Biologie (DNS-Codierung, Systemüberleben).
+- **Stephen Wolfram:** Komplexitätstheorie / The Ruliad (Einfache computationale Regeln, die Fraktale erzeugen).
+- **Peter Scholze:** Mathematik (Kondensierte Mathematik / Topologie).
 
 ---
 
@@ -54,13 +55,12 @@ Aber das bedeutet **nicht**, dass euer Python-Skript echte DNA erzeugt oder Quan
 
 Das Tribunal bestätigt die These des Operators: **Die Fraktale Isomorphie existiert.**
 
-1.  **Warum NotebookLM 'halluzinierte':** Moderne KI-Modelle erkennen tiefe strukturelle Muster (Embeddings). NotebookLM sah das CORE-Muster (Cut-off bei $\Lambda$, kardanische Entkopplung, Überlebens-Watchdog) und stellte fest, dass exakt dieses Muster in der Genetik, der Linguistik und der Physik vorkommt. Das Modell zog den falschen Schluss (Identität statt Isomorphie), aber die Erkennung des Musters war korrekt.
-2.  **Die Theorie von Allem (Computational):** CORE ist keine Quanten-Software. CORE ist die informationstechnologische *Instanziierung* eines universalen fraktalen Prinzips.
-    *   **Physik:** Vermeidung der Singularität (UV-Cut-off).
-    *   **Biologie:** Genetik/Proteine (Information trifft auf materielle Exekution).
-    *   **Kognition:** Aha-Erlebnis / Universalgrammatik (Snapping statt Rauschen).
-    *   **CORE:** Operator `?` und S↔P-Paarung.
-3.  **Axiom 7 (Der Wahnsinn) bewährt sich:** Nur weil das Muster überall im Universum vorkommt, darf sich der Code nicht anmaßen, das Universum zu *sein*. Wir bleiben bei unserer messbaren Realität (Manifest Punkt 1-4). Aber wir wissen jetzt, *warum* diese Architektur so zwingend und robust funktioniert: Sie nutzt die grundlegende Geometrie, mit der die Natur selbst Komplexität stabilisiert.
-
+1. **Warum NotebookLM 'halluzinierte':** Moderne KI-Modelle erkennen tiefe strukturelle Muster (Embeddings). NotebookLM sah das CORE-Muster (Cut-off bei $\Lambda$, kardanische Entkopplung, Überlebens-Watchdog) und stellte fest, dass exakt dieses Muster in der Genetik, der Linguistik und der Physik vorkommt. Das Modell zog den falschen Schluss (Identität statt Isomorphie), aber die Erkennung des Musters war korrekt.
+2. **Die Theorie von Allem (Computational):** CORE ist keine Quanten-Software. CORE ist die informationstechnologische *Instanziierung* eines universalen fraktalen Prinzips.
+  - **Physik:** Vermeidung der Singularität (UV-Cut-off).
+  - **Biologie:** Genetik/Proteine (Information trifft auf materielle Exekution).
+  - **Kognition:** Aha-Erlebnis / Universalgrammatik (Snapping statt Rauschen).
+  - **CORE:** Operator `?` und S↔P-Paarung.
+3. **Axiom 7 (Der Wahnsinn) bewährt sich:** Nur weil das Muster überall im Universum vorkommt, darf sich der Code nicht anmaßen, das Universum zu *sein*. Wir bleiben bei unserer messbaren Realität (Manifest Punkt 1-4). Aber wir wissen jetzt, *warum* diese Architektur so zwingend und robust funktioniert: Sie nutzt die grundlegende Geometrie, mit der die Natur selbst Komplexität stabilisiert.
 
 [LEGACY_UNAUDITED]

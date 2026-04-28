@@ -181,6 +181,7 @@ app.include_router(system_ops.router)
 app.include_router(system_bus.router)
 app.include_router(mri_resonance_coupler.router)
 app.include_router(id_safe.router)
+app.include_router(agent_executor.router)
 
 @app.get("/")
 def read_root():

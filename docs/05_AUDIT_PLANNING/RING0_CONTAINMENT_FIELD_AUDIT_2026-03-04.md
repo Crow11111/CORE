@@ -1,9 +1,4 @@
-<!-- ============================================================
-<!-- CORE-GENESIS: Marc Tobias ten Hoevel
-<!-- VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
-<!-- LOGIC: 2-2-1-0 (NON-BINARY)
-<!-- ============================================================
--->
+
 
 # Ring-0 Containment Field Audit
 
@@ -15,19 +10,21 @@
 
 ## Executive Summary
 
-| Komponente | Status | Kritische Lücke |
-|------------|--------|-----------------|
-| Telemetry-Injector (Logik & Scout) | FAIL | Nicht als dedizierte Ring-0-Komponente implementiert |
-| Context-Injector (Kontext & Validierung) | FAIL | Nicht implementiert |
-| Context-Injector Veto (Semantic Drift Block) | FAIL | Nicht implementiert |
-| Ring-0 Firewall | FAIL | Keine "Absolute Operative Sperre" vorhanden |
-| Council Gate | FAIL | Statischer State (z=0.5) → Veto nie aktiv; Bypass via Header |
-| Freeze Control Gauge | FAIL | Nicht implementiert |
-| Bias Damper | PASS* | Ring-0-Direktiven vorhanden, aber nicht in Write-Pfade integriert |
-| Gravitator | PASS | Nur Routing, kein Ring-0-Anspruch |
-| Code-Sicherheitsrat | PASS | Prozess-Dokumentation vorhanden |
 
-\* Bias Damper: Ring-0-Logik vorhanden, aber nicht als Containment-Firewall wirksam.
+| Komponente                                   | Status | Kritische Lücke                                                   |
+| -------------------------------------------- | ------ | ----------------------------------------------------------------- |
+| Telemetry-Injector (Logik & Scout)           | FAIL   | Nicht als dedizierte Ring-0-Komponente implementiert              |
+| Context-Injector (Kontext & Validierung)     | FAIL   | Nicht implementiert                                               |
+| Context-Injector Veto (Semantic Drift Block) | FAIL   | Nicht implementiert                                               |
+| Ring-0 Firewall                              | FAIL   | Keine "Absolute Operative Sperre" vorhanden                       |
+| Council Gate                                 | FAIL   | Statischer State (z=0.5) → Veto nie aktiv; Bypass via Header      |
+| Freeze Control Gauge                         | FAIL   | Nicht implementiert                                               |
+| Bias Damper                                  | PASS*  | Ring-0-Direktiven vorhanden, aber nicht in Write-Pfade integriert |
+| Gravitator                                   | PASS   | Nur Routing, kein Ring-0-Anspruch                                 |
+| Code-Sicherheitsrat                          | PASS   | Prozess-Dokumentation vorhanden                                   |
+
+
+ Bias Damper: Ring-0-Logik vorhanden, aber nicht als Containment-Firewall wirksam.
 
 ---
 
@@ -67,11 +64,13 @@
 
 ### 2.2 Bypass-Möglichkeiten
 
-| Bypass | Beschreibung |
-|--------|--------------|
-| Scripts | Direkter Aufruf von `add_core_directive` / `add_simulation_evidence` ohne Gate |
-| API (falls aktiviert) | `POST /api/core/knowledge/evidence/add` nicht in Council-Gate-Patterns |
-| Council Gate | `X-Council-Confirm`-Header umgeht Veto bei Bestätigung |
+
+| Bypass                | Beschreibung                                                                   |
+| --------------------- | ------------------------------------------------------------------------------ |
+| Scripts               | Direkter Aufruf von `add_core_directive` / `add_simulation_evidence` ohne Gate |
+| API (falls aktiviert) | `POST /api/core/knowledge/evidence/add` nicht in Council-Gate-Patterns         |
+| Council Gate          | `X-Council-Confirm`-Header umgeht Veto bei Bestätigung                         |
+
 
 ---
 
@@ -174,19 +173,19 @@ VETO_THRESHOLD = INV_PHI  # 0.618
 ### Priorität 1 (Kritisch)
 
 1. **Ring-0 Write Gate:** Vor `add_core_directive` und `add_simulation_evidence` eine zentrale Prüfung einbauen:
-   - Nur erlaubt wenn: expliziter Ring-0-Freigabe-Token ODER Aufruf aus genehmigtem Seed-Skript (Whitelist).
+  - Nur erlaubt wenn: expliziter Ring-0-Freigabe-Token ODER Aufruf aus genehmigtem Seed-Skript (Whitelist).
 2. **Council Gate State:** `get_current_state()` dynamisch machen (z.B. aus Umgebungsvariable oder Config), damit Veto-Modus bei Bedarf aktivierbar ist.
 3. **CRITICAL_PATH_PATTERNS erweitern:** `/api/core/knowledge/evidence/add`, `/api/core/knowledge/directive/add` (falls diese Routen aktiviert werden) in die Council-Gate-Patterns aufnehmen.
 
 ### Priorität 2 (Hoch)
 
-4. **Context-Injector Veto / Semantic Drift:** Vor Ring-0-Writes `temporal_validator.validate_temporal_consistency` aufrufen; bei Konsistenz-Score unter Schwellwert (z.B. 0.3) → Block mit `HARD_REJECT_PROMPT`.
-5. **Freeze Control Gauge:** Service/Modul, der `y_gravitation` überwacht und bei Verlust (z.B. < 0.1 über N Zyklen) einen Freeze-Status setzt – optional mit Audit-Log.
+1. **Context-Injector Veto / Semantic Drift:** Vor Ring-0-Writes `temporal_validator.validate_temporal_consistency` aufrufen; bei Konsistenz-Score unter Schwellwert (z.B. 0.3) → Block mit `HARD_REJECT_PROMPT`.
+2. **Freeze Control Gauge:** Service/Modul, der `y_gravitation` überwacht und bei Verlust (z.B. < 0.1 über N Zyklen) einen Freeze-Status setzt – optional mit Audit-Log.
 
 ### Priorität 3 (Mittel)
 
-6. **Telemetry-Injector/Context-Injector als Module:** Klare Trennung: Telemetry-Injector = Validierungs-Layer vor Logik-Execution; Context-Injector = Kontext-Check vor Archiv-Writes. Dokumentation in Code und Architektur-Docs.
-7. **Bias Damper Integration:** Bias Damper in die Chroma-Write-Pipeline einbinden (z.B. vor `add_evidence_validated`), sodass Ring-0-Direktiven auch bei Evidence-Ingest greifen.
+1. **Telemetry-Injector/Context-Injector als Module:** Klare Trennung: Telemetry-Injector = Validierungs-Layer vor Logik-Execution; Context-Injector = Kontext-Check vor Archiv-Writes. Dokumentation in Code und Architektur-Docs.
+2. **Bias Damper Integration:** Bias Damper in die Chroma-Write-Pipeline einbinden (z.B. vor `add_evidence_validated`), sodass Ring-0-Direktiven auch bei Evidence-Ingest greifen.
 
 ---
 
@@ -202,13 +201,16 @@ Das Containment Field ist **nicht operativ**. Die dokumentierten Konzepte (Telem
 
 ## 11. Nachbesserung 2026-03-04 (Prioritaet 1 umgesetzt)
 
-| Massnahme | Status | Datei |
-|-----------|--------|-------|
-| Ring-0 Write Gate (Auth) | DONE | `auth_webhook.verify_ring0_write`, `atlas_knowledge.add_evidence` |
-| Council Gate State dynamisch | DONE | `core_state.get_current_state()` liest `CORE_Z_WIDERSTAND`, `CORE_STATE_PRESET` |
-| CRITICAL_PATH_PATTERNS erweitert | DONE | `council_gate`: evidence/add, directive/add, evidence/delete, directive/delete |
+
+| Massnahme                        | Status | Datei                                                                           |
+| -------------------------------- | ------ | ------------------------------------------------------------------------------- |
+| Ring-0 Write Gate (Auth)         | DONE   | `auth_webhook.verify_ring0_write`, `atlas_knowledge.add_evidence`               |
+| Council Gate State dynamisch     | DONE   | `core_state.get_current_state()` liest `CORE_Z_WIDERSTAND`, `CORE_STATE_PRESET` |
+| CRITICAL_PATH_PATTERNS erweitert | DONE   | `council_gate`: evidence/add, directive/add, evidence/delete, directive/delete  |
+
 
 **Konfiguration (.env):**
+
 - `RING0_WRITE_TOKEN` – Pflicht fuer POST /api/core/knowledge/evidence/add (Fail-Closed wenn leer)
 - `CORE_Z_WIDERSTAND` – Optional, 0.5 default. >= 0.618 aktiviert Veto-Modus (X-Council-Confirm erforderlich)
 - `CORE_STATE_PRESET` – Optional: ANSAUGEN, VERDICHTEN, ARBEITEN, AUSSTOSSEN

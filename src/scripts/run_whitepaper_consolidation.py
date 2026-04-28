@@ -78,7 +78,8 @@ DEINE AUFGABE (MASTERPLAN):
 3. Verwende den '09_ROSETTA_STEIN_DER_DISZIPLINEN.md', um jedes Kapitel mit der exakt richtigen Terminologie für das jeweilige Fachpublikum anzusprechen.
 4. Bringe das Paper (außer in den spezifischen Fachbereichskapiteln) auf eine komplette, einheitliche, stringente Struktur.
 5. Füge ein NEUES Kapitel hinzu: "Forschung, Beweise, Vorhersagen". Integriere dort alle Indizien, Beweise und Vorhersagen, die du in den Dokumenten (insb. 06, 08, etc.) findest.
-6. Füge am Ende einen Abschnitt "Anmerkungen des Kurators & Methodologie" an, der das Mapping und die Härtung dokumentiert.
+6. Füge am Ende einen Abschnitt "Anmerkungen des Kurators & Methodologie" an, der das Mapping und die Härtung dokumentiert. DIESER ABSCHNITT MUSS ZWINGEND EINE TABELLARISCHE ÜBERSICHT DER EXTRAHIERTEN CLAIMS AUS V14/V15/Zusatzdokumenten ENTHALTEN (Claim -> Quelle -> Zielkapitel).
+7. WICHTIG: Alle Symbole (wie \Omega_b, \hat{{\Phi}}, \Psi_{{CORE}}, \Theta) MÜSSEN bei jeder Nennung (insbesondere bei Erstnennung) zwingend mit ihrem semantischen Begriff gekoppelt sein (z.B. "Operator \hat{{\Phi}} (Phasen-Inversions-Operator)" oder "Baryonisches Delta (\Omega_b)"). Isoliert stehende Symbole sind strengstens verboten.
 
 Generiere nun das vollständige, konsolidierte Whitepaper (V2).
 """

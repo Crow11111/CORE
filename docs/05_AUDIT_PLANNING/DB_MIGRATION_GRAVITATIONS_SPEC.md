@@ -1,5 +1,3 @@
-
-
 # DB-Migration Gravitations-Logik (Phase 3)
 
 **Status:** Deliverable CEO-Plan. Inhalt durch db-expert / system-architect zu ergänzen.  

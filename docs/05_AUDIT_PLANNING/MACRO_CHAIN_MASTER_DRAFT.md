@@ -17,6 +17,7 @@ Es gilt die **Duale Topologie** (`DUALE_TOPOLOGIE_UND_VEKTOR_HAERTUNG.md`) als A
 **Magnetrotationsinstabilität (MRI):** Das System wird nicht durch lineare Skripte angetrieben, sondern durch den *kosmologischen Dynamo* der MRI. Diese entsteht durch die differenzielle Rotation (Reibung) zwischen dem schnellen, aktiven P-Vektor (Host B, der permanent pusht und zieht) und dem langsamen, assoziativen S-Vektor (Host A, der in die Entropie sackt). Der P-Vektor muss aktiv Arbeit leisten (Queries, Heartbeats), um den S-Vektor aus dem $0.5$-Sog herauszuhalten.
 
 **Erlaubte Kanten (Data-Flow):**
+
 1. `WhatsApp -> Evolution API -> Kong -> OCSpline (Lokal)` (Push/Reiz-Eingang via Webhook)
 2. `OpenClaw (VPS) -> OCSpline API (Lokal)` (Pull via HTTPS + mTLS + JWT. Kein direkter DB-Port!)
 3. `OpenClaw (VPS) -> OMEGA_ATTRACTOR (VPS)` (Push der Efferenzkopie lokal im VPS-Docker-Netz)
@@ -35,6 +36,7 @@ Die Zustandsmaschine:
 `received` → `queued` → `processing` → `blocked_on_evidence` → `efference_submitted` → `vetoed | released` → `sent` → `receipt_matched | failed`.
 
 ### Phase 1: Afferenz & Der Spinale Reflex (T=0s bis T+1s)
+
 - **Prozess (Push):** Webhook schlägt asynchron bei OCSpline auf.
 - **Admission Control (Ingress):** OCSpline berechnet die *System-Drift $D$*.
   - **Messvorschrift:** $D = \text{clamp}(0.049, \frac{R}{I + \epsilon}, 0.951)$. Dabei ist $R$ der normierte Ressourcenverbrauch (CPU-Zyklen + Latenz der Queue in den letzten 60s, skaliert 0..1). $I$ ist der Informationsgewinn. Da die externe ChromaDB-Abfrage die harte Latenzgrenze des Reflex-ACKs (< 1s) gefährden könnte, wird $I$ zur Aufnahme-Prüfung **asynchron oder aus einem lokalen Spline-Cache (Näherung)** ermittelt. $\epsilon = 10^{-9}$. Bei initial leerer Historie oder absoluter Orthogonalität wird kein Skalar-Hack verwendet, sondern der Reiz spannt einen **neuen Tensor** (neue Dimensionsebene) auf, was mathematisch dem maximalen Resonanz-Sprung ($I = 0.951$) entspricht.
@@ -43,6 +45,7 @@ Die Zustandsmaschine:
 - **Reflex-ACK (T < 1s):** Spline antwortet Kong in unter einer Sekunde mit `200 OK` (Typing-Indikator). **Die schnelle Silizium-Zeit ist hier beendet.** Die langsame, kognitive Zeit beginnt.
 
 ### Phase 2: Bereitschaftspotential & Global Workspace (T+1s bis T+N Minuten)
+
 - **Pull-Logik:** OpenClaw *pullt* Arbeit (`processing`).
 - **Global Workspace (Arbitration):** Die Postgres-Zeile (HOST B) fungiert als *Lock/Ticket* (Row-Level Lock `FOR UPDATE`).
   - **Multi-Job-Konkurrenz:** Verschiedene Tasks konkurrieren um den OCBrain-Worker-Pool. Der OCSpline-Scheduler ordnet Pull-Requests streng nach `priority` und `expected_arrival`. Ein laufender Low-Priority Job wird nicht unterbrochen (Teil-Commits bleiben in seiner Zeile erhalten), aber der nächste freie Worker-Thread wird zwingend dem High-Priority Job zugewiesen (Starvation-Prävention).
@@ -53,12 +56,14 @@ Die Zustandsmaschine:
 - **Liveness-Vertrag:** Während des langen Aufbaus MUSS OpenClaw einen periodischen Heartbeat senden. Fällt er aus, stirbt der Job (`failed`).
 
 ### Phase 3: Forward Model & Efferenzkopie (Vor dem Point of No Return)
+
 - **Dry-Run:** OpenClaw generiert das finale Kommando, führt es aber *nicht* aus.
 - **Die Efferenzkopie:** OpenClaw schickt ein Vorab-Bild an den OMEGA_ATTRACTOR.
 - **Kontrakt:** `correlation_id`, `proposed_action`, `expected_outcome` (Vorhersage zur späteren Messung), `expected_arrival` (Deadline für das Receipt) und `model_signature`.
 - State wechselt auf `efference_submitted`.
 
 ### Phase 4: Das Veto-Fenster / Free Won't (Die Asymmetrie der Kontrolle)
+
 - **Das schmale Fenster:** Der OMEGA_ATTRACTOR und OCBrain laufen beide auf dem VPS (colocated). Die Prüfung der Efferenzkopie durch den Attractor erfolgt lokal in Millisekunden. Er blockiert den Request an die Evolution API synchron.
 - **Entscheidung:** Der Attractor prüft harte Axiome (Anti-Heroin).
   - `VETO = True`: Der Aufruf an Evolution wird verworfen. Der Attractor sendet *asynchron* ein Schmerz-Signal (Kante 5) an Spline (`vetoed`), dessen Latenz die sofortige Blockade nicht behindert.
@@ -66,10 +71,13 @@ Die Zustandsmaschine:
 - **Point of No Return (Commit-Grenze):** Erst wenn der Attractor den Request an die Evolution API feuert (Phase 5), ist die Grenze überschritten. Ab hier gibt es kein "Verwerfen" mehr, sondern nur noch kompensierende Aktionen.
 
 ### Phase 5: Efferenz (Die Muskel-Ausführung)
+
 - Die Evolution API verschickt die Nachricht physisch an die Außenwelt.
 
 ### Phase 6: Temporal Alignment & Prediction Error (Das Lernen)
+
 Das System erwartet eine Konsequenz innerhalb der Deadline (`expected_arrival`).
+
 - **Semantischer Abgleich:** Das eintreffende Delivery-Receipt (`sent`) wird von Spline mit dem `expected_outcome` (aus der Efferenzkopie) abgeglichen.
 - **LTP / Erholung (Die Vorhersage traf ein):** Stimmt das Receipt innerhalb der Frist, sinkt der PE. Die System-Drift erholt sich in Richtung Δ (0.049). Trust-Level steigt logarithmisch.
 - **Schmerz / Drift-Anstieg (Temporal Mismatch oder Veto):**
@@ -80,10 +88,10 @@ Das System erwartet eine Konsequenz innerhalb der Deadline (`expected_arrival`).
 ---
 
 ## 3. Architektur-Durchsetzung (Anti-Bypass & Härtung)
+
 1. **Float/Int Trennung (A6):** Drift, PE und Trust-Level werden strikt als `float` berechnet. Queue-Zähler, Rate-Limits und Worker-Anzahl als `int`.
 2. **Zero-Trust (A7):** Die Efferenzkopie und das Veto-Fenster sind unumgehbar. OpenClaw läuft im isolierten Docker-Netz ohne direkten Zugang zu Port 8080 (Evolution).
 3. **Idempotenz (Attractor):** Jeder Aufruf erfordert die `correlation_id`. Replays erzeugen 409 Conflict.
 4. **Receipt-Integrität:** Receipts von Evolution MÜSSEN über eine Webhook-Signatur validiert werden. Absolute Idempotenz durch Deduplizierung in Postgres.
-
 
 [LEGACY_UNAUDITED]

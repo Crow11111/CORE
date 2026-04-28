@@ -1,5 +1,3 @@
-
-
 # CORE ZERO_STATE – End-to-End Integration Test Report
 
 **Datum:** 2026-03-04  

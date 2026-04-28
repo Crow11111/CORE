@@ -1,6 +1,7 @@
 # Detailliertes technisches Design für die Implementierung von SPIFFE/SPIRE JIT Ghost Tokens und Firecracker Micro-VM Isolation für Python-basierte KI-Agenten auf einem Hostinger VPS
 
 Key points:
+
 - Research suggests that integrating Firecracker microVM snapshots with the Model Context Protocol (MCP) over virtio-vsock can enable secure, sub-30ms air-gapped tool execution for AI agents.
 - It seems likely that deploying Firecracker on environments traditionally lacking native nested virtualization, such as standard Hostinger KVM VPS instances, can be achieved using advanced hypervisor modifications like the Pagetable Virtual Machine (PVM) framework.
 - The evidence leans toward utilizing SPIFFE/SPIRE for Just-In-Time (JIT) ephemeral identity issuance, effectively countering persistent "Ghost Token" vulnerabilities by ensuring credentials are wiped from memory immediately upon microVM suspension.
@@ -16,11 +17,13 @@ This report provides an exhaustive, academic analysis of a state-of-the-art 2026
 The foundation of this architecture relies on deploying lightweight virtual machines (microVMs) on top of a commercially available cloud infrastructure, specifically a Kernel-based Virtual Machine (KVM) VPS provided by Hostinger. 
 
 ### 1.1 The Nested Virtualization Challenge on Hostinger
+
 Firecracker is an open-source virtual machine monitor (VMM) developed by Amazon Web Services (AWS) that utilizes the Linux KVM to create and manage microVMs [cite: 1, 2]. By design, Firecracker relies on hardware virtualization extensions (Intel VT-x or AMD-V) [cite: 3, 4]. Deploying Firecracker on a bare-metal server natively leverages these extensions; however, deploying it within an existing virtual machine—such as a Hostinger VPS—traditionally requires nested virtualization [cite: 3, 5]. 
 
 Research indicates a divergence in support for this feature. While some advanced deployment orchestrators like Fireactions utilize VPS templates to set up Firecracker on hosting providers [cite: 5], official documentation states that advanced features such as nested virtualization fall outside the intended scope of Hostinger's standard VPS services, as they can impact system stability [cite: 6]. 
 
 ### 1.2 The Pagetable Virtual Machine (PVM) Solution for 2026
+
 To resolve the absence of KVM nested virtualization, this architecture leverages the Pagetable Virtual Machine (PVM) framework. Proposed in 2024 by Ant Group and Alibaba Cloud, PVM is a virtualization framework built upon KVM that allows hypervisors like Firecracker to run on regular cloud VMs without the need for hardware extensions or nested virtualization enabled by the vendor [cite: 3]. PVM achieves comparable performance with bare-metal servers, enabling environments like a Hostinger KVM VPS to seamlessly host thousands of Firecracker microVMs [cite: 3]. By applying a streamlined patch to the Firecracker VMM, administrators can bypass the strict KVM hardware extension requirements, making the Hostinger VPS a viable, cost-effective host for air-gapped AI agents [cite: 3, 7].
 
 ## 2. Low-Latency Air-Gapped Execution via Firecracker Snapshots
@@ -28,24 +31,28 @@ To resolve the absence of KVM nested virtualization, this architecture leverages
 A critical requirement for AI agent user experience is low latency. Standard Firecracker microVMs require approximately 125 milliseconds to 1 second for a cold boot, depending on the kernel and initialization processes [cite: 2, 8]. When an AI agent iteratively calls multiple tools, a 1-second penalty per tool execution destroys the conversational latency expected by users.
 
 ### 2.1 MicroVM Snapshotting Mechanics
+
 To mitigate cold-start latency, the architecture relies on Firecracker's snapshotting mechanism. MicroVM snapshotting serializes the complete state of a running microVM—including guest memory, CPU register state (instruction pointer, stack pointer), and emulated hardware device state—saving it to external files [cite: 8, 9].
 
 When a Python agent requests a tool execution, the system does not boot a kernel or run `init`. Instead, Firecracker restores the microVM from a pre-initialized snapshot [cite: 8]. Firecracker creates a `MAP_PRIVATE` mapping of the memory file, resulting in runtime on-demand loading of memory pages with copy-on-write semantics backed by anonymous memory [cite: 9, 10]. From the guest's perspective, time simply skips forward [cite: 8].
 
 ### 2.2 Latency Breakdown
+
 Empirical research demonstrates that snapshot restoration reduces execution latency to approximately 28 milliseconds [cite: 8]. The process is highly optimized, ensuring that the AI agent's tool execution environment is ready almost instantaneously.
 
 Table 1 presents a detailed breakdown of the snapshot restoration latency for a standard microVM running a Python environment in 2026.
 
 **Table 1: Firecracker Snapshot Restore Latency Breakdown**
 
-| Execution Phase | Estimated Latency (ms) | Technical Description |
-| :--- | :--- | :--- |
-| **VMM Startup** | ~5 ms | Spawning the new Firecracker process and loading base configuration. |
-| **Memory Mapping** | ~8 ms | Establishing `MAP_PRIVATE` mmap against the guest memory snapshot file. |
-| **State Restoration** | ~10 ms | Restoring CPU registers, virtio queues, and serial port state. |
-| **vsock Reconnection**| ~5 ms | Re-establishing virtio-vsock connections and signaling readiness. |
-| **Total Latency** | **~28 ms** | Total perceived delay before arbitrary Python code execution begins. |
+
+| Execution Phase        | Estimated Latency (ms) | Technical Description                                                   |
+| ---------------------- | ---------------------- | ----------------------------------------------------------------------- |
+| **VMM Startup**        | ~5 ms                  | Spawning the new Firecracker process and loading base configuration.    |
+| **Memory Mapping**     | ~8 ms                  | Establishing `MAP_PRIVATE` mmap against the guest memory snapshot file. |
+| **State Restoration**  | ~10 ms                 | Restoring CPU registers, virtio queues, and serial port state.          |
+| **vsock Reconnection** | ~5 ms                  | Re-establishing virtio-vsock connections and signaling readiness.       |
+| **Total Latency**      | **~28 ms**             | Total perceived delay before arbitrary Python code execution begins.    |
+
 
 *Data synthesized from microVM benchmarking research [cite: 8].*
 
@@ -56,12 +63,15 @@ To further optimize memory restoration, the architecture employs on-the-fly deco
 To ensure absolute security, the microVMs must be entirely air-gapped from the host's TCP/IP network stack. Firecracker emulates a minimalist device model consisting of only `virtio-block` (disk), `virtio-net` (network), a serial console, a keyboard controller, and `virtio-vsock` [cite: 8, 12]. In this design, the `virtio-net` device is purposefully omitted. 
 
 ### 3.1 Socket Translation Mechanics
+
 Communication between the host (the AI orchestrator) and the guest (the Python agent environment) is achieved exclusively via `virtio-vsock`. This provides a direct, high-bandwidth kernel-to-kernel communication channel that completely bypasses the host's and guest's traditional networking stacks [cite: 8, 13]. 
 
 Firecracker implements the `virtio-vsock` device model by mediating communication between `AF_UNIX` (Unix Domain Sockets) on the host and `AF_VSOCK` sockets within the guest [cite: 13]. To multiplex connections, Firecracker maps guest `AF_VSOCK` ports 1:1 to `AF_UNIX` sockets on the host [cite: 13, 14].
 
 #### Host-Initiated Connection Protocol
+
 When the host orchestrator needs to send an MCP request to the Python agent inside the microVM, the following protocol is executed:
+
 1. The host connects to the `AF_UNIX` socket defined in the Firecracker configuration (e.g., `/path/to/v.sock`) [cite: 13].
 2. Upon connection, the host sends a plain-text routing command: `CONNECT <port_num>\n` [cite: 13].
 3. Firecracker intercepts this command, validates the port, and forwards the connection to the guest software listening on the corresponding `AF_VSOCK` port [cite: 13, 15].
@@ -74,6 +84,7 @@ This mechanism eliminates entire classes of network-based vulnerabilities, such 
 The Model Context Protocol (MCP) is an open standard established in late 2024 by Anthropic that dictates how AI agents interact with external tools, APIs, and file systems [cite: 16, 17]. MCP relies on JSON-RPC 2.0 to standardize remote procedure calls, decoupling the agent's reasoning from the tool's underlying implementation [cite: 18, 19].
 
 ### 4.1 JSON-RPC Transport over vsock
+
 Because MCP is inherently transport-agnostic, it can be seamlessly routed over the `virtio-vsock` boundary. This requires a proxy architecture bridging the host's orchestrator and the guest's execution environment [cite: 20, 21].
 
 On the host side, a high-performance proxy written in Rust (e.g., `tokio-vsock` combined with `mcp-proxy-tool`) acts as the intermediary [cite: 20, 22]. The proxy receives standard HTTP or STDIO MCP requests from the LLM framework and translates them into binary streams sent over the `AF_UNIX` socket linked to the Firecracker vsock device [cite: 13, 20].
@@ -82,14 +93,17 @@ On the guest side, a lightweight Python daemon utilizing libraries like `fastmcp
 
 **Table 2: MCP JSON-RPC Payload Structure over vsock**
 
-| JSON-RPC Field | Type | Function in Architecture |
-| :--- | :--- | :--- |
-| `jsonrpc` | String | Must be exactly `"2.0"` to comply with MCP standards [cite: 21]. |
-| `id` | String/Number | Unique identifier mapped by the host proxy to track asynchronous tool executions [cite: 18]. |
-| `method` | String | Specifies the tool operation, e.g., `"tools/call"` [cite: 21]. |
-| `params` | Object | Contains the strictly typed arguments validated by the Python agent (e.g., via Pydantic/Zod) before execution [cite: 21]. |
+
+| JSON-RPC Field | Type          | Function in Architecture                                                                                                  |
+| -------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `jsonrpc`      | String        | Must be exactly `"2.0"` to comply with MCP standards [cite: 21].                                                          |
+| `id`           | String/Number | Unique identifier mapped by the host proxy to track asynchronous tool executions [cite: 18].                              |
+| `method`       | String        | Specifies the tool operation, e.g., `"tools/call"` [cite: 21].                                                            |
+| `params`       | Object        | Contains the strictly typed arguments validated by the Python agent (e.g., via Pydantic/Zod) before execution [cite: 21]. |
+
 
 ### 4.2 Eliminating Context Bloat via Deferred Loading (Tool Search)
+
 A severe limitation of early MCP implementations was context window pollution. Connecting to an MCP server historically forced the LLM to load the JSON schemas and descriptions for every available tool—sometimes exceeding 90 tools and consuming upwards of 46,000 tokens—before any useful work began [cite: 25, 26]. This bloat exponentially degraded tool call accuracy and increased latency [cite: 25].
 
 To prevent destroying the user's latency and context limits in this 2026 architecture, we implement Anthropic's "Tool Search" and "Skills" mechanisms [cite: 16, 25]. This feature treats the MCP server not as a static repository of injected prompts, but as a dynamic filesystem [cite: 26]. 
@@ -101,20 +115,24 @@ Tools are configured with `deferred_loading = true` [cite: 26]. When the AI agen
 While the microVM provides hardware isolation, the tools executing inside the VM often require authenticated access to external databases or APIs (proxied safely back through the host). Managing these credentials introduces the risk of token theft.
 
 ### 5.1 The "Ghost Token" Vulnerability Concept
+
 The term "Ghost Token" originally referred to a critical vulnerability (CVE-2026-0012) discovered in Microsoft Entra ID and Google Cloud Platform (GCP) [cite: 28, 29]. In these exploits, an attacker authorized a malicious OAuth application and subsequently placed the app into a "pending deletion" or hidden state [cite: 29, 30]. This effectively removed the application from the user's management dashboard, preventing the user from revoking access [cite: 29, 30]. The attacker retained a "Ghost Token"—a refresh token completely detached from the core identity lifecycle that survived password resets and MFA enforcement, allowing persistent backdoor access [cite: 28, 29].
 
 ### 5.2 Reversing the Paradigm: Just-In-Time Ephemeral Identity
+
 In this architectural design, we invert the concept of the Ghost Token from a vulnerability into a defensive mechanism. We implement **Just-In-Time (JIT) Ghost Tokens**: highly ephemeral cryptographic identities that exist solely in the volatile memory of the microVM and vanish entirely—like ghosts—the moment the execution terminates, leaving no trace that could be exploited by persistent shadow IT or sandbox escapes.
 
 This is achieved using the Secure Production Identity Framework for Everyone (SPIFFE) and its runtime environment, SPIRE [cite: 31, 32]. SPIRE acts as a workload identity provider, issuing short-lived, dynamically rotated X.509 certificates or JWTs known as SPIFFE Verifiable Identity Documents (SVIDs) [cite: 31, 32].
 
 #### SPIRE over vsock Architecture
+
 1. **Host-Side Agent**: The SPIRE Server and SPIRE Agent run on the Hostinger VPS host OS [cite: 33, 34]. The agent validates the host's integrity and listens on a Unix Domain Socket for workload attestation requests [cite: 33].
-2. **Socket Bridging**: Because the microVM is air-gapped, the host's SPIRE Agent UDS is bridged into the guest VM using a secondary `virtio-vsock` port [cite: 33]. 
+2. **Socket Bridging**: Because the microVM is air-gapped, the host's SPIRE Agent UDS is bridged into the guest VM using a secondary `virtio-vsock` port [cite: 33].
 3. **Guest-Side Attestation**: Inside the microVM, a modified SPIFFE-helper or a user-space Seccomp agent intercepts `open()` syscalls made by the Python agent when it attempts to access an identity file [cite: 35]. The Seccomp agent proxies this request over the `AF_VSOCK` channel to the host's SPIRE agent [cite: 35].
 4. **Attestation and Issuance**: The host SPIRE agent attests the microVM's identity (verifying the VM's PID, cgroup, and execution context) [cite: 32, 35]. If validated, it issues a JIT SVID with a lifespan restricted to mere seconds or minutes [cite: 32].
 
 ### 5.3 Memory Wiping on Suspend
+
 To guarantee that these JIT Ghost Tokens cannot be extracted via snapshot cloning or memory scraping, the architecture utilizes the `MADV_WIPEONSUSPEND` memory advice flag [cite: 36]. 
 
 When the Python agent completes its task and Firecracker pauses the VM to take a snapshot, any memory pages marked with `MADV_WIPEONSUSPEND` (which house the SPIRE SVIDs and any cryptographic secrets) are automatically zeroed out and excluded from the snapshot file [cite: 36]. Upon restoration, the VM must request a fresh SVID. This ensures that a compromised snapshot file contains no actionable credentials, fulfilling the promise of true ephemeral ghost tokens [cite: 36].
@@ -137,6 +155,7 @@ Implementing air-gapped, secure execution environments for AI agents demands a d
 The integration of `virtio-vsock` guarantees absolute network isolation, while the Model Context Protocol (MCP) ensures standardized, bidirectional JSON-RPC communication [cite: 13, 38]. Latency is strictly minimized by leveraging Firecracker's sub-30ms snapshot restoration capabilities and Anthropic's deferred tool loading mechanisms, solving the context window bloat problem [cite: 8, 26]. Finally, the novel adaptation of SPIFFE/SPIRE to issue Just-In-Time "Ghost Tokens"—ephemeral identities wiped upon suspension—ensures that even if a microVM is compromised, the blast radius is strictly confined to the milliseconds of its active execution phase [cite: 32, 36]. This architecture represents the pinnacle of secure, performant AI agent deployment for 2026.
 
 **Sources:**
+
 1. [github.io](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFfvXhWrkJ_EEG3RaXPXVIUw1Wkoj52TFz8mkMIDXYcmYDIg_9rOkRw-gtUqC78k8ftfxflC60GRE_wUk8ffvBdQzhruKxNqPwD092hgXBjXJdZsh1OccjKezyhjg==)
 2. [amazon.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHwb1roMnw4-BogzdLThbPbU9QiNtoyKBd9HbHy6KM5-5XKi431rkefpo0Pwk2T_6vk4uMzqoeIQQHhHi3CYvhkQ_oeKXBJ14VkDFMa0C1pxcrzITkVJ-d6JvFTUi2fyywqS9bil8Tntv81B4L1I_E1mxGBdU0NUNI3rJ2GOrXK1d9uRF4a4z-Hlyv5VFqBEzg3qsu0l8JJ)
 3. [alexellis.io](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHnD9nJJfz0NMlL41D6-dNoVUlqUrrwaPVYIYyQPNsewolA0RlqH34oTpaoiBeG97g2uFAQLj2KvtOEcFj5cKY3j6tDDat5eC0R3JLRg79kGgn5DuL8swJhh69fC7zzrKvTWcgTuOLHOI8pJYImdM-BCj0aNm8S00niuT3KoeM9j4_AJ1r1WkgR)
@@ -175,6 +194,5 @@ The integration of `virtio-vsock` guarantees absolute network isolation, while t
 36. [arxiv.org](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHd5zyIzq0MiiFI8zZp8Tk_klvz5c4X-cdy79jKFwmCqhgibFOFeR0TwU1cKl0-wZCvAdL9pb5NurCitLl5LQ6_hr_KBqUoIH3wD6WtwbLer7y3OSez4NIXhNn4C5jlGKtMVw==)
 37. [fly.io](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFJYXoCDRWCNVmZ3dZW_zWN8VsbJ08-ktl3YuYjyL4HT0qUF3gOqNvM4i3HgmdK6jWuXJc2DGVSpE4PUyRGN_m0IYwsfiV_tccyNm6lICdqaaxoiRIiiX2DeiHLC_s5ca166fY=)
 38. [databricks.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHZW7KXWHfAAIckZMY5BQuOZfWv22V99_eJy9208Vh07TeLG067bPCDdFfNmVhbCH-mJyqwmqsW5AKq269BLOkbIX2JQA_QFqi4J_94SsNu3UrdVTfQ3qfziO6gFbjaQUmU-7rM-6dWxr9Nqq4saGnvhioRjw==)
-
 
 [LEGACY_UNAUDITED]

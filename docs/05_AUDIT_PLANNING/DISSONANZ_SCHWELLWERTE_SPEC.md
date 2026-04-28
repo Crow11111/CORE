@@ -1,5 +1,3 @@
-
-
 # Dissonanz-Schwellwerte – Spezifikation (Not-Aus)
 
 **Stand:** 2026-03-03  

@@ -105,7 +105,7 @@ print(f"Konsolidiertes Whitepaper gespeichert unter: {output_path}")
 # 2. O2 AUDITOR
 print("\nStarte O2 (Zero-Context Auditor)...")
 o2_system_instruction = "Du bist O2 (Zero-Context Auditor). Du prüfst blind und gnadenlos gegen die CORE-Axiome."
-o2_prompt = f"""
+o2_prompt = r"""
 Prüfe das folgende generierte Whitepaper gegen die 4 Veto-Traps des Masterplans.
 
 Veto-Traps:

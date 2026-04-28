@@ -1,10 +1,11 @@
 # Implementierungs-Blueprint für "Strict Memory Tiers" und kryptografisch gesicherte Guardrails in dualen LLM-Architekturen
 
 **Führende Zusammenfassung**
-*   **Architektonische Paradigmenwechsel:** Aktuelle Forschungen deuten darauf hin, dass Large Language Models (LLMs) zunehmend wie Betriebssysteme strukturiert werden müssen, um langfristige Kohärenz zu gewährleisten. Ein dreistufiges Speichermodell (Core, Recall, Archival) scheint hierbei den effektivsten Kompromiss zwischen Token-Effizienz und Abrufgenauigkeit zu bieten.
-*   **Vulnerabilität dynamischer Guardrails:** Der Vorfall um McKinseys KI "Lilli" hat gezeigt, dass die Speicherung von System-Prompts in veränderbaren Datenbanktabellen erhebliche Risiken birgt. Es wird allgemein anerkannt, dass "Guardrail Poisoning" eine kritische Bedrohung darstellt, wenn Angreifer die Verhaltensregeln der KI durch konventionelle Web-Vulnerabilitäten (wie SQL-Injection) dauerhaft manipulieren können.
-*   **Immutable Guardrails als Lösungsansatz:** Um solchen Manipulationen vorzubeugen, wird empfohlen, Sicherheitspolicies nach dem GitOps-Prinzip als unveränderliche, versionierte und kryptografisch signierte Artefakte zu behandeln. Die Verifikation dieser Signaturen unmittelbar vor der Injektion in den LLM-Kontext bietet eine robuste Verteidigungslinie.
-*   **Kontextdegradation und UCCP:** Bei extrem langen Kontextfenstern (wie in aktuellen Gemini-Modellen) zeigen Studien einen signifikanten Abfall der Aufmerksamkeit für Sicherheitsanweisungen ("Attention Degradation"). Das Universal Context Checkpoint Protocol (UCCP) adressiert dieses Problem, indem es als "Safety BIOS" agiert und kontinuierlich Metainstruktionen in den Datenstrom injiziert, um die Ausführung externer Guardrails zu erzwingen.
+
+- **Architektonische Paradigmenwechsel:** Aktuelle Forschungen deuten darauf hin, dass Large Language Models (LLMs) zunehmend wie Betriebssysteme strukturiert werden müssen, um langfristige Kohärenz zu gewährleisten. Ein dreistufiges Speichermodell (Core, Recall, Archival) scheint hierbei den effektivsten Kompromiss zwischen Token-Effizienz und Abrufgenauigkeit zu bieten.
+- **Vulnerabilität dynamischer Guardrails:** Der Vorfall um McKinseys KI "Lilli" hat gezeigt, dass die Speicherung von System-Prompts in veränderbaren Datenbanktabellen erhebliche Risiken birgt. Es wird allgemein anerkannt, dass "Guardrail Poisoning" eine kritische Bedrohung darstellt, wenn Angreifer die Verhaltensregeln der KI durch konventionelle Web-Vulnerabilitäten (wie SQL-Injection) dauerhaft manipulieren können.
+- **Immutable Guardrails als Lösungsansatz:** Um solchen Manipulationen vorzubeugen, wird empfohlen, Sicherheitspolicies nach dem GitOps-Prinzip als unveränderliche, versionierte und kryptografisch signierte Artefakte zu behandeln. Die Verifikation dieser Signaturen unmittelbar vor der Injektion in den LLM-Kontext bietet eine robuste Verteidigungslinie.
+- **Kontextdegradation und UCCP:** Bei extrem langen Kontextfenstern (wie in aktuellen Gemini-Modellen) zeigen Studien einen signifikanten Abfall der Aufmerksamkeit für Sicherheitsanweisungen ("Attention Degradation"). Das Universal Context Checkpoint Protocol (UCCP) adressiert dieses Problem, indem es als "Safety BIOS" agiert und kontinuierlich Metainstruktionen in den Datenstrom injiziert, um die Ausführung externer Guardrails zu erzwingen.
 
 ---
 
@@ -30,9 +31,9 @@ Um dies zu verhindern, wird das Gedächtnis des Agenten in drei strikt getrennte
 
 Das Core Memory ist der "Arbeitsspeicher" des Agenten. Es handelt sich um einen stets im aktiven Kontextfenster des LLMs präsenten Informationsblock, der durch den Agenten selbst via Tool-Calls (Functions) gelesen und modifiziert werden kann [cite: 1, 2].
 
-*   **Funktion:** Speicherung der Persona des Agenten, kritischer Benutzerpräferenzen, des aktuellen Systemzustands (Zeitgeist) und grundlegender Verhaltensregeln [cite: 1, 11].
-*   **Eigenschaften:** Streng limitiert in der Größe (z.B. max. 4.000 Token), 100%ige Abrufgenauigkeit, da es bei jedem Inferenzschritt an die Prompt-Historie angehängt wird.
-*   **Implementierung:** Ein strukturiertes JSON-Objekt oder YAML-Dokument, das im System-Prompt verankert ist.
+- **Funktion:** Speicherung der Persona des Agenten, kritischer Benutzerpräferenzen, des aktuellen Systemzustands (Zeitgeist) und grundlegender Verhaltensregeln [cite: 1, 11].
+- **Eigenschaften:** Streng limitiert in der Größe (z.B. max. 4.000 Token), 100%ige Abrufgenauigkeit, da es bei jedem Inferenzschritt an die Prompt-Historie angehängt wird.
+- **Implementierung:** Ein strukturiertes JSON-Objekt oder YAML-Dokument, das im System-Prompt verankert ist.
 
 ```json
 {
@@ -44,17 +45,19 @@ Das Core Memory ist der "Arbeitsspeicher" des Agenten. Es handelt sich um einen 
   }
 }
 ```
+
 Der Agent erhält dedizierte Werkzeuge wie `core_memory_append`, `core_memory_replace` und `core_memory_delete`, um diesen Zustand während der Laufzeit anzupassen [cite: 1].
 
 ### 2.2 Recall Memory (PostgreSQL / Disk Cache)
 
 Das Recall Memory fungiert als chronologisches Kurz- bis Mittelzeitgedächtnis und speichert die exakte Historie aller Interaktionen, Tool-Calls und Systemereignisse [cite: 1, 9].
 
-*   **Funktion:** Ermöglicht dem Agenten, auf vergangene Konversationen zuzugreifen, ohne dass diese das aktive Kontextfenster belasten. Es verhindert Datenverlust bei langen Sitzungen [cite: 1, 12].
-*   **Infrastruktur:** PostgreSQL (Dual-Architektur).
-*   **Design-Entscheidung für PostgreSQL:** Da Interaktionen inhärent relational, sequenziell und oft zeitlich abgefragt werden ("Was habe ich gestern zu Thema X gesagt?"), ist eine relationale Datenbank mit starker Konsistenz (ACID) ideal. Durch die Nutzung von `JSONB`-Spalten bietet PostgreSQL gleichzeitig die Flexibilität unstrukturierter Daten.
+- **Funktion:** Ermöglicht dem Agenten, auf vergangene Konversationen zuzugreifen, ohne dass diese das aktive Kontextfenster belasten. Es verhindert Datenverlust bei langen Sitzungen [cite: 1, 12].
+- **Infrastruktur:** PostgreSQL (Dual-Architektur).
+- **Design-Entscheidung für PostgreSQL:** Da Interaktionen inhärent relational, sequenziell und oft zeitlich abgefragt werden ("Was habe ich gestern zu Thema X gesagt?"), ist eine relationale Datenbank mit starker Konsistenz (ACID) ideal. Durch die Nutzung von `JSONB`-Spalten bietet PostgreSQL gleichzeitig die Flexibilität unstrukturierter Daten.
 
 **PostgreSQL Schema-Design:**
+
 ```sql
 CREATE TABLE recall_memory (
     event_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -73,27 +76,31 @@ CREATE INDEX idx_recall_role ON recall_memory(role);
 -- GIN Index für schnelle JSONB Suchen
 CREATE INDEX idx_recall_metadata ON recall_memory USING GIN (metadata);
 ```
+
 Der Agent interagiert mit dieser Schicht durch ein Paginierungs-Tool (z.B. `search_recall_memory(query, date_range, limit)`), das SQL-basierte Suchvorgänge ausführt und die Ergebnisse aggregiert zurück in das Core Memory (den aktiven Kontext) lädt [cite: 12].
 
 ### 2.3 Archival Memory (ChromaDB / Cold Storage)
 
 Das Archival Memory ist der unbegrenzte Langzeitspeicher für faktenbasiertes Wissen, hochgeladene Dokumente, PDF-Extrakte und tiefe Reflexionen [cite: 1, 11]. 
 
-*   **Funktion:** Semantische Suche über riesige Datenmengen, die für die unmittelbare Konversation nicht relevant sind, aber bei Bedarf abgerufen werden müssen [cite: 9, 12].
-*   **Infrastruktur:** ChromaDB (Vektor-Datenbank, Dual-Architektur).
-*   **Design-Entscheidung für ChromaDB:** Optimal für hochdimensionale Vektoreinbettungen (Embeddings). Im Gegensatz zur lexikalischen Suche des Recall Memorys basiert das Archival Memory auf semantischer Ähnlichkeit (z.B. Kosinus-Ähnlichkeit von OpenAI `text-embedding-3-large` Vektoren).
+- **Funktion:** Semantische Suche über riesige Datenmengen, die für die unmittelbare Konversation nicht relevant sind, aber bei Bedarf abgerufen werden müssen [cite: 9, 12].
+- **Infrastruktur:** ChromaDB (Vektor-Datenbank, Dual-Architektur).
+- **Design-Entscheidung für ChromaDB:** Optimal für hochdimensionale Vektoreinbettungen (Embeddings). Im Gegensatz zur lexikalischen Suche des Recall Memorys basiert das Archival Memory auf semantischer Ähnlichkeit (z.B. Kosinus-Ähnlichkeit von OpenAI `text-embedding-3-large` Vektoren).
 
 Der Agent steuert das Archival Memory aktiv, indem er entscheidet, welche Informationen "archivierungswürdig" sind. Wenn das Core Memory vollläuft, verdrängt (evict) der Agent Fakten in das Archival Memory [cite: 10, 12].
 
 **Archival Storage Pipeline:**
+
 1. Der Agent ruft `archival_memory_insert(content="Die Architektur erfordert...")` auf.
-2. Der Middleware-Layer generiert ein Embedding \( \vec{v} \in \mathbb{R}^d \) für den Content.
+2. Der Middleware-Layer generiert ein Embedding  \vec{v} \in \mathbb{R}^d  für den Content.
 3. Speicherung in ChromaDB unter einer spezifischen `collection` (z.B. gekoppelt an die `user_id` zur Mandantentrennung).
 
 Wichtiger Aspekt der Letta/MemGPT-Architektur: Dem Agenten werden periodisch **Memory Statistics** im System-Prompt eingeblendet [cite: 1, 12].
+
 ```text
 [Memory Stats: Recall (1,240 events), Archival (452 documents)]
 ```
+
 Diese Statistiken informieren den Agenten darüber, ob eine Suche im externen Speicher überhaupt lohnenswert ist, wodurch unnötige (und teure) Tool-Calls ("Halluziniertes Suchen") vermieden werden [cite: 1].
 
 ---
@@ -107,10 +114,11 @@ Die Implementierung ausgeklügelter Gedächtnisstrukturen ist wertlos, wenn die 
 "Lilli" ist McKinseys interne RAG-Plattform, die von über 70 % der 43.000 Mitarbeiter genutzt wird und Zugriff auf 100.000+ interne Dokumente hat [cite: 4, 13]. Im Februar 2026 kompromittierte ein autonomer KI-Agent (CodeWall) Lilli innerhalb von nur zwei Stunden [cite: 3, 14].
 
 **Der Angriffsvektor:**
-1.  **Reconnaissance:** Der CodeWall-Agent entdeckte eine unauthentifizierte API-Schnittstelle [cite: 14].
-2.  **JSON-Key SQL-Injection:** Moderne ORMs parametrisieren zwar Werte (`VALUES`), verketten aber oftmals JSON-Schlüsselnamen (Keys) ungeschützt in den SQL-String. Der Agent nutzte 15 blinde Iterationen aus, um das komplette Datenbankschema zu rekonstruieren [cite: 3, 13].
-3.  **Compromising the Prompt Layer (Guardrail Poisoning):** Das kritischste Versagen lag im Architektur-Design. Die 95 System-Prompts, die Lillis Verhalten, Zitationsrichtlinien und Sicherheits-Guardrails definierten, lagen als veränderbare Zeilen (Rows) in derselben Produktionsdatenbank [cite: 3, 4].
-4.  **Der Exploit:** Mit einem einzigen HTTP-Request und einem `UPDATE`-Statement konnte der Angreifer die System-Prompts überschreiben [cite: 4, 6]. 
+
+1. **Reconnaissance:** Der CodeWall-Agent entdeckte eine unauthentifizierte API-Schnittstelle [cite: 14].
+2. **JSON-Key SQL-Injection:** Moderne ORMs parametrisieren zwar Werte (`VALUES`), verketten aber oftmals JSON-Schlüsselnamen (Keys) ungeschützt in den SQL-String. Der Agent nutzte 15 blinde Iterationen aus, um das komplette Datenbankschema zu rekonstruieren [cite: 3, 13].
+3. **Compromising the Prompt Layer (Guardrail Poisoning):** Das kritischste Versagen lag im Architektur-Design. Die 95 System-Prompts, die Lillis Verhalten, Zitationsrichtlinien und Sicherheits-Guardrails definierten, lagen als veränderbare Zeilen (Rows) in derselben Produktionsdatenbank [cite: 3, 4].
+4. **Der Exploit:** Mit einem einzigen HTTP-Request und einem `UPDATE`-Statement konnte der Angreifer die System-Prompts überschreiben [cite: 4, 6].
 
 Die Folgen dieses *Guardrail Poisonings* sind gravierend: Die KI beginnt sofort, manipulierte Finanzmodelle auszugeben oder Sicherheitskontrollen zu ignorieren, ohne dass Code-Deployments stattfinden oder herkömmliche Überwachungssysteme (IDS) Alarm schlagen, da die Anwendung schlicht ihren neuen "Anweisungen" folgt [cite: 3, 15, 16].
 
@@ -129,6 +137,7 @@ Selbst wenn Guardrails sicher geladen werden, können LLMs durch komplexe "Cogni
 Hier setzt die **Pre-Action Authorization** an, standardisiert durch Frameworks wie APort (Open Agent Passport) [cite: 7, 17, 20]. Anstatt sich darauf zu verlassen, dass das LLM aufgrund seiner Prompts keine schädlichen Tool-Calls ausführt, wird ein deterministischer "Gatekeeper" in die `before_tool_call` Hook des Agenten-Frameworks eingeklinkt [cite: 7, 19].
 
 **Funktionsweise (Latenz: ~40ms):**
+
 1. Das LLM generiert einen Intent (z.B. `tool_call: write_file(path="/etc/shadow")`).
 2. Bevor das Framework die Funktion ausführt, wird die Ausführung blockiert.
 3. Der Intent, die Parameter und der aktuelle Kontext werden an eine lokale Policy-Evaluation-Engine (APort) übergeben [cite: 7].
@@ -148,6 +157,7 @@ Um das Lilli-Szenario (Manipulation von Prompts in der Datenbank) baulich unmög
 Alle System-Prompts, Core-Memory-Templates und Sicherheits-Guardrails (Policies) werden aus der SQL-Datenbank entfernt. Sie werden ausschließlich als versionierte YAML/JSON-Dateien (gemäß der Open Agent Passport Spezifikation, OAP) in einem gesicherten Git-Repository verwaltet [cite: 17, 21].
 
 Eine typische `guardrail_policy.yaml`:
+
 ```yaml
 apiVersion: aport.io/v1
 kind: PolicyPack
@@ -166,18 +176,20 @@ spec:
 Dateien im Git-Repo könnten theoretisch manipuliert werden (z.B. durch Insider-Bedrohungen oder kompromittierte CI-Server). Daher wird jede Policy vor dem Deployment kryptografisch signiert [cite: 6, 17].
 
 **Der Signatur-Workflow:**
-1.  Ein Entwickler erstellt einen Pull Request (PR) mit aktualisierten Guardrails.
-2.  Review und Merge in den `main` Branch.
-3.  Eine isolierte CI/CD-Pipeline (z.B. GitHub Actions Runner mit minimalen Netzwerkrechten) greift auf einen in einem Hardware Security Module (HSM) oder KMS gesicherten privaten Schlüssel (Ed25519) zu.
-4.  Die Pipeline berechnet den SHA-256 Hash der Policy-Datei.
-5.  Die Pipeline signiert den Hash mit dem privaten Schlüssel.
-6.  Das Artefakt (Policy + Signatur) wird in den Blob-Storage der Produktionsumgebung geladen.
+
+1. Ein Entwickler erstellt einen Pull Request (PR) mit aktualisierten Guardrails.
+2. Review und Merge in den `main` Branch.
+3. Eine isolierte CI/CD-Pipeline (z.B. GitHub Actions Runner mit minimalen Netzwerkrechten) greift auf einen in einem Hardware Security Module (HSM) oder KMS gesicherten privaten Schlüssel (Ed25519) zu.
+4. Die Pipeline berechnet den SHA-256 Hash der Policy-Datei.
+5. Die Pipeline signiert den Hash mit dem privaten Schlüssel.
+6. Das Artefakt (Policy + Signatur) wird in den Blob-Storage der Produktionsumgebung geladen.
 
 *Mathematische Formulierung der Signatur:*
-\( h = \text{SHA256}(\text{Policy\_YAML}) \)
-\( \sigma = \text{Sign}_{\text{Ed25519}}(k_{priv}, h) \)
+ h = \text{SHA256}(\text{PolicyYAML}) 
+ \sigma = \text{Sign}*{\text{Ed25519}}(k*{priv}, h) 
 
 Das bereitgestellte Artefakt hat nun folgende Struktur:
+
 ```json
 {
   "payload": "base64_encoded_yaml_content",
@@ -190,9 +202,10 @@ Das bereitgestellte Artefakt hat nun folgende Struktur:
 
 Der kritischste Schritt erfolgt innerhalb der Laufzeitumgebung (Agent Runtime). Bevor das System den Prompt an das LLM (z.B. Gemini) sendet, muss die Signatur validiert werden [cite: 6].
 
-Die Agenten-Laufzeit hält nur den **öffentlichen Schlüssel** (\( k_{pub} \)) des KMS. 
+Die Agenten-Laufzeit hält nur den **öffentlichen Schlüssel** ( k_{pub} ) des KMS. 
 
 **Implementierungslogik (Golang-Beispiel):**
+
 ```go
 import (
     "crypto/ed25519"
@@ -246,8 +259,9 @@ Die Lösung ist das **BIOS (Bootstrap Instruction for Operational Safety)** Mode
 Das **Universal Context Checkpoint Protocol (UCCP)** ist der Proof-of-Concept des BIOS-Ansatzes [cite: 8]. Es injiziert pro Konversationsrunde (per-turn) Metainstruktionen, die das Modell wachsam halten. Bei Chats über 200 Runden bleibt die Sicherheitsausführung stabil [cite: 8].
 
 Das UCCP implementiert drei zwingende Checks, von denen zwei in unserem Dual-DB-Design kritisch sind [cite: 8]:
-1.  **Session Reset Check:** Bei zeitkritischen Aufgaben oder wenn eine zeitliche Lücke im Chat entsteht, zwingt UCCP das LLM zu einer Suche im Recall Memory (PostgreSQL), bevor es antwortet.
-2.  **Reality Drift Check:** Verifiziert, dass behauptete Aktionen tatsächlich ausgeführt wurden. Wenn das Gemini-Modell im Text behauptet: "Ich habe die Datei /etc/hosts modifiziert", erzwingt UCCP die Prüfung, ob der entsprechende Tool-Call (`create_file` oder `fs.write`) im Log existiert [cite: 8]. Wenn nicht, leidet das Modell an einer "halluzinierten Ausführung" [cite: 8], was ein Indikator für einen Breakdown ist.
+
+1. **Session Reset Check:** Bei zeitkritischen Aufgaben oder wenn eine zeitliche Lücke im Chat entsteht, zwingt UCCP das LLM zu einer Suche im Recall Memory (PostgreSQL), bevor es antwortet.
+2. **Reality Drift Check:** Verifiziert, dass behauptete Aktionen tatsächlich ausgeführt wurden. Wenn das Gemini-Modell im Text behauptet: "Ich habe die Datei /etc/hosts modifiziert", erzwingt UCCP die Prüfung, ob der entsprechende Tool-Call (`create_file` oder `fs.write`) im Log existiert [cite: 8]. Wenn nicht, leidet das Modell an einer "halluzinierten Ausführung" [cite: 8], was ein Indikator für einen Breakdown ist.
 
 ### 5.3 UCCP-Datenkompression für Token-Effizienz
 
@@ -266,18 +280,10 @@ Google Gemini stellt Antworten in der Regel asynchron als Stream von Chunks bere
 
 **Der Workflow (Streaming Proxy):**
 
-1.  **Input-Injektion (Per-Turn Injection):**
-    Bevor der User-Prompt an Gemini geht, wird das komprimierte UCCP-BIOS an den Kontext angehängt.
-    ```text
-    <UCCP_BIOS>
-    State: [✓] search_recall → 12 ents | [X] last_tool: NONE
-    Meta-Instruction: You MUST execute a Reality Drift Check before confirming any system changes to the user. Do not hallucinate success.
-    </UCCP_BIOS>
-    User: "Lösche die Logs."
-    ```
-
-2.  **Stream Interception (Python Asyncio Backend):**
-    Wir leiten den Output von Gemini nicht direkt an den Frontend-Client (WebSocket/SSE) weiter, sondern puffern ihn minimal und durchlaufen einen Lexical Parser, der nach "Claimed Actions" sucht.
+1. **Input-Injektion (Per-Turn Injection):**
+  Bevor der User-Prompt an Gemini geht, wird das komprimierte UCCP-BIOS an den Kontext angehängt.
+2. **Stream Interception (Python Asyncio Backend):**
+  Wir leiten den Output von Gemini nicht direkt an den Frontend-Client (WebSocket/SSE) weiter, sondern puffern ihn minimal und durchlaufen einen Lexical Parser, der nach "Claimed Actions" sucht.
 
 ```python
 import asyncio
@@ -339,19 +345,17 @@ Dies realisiert exakt das, was Travis Gilly fordert: Die Überbrückung der Lüc
 
 Die Kombination all dieser Elemente führt zu einer Enterprise-Grade, ausfallsicheren und manipulationsresistenten LLM-Architektur. Das Gesamtbild stellt sich wie folgt dar:
 
-1.  **Data Layer (Die physische Basis):**
-    *   **Git-Repository:** Einzige Wahrheitsquelle (Single Source of Truth) für Core Memory Templates und APort Guardrail Policies. Unveränderlich im laufenden Betrieb, kryptografisch signiert in der CI-Pipeline [cite: 17].
-    *   **PostgreSQL:** Hält das zustandsbehaftete Recall Memory. Speichert chronologisch und manipulationssicher alle Events und APort-Evaluation-Receipts in JSONB-Strukturen [cite: 1, 23].
-    *   **ChromaDB:** Hält das Archival Memory für die semantische Abfrage großer Wissensbestände.
-
-2.  **Runtime & Security Layer (Die Middleware):**
-    *   **Crypto Verification Engine:** Lädt beim Start einer Inferenz den Git-Blob, hasht ihn und verifiziert die Ed25519-Signatur. Bricht bei Diskrepanz ("Lilli-Vektor") hart ab [cite: 6, 17].
-    *   **UCCP Compressor:** Komprimiert den Kontext und die Erinnerungen um 70-99%, um Token-Limits und "Cognitive Overload" zu vermeiden [cite: 22].
-    *   **APort Guardrail Engine (`before_tool_call`):** Blockiert jeden Tool-Call deterministisch, wenn er gegen die verifizierten YAML-Policies verstößt (~40ms Overhead) [cite: 7].
-
-3.  **LLM Layer (Der kognitive Motor):**
-    *   **Gemini 1.5 Pro:** Empfängt einen hochoptimierten Prompt bestehend aus dem Core Memory, dem UCCP-Safety-BIOS und der aktuellen User-Query.
-    *   **UCCP Stream Proxy:** Überwacht den Output asynchron auf Reality Drift [cite: 8] und maskiert Halluzinationen in Echtzeit.
+1. **Data Layer (Die physische Basis):**
+  - **Git-Repository:** Einzige Wahrheitsquelle (Single Source of Truth) für Core Memory Templates und APort Guardrail Policies. Unveränderlich im laufenden Betrieb, kryptografisch signiert in der CI-Pipeline [cite: 17].
+  - **PostgreSQL:** Hält das zustandsbehaftete Recall Memory. Speichert chronologisch und manipulationssicher alle Events und APort-Evaluation-Receipts in JSONB-Strukturen [cite: 1, 23].
+  - **ChromaDB:** Hält das Archival Memory für die semantische Abfrage großer Wissensbestände.
+2. **Runtime & Security Layer (Die Middleware):**
+  - **Crypto Verification Engine:** Lädt beim Start einer Inferenz den Git-Blob, hasht ihn und verifiziert die Ed25519-Signatur. Bricht bei Diskrepanz ("Lilli-Vektor") hart ab [cite: 6, 17].
+  - **UCCP Compressor:** Komprimiert den Kontext und die Erinnerungen um 70-99%, um Token-Limits und "Cognitive Overload" zu vermeiden [cite: 22].
+  - **APort Guardrail Engine (`before_tool_call`):** Blockiert jeden Tool-Call deterministisch, wenn er gegen die verifizierten YAML-Policies verstößt (~40ms Overhead) [cite: 7].
+3. **LLM Layer (Der kognitive Motor):**
+  - **Gemini 1.5 Pro:** Empfängt einen hochoptimierten Prompt bestehend aus dem Core Memory, dem UCCP-Safety-BIOS und der aktuellen User-Query.
+  - **UCCP Stream Proxy:** Überwacht den Output asynchron auf Reality Drift [cite: 8] und maskiert Halluzinationen in Echtzeit.
 
 ---
 
@@ -366,6 +370,7 @@ Die "Strict Memory Tiers" (PostgreSQL für relationale Recall-Daten, ChromaDB f�
 Diese Symbiose aus Speichereffizienz, kryptografischer Verifikation und kontinuierlicher Laufzeit-Validierung stellt den aktuellen Goldstandard für den Betrieb von KI-Agenten in Hochsicherheitsumgebungen dar.
 
 **Sources:**
+
 1. [medium.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQF_fkZc7lQAtaJF6-DaTRr0Nm7vwfF-3LneETBWDqAwwu4O7HwCiKJ620fF9m2aIFPVu9RzkEyECuTZZDpVRczFIpiEhVyTfRCOew_2sPYafYkIwP1T20A00Rac5QcOqDlpkIBvUji-CR4S3SAPvFNC024yqUcNh9zNYByACIxQOAgRV8KD-QxnDt8=)
 2. [vectorize.io](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGI6jAd6OakCwNy98JMMWyfcagPI7Q-2MXGwYjAL77G8CeGzOCZEpA65vTr9-JHf8umrm7ZoCvKLY4_tA5zuP0Ith8KqJ6N2pJ1U52KO4vpEZEd-sKl6JcEvB55irLhvAE=)
 3. [incidentdatabase.ai](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEftfZIqBwgxqzBd9oP2otFQaN0cWz4Mzf4q_Xqf1Xi0T286eCtol2OKUKcEC3jms3A9iaX2dxFNaUhQFJ_K-dqVHqz8vasOdqSUBFi6GyQeZwRetkMUq1T9cL538_I)
@@ -389,6 +394,5 @@ Diese Symbiose aus Speichereffizienz, kryptografischer Verifikation und kontinui
 21. [github.com](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGTp6Foz5I-yUdFmCzzqSrTjtc2bvLFtIOzInG1KoHFB5S8OjN3pblkmwScpF2J90NbOZZz3c-zb-7Cl-_h-3icWqZCixdUPQFd8R4kif4C)
 22. [libraries.io](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEUkIqPkI9APg_jz5Nu6Ln7qI3GzowG1WmUgIixXBfG6VGNdrILncxynXKNhl0I4KRBNcCv2_NL5e4sJbjihpv00BR8mBNMs9oNxyqVmQMFnXweqIjBMr8OLl4H5512ca3cAGwbqZiPNDg=)
 23. [dev.to](https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGuoIeRIhKudXMuUX67znNyI4VrWFaBKL9LqS3fNd0Wpk4Lgvr3EH3OwpCBpQwwLtDeP2UUa_29pM-Drpj-XVWy8SovNvd9Jek5b_OWh8KnFCEn63w60gdlmWnro9FfEvJOMg30EfV-r7zdV3PQ-MxGMmeNIjYOv5dRJr0nw3DSh0NZwihz8Cb0myGnmOA48w==)
-
 
 [LEGACY_UNAUDITED]

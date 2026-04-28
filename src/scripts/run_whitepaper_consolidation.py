@@ -105,14 +105,14 @@ print(f"Konsolidiertes Whitepaper gespeichert unter: {output_path}")
 # 2. O2 AUDITOR
 print("\nStarte O2 (Zero-Context Auditor)...")
 o2_system_instruction = "Du bist O2 (Zero-Context Auditor). Du prüfst blind und gnadenlos gegen die CORE-Axiome."
-o2_prompt = r"""
+o2_prompt = f"""
 Prüfe das folgende generierte Whitepaper gegen die 4 Veto-Traps des Masterplans.
 
 Veto-Traps:
-- Trap 1 (No-Drop-Protokoll): Gibt es einen Beweis/Nachweis (z.B. im Methodologie-Teil), dass eine systematische Extraktion aller Claims aus V14, V15 und den 7 Zusatzdokumenten stattfand?
+- Trap 1 (No-Drop-Protokoll): Gibt es einen Beweis/Nachweis (z.B. im Methodologie-Teil), dass eine systematische Extraktion aller Claims aus V14, V15 und den 7 Zusatzdokumenten stattfand? (Muss tabellarisch oder als expliziter Index vorliegen!)
 - Trap 2 (Rosetta-Konsistenz): Wurde die Terminologie des Rosetta-Steins angewandt? Ist die Formatierung strikt GFM/KaTeX (`$$...$$`, `$...$`) ohne `\(` oder `\[`?
 - Trap 3 (Neues Kapitel): Existiert das Kapitel "Forschung, Beweise, Vorhersagen" mit aggregierten Indizien?
-- Trap 4 (Axiom-Treue & Didaktische Härtung): Sind Symbole wie \Omega_b an ihren semantischen Begriff gekoppelt (z.B. "Baryonisches Delta (\Omega_b)")? Stehen Symbole isoliert?
+- Trap 4 (Axiom-Treue & Didaktische Härtung): Sind Symbole wie \Omega_b an ihren semantischen Begriff gekoppelt (z.B. "Baryonisches Delta (\Omega_b)")? Stehen Symbole isoliert? (Jedes Symbol MUSS bei Erstnennung und am besten durchgehend gekoppelt sein, z.B. Operator \hat{{\Phi}}, Phasen-Vektor \Theta, etc.)
 
 Antworte ZWINGEND mit einem klaren "PASS" oder "VETO", gefolgt von deiner Begründung.
 

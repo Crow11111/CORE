@@ -1,9 +1,4 @@
-<!-- ============================================================
-<!-- CORE-GENESIS: Marc Tobias ten Hoevel
-<!-- VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
-<!-- LOGIC: 2-2-1-0 (NON-BINARY)
-<!-- ============================================================
--->
+
 
 # Test-Szenarien: CORE-OC-Kanal und Frontend-Backend
 
@@ -49,7 +44,7 @@ Szenarien zum Prüfen: (1) Daten landen bei OC, CORE/OC können sich abstimmen. 
 
 - **Schritt:** Backend + Frontend starten, Browser localhost:3000. Header "Backend" muss gruen sein.
 - **Erwartung:** Nachricht senden → Antwort von Core, keine Meldung "Nicht verbunden".
-- **Falls rot:** Backend zuerst starten; Frontend reconnected alle 5s automatisch. .env: VITE_CORE_API_URL=http://localhost:8000
+- **Falls rot:** Backend zuerst starten; Frontend reconnected alle 5s automatisch. .env: VITE_CORE_API_URL=[http://localhost:8000](http://localhost:8000)
 
 ### 2.3 E2E: Nachricht durch die Kette
 
@@ -66,6 +61,5 @@ Szenarien zum Prüfen: (1) Daten landen bei OC, CORE/OC können sich abstimmen. 
 ---
 
 Referenzen: KANAL_CORE_OC.md, STAMMDOKUMENTE_DEPLOY.md, BACKEND_INTEGRATION.md. Skripte: test_core_oc_channel.py, fetch_oc_submissions.py, send_offene_punkte_to_oc.py, test_frontend_backend.py.
-
 
 [LEGACY_UNAUDITED]

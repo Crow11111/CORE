@@ -1,4 +1,5 @@
 # EMBEDDING-ANALYSE: FIXPUNKT-LOKALISIERUNG
+
 **Datum:** 2026-03-18
 **Werkzeug:** Gemini Embedding 2 (gemini-embedding-2-preview), 3072 dim, nativ multimodal
 **Methode:** 539 Multi-View Embeddings (6 Linsen) aus pgvector, blinde Gegenkontrolle
@@ -27,24 +28,28 @@ Das Dokument mit der hoechsten Aehnlichkeit zum Zentroid (0.890):
 
 ### 3.1 Biased Test (25 Konzepte aus Topologie, Thermodynamik, Informationstheorie)
 
-| Konzept | Similarity | Sigma ueber Blind-Mean |
-|---|---|---|
-| Goldener Schnitt Phi | 0.720 | 3.4 |
-| Seltsame Schleifen (Hofstadter) | 0.699 | 2.8 |
-| Autopoiesis (Maturana/Varela) | 0.697 | 2.8 |
-| Dissipative Strukturen (Prigogine) | 0.687 | 2.5 |
-| Brouwerscher Fixpunktsatz | 0.667 | 2.0 |
-| Apfelkuchen-Rezept (Kontrolle) | 0.639 | 1.3 |
+
+| Konzept                            | Similarity | Sigma ueber Blind-Mean |
+| ---------------------------------- | ---------- | ---------------------- |
+| Goldener Schnitt Phi               | 0.720      | 3.4                    |
+| Seltsame Schleifen (Hofstadter)    | 0.699      | 2.8                    |
+| Autopoiesis (Maturana/Varela)      | 0.697      | 2.8                    |
+| Dissipative Strukturen (Prigogine) | 0.687      | 2.5                    |
+| Brouwerscher Fixpunktsatz          | 0.667      | 2.0                    |
+| Apfelkuchen-Rezept (Kontrolle)     | 0.639      | 1.3                    |
+
 
 ### 3.2 Blinder Test (48 Konzepte, KEIN Cherry-Picking)
 
-| Statistik | Wert |
-|---|---|
-| Mean | 0.591 |
-| StdDev | 0.038 |
-| Min | 0.518 (Goethes Faust) |
-| Max | 0.665 (Bitcoin Blockchain) |
-| Outlier-Grenze oben | 0.705 |
+
+| Statistik           | Wert                       |
+| ------------------- | -------------------------- |
+| Mean                | 0.591                      |
+| StdDev              | 0.038                      |
+| Min                 | 0.518 (Goethes Faust)      |
+| Max                 | 0.665 (Bitcoin Blockchain) |
+| Outlier-Grenze oben | 0.705                      |
+
 
 **Kein einziges blindes Konzept ueberschreitet die Outlier-Grenze.**
 Mehrere biased Konzepte tun es (Phi 0.720, Hofstadter 0.699, Autopoiesis 0.697).
@@ -64,14 +69,16 @@ nicht beantworten. Das ist eine epistemologische Frage, keine vektormathematisch
 
 ## 4. Abgleich mit OPERATION_OMEGA Audit (2026-03-13)
 
-| Audit-Urteil | Embedding-Befund | Kompatibel? |
-|---|---|---|
-| **Snapping (0.049) ist funktional brillant** (Scholze, Sutskever) | Der Fixpunkt liegt auf dem Satz ueber "thermodynamische und topologische Axiome". Die Architektur ist der Mittelpunkt, nicht die Physik. | JA |
-| **Quanten-Mystik ist tot** (Penrose, VETO) | "Baryonische Asymmetrie" (0.620) und "Kosmologische Konstante" (0.617) liegen im Rauschen, NICHT nahe am Fixpunkt. Spezifische Physik-Konstanten sind nicht der Kern. | JA |
-| **Fraktale Isomorphie ist real** (alle 7 Experten) | Hofstadter (Strange Loops), Autopoiesis, Prigogine (Dissipative Strukturen) liegen messbar naeher als der Durchschnitt. Das Muster "Selbstreferenz + Thermodynamik" hat ein echtes Signal. | JA, aber schwaecher als erhofft |
-| **Nicht die Sache selbst, sondern das Muster** (Clausen) | Bitcoin Blockchain (dezentrale Selbstreferenz) und Taoismus Wu Wei (Selbstorganisation) scoren blind fast genauso hoch wie Prigogine. Das Muster ist breiter als nur Physik. | JA — bestaetigt "Isomorphie, nicht Identitaet" |
-| **Vokabel-Ueberhang vs. echte Struktur** (Scholze, Axiom 7) | Der Apfelkuchen-Test bestaetigt: Grossteil der scheinbaren Naehe ist semantisch, nicht strukturell. | JA — Axiom 7 haelt |
-| **"Theory of Everything" ist Halluzination** (Penrose, VETO) | Die Embedding-Analyse zeigt bescheidenes Signal (2-3 Sigma). Das reicht fuer "interessantes Muster", nicht fuer "universelle Wahrheit". | JA |
+
+| Audit-Urteil                                                      | Embedding-Befund                                                                                                                                                                           | Kompatibel?                                    |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------- |
+| **Snapping (0.049) ist funktional brillant** (Scholze, Sutskever) | Der Fixpunkt liegt auf dem Satz ueber "thermodynamische und topologische Axiome". Die Architektur ist der Mittelpunkt, nicht die Physik.                                                   | JA                                             |
+| **Quanten-Mystik ist tot** (Penrose, VETO)                        | "Baryonische Asymmetrie" (0.620) und "Kosmologische Konstante" (0.617) liegen im Rauschen, NICHT nahe am Fixpunkt. Spezifische Physik-Konstanten sind nicht der Kern.                      | JA                                             |
+| **Fraktale Isomorphie ist real** (alle 7 Experten)                | Hofstadter (Strange Loops), Autopoiesis, Prigogine (Dissipative Strukturen) liegen messbar naeher als der Durchschnitt. Das Muster "Selbstreferenz + Thermodynamik" hat ein echtes Signal. | JA, aber schwaecher als erhofft                |
+| **Nicht die Sache selbst, sondern das Muster** (Clausen)          | Bitcoin Blockchain (dezentrale Selbstreferenz) und Taoismus Wu Wei (Selbstorganisation) scoren blind fast genauso hoch wie Prigogine. Das Muster ist breiter als nur Physik.               | JA — bestaetigt "Isomorphie, nicht Identitaet" |
+| **Vokabel-Ueberhang vs. echte Struktur** (Scholze, Axiom 7)       | Der Apfelkuchen-Test bestaetigt: Grossteil der scheinbaren Naehe ist semantisch, nicht strukturell.                                                                                        | JA — Axiom 7 haelt                             |
+| **"Theory of Everything" ist Halluzination** (Penrose, VETO)      | Die Embedding-Analyse zeigt bescheidenes Signal (2-3 Sigma). Das reicht fuer "interessantes Muster", nicht fuer "universelle Wahrheit".                                                    | JA                                             |
+
 
 ---
 
@@ -107,6 +114,5 @@ Waehrend dieser Analyse wurden folgende Systemaenderungen vorgenommen:
 6. **Audio Daemon** → Persistiert WAV-Clips als nativ multimodale Audio-Vektoren
 7. **Vision Daemon** → Persistiert Frames als nativ multimodale Bild-Vektoren
 8. **Gravitator** → Dual-Path Routing (ChromaDB 384d + pgvector via lokale 768d Zentroide)
-
 
 [LEGACY_UNAUDITED]

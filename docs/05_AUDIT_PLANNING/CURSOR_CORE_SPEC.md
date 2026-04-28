@@ -1,5 +1,3 @@
-
-
 # Cursor/CORE-Spec: Fraktale Regelverteilung
 
 **Phase 4 Chat Team A · Stand:** 2026-03-03  
@@ -56,7 +54,7 @@
 | Modell-Strategie (Tier 1/2/3)                                                   | `.cursor/rules/1_FULL_SERVICE_AGENCY.mdc`                                                           | Agency-spezifisch, bleibt dort.                                                                     |
 | Parallelisierung / Selbst ausführen / interne Prozesse                          | `.cursor/rules/task_parallelization_internal.mdc`                                                   | Bereits angelegt; Referenz in .cursorrules optional. Dev-Agent entfernt.                            |
 | Core DNA, GTAC/CORE, Gravitational Query                                        | `docs/01_CORE_DNA/...`                                                                              | Nur Verweis in .cursorrules; keine Kopie.                                                           |
-| Fachwissen (DB, Security, API, …)                                               | `.cursor/skills/expertise/`*, `planning/*`, etc.                                                    | Unverändert; laden bei Bedarf.                                                                      |
+| Fachwissen (DB, Security, API, …)                                               | `.cursor/skills/expertise/`*, `planning/`*, etc.                                                    | Unverändert; laden bei Bedarf.                                                                      |
 
 
 ---

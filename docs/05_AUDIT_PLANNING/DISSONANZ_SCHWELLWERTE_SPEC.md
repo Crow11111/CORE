@@ -1,9 +1,4 @@
-<!-- ============================================================
-<!-- CORE-GENESIS: Marc Tobias ten Hoevel
-<!-- VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
-<!-- LOGIC: 2-2-1-0 (NON-BINARY)
-<!-- ============================================================
--->
+
 
 # Dissonanz-Schwellwerte – Spezifikation (Not-Aus)
 
@@ -22,12 +17,14 @@
 
 Operativ bedeutet Dissonanz hier **mindestens eines** der folgenden, über einen definierten Zeit-/Skopenraum aggregiert:
 
-| Dimension | Bedeutung | Beispiel |
-|-----------|-----------|----------|
-| **Daten-Inkonsistenz** | Zustand von DB/Chroma/Input widerspricht erwarteter Invariante oder Ring-0-Direktive. | Core-Directive fehlt in Chroma; Ring-Level widerspricht Zugriffsregel. |
-| **Wiederholte Fehlschläge** | Gleicher Request/Agent/Task schlägt mehrfach hintereinander fehl. | Retry-Count überschreitet sinnvollen Backoff; keine Konvergenz. |
-| **Token-/Ressourcen-Überlast** | Budget (Token, Zeit, Speicher) wird systematisch überschritten oder aufgebraucht ohne Ergebnis. | Session verbraucht Budget ohne `[STATUS: COMPLETED]`; Agent bleibt in Retry-Schleife. |
-| **Delta-Entropie-Proxy** | Abweichung „erwarteter vs. erreichter Zustand“ wird groß; System entfernt sich von konsistentem Ziel. | Erwarteter Kontext (z. B. Retrieval-Ergebnis) weicht stark ab; Validierung schlägt wiederholt fehl. |
+
+| Dimension                      | Bedeutung                                                                                             | Beispiel                                                                                            |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **Daten-Inkonsistenz**         | Zustand von DB/Chroma/Input widerspricht erwarteter Invariante oder Ring-0-Direktive.                 | Core-Directive fehlt in Chroma; Ring-Level widerspricht Zugriffsregel.                              |
+| **Wiederholte Fehlschläge**    | Gleicher Request/Agent/Task schlägt mehrfach hintereinander fehl.                                     | Retry-Count überschreitet sinnvollen Backoff; keine Konvergenz.                                     |
+| **Token-/Ressourcen-Überlast** | Budget (Token, Zeit, Speicher) wird systematisch überschritten oder aufgebraucht ohne Ergebnis.       | Session verbraucht Budget ohne `[STATUS: COMPLETED]`; Agent bleibt in Retry-Schleife.               |
+| **Delta-Entropie-Proxy**       | Abweichung „erwarteter vs. erreichter Zustand“ wird groß; System entfernt sich von konsistentem Ziel. | Erwarteter Kontext (z. B. Retrieval-Ergebnis) weicht stark ab; Validierung schlägt wiederholt fehl. |
+
 
 **Not-Aus:** Ab einem definierten Schwellenwert wird die **Ausführung verweigert** (kein weiterer Retry, kein Delegieren an denselben Pfad). Optional: klare Fehlermeldung, Log, Rollback-Punkt.
 
@@ -37,11 +34,13 @@ Operativ bedeutet Dissonanz hier **mindestens eines** der folgenden, über einen
 
 ### Schwellen-Vorschlag A: Pro Request (Request-Scope)
 
-| Metrik | Schwellenwert | Aktion |
-|--------|----------------|--------|
-| **Retry-Count** | ≥ 5 (Fibonacci-nahe: 5) fehlgeschlagene Versuche für denselben Request. | Not-Aus für diesen Request; Response „Dissonanz-Schwelle überschritten (Retry)“. |
-| **Token-Budget-Überschreitung** | Verbrauch > 120 % des zugewiesenen Request-Budgets. | Not-Aus; keine weiteren Tool-Calls für diesen Request. |
-| **Validierungsfehler** | ≥ 2 harte Validierungsfehler (z. B. `temporal_validator.drift_warning` oder Invarianten-Check). | Not-Aus für Request; Log mit Kontext. |
+
+| Metrik                          | Schwellenwert                                                                                   | Aktion                                                                           |
+| ------------------------------- | ----------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| **Retry-Count**                 | ≥ 5 (Fibonacci-nahe: 5) fehlgeschlagene Versuche für denselben Request.                         | Not-Aus für diesen Request; Response „Dissonanz-Schwelle überschritten (Retry)“. |
+| **Token-Budget-Überschreitung** | Verbrauch > 120 % des zugewiesenen Request-Budgets.                                             | Not-Aus; keine weiteren Tool-Calls für diesen Request.                           |
+| **Validierungsfehler**          | ≥ 2 harte Validierungsfehler (z. B. `temporal_validator.drift_warning` oder Invarianten-Check). | Not-Aus für Request; Log mit Kontext.                                            |
+
 
 **Skope:** Ein einzelner Request (z. B. API-Call, eine User-Nachricht). Kein Session-Memory zwischen Requests.
 
@@ -49,11 +48,13 @@ Operativ bedeutet Dissonanz hier **mindestens eines** der folgenden, über einen
 
 ### Schwellen-Vorschlag B: Pro Session (Session-Scope)
 
-| Metrik | Schwellenwert | Aktion |
-|--------|----------------|--------|
-| **Fehlerrate** | > 33 % der Requests in der Session enden mit Fehler (z. B. 3 von 8). | Not-Aus für die Session; neue Session erforderlich oder expliziter Reset. |
-| **Kumulierte Retries** | Summe Retries in Session ≥ 13 (Fibonacci). | Not-Aus; Session als „dissonant“ markieren, keine weiteren Delegationen. |
-| **Delta-Entropie-Proxy (Session)** | Running Average der „Distanz zu erwartetem Zustand“ (z. B. Retrieval-Qualität, Konsistenz-Checks) > 0.8 über die letzten N Requests. | Not-Aus; Hinweis auf Kontext-Drift oder inkonsistente Datenbasis. |
+
+| Metrik                             | Schwellenwert                                                                                                                        | Aktion                                                                    |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| **Fehlerrate**                     | > 33 % der Requests in der Session enden mit Fehler (z. B. 3 von 8).                                                                 | Not-Aus für die Session; neue Session erforderlich oder expliziter Reset. |
+| **Kumulierte Retries**             | Summe Retries in Session ≥ 13 (Fibonacci).                                                                                           | Not-Aus; Session als „dissonant“ markieren, keine weiteren Delegationen.  |
+| **Delta-Entropie-Proxy (Session)** | Running Average der „Distanz zu erwartetem Zustand“ (z. B. Retrieval-Qualität, Konsistenz-Checks) > 0.8 über die letzten N Requests. | Not-Aus; Hinweis auf Kontext-Drift oder inkonsistente Datenbasis.         |
+
 
 **Skope:** Eine Session (z. B. ein Chat, ein Orchestrator-Durchlauf mit mehreren Agenten-Runden). State wird pro Session gehalten.
 
@@ -61,10 +62,12 @@ Operativ bedeutet Dissonanz hier **mindestens eines** der folgenden, über einen
 
 ### Schwellen-Vorschlag C: Pro Agent / Pfad (Agent-Scope) — **User-Entscheidung: gewählt**
 
-| Metrik | Schwellenwert | Aktion |
-|--------|----------------|--------|
-| **Agent-spezifische Fehlerrate** | Ein bestimmter Agent (oder Subagent-Typ) liefert in der Session ≥ 3× `[FAIL]` oder Exception. | Not-Aus für **diesen** Agenten in dieser Session; Orchestrator wählt anderen Pfad oder bricht ab. |
-| **Konvergenz-Ausfall** | Nach 2 Iterationen (Produzent → Auditor → Re-Iteration) kein `[SUCCESS]`; erneutes `[FAIL]` vom Auditor. | Not-Aus für diese Task-Kette; Rückmeldung an User/Orchestrator. |
+
+| Metrik                           | Schwellenwert                                                                                            | Aktion                                                                                            |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| **Agent-spezifische Fehlerrate** | Ein bestimmter Agent (oder Subagent-Typ) liefert in der Session ≥ 3× `[FAIL]` oder Exception.            | Not-Aus für **diesen** Agenten in dieser Session; Orchestrator wählt anderen Pfad oder bricht ab. |
+| **Konvergenz-Ausfall**           | Nach 2 Iterationen (Produzent → Auditor → Re-Iteration) kein `[SUCCESS]`; erneutes `[FAIL]` vom Auditor. | Not-Aus für diese Task-Kette; Rückmeldung an User/Orchestrator.                                   |
+
 
 **Skope:** Ein Agent oder eine feste Agenten-Kette (z. B. Produzent + ND-Analyst). Verhindert Endlosschleifen in der Agenten-Dissonanz.
 
@@ -90,6 +93,5 @@ Operativ bedeutet Dissonanz hier **mindestens eines** der folgenden, über einen
 **Zeitplan (User-Go):** Shadow-Mode aktiv; Tracking gegenrechnen. **Auswertung:** morgen nach 12 Uhr. Je nach Ergebnis **erste Überführung** in sanftes Rollout (Feature-Flag, Ring ≥ 1 zuerst).
 
 **Abgrenzung:** Diese Spec definiert **nur** Schwellen und Metriken. Trigger-Ort (API-Gateway, Orchestrator, Agent-Wrapper), Rollback und genaue Fehlercodes bleiben einer Implementierungs-Phase vorbehalten.
-
 
 [LEGACY_UNAUDITED]

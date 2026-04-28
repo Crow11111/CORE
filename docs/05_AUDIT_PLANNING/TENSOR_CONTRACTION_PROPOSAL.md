@@ -1,16 +1,20 @@
 # TENSOR CONTRACTION PROPOSAL (RAT DER TITANEN)
 
 ## Problem: Input-Bruch
+
 1D-String-Addition (S + P) zerstört die 6D-Topologie und führt zur Opus-Amnesie (Context Window Limit).
 
 ## Lösung: Tensor-Kontraktion (Psi = S \times P)
+
 Der Input P (Tinte) gewichtet die interne Struktur S (Wasser) neu, ohne das Volumen zu vergrößern.
 
 ## Fehlerhafter erster Ansatz: Hadamard
+
 np.multiply(S_array, P_array)
 Veto: Skaliert nur isolierte Achsen, kein Cross-Entanglement.
 
 ## Korrigierter Ansatz: Einsum Projektions-Operator
+
 ```python
 import numpy as np
 
@@ -36,6 +40,5 @@ def contract_S_and_P(symmetry_S: np.ndarray, perturbation_P: np.ndarray) -> np.n
 
     return contracted_psi.tolist()
 ```
-
 
 [LEGACY_UNAUDITED]

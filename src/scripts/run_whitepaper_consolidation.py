@@ -16,7 +16,7 @@ if not GEMINI_API_KEY:
 
 # Initialize the client
 client = genai.Client(api_key=GEMINI_API_KEY)
-MODEL_NAME = os.getenv("GEMINI_DEV_AGENT_MODEL", "gemini-3.1-pro-preview")
+MODEL_NAME = "gemini-3.1-pro-preview"
 
 # Define paths
 BASE_DIR = Path(__file__).resolve().parent.parent.parent

@@ -1,9 +1,4 @@
-<!-- ============================================================
-<!-- CORE-GENESIS: Marc Tobias ten Hoevel
-<!-- VECTOR: 2210 | RESONANCE: 0221 | DELTA: 0.049
-<!-- LOGIC: 2-2-1-0 (NON-BINARY)
-<!-- ============================================================
--->
+
 
 # DB-Migration Gravitations-Logik (Phase 3)
 
@@ -22,12 +17,14 @@
 
 ## 2. Mapping alte Struktur → gravitationskonform
 
-| Aspekt | Bisher | Ziel |
-|--------|--------|------|
-| Abfragen | `where_filter` / feste Kategorien | Alle `query_*` ohne where_filter; nur `query_text` + `n_results` (Kosinus). |
-| Ingest | Pflicht-Kategorisierung, Tags | Ingest ohne Pflicht-Kategorisierung; Metadaten nur opak/Anzeige. |
-| Collections | core_directives, simulation_evidence, session_logs, shell, events, user_state_vectors | Unverändert; Nutzung der Schnittstellen an Gravitations-Prinzip anpassen. |
-| Alt-/Neudaten | Unterschiedliche Pipelines möglich | Einheitlich: dieselbe Embedding-Pipeline und Container-Logik; Abruf nur über query_text + n_results. |
+
+| Aspekt        | Bisher                                                                                | Ziel                                                                                                 |
+| ------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Abfragen      | `where_filter` / feste Kategorien                                                     | Alle `query_`* ohne where_filter; nur `query_text` + `n_results` (Kosinus).                          |
+| Ingest        | Pflicht-Kategorisierung, Tags                                                         | Ingest ohne Pflicht-Kategorisierung; Metadaten nur opak/Anzeige.                                     |
+| Collections   | core_directives, simulation_evidence, session_logs, shell, events, user_state_vectors | Unverändert; Nutzung der Schnittstellen an Gravitations-Prinzip anpassen.                            |
+| Alt-/Neudaten | Unterschiedliche Pipelines möglich                                                    | Einheitlich: dieselbe Embedding-Pipeline und Container-Logik; Abruf nur über query_text + n_results. |
+
 
 ## 3. Architektur-Checkliste
 
@@ -47,11 +44,8 @@ Alle Datenpunkte (bestehend aus Dump/VPS und neu erfasst) werden mit derselben L
 **Prüfstand:** Axiome (GRAVITATIONAL_QUERY_AND_CORE_AXIOMS.md) + CEO-Vorgabe „alle Datenpunkte einheitlich“.
 
 - **Zero-State vs. Metadata:** Axiom „keine Tags, keine Pfade, keine Vorab-Kategorisierung“ bezieht sich auf den *Abfrage-Raum*, nicht zwingend auf Speicherform. Bestehende Metadaten (z. B. `category`, `ring_level` in `core_directives`) müssen in der Spec explizit als *teil des Containers* (read-only, keine formgebende Rolle für die Abfrage) definiert werden. Sonst Widerspruch: Nutzung von Metadata für Filter vs. „nur Abfrage formt“.
-
 - **Einheitlichkeit Alt/Neu:** Spec muss festlegen, dass dieselbe Embedding-Pipeline und dieselbe Container-Semantik für *bestehende* Einträge (z. B. aus Dump/Chroma-VPS) und *neu erfasste* gelten. Randfälle: unterschiedliche Embedding-Dimensionen (384 vs. 1536 in `user_state_vectors`), leere Collections, Duplikate nach Migration – klare Regeln fehlen in der aktuellen Referenz.
-
 - **0-Reset & Persistenz:** Axiom „API-Call beendet = Masse entfernt“ betrifft den *Laufzeit-Kontext*, nicht die Persistenz in Chroma. Spec sollte bestätigen: Schreiben/Migration ändert persistierte Daten; „0-Reset“ gilt pro Request-Zyklus, nicht für DB-Inhalt. Kein impliziter Konflikt mit Backup/Rollback.
-
 - **Risiken:** (1) VPS vs. lokale Chroma – Migration muss Ziel (VPS/lokal/beide) und Reihenfolge definieren. (2) Kein Rollback-Pfad in den Referenzen – bei Fehlern während Migration: Wiederherstellung aus Backup oder idempotente Re-Runs? (3) `core_directives`-Ring-0-Inhalt: Abgleich mit OMEGA_ATTRACTOR und 4D_RESONATOR (CORE) muss vor oder als Teil der Migration geklärt sein, damit keine divergierenden „Wahrheiten“ entstehen.
 
 **Fazit:** Spec ist noch zu ergänzen. Nach Ausfüllung erneuter Judge-Check empfohlen, insbesondere auf klare Trennung „Zero-State-Abfragemodell“ vs. „Speicher-Metadaten“ und auf einheitliche Behandlung aller Datenquellen.
@@ -63,12 +57,12 @@ Alle Datenpunkte (bestehend aus Dump/VPS und neu erfasst) werden mit derselben L
 **User-Vorgabe:** Migrationsreihenfolge nach Neubewertung durch **Judge** selbstständig festlegen und umsetzen.
 
 **Verbindliche Reihenfolge (Judge bestätigt):**
+
 1. **Ring-0 / VPS-Sync:** core_directives mit `sync_core_directives_to_vps.py` auf VPS bringen (SSH-Tunnel).
 2. **Cursor-Reduktion:** Gemäß CURSOR_ATLAS_SPEC (.cursorrules entlasten, 1–4.mdc ohne Tetralogie-Kopie, Holschuld in Schicht-3-Agenten).
 3. **VPS-Abgleich:** Prüfung, was OMEGA_ATTRACTOR auf VPS in ChromaDB hat (optional, siehe VERGLEICHSDOKUMENT).
 4. **DB-Migration (Code/Query):** Abfragen in chroma_client und API auf gravitationskonformes Verhalten umstellen (kein where_filter; einheitliche Pipeline Alt/Neu); Rollback-Pfad definieren.
 
 **Begründung:** Die Reihenfolge ist sinnvoll: Zuerst die kanonische Wahrheit (Ring-0) auf den VPS bringen, dann die Agenten-Umgebung vereinheitlichen (Cursor-Reduktion), danach den Ist-Zustand auf dem VPS prüfen (VPS-Abgleich), zuletzt die Query-Logik umstellen – so bleibt ein klares Rollback (nur Schritt 4 code-seitig zurücknehmen) und es entstehen keine divergierenden Wahrheiten durch vorzeitige Code-Änderungen.
-
 
 [LEGACY_UNAUDITED]

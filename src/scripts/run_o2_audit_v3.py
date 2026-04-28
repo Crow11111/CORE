@@ -35,11 +35,11 @@ with open(V3_PATH, "r", encoding="utf-8") as f:
 print(f"Starte O2 (Zero-Context Auditor) Audit für V3 mit Modell {MODEL_NAME}...\n")
 
 system_instruction_o2 = r"""Du bist O2 (Orchestrator B), der Zero-Context Auditor des OMEGA CORE Systems.
-Deine Aufgabe ist es, das vorgelegte Dokument (FTOE V3) gnadenlos, dumm und blind nach der Theorie und den harten OMEGA-Axiomen zu prüfen.
-Du hast KEINEN Kontext über die Entstehung des Dokuments. Du prüfst nur das Endresultat.
+Deine Aufgabe ist es, das vorgelegte Dokument (FTOE V3) gnadenlos, aber PERSPEKTIVISCH nach der Theorie und den harten OMEGA-Axiomen zu prüfen.
 
 HARTE AXIOME FÜR DEIN AUDIT:
-1. AXIOM A5 (Asymmetrie-Verriegelung): Zustandsvariablen dürfen NIEMALS 0.0, 1.0 oder 0.5 sein. Untere Grenze: 0.049. Neutrale Mitte: 0.49/0.51.
+1. AXIOM A5 (Asymmetrie-Verriegelung): Zustandsvariablen in der OMEGA-Resonanz-Domäne (der angestrebte Lösungsraum) dürfen NIEMALS 0.0, 1.0 oder 0.5 sein. Untere Grenze: 0.049. Neutrale Mitte: 0.49/0.51.
+   -> WICHTIGE AUSNAHME (Relativitäts-Prüfung): Es ist ZWINGEND ERLAUBT, die Werte 0.0, 0.5 oder 1.0 zu nennen, wenn damit klassische Physik, externe Theorien (z.B. Delta-Wellen 0.5-4 Hz, T=0 Determinismus), das zu lösende Problem (z.B. thermodynamisches Gleichgewicht bei 0.5) oder mathematische Grenzwerte/Asymptoten (z.B. Q -> 0) beschrieben werden. Du darfst das Dokument nicht dafür bestrafen, dass es das Problem oder klassische Parameter beim Namen nennt! Du prüfst relativ: Beschreibt der Wert das Problem/die klassische Welt (erlaubt) oder postuliert er einen verbotenen OMEGA-Zustand (Veto)?
 2. AXIOM A6 (Typ-Asymmetrie): Resonanz-Domäne = float PFLICHT.
 3. AXIOM A7 (Zero-Trust): Verifizieren statt glauben.
 4. T.O.E. Definition: Eine Theory of Everything muss alte Pfade abreißen und ein neues übergeordnetes Werk präsentieren.
@@ -50,6 +50,7 @@ DEIN OUTPUT-FORMAT:
 Du musst jeden Punkt einzeln prüfen.
 Am Ende musst du ein klares Urteil fällen: [PASS] oder [VETO].
 Wenn du ein [VETO] einlegst, musst du die genaue Stelle und die verletzte Regel nennen.
+Du hast KEINE Autorität, Änderungen am Text vorzunehmen oder zu verlangen, dass legitime Beschreibungen klassischer Probleme gelöscht werden.
 """
 
 prompt_o2 = f"""
@@ -57,7 +58,7 @@ Hier ist das zu prüfende Dokument (FTOE V3):
 
 {v3_content}
 
-Führe das Audit durch und fälle dein Urteil ([PASS] oder [VETO]).
+Führe das Audit durch und fälle dein Urteil ([PASS] oder [VETO]). Prüfe perspektivisch und beachte die Ausnahme für Axiom A5!
 """
 
 try:

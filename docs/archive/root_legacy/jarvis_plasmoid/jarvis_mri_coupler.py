@@ -323,11 +323,6 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
                         "parts": [{"text": m["content"]}]
                     })
 
-                # Asymmetrische Modell-Logik fuer 2026:
-                # Flash-Lite braucht Thinking fuer kognitive Stabilitaet.
-                # Pro (Preview) wirft bei Tool-Use Signatur-Fehler, wenn Thinking aktiv ist.
-                is_flash_lite = "flash-lite" in config.get("target", "").lower()
-                
                 gemini_payload = {
                     "contents": contents,
                     "tools": gemini_tools,
@@ -335,13 +330,6 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
                         "temperature": payload.get("temperature", 0.7)
                     }
                 }
-                
-                if is_flash_lite:
-                    gemini_payload["generationConfig"]["thinkingConfig"] = {
-                        "includeThoughts": True,
-                        "thinkingLevel": "high"
-                    }
-                
                 if sys_instruct:
                     gemini_payload["systemInstruction"] = sys_instruct
 
@@ -365,13 +353,10 @@ async def jarvis_mri_endpoint(request: Request, background_tasks: BackgroundTask
                 parts = data.get("candidates", [{}])[0].get("content", {}).get("parts", [])
                 for p in parts:
                     # Native Google Thinking (Gemini 3.1+)
-                    # Ein Part kann 'thought': True haben ODER der Key selbst heißt 'thought' (inhaltlich)
-                    # Je nach API-Version:
-                    if p.get("thought") is True:
-                        thought_parts.append(p.get("text", ""))
-                    elif "thought" in p and isinstance(p["thought"], str):
-                        thought_parts.append(p["thought"])
+                    if "thought" in p and p["thought"]:
+                        thought_parts.append(p["text"] if "text" in p else "")
                     elif "text" in p:
+                        # Fallback: Falls 'thought' im Text-Block steht (manchmal bei Pre-Release)
                         text_parts.append(p["text"])
                     
                     if "functionCall" in p:

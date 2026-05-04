@@ -31,7 +31,7 @@ from dotenv import load_dotenv
 
 from src.config.vps_public_ports import CHROMA_UVMY_HOST_PORT
 
-load_dotenv(PROJECT_ROOT / ".env", override=True)
+load_dotenv(PROJECT_ROOT / ".env", override=False) # Erlaubt manuelle Overrides via ENV
 
 CORE_BASE_URL = (os.getenv("CORE_BASE_URL") or "http://127.0.0.1:8000").strip().rstrip("/")
 

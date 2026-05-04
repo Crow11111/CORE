@@ -28,7 +28,7 @@ print("  Gestoppt")
 
 # 2. Config lesen und reparieren
 print("\n=== 2. Config reparieren ===")
-CORRECT_PATH = "/opt/atlas-core/openclaw-admin/data/openclaw.json"
+CORRECT_PATH = "/opt/omega-core/openclaw-admin/data/openclaw.json"
 c, raw, _ = run(f"cat {CORRECT_PATH}")
 
 if raw:

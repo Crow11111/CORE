@@ -9,11 +9,13 @@
 
 ## 1. Klar getrennt (Referenz)
 
-| Ebene | Beispiel | Regelwerk |
-|-------|----------|-----------|
+
+| Ebene                  | Beispiel                               | Regelwerk                                                               |
+| ---------------------- | -------------------------------------- | ----------------------------------------------------------------------- |
 | Resonanz-State (A5/A6) | `core_state`, Pacemaker, Trust-Updates | A5/A6, `CrystalGridEngine.apply_operator_query` auf **benannte** Skalen |
-| Infrastruktur | Ports, `byte_size`, UUIDs | `int`, Verträge, Live-Checks |
-| Embedding-Raum | Chroma-Vektoren, Kosinus-Distanz | **Kein** A5 als „Wahrheitsmetrik“; Zero-Trust bei Treffern |
+| Infrastruktur          | Ports, `byte_size`, UUIDs              | `int`, Verträge, Live-Checks                                            |
+| Embedding-Raum         | Chroma-Vektoren, Kosinus-Distanz       | **Kein** A5 als „Wahrheitsmetrik“; Zero-Trust bei Treffern              |
+
 
 ---
 
@@ -57,11 +59,13 @@
 
 ## 3. Hardware / OS → Resonanz (Grenzfälle)
 
-| Ort | Muster |
-|-----|--------|
-| `chroma_client._apply_fractal_padding_async` | CPU-Last → `apply_operator_query` → Wartezeit |
-| `src/ai/llm_interface.py` | Ähnliche Hardware-Brücke |
-| `os_crystal_daemon.py`, `agos_zero_watchdog.py`, `friction_guard.py` | Sensor/Metrik → Snapping |
+
+| Ort                                                                  | Muster                                        |
+| -------------------------------------------------------------------- | --------------------------------------------- |
+| `chroma_client._apply_fractal_padding_async`                         | CPU-Last → `apply_operator_query` → Wartezeit |
+| `src/ai/llm_interface.py`                                            | Ähnliche Hardware-Brücke                      |
+| `os_crystal_daemon.py`, `agos_zero_watchdog.py`, `friction_guard.py` | Sensor/Metrik → Snapping                      |
+
 
 **Bewertung:** Das ist **bewusst** „physikalische Brücke“ (Metapher + Steuergröße). **Risiko:** Messgröße (0–100 % CPU) wird wie Resonanzskala behandelt — semantisch okay, wenn **nicht** als **A5-Zustand in PG** persistiert ohne Review.
 
@@ -91,8 +95,8 @@ Metaphorische Identifikation Chroma = „Kristall-Engine“ (z. B. unter `docs/0
 
 ## 5. Bereits gut abgefedert
 
-- **`query_canon_semantic` / `query_operational_semantic` / `query_chromadb`:** `zero_trust_notice` im JSON (kein Fakt ohne Quelle); Text zentral `src/config/chroma_zero_trust_notice.py`.
-- **`KERNARBEITER_ORIENTIERUNG.md`:** Soll/Ist, Drift zuerst Vertrag/Live.
+- `**query_canon_semantic` / `query_operational_semantic` / `query_chromadb`:** `zero_trust_notice` im JSON (kein Fakt ohne Quelle); Text zentral `src/config/chroma_zero_trust_notice.py`.
+- `**KERNARBEITER_ORIENTIERUNG.md`:** Soll/Ist, Drift zuerst Vertrag/Live.
 - **Pacemaker / temporal_alignment / efference_veto:** arbeiten auf **expliziten** Float-State-Größen mit 0.049-Clamps — **Domäne konsistent** (wenn auch Review auf „Magic Numbers“ sinnvoll).
 
 ---
@@ -100,7 +104,7 @@ Metaphorische Identifikation Chroma = „Kristall-Engine“ (z. B. unter `docs/0
 ## 6. Nächste Schritte (optional)
 
 1. **CORE_EICHUNG** §2 präzisieren (siehe 4.1).
-2. **`chroma_client`:** Policy zu `_apply_crystal_engine_operator` festhalten oder konfigurierbar machen.
+2. `**chroma_client`:** Policy zu `_apply_crystal_engine_operator` festhalten oder konfigurierbar machen.
 3. **Einzeiler** in `ZERO_STATE_FIELD_SCHEMA.md` zu `lpis_scores`.
 4. Periodisch: grep `apply_operator_query` / `snap_to_grid` auf **neue** Call-Sites.
 

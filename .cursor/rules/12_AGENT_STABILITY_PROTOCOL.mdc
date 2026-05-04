@@ -11,3 +11,7 @@
 
 ## 3. KNOWLEDGE PERSISTENCE
 - Fehler in der Agenten-Logik (wie die Todo-Loop vom 18.04.2026) müssen sofort in diesem Protokoll dokumentiert werden, um den "Heroin-Traum" der unendlichen Wiederholung zu brechen.
+- **Task-Tool API-Fehler (27.04.2026):** Das Starten von Sub-Agenten via `Task`-Tool führt aktuell zu einem Cursor-API-Fehler (`Invalid JSON: no such field: disable_thought_tag`). 
+  - **Veto-Regel:** Bei diesem Fehler darf der Agent NIEMALS die Ergebnisse der Sub-Agenten durch eigene Skripte oder Annahmen fälschen (Heroin-Trap). 
+  - **Lösung 1 (Agent Executor):** Nutze zwingend `src/api/routes/agent_executor.py` oder direkte lokale Skripte (z.B. `src/scripts/run_v3_producer_agent_v3.py`), um Sub-Agenten lokal über das Google SDK auszuführen und den Cursor-Bug zu umgehen.
+  - **Lösung 2 (TDD):** Statt LLM-basierter Audits (O2 als Sub-Agent) kann auch auf **TDD (Test-Driven Development)** umgeschwenkt werden. Der O2-Audit wird als harter `pytest`-Kontrakt (`tests/test_*.py`) geschrieben, der deterministisch fehlschlägt, bis die Architektur steht (gemäß `7_TDD_ANTI_HEROIN.mdc`).

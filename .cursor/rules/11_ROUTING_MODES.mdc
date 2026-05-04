@@ -22,7 +22,7 @@ Dieses Regelwerk definiert die Routing-Modi des Orchestrators. Der Operator kann
 Dies ist die perfekte Balance aus Geschwindigkeit, Kosten und Qualität. Der Orchestrator analysiert die Aufgabe und wählt das günstigste fähige Tool/Modell:
 1. **Orchestrator (Du):** Bleibst auf `Gemini 3.1 Pro` oder `Claude 4.6` für den Weitblick und die Masterpläne.
 2. **Einfache Parsing/Grep/Log-Aufgaben:** Werden IMMER via `Shell`-Tool an die lokale Ollama Instanz (Llama3.2/Phi3) delegiert (Kosten: 0$).
-3. **Sub-Agenten (Worker / Producer):** Werden via `Task`-Tool in der Cloud gestartet, ABER **zwingend** mit dem Parameter `model: "google/gemini-3.1-flash"` (oder vergleichbaren Flash/Haiku Modellen). Worker dürfen **niemals** auf Pro-Modellen laufen!
+3. **Sub-Agenten (Worker / Producer):** Werden via `src/api/routes/agent_executor.py` oder lokale Skripte gestartet (NICHT über das Cursor `Task`-Tool wegen des `disable_thought_tag` Bugs!), ABER **zwingend** mit dem Parameter `model: "google/gemini-3.1-flash"` (oder vergleichbaren Flash/Haiku Modellen). Worker dürfen **niemals** auf Pro-Modellen laufen!
 4. **Archivator (Wiki-Sync):** Der Sub-Agent, der die Tagebücher der Worker auswertet, nutzt zwingend `gemini-3.1-flash`.
 5. **O2 (Auditor):** Nutzt standardmäßig `gemini-3.1-flash`. Nur wenn O2 selbst anmeldet, dass das Ticket seine kognitiven Fähigkeiten übersteigt (z.B. Kernel-Level Architektur), darf O2 auf ein Pro-Modell eskaliert werden.
 

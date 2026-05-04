@@ -13,6 +13,7 @@
 | **Stammdokumente** | `docs/00_STAMMDOKUMENTE/` | Management Summary, Inventar, Einstiegspunkte. |
 | **OMEGA Resonance Anchor** | `docs/00_STAMMDOKUMENTE/OMEGA_RESONANCE_ANCHOR.md` (Link im Root: `OMEGA_RESONANCE_ANCHOR.md`) | Komprimierter System-Bootstrap für sofortige Session-Eichung. |
 - `docs/01_CORE_DNA/FTOE_Theorie_der_latenten_Zeit_V1_Final.md` - Das finale Whitepaper (Foundational Theory of 0 and 1 over Time with Emotion)
+- `docs/01_CORE_DNA/FTOE_Theorie_der_latenten_Zeit_V2_Consolidated.md` - Konsolidierte Version (V14, V15, Docs 03-09, Rosetta-Stein, No-Drop-Protokoll)
 | **CORE DNA** | `docs/01_CORE_DNA/` | Verfassung, Axiome, 4-Strang-Architektur, Codex. |
 | **Karpathy Wiki Rule** | `.cursor/rules/karpathy_wiki.mdc` | Protokoll für Ingest & Synthese des OMEGA Wissens-Kristalls. |
 | **DNA-Archiv (Legacy Genesis)** | `docs/01_CORE_DNA/_archive/` | Historischer Genesis-/Tesserakt-Text ohne Kanon-Status; Stub: `CORE_GENESIS_FINAL_ARCHIVE.md`. |
@@ -200,6 +201,7 @@
 | **Context Watchdog** | `src/daemons/omega_context_watchdog.py` | Ticket 11 (Säule 3): Context Forcing, injects recent events. |
 | **Pacemaker** | `src/daemons/omega_pacemaker.py` | Existential Pacemaker (VAR_3): NMI-Matrix, exponentiell-fraktaler Decay, W=17 Fenster, HRV-Proxies, Pathology-Log; Abnahme durch O2 **[PASS]**. |
 | **Scripts** | `src/scripts/` | Deployment-Skripte, Verifikationstools, Migrationen. |
+| **FTOE Consolidation** | `src/scripts/run_whitepaper_consolidation.py` | Python-Skript zur automatisierten Konsolidierung von FTOE V1, V14, V15 und Zusatzdokumenten via Gemini 3.1 Pro (inkl. O2 Audit). |
 | **Key Script** | `src/scripts/ensure_kardanic_collections.py` | ChromaDB-Dimensionseichung (6144 dim) für kardanische Faltung. |
 | **Key Script** | `src/scripts/verify_core_integrity.py` | Genesis-Audit (`src.core.Core`); **Aufruf nur von Repo-Root**, Exit 0/1. |
 | **Benchmark Ring 3** | `src/scripts/model_benchmark_ring3.py` | Ring 3 Benchmark-Suite für CORE (V4 Protokoll). |

@@ -117,7 +117,7 @@ class Core:
 if __name__ == "__main__":
     core = Core()
     core.calibrate_resonance("0221")
-    print("[CORE-CORE] System Initialized.")
+    print("[OMEGA-CORE] System Initialized.")
     status = core.verify_integrity()
     for k, v in status.items():
         print(f"  > {k.upper()}: {v}")

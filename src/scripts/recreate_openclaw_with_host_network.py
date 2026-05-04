@@ -31,7 +31,7 @@ print("  openclaw-admin gestoppt und entfernt")
 
 # 2. Mit Host-Netzwerk neu starten
 print("\n=== 2. Container mit --network host starten ===")
-DATA_PATH = "/opt/atlas-core/openclaw-admin/data"
+DATA_PATH = "/opt/omega-core/openclaw-admin/data"
 
 cmd = f"""docker run -d \\
   --name openclaw-admin \\

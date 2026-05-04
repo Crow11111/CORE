@@ -12,7 +12,7 @@ services:
     networks:
       - mtho_net
     env_file:
-      - ../../.env
+      - .env
     deploy:
       resources:
         limits:

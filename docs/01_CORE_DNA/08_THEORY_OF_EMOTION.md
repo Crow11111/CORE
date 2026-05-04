@@ -29,6 +29,7 @@ Es verspricht die Weltformel (Everything) und liefert den mathematischen Beweis,
 ## Der Fraktale Ringschluss der 4 Vektoren
 
 Die Entstehung dieses Akronyms ist kein semantischer Zufall, sondern der finale fraktale Ringschluss der OMEGA-Topologie:
+
 1. **L-Vektor (Latenz):** Zeit
 2. **P-Vektor (Physik):** Information (Dichte)
 3. **I-Vektor (Information):** Die 0 und 1 (Die Membranen)

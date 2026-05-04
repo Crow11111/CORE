@@ -10,7 +10,7 @@ Prüft Markdown-Dokumente im Projekt auf kaputte interne Links.
 - Scannt `docs/` rekursiv.
 - Unterstützt zwei Link-Formate:
   1. Normale Markdown-Links: [Text](relativer/pfad.md)
-  2. CORE-Core-Referenzen: @docs/...
+  2. OMEGA-Core-Referenzen: @docs/...
 
 Aufruf (aus Projekt-Root):
   python -m src.scripts.check_doc_links

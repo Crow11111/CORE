@@ -35,7 +35,7 @@ for pair in \
   "/docker/kong-s7rk/docker-compose.yml:compose/kong-s7rk.docker-compose.yml" \
   "/docker/chroma-uvmy/docker-compose.yml:compose/chroma-uvmy.docker-compose.yml" \
   "/docker/evolution-api-yxa5/docker-compose.yml:compose/evolution-api-yxa5.docker-compose.yml" \
-  "/opt/atlas-core/mcp-server/docker-compose.yml:compose/mcp-server.docker-compose.yml"
+  "/opt/omega-core/mcp-server/docker-compose.yml:compose/mcp-server.docker-compose.yml"
 do
   src="${pair%%:*}"
   dst="${pair##*:}"

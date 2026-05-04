@@ -1,7 +1,7 @@
 ---
-name: gemini-api-dev
+
+## name: gemini-api-dev
 description: Use this skill when building applications with Gemini models, Gemini API, or modifying the ATLAS_CORE Google AI integration. Contains the standard procedure, keys, and model conventions for ATLAS_CORE.
----
 
 # Gemini API Integration (ATLAS_CORE)
 
@@ -26,6 +26,7 @@ Always use these exact model strings:
 All API keys and model configurations must be loaded from the `.env` file. Do not hardcode keys or models in the code.
 
 ### Required `.env` variables:
+
 - `GEMINI_API_KEY`: The primary API key for Google AI / Gemini API.
 - `GEMINI_DEV_AGENT_MODEL`: (Optional) Overrides the Dev-Agent model. Default: `gemini-3.1-pro-preview`.
 - `GEMINI_HEAVY_MODEL`: (Optional) Overrides the Heavy Reasoning model. Default: `gemini-3.1-pro-preview`.
@@ -36,12 +37,15 @@ All API keys and model configurations must be loaded from the `.env` file. Do no
 ATLAS_CORE uses the new official `google-genai` SDK (not the deprecated `google-generativeai` package).
 
 ### Installation
+
 Ensure the correct package is in `requirements.txt`:
+
 ```text
 google-genai
 ```
 
 ### Basic Client Initialization
+
 When writing or modifying API integration code in ATLAS_CORE (e.g., in `src/ai/`), use the following pattern:
 
 ```python
@@ -71,11 +75,14 @@ print(response.text)
 ## System Prompts & Context
 
 When calling Gemini for CORE components, always ensure that:
+
 1. You pass the system prompt (instruction) appropriately.
 2. You pass any contextual information before the user content.
 3. You handle potential exceptions from the API gracefully (e.g., `genai.errors.APIError`).
 
 ## Reference Documentation
+
 For advanced Gemini API features (Function Calling, Structured Outputs, Multimodal inputs), refer to the official documentation:
+
 - **llms.txt URL**: `https://ai.google.dev/gemini-api/docs/llms.txt`
 - **Models Spec**: `https://ai.google.dev/gemini-api/docs/models.md.txt`

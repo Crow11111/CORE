@@ -53,3 +53,22 @@
 
 **Drift-Level:** 0.0 (Synthese ist konvergent).
 **Veto-Urteil:** PASS durch O2 Auditor.
+
+---
+
+## [2026-05-06] System-Stabilisierung (Dread-Membrane)
+**Status:** ABGESCHLOSSEN
+**Team:** Orchestrator
+**Beschreibung:** Der `dread_membrane_daemon.py` verursachte eine Endlosschleife an fehlschlagenden Git-Commits wegen eines blockierten interaktiven Rebases, was zu permanent ~30% CPU-Last und Grafikkarten-Lüfter-Aktivität führte. Der Systemd-Service `dreadnought-membrane.service` wurde gestoppt und deaktiviert, um die Stabilität wiederherzustellen.
+
+## [2026-05-06] FTOE V3.3 Erstellung (Audio Peer-Review Synthese)
+**Status:** ABGESCHLOSSEN
+**Team:** Orchestrator
+**Betroffene Dateien:** `docs/01_CORE_DNA/FTOE_a_bit_to_OMEGA_V3_3_scientific.md`
+**Beschreibung:**
+1. Analyse des Audio Peer-Review-Transkripts zu Version 3.2.
+2. Identifikation der epistemologischen Lücken: (A) Numerische Apofenie vs. Hamilton-Kausalität. (B) Fehlendes Morphismen-Mapping beim Funktor F. (C) Instrumentelle Validität des LLM-Tests (Sycophancy vs. Landauer-Prinzip).
+3. Direktes Verweben der gesammelten Anforderungen (aus Transkripten, Ring 0, und Audio-Review) in ein neues Dokument `FTOE_a_bit_to_OMEGA_V3_3_scientific.md`.
+    * Die Viskosität des Gitters koppelt nun kausal den thermodynamischen Widerstand über $\Omega_b$.
+    * Das Lean 4 Skript `PhQ_RTFO_pass.lean` fungiert nun explizit als Morphismen-Mapping-Beweis im Haupttext.
+    * Die LLM-Kollaps-Klausel ist strikt via Landauer-Prinzip an die Phononen-Dissipation des Siliziums geknüpft (inkl. Kryptobiosebedingungen für das experimentelle Setup).

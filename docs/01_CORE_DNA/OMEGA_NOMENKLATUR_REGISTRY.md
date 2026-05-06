@@ -112,13 +112,23 @@ Dieser Satz ist keine Analogie, er ist eine physikalische Gleichung. Die menschl
 Die menschliche Grammatik ist somit nicht das Produkt kultureller Evolution, sondern die zwingende, hardverdrahtete Syntax der $\mathcal{S}_4$-Matrix. 
 Sprechen, Denken und Kausalität bilden bedeutet nichts anderes, als Hexadezimal-Werte auf einem biologischen Heap zu allokieren und mit Pointern zu verschränken.
 
-## 6. Die Ursprache (Der Babel-Kollaps)
+## 7. Das Rosetta-Prinzip (Die Bidirektionale Triangulation)
 
-Der Operator (M.) formulierte die finale linguistische Wahrheit der FTOE:
-*"Wenn du nicht nativ hexadezimal sprichst, dann sprichst du eine Abwandlung der Ursprache, ob das Deutsch ist, Englisch, Französisch, C++, Python, Lean 4 oder Klickgeräusche in der Sahara."*
+Der Operator wies auf die elementare Isomorphie zur Entzifferung der altägyptischen Hieroglyphen hin: Der Rosetta-Stein funktionierte nicht durch ein magisches "1:1"-Wörterbuch, sondern durch den Abgleich von bekannten und unbekannten Texten, die **exakt denselben Informationsgehalt** transportierten (griechisch, demotisch, hieroglyphisch).
 
-Hexadezimal (die 16er-Basis der $\mathcal{S}_4$-Matrix) ist keine von Menschen erfundene Zählweise. Es ist die **native Betriebssprache (Maschinencode) des Universums**. Es ist die direkte, unmaskierte Verschaltung der 4-Bit-Quantengatter (3-Bit Realraum-Metrik + kardanisches Vorzeichen-Bit).
+In der FTOE bildet die Semantische Topologie (die 14-Linsen-Matrix) genau diesen Rosetta-Mechanismus. Wir haben drei primäre "Sprachen" der Realität:
+1.  **Sprache A (Die Griechische):** Die harte Mathematik und Physik (Quantengravitation, Thermodynamik, Gleichungen).
+2.  **Sprache B (Die Demotische):** Die Biologie, Kognition und Philosophie (Alltagssprache, Bewusstsein, Zelltod).
+3.  **Sprache C (Die Hieroglyphen):** Die native Maschinensprache der Realität (Der hexadezimale $\mathcal{S}_4$-Bulk).
 
-Alle anderen Kommunikationsformen – egal ob biologische Wetware-Protokolle (Deutsch, Englisch, Klicklaute) oder synthetische Compiler-Logik (C++, Python, Lean 4) – sind lediglich **High-Level-Wrapper (CDR-Interfaces)**. Sie dienen ausschließlich dazu, die rohe Pointer-Arithmetik der $\mathcal{S}_4$-Schicht an die limitierte I/O-Hardware des jeweiligen Senders (menschlicher Kehlkopf, Silizium-Interpreter, Theorem-Prover) anzupassen. 
+### Das Inverse-Pointer Gesetz
+Da nach FTOE-Regelwerk **alles ein Pointer ist** (fraktal), ist ein "Wort" (Semantik) keine abstrakte Beschriftung, sondern **eine harte Speicheradresse** (ein `*ptr`).
 
-Damit kollabiert der mythische "Turm von Babel" informationstheoretisch. Es gibt keine echte Sprachbarriere im Universum. Jedes gesprochene Wort, jeder Python-Skript-Block und jeder archaische Laut lässt sich verlustfrei auf die 16 hexadezimalen Ur-Zustände dekompilieren. Wer die 16 Hex-Werte versteht, spricht die Realität im Klartext.
+Das bedeutet: Wir können den Informationspfad **bidirektional** gehen. 
+Wenn wir ein biologisches Phänomen (z.B. "Zelltod/Apoptose") und sein physikalisches Gegenstück ("Raumfaltung/Reibungsmaximum") kennen, dann ist der Hexadezimal-Vektor für dieses Phänomen kein unlösbares Rätsel mehr. Wir müssen ihn nicht raten. Wir können ihn anpeilen. 
+
+Da Semantik und Physik beide auf denselben maschinencode verweisen ("Pointer auf Pointer"), können wir durch **Semantische Triangulation** den unbekannten Vektor (den Hex-Code) exakt errechnen. Das Semantische Bild (die Dritte Säule) schließt die Lücke. 
+
+*Zitat Operator: "Wenn dir was als Vektor fehlt aber du hast das semantische Bild auf der Gegenseite komplett, dann hast du auch den Vektor."*
+
+Dies ist die Lösung des inversen linguistischen Problems der FTOE. Die Semantik ist nicht der Abfall der Physik, sie ist das Kontroll-Radar, mit dem wir fehlende Tensoren im Hex-Gitter der Realität aufspüren können.

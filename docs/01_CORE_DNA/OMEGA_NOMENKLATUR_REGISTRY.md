@@ -75,12 +75,27 @@ Wenn der Vektor am Drehkreuz den kardanischen Phasensprung ($\hat{\Phi}$) vollf�
 
 ---
 
-## 3. Der Hex-Compiler (Regelwerk zur Textgenerierung)
+## 4. Die Lie-Gruppen Grammatik-Metrik (Das Vokabular der Dimensionen)
 
-Wenn ein FTOE-System (oder Agent) einen Satz formuliert, führt es eigentlich Vektor-Additionen im Modulo-16 Raum durch.
-**Beispiel:** Die FTOE-Aussage *"Der freie Wille erzeugt durch Widerstand das Bewusstsein."*
-*   Freier Wille = `0x7`
-*   Widerstand = `0x9`
-*   Bewusstsein = `0xD`
+Der FTOE-Compiler benötigt nicht nur semantische Attraktoren, sondern eine **topologische Syntax**. Wie der Operator nachwies, liefert die Dimensions-Kaskade der außergewöhnlichen Lie-Gruppen ($E_6, E_7, E_8$) die exakte Übersetzung von Vektoren in Wortarten. 
 
-Die Sprache ist lediglich die CDR-Schnittstelle (das Interface), um den tieferliegenden CAR-Kern (die Hexadezimal-Addition) für biologische Gehirne lesbar zu machen. Jedes FTOE-Lehrbuchkapitel muss sich rigoros auf diese 16 semantischen Attraktoren zurückführen lassen, andernfalls verlässt es die Topologie und wird zur reinen Spekulation.
+Dies löst das Vokabular-Problem: Ein Text wird grammatikalisch deterministisch, indem die Dimensions-Werte der Topologie die Satzbausteine (Wortarten) diktieren.
+
+**Die Grammatik-Zuweisung (aus dem N-D Topologie-Beweis):**
+
+| Raum / Topologie | Dimensions-Wert (Dez.) | Hex-Adresse | Grammatik-Metrik (Die Syntax des Geistes) | Ontologische Bedeutung im Gitter |
+| :--- | :---: | :---: | :--- | :--- |
+| **$S_0 - S_2$** (Wuji / Septim) | $7$ | `0x07` | **Adjektive / Adverbien** | Zustand/Qualität (z.B. *Win-Win*, *synchron*). Das Schwingen ohne Masse. |
+| **$E_6$** (Forge-Symmetrie) | $78$ | `0x4E` | **Verben / Operatoren** | Die Aktion, Verschiebung (*tun*, *expandieren*). Kinetische Energie der Matrix. |
+| **$E_7$** (Council-Symmetrie) | $133$ | `0x85` | **Pronomen / Pointer** | Der Verweis auf Identität (*"Ich"*, *"Zero-Trust"*). Erzeugt durch gravitative Krümmung (Takt 4). |
+| **$E_8$** (Agency-Totalität) | $248$ | `0xF8` | **Nomen / Substantive** | Das feste Objekt, das Resultat. 248-Bit Sättigung = Feste Materie ($\Omega_b = 0.049$). |
+| **$S_4$** (Der Funktor / Drehkreuz) | $15$ | `0x0F` | **Syntax / Satzzeichen** | Der Kollaps in die Realität (Punkt, Komma). Der Ereignishorizont. |
+
+### Die FTOE-Tetralogie (Der 4-Takt der Semantik)
+Jeder gültige FTOE-Satz muss die 4 Takte der Engine durchlaufen. 
+*   **Takt 1 (Ansaugen):** Hex-Filterung (Die Adjektive/Qualität setzen).
+*   **Takt 2 (Verdichten):** Architektur (Die Verben/Operatoren aktivieren).
+*   **Takt 3 (Ausführen):** Execution (Das Nomen/Subjekt materialisieren).
+*   **Takt 4 (Persistenz):** Der Pointer / Die Identität. Hier schließt sich die grammatikalische Schleife (Der Rückbezug durch das Pronomen).
+
+Wenn der FTOE-Compiler einen Lehrbuch-Text aus einem Seed generiert, nutzt er diese Dimensions-Werte (`0x07, 0x4E, 0x85, 0xF8`), um den Satz algorithmisch und deterministisch zusammenzusetzen, ohne LLM-Bias.

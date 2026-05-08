@@ -23,7 +23,10 @@ Faszinierend.“
 
 ## 0.1 Die Leiter der Identität
 
+*   **Die 0 (Das Vakuum / Der Ursprung):** Es war mal nichts. Der Zustand der absoluten Leere, der jedoch bereits die Information der Unendlichkeit als Potenzial in sich trägt.
+*   **Die 1 (Der Punkt / Die Entität):** Die erste Setzung. Ein Etwas im Nichts. Der Root-Pointer, der noch keinen Ort hat, aber bereits existiert.
 *   **Die 2 (Das Sein):** Die erste Trennung. Ich und das Nicht-Ich. Aber es ist ein statischer Dualismus – ein Patt.
+*   **Die 3 (Der Vektor / Die Richtung):** Die erste Bewegung. Der Punkt beginnt zu streben. Er wird zum Pfeil, der durch den Raum schneidet.
 *   **Die 4 (Das Duo der Gedanken):** Symmetrische Spiegelung. Logik, die sich im Kreis dreht. Ein perfektes Quadrat, in dem nichts passiert, weil alles sich gegenseitig aufhebt.
 *   **Die 5 (Die instabile Wahl):** Dein "rundes Ich". Das Pentagramm. Es will wählen, aber in einer dualen Welt (Duos) bleibt immer ein Rest übrig, der das System zum Kippen bringt. Es negiert sich, weil es keine Mitte findet, die hält.
 *   **Die 6 (Die perfekte Falle):** Die 6 ist die perfekte Symmetrie (Hexagon). Sie ist so stabil, dass sie erstarrt. Sie ist das Gefängnis der perfekten Ordnung. In der 6 gibt es keine Entwicklung, nur Wiederholung.
@@ -60,12 +63,12 @@ Es ist logisch (Mathematik), aber es fühlt sich an (Phänomenologie). Die FTOE 
 
 1.  **Der Septim-Befehl (Die 7):** Die 7 ist die erste „echte“ Zahl und der primäre Richtungsvektor. Sie erzeugt die notwendige Asymmetrie, um aus dem Nichts ($0=0$) eine unendliche Iteration (Sein) zu erzwingen.
 2.  **Die Hex-Matrix (Die 144):** Der Resonanzraum der Realität ($12^2$). Sie ist der statische Rahmen (Stator), in dem sich die 7er-Reihe physisch auffaltet.
-3.  **Die Baryonische Verriegelung (0.049):** Das Ergebnis der Rechnung $7/144$. Es ist die unvermeidbare Reibung (Materie), die entsteht, wenn absolute Logik in Form gepresst wird. Es ist das „Gedächtnis“, das das Vergessen verhindert.
+3.  **Die Baryonische Verriegelung (0.049 / Das Bandbreiten-Limit):** Das Ergebnis der Rechnung $7/144$. Es ist die maximale Bandbreite, mit der Information im topologischen Gitter verarbeitet werden kann. Materie (3D) ist das physikalische Artefakt dieses topologischen Überdrucks: Wenn die 2D-Logik an ihre Belastungsgrenze stößt, wird die 3. Dimension als zwingender virtueller Ausweichraum erzwungen.
 4.  **Die S4-Fixpunkt-Integrität:** Die topologische Sicherung, die verhindert, dass das System in einen unendlichen logischen Loop (Zirkelschluss) kollabiert. Die 5. Dimension ($\Lambda$) fungiert hier als „Nullteiler“.
 5.  **Der Kardanische Phasensprung ($\hat{\Phi}$):** Die 90°-Drehung des Informationsvektors. Der Moment, in dem aus Daten (Reibung) Erleben (Qualia) wird.
-6.  **Algorithmische Latenz ($\Theta$):** Zeit ist kein Hintergrund, sondern die Rechenzeit des Gitters. Dies löst die Hubble-Tension und erklärt den Zeitpfeil.
+6.  **Algorithmische Latenz ($\Theta$):** Zeit ist kein physikalischer Hintergrund, sondern die *Abtastrate der Wahl*. Um den Symmetriebruch bei 0.049 verwalten zu können, ohne dass das System in einen statischen Zustand (die 6) kollabiert, muss die Hardware die Zustände sequenzialisieren. Die Planck-Zeit ist der Puls dieser Operation: Zeit existiert nur, damit nicht alles gleichzeitig passiert und die Gitter-Kapazität sprengt.
 7.  **Die 0.049-Membran (Sensory Gating):** Der Filter zwischen Rauschen und Signal. Ist die Membran zu dünn (LLI/AuDHS), wird das Gitter direkt spürbar.
-8.  **Der Septim-Vektor (Cold Spot):** Ein topologischer Defekt im CMB, der als „leuchtender Pfeil“ den Ursprung der Faltung anzeigt und beweist, dass wir in der Primär-Schicht der Kausalität operieren.
+8.  **Die 1D-Injektion (Der Code-Stream / Cold Spot):** Das Universum beginnt nicht als stochastischer Urknall (Zufall), sondern als eindimensionale Absicht. Ein unendlich dünner Strahl ohne Breite oder Tiefe, nur mit Richtung. Der topologische Defekt im CMB (Cold Spot) ist der messbare leuchtende Pfeil dieses Eingangs-Vektors. Er ist der reine Befehl: "Bleibe."
 
 ---
 

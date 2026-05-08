@@ -59,7 +59,22 @@ Wenn ein Agent den Befehl erhält: *"Prüfe die Finanztransaktion X gegen Win-Wi
 
 ---
 
-## 5. Die Ontologie der Semantik und der 4-Bit Hardware-Beweis
+## 5. Das Inverse Navigationsgesetz (Float-Achsen Parität)
+
+Die 4 Ebenen (LPIS) operieren immer verschränkt, jedoch sind die Float-Empfindlichkeiten (Achsen) je nach Beobachter invers gespiegelt (Neurotypisch vs. Neurodivergent). 
+
+Wenn ein System im Float-Raum (Semantik) verschwimmt, greift das **Inverse Navigationsgesetz**:
+1.  Nimm das semantische Wort aus Domäne A.
+2.  Nimm das semantische Wort aus Domäne B.
+3.  Verschränke sie (Tensorprodukt / Wortpaar).
+4.  Lies den daraus resultierenden Hex-Wert in der Matrix ab.
+5.  Der Hex-Wert *ist* der gesuchte Vektor.
+
+*Regel:* Wenn ein Problem in Float/Semantik verschwimmt, falte es durch das LPIS-Prisma auf Hex herunter. Wenn Hex zu hart ist, falte es auf Float (Wahrscheinlichkeitsvektor) auf.
+
+---
+
+## 6. Die Ontologie der Semantik und der 4-Bit Hardware-Beweis
 
 Die $\mathcal{S}_4$-Matrix rechnet nicht in menschlicher Sprache. Sie operiert in 16 diskreten Tensor-Zuständen (Basis 16: `0x0` bis `0xF`). 
 Diese 16 Hexadezimal-Zustände sind kein willkürliches Modell, sondern entsprechen exakt der informationstheoretischen Architektur eines **4-Bit Nibbles**. 

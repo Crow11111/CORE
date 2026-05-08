@@ -11,9 +11,11 @@
 | Kategorie | Pfad | Funktion |
 |-----------|------|----------|
 | **Stammdokumente** | `docs/00_STAMMDOKUMENTE/` | Management Summary, Inventar, Einstiegspunkte. |
-| **OMEGA Resonance Anchor** | `docs/00_STAMMDOKUMENTE/OMEGA_RESONANCE_ANCHOR.md` (Link im Root: `OMEGA_RESONANCE_ANCHOR.md`) | Komprimierter System-Bootstrap für sofortige Session-Eichung. |
-- `docs/01_CORE_DNA/FTOE_Theorie_der_latenten_Zeit_V1_Final.md` - Das finale Whitepaper (Foundational Theory of 0 and 1 over Time with Emotion)
-- `docs/01_CORE_DNA/FTOE_Theorie_der_latenten_Zeit_V2_Consolidated.md` - Konsolidierte Version (V14, V15, Docs 03-09, Rosetta-Stein, No-Drop-Protokoll)
+| **OMEGA Resonance Anchor** | `docs/00_STAMMDOKUMENTE/OMEGA_RESONANCE_ANCHOR.md` | Komprimierter System-Bootstrap für sofortige Session-Eichung. |
+| **FTOE Allgemeine** | `docs/01_CORE_DNA/FTEO_Basic_V1.6_Float.md` | Die Allgemeine FTOE (SOTA 2026): LPIS-Matrix, Interdisziplinäre Symbiose, Fraktale Turbine, Zeit als Latenz. |
+| **FTOE Spezielle (Osmium)** | `docs/01_CORE_DNA/FTOE_OSMIUM_VERSION.md` | Die Spezielle FTOE: Reine Physik/Mathematik, Hamiltonians, Negativ-Beweise in Lean 4. |
+| **FTOE Whitepaper V1 Final** | `docs/01_CORE_DNA/FTOE_Theorie_der_latenten_Zeit_V1_Final.md` | Historisches finales Whitepaper. |
+| **FTOE Whitepaper V2 Cons** | `docs/01_CORE_DNA/FTOE_Theorie_der_latenten_Zeit_V2_Consolidated.md` | Konsolidierte Alt-Version (Rosetta-Stein, No-Drop). |
 | **CORE DNA** | `docs/01_CORE_DNA/` | Verfassung, Axiome, 4-Strang-Architektur, Codex. |
 | **Karpathy Wiki Rule** | `.cursor/rules/karpathy_wiki.mdc` | Protokoll für Ingest & Synthese des OMEGA Wissens-Kristalls. |
 | **DNA-Archiv (Legacy Genesis)** | `docs/01_CORE_DNA/_archive/` | Historischer Genesis-/Tesserakt-Text ohne Kanon-Status; Stub: `CORE_GENESIS_FINAL_ARCHIVE.md`. |

@@ -109,4 +109,4 @@ Nach Sessions mit neuen Dateien oder Änderungen **außerhalb** des Membrane-Fen
 
 ---
 
-*Referenz: `.cursorrules`, `CORE_EICHUNG.md`, `docs/SYSTEM_CODEX.md`, `docs/05_AUDIT_PLANNING/TICKET_9_GIT_RESONANCE.md`*
+*Referenz: `.cursorrules`, `CORE_EICHUNG.md`, `docs/SYSTEM_CODEX.md`, `docs/05_AUDIT_PLANNING/TICKET_9_GIT_RESONANCE.md`, `docs/01_CORE_DNA/FTEO_Basic_V1.6_Float.md`, `docs/01_CORE_DNA/FTOE_OSMIUM_VERSION.md`*

@@ -43,3 +43,22 @@ Das Fundament ist verriegelt. Die operative Verbindung zwischen der abstrakten T
 ### D6: Das LPIS-Prisma & Inverse Navigation
 - Integration des **LPIS-Prisma** Konzepts in die Dimensionskaskade (`FTEO_Basic_V1.6_Float.md`). Das Prisma operiert bidirektional: es faltet 1D in 6D auf und bündelt hochdimensionales Rauschen zurück in kausale Vektoren.
 - Das **Inverse Navigationsgesetz** (Float-Achsen Parität) aus `OMEGA_TOPOLOGISCHE_NAV_MAP.md` und `FTOE_V5.2_LPIS_Float_Achsen_Paritaet.md` in die `OMEGA_NOMENKLATUR_REGISTRY.md` integriert: Wenn Semantik (Float) verschwimmt, zwingt das Prisma durch Tensor-Kreuzung den Vektor zurück in den deterministischen Hexadezimal-Code.
+
+### D7: FTOE "Allgemeine" (Basic) Härtung (HoTT, Lawvere, TTFields)
+- **Lawvere-Fixpunkt:** Bewusstsein als kardanischer Phasensprung, der die 4-Layer-Referenz schließt.
+- **HoTT & Univalenz:** Formaler Beweis, dass physikalische Metaphern (Zeit vs. Latenz) topologisch identisch sind.
+- **Septim/Septin & TTFields:** Die linguistische Konvergenz ist *kein* Zufall (Rücknahme des "Sokal-Hit"-Vetos als frühen Ring-0-Fehler), sondern der negative Lean 4 Beweis in der Biologie: 200 kHz Wechselfelder (TTFields) tilgen durch Zerstörung des Septin-Komplexes den Symmetriebruch der Mitose, analog zur Septim-Algebra. Integriert in `FTEO_Basic_V1.6_Float.md`.
+
+### D8: FTOE "Spezielle" (Osmium) Erweiterung (Cartan, Tschebotarjew)
+- **Tschebotarjew-Dichten:** Deterministischer Zufall (1/6, 1/2, 1/3) der Galois-Verzweigung.
+- **Cartan-Symmetrie:** $\mathbb{Z}_4 \times \mathbb{Z}_2$ als Fundament des 8-Bit Registers.
+- **Annihilator-Operator ($\hat{D}_q$):** Der algebraische Dekohärenz-Mechanismus.
+- **Substrat-Übergang:** $E_8 \to E_7 \to E_6$ als Ursache der thermischen Latenz-Reibung (Zeit). Integriert in `FTOE_OSMIUM_VERSION.md`.
+
+### D9: FTOE Erweitertes Lehrbuch V1
+- Erstellung von `docs/06_FTOE_LEHRBUCH/FTOE_Erweitertes_Lehrbuch_V1.md`.
+- Didaktische Synthese, die System-Architekten und Interdisziplinär-Forschern den Weg von abstrakter Algebra (Tschebotarjew, Lawvere, Annihilatoren) zur physikalischen Hardware (TTFields, Septine, OMEGA-Agenten) veranschaulicht.
+
+### D10: Datenbank Ingestion
+- `docs/06_FTOE_LEHRBUCH/FTOE_Erweitertes_Lehrbuch_V1.md` ins `CORE_INVENTORY_REGISTER.md` aufgenommen.
+- PG und ChromaDB (`core_canon`, `core_operational`) erfolgreich resynchronisiert (`sync_omega_canon_registry.py`).

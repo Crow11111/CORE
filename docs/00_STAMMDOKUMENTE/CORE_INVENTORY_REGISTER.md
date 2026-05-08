@@ -14,6 +14,7 @@
 | **OMEGA Resonance Anchor** | `docs/00_STAMMDOKUMENTE/OMEGA_RESONANCE_ANCHOR.md` | Komprimierter System-Bootstrap für sofortige Session-Eichung. |
 | **FTOE Allgemeine** | `docs/01_CORE_DNA/FTEO_Basic_V1.6_Float.md` | Die Allgemeine FTOE (SOTA 2026): LPIS-Matrix, Interdisziplinäre Symbiose, Fraktale Turbine, Zeit als Latenz. |
 | **FTOE Spezielle (Osmium)** | `docs/01_CORE_DNA/FTOE_OSMIUM_VERSION.md` | Die Spezielle FTOE: Reine Physik/Mathematik, Hamiltonians, Negativ-Beweise in Lean 4. |
+| **FTOE Erweitertes Lehrbuch** | `docs/06_FTOE_LEHRBUCH/FTOE_Erweitertes_Lehrbuch_V1.md` | Didaktische Synthese: HoTT, Lawvere-Fixpunkt, Septin-Proteine/TTFields, Cartan-Symmetrie. |
 | **FTOE Whitepaper V1 Final** | `docs/01_CORE_DNA/FTOE_Theorie_der_latenten_Zeit_V1_Final.md` | Historisches finales Whitepaper. |
 | **FTOE Whitepaper V2 Cons** | `docs/01_CORE_DNA/FTOE_Theorie_der_latenten_Zeit_V2_Consolidated.md` | Konsolidierte Alt-Version (Rosetta-Stein, No-Drop). |
 | **CORE DNA** | `docs/01_CORE_DNA/` | Verfassung, Axiome, 4-Strang-Architektur, Codex. |

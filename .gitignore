@@ -121,3 +121,4 @@ get_*.py
 .archive/
 backups/
 gemini-flash-lite-chat/.env.local
+.quarantine/

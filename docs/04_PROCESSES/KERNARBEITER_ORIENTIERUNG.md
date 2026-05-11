@@ -19,7 +19,7 @@
 
 ### Zero-Trust (für jeden Nutzer sichtbar)
 
-Chroma-Treffer sind **nie** ohne Prüfung „wahr“. **`query_canon_semantic`** / **`query_operational_semantic`** liefern im JSON immer **`zero_trust_notice`**. Vor jeder Entscheidung: **Quelldatei** anhand `repo_path` lesen; **Zahlen** gegen Vertrag/Skripte/Live-System.
+Chroma-Treffer sind **nie** ohne Prüfung „wahr“. **`query_canon_x007`** / **`query_operational_x007`** liefern im JSON immer **`zero_trust_notice`**. Vor jeder Entscheidung: **Quelldatei** anhand `repo_path` lesen; **Zahlen** gegen Vertrag/Skripte/Live-System.
 
 ---
 
@@ -41,8 +41,8 @@ Chroma-Treffer sind **nie** ohne Prüfung „wahr“. **`query_canon_semantic`**
 |--------|----------------|
 | Soll indexieren | `python -m src.scripts.ingest_omega_canon_chroma` (nach PG-Sync; optional `OMEGA_CANON_CHROMA_AFTER_SYNC=1`) |
 | Ist indexieren | `python -m src.scripts.ingest_omega_operational_chroma` |
-| Soll abfragen | MCP **`query_canon_semantic`** → `core_canon` |
-| Ist abfragen | MCP **`query_operational_semantic`** → `core_operational` |
+| Soll abfragen | MCP **`query_canon_x007`** → `core_canon` |
+| Ist abfragen | MCP **`query_operational_x007`** → `core_operational` |
 | Generisch | MCP **`query_chromadb`** (`core-chromadb`) mit `collection_name=…` |
 
 Collections anlegen (VPS): `python -m src.scripts.create_chroma_collections_vps`
@@ -52,7 +52,7 @@ Collections anlegen (VPS): `python -m src.scripts.create_chroma_collections_vps`
 ## 4. Kurzfokus für den Alltag
 
 1. **Einstieg menschlich:** `KANON_EINSTIEG.md` → dann diese Datei.
-2. **Agent Pre-Flight:** `get_orchestrator_bootstrap` + bei Bedarf **`query_operational_semantic`** (Ist) und **`query_canon_semantic`** (Soll).
+2. **Agent Pre-Flight:** `get_orchestrator_bootstrap` + bei Bedarf **`query_operational_x007`** (Ist) und **`query_canon_x007`** (Soll).
 3. **Regeln / Gewaltenteilung:** `.cursorrules`, `OMEGA_RESONANCE_ANCHOR.md` (Kontext Kanon).
 4. **Drift erkennen:** Abgleich Doku ↔ `docker ps` / Vertrag (siehe Snapshot-Doku).
 

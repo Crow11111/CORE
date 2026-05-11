@@ -187,21 +187,21 @@ async def test_get_orchestrator_bootstrap_proxy_down_adds_gap_when_probe_returns
 
 
 @pytest.mark.asyncio
-async def test_query_canon_semantic_requires_non_empty_query():
+async def test_query_canon_x007_requires_non_empty_query():
     mod = _load_mcp_module()
-    if not hasattr(mod, "query_canon_semantic"):
-        pytest.fail("MCP: query_canon_semantic fehlt — Kanon-Semantik nicht abfragbar.")
-    out = await mod.query_canon_semantic(query_text="   ")
+    if not hasattr(mod, "query_canon_x007"):
+        pytest.fail("MCP: query_canon_x007 fehlt — Kanon-Semantik nicht abfragbar.")
+    out = await mod.query_canon_x007(query_text="   ")
     data = json.loads(out)
     assert "error" in data
     assert "zero_trust_notice" in data
 
 
 @pytest.mark.asyncio
-async def test_query_canon_semantic_not_configured():
+async def test_query_canon_x007_not_configured():
     mod = _load_mcp_module()
     with patch("src.network.chroma_client.is_configured", return_value=False):
-        out = await mod.query_canon_semantic(query_text="VPS Kong")
+        out = await mod.query_canon_x007(query_text="VPS Kong")
     data = json.loads(out)
     assert "error" in data
     assert data.get("collection") == "core_canon"
@@ -209,7 +209,7 @@ async def test_query_canon_semantic_not_configured():
 
 
 @pytest.mark.asyncio
-async def test_query_canon_semantic_returns_chroma_shape():
+async def test_query_canon_x007_returns_chroma_shape():
     mod = _load_mcp_module()
     fake = {
         "ids": [["c1"]],
@@ -223,7 +223,7 @@ async def test_query_canon_semantic_returns_chroma_shape():
         patch("src.network.chroma_client.is_configured", return_value=True),
         patch("src.network.chroma_client._get_collection_sync", return_value=col),
     ):
-        out = await mod.query_canon_semantic(query_text="omega backend", n_results=5)
+        out = await mod.query_canon_x007(query_text="omega backend", n_results=5)
     data = json.loads(out)
     assert data.get("collection") == "core_canon"
     assert data.get("ids") == [["c1"]]
@@ -233,12 +233,12 @@ async def test_query_canon_semantic_returns_chroma_shape():
 
 
 @pytest.mark.asyncio
-async def test_query_operational_semantic_not_configured():
+async def test_query_operational_x007_not_configured():
     mod = _load_mcp_module()
-    if not hasattr(mod, "query_operational_semantic"):
-        pytest.fail("MCP: query_operational_semantic fehlt.")
+    if not hasattr(mod, "query_operational_x007"):
+        pytest.fail("MCP: query_operational_x007 fehlt.")
     with patch("src.network.chroma_client.is_configured", return_value=False):
-        out = await mod.query_operational_semantic(query_text="Kong Port")
+        out = await mod.query_operational_x007(query_text="Kong Port")
     data = json.loads(out)
     assert "error" in data
     assert data.get("collection") == "core_operational"
@@ -246,7 +246,7 @@ async def test_query_operational_semantic_not_configured():
 
 
 @pytest.mark.asyncio
-async def test_query_operational_semantic_returns_chroma_shape():
+async def test_query_operational_x007_returns_chroma_shape():
     mod = _load_mcp_module()
     fake = {"ids": [["o1"]], "documents": [["chunk"]], "metadatas": [[{}]], "distances": [[0.2]]}
     col = MagicMock()
@@ -255,7 +255,7 @@ async def test_query_operational_semantic_returns_chroma_shape():
         patch("src.network.chroma_client.is_configured", return_value=True),
         patch("src.network.chroma_client._get_collection_sync", return_value=col),
     ):
-        out = await mod.query_operational_semantic(query_text="VPS Chroma Port", n_results=4)
+        out = await mod.query_operational_x007(query_text="VPS Chroma Port", n_results=4)
     data = json.loads(out)
     assert data.get("collection") == "core_operational"
     assert data.get("ids") == [["o1"]]

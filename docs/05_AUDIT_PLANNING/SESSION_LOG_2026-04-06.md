@@ -117,7 +117,7 @@ Verifikation: `pytest tests/test_ingest_omega_canon_chroma.py`; `python -m src.s
 
 | Status | Artefakt |
 |--------|----------|
-| done | `KERNARBEITER_ORIENTIERUNG.md`, `KERNARBEITER_SURFACE_PATHS.yaml`, `ingest_omega_operational_chroma.py`, `COLLECTION_CORE_OPERATIONAL`, `query_operational_semantic`, `_chroma_semantic_query` |
+| done | `KERNARBEITER_ORIENTIERUNG.md`, `KERNARBEITER_SURFACE_PATHS.yaml`, `ingest_omega_operational_chroma.py`, `COLLECTION_CORE_OPERATIONAL`, `query_operational_x007`, `_chroma_semantic_query` |
 | done | Tests `test_ingest_omega_operational_chroma.py`, erweitert `test_mcp_omega_state.py` |
 | done | MIGRATIONPLAN 2b, `CORE_CHROMADB_SCHEMA`, `ZERO_STATE`, CANON_REGISTRY, KANON, Inventar, AGENTS, CLAUDE, Skill, MANAGEMENT_SUMMARY, Bibliothek |
 

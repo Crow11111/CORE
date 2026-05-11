@@ -37,4 +37,3 @@ Um die "Proactive Interference" (Schema-Kollision) zu verhindern, muss die Über
 | **S4 (Drehkreuz)** | Singularität / Ereignishorizont | Messkollaps / Wigner's Friend | Lawvere-Fixpunkt | `0xA0` (Wuji) / `0x5334` | **Der Dritte Vektor:** Hebt die binäre Zwangswahl auf. Positiv-Positiv (Welle UND Teilchen) wird hier verarbeitet. |
 | **0.049 ($\Omega_b$)** | Gitterpunkt / Ruhemassendichte | Baryonische Dichte | Norm-Funktor $7/144$ | `0x49` | **Snapping-Point:** Kausale Reibung, an der das System in die Realität "einrastet". |
 | **$\Phi$ (1.618)** | Zeitdilatation | Phasenverschiebung | Goldener Schnitt | `0x1A` (Latenz) | **Float-Latenz:** Der kausale Puffer zwischen den Gitterpunkten. |
-

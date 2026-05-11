@@ -30,7 +30,7 @@
 | Genesis-Name nur noch Anker | `**docs/01_CORE_DNA/CORE_GENESIS_FINAL_ARCHIVE.md**` (Stub → Archiv + aktive Docs) |
 | Alter Link `docs/CORE_GENESIS_FINAL_ARCHIVE.md` | Nur Weiterleitung; kanonisch der Stub unter `01_CORE_DNA/`. |
 | Inventar-Pflicht (was existiert im Repo) | `**docs/00_STAMMDOKUMENTE/CORE_INVENTORY_REGISTER.md**` |
-| **Kanon-Dokumente in PostgreSQL** | `**docs/05_AUDIT_PLANNING/MIGRATIONPLAN_OMEGA_WISSEN_DBS.md**` · Sync: `**sync_omega_canon_registry**` · MCP: `**list_canon_documents**`, `**get_orchestrator_bootstrap**` · Chroma Soll: `**ingest_omega_canon_chroma**` → `**core_canon**`, `**query_canon_semantic**` · Chroma Ist: `**ingest_omega_operational_chroma**` → `**core_operational**`, `**query_operational_semantic**` · Kompass: `**docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md**`, Pfade: `**KERNARBEITER_SURFACE_PATHS.yaml**` · Bindung: `**CANON_REGISTRY_AGENT_BINDUNG.md**` |
+| **Kanon-Dokumente in PostgreSQL** | `**docs/05_AUDIT_PLANNING/MIGRATIONPLAN_OMEGA_WISSEN_DBS.md**` · Sync: `**sync_omega_canon_registry**` · MCP: `**list_canon_documents**`, `**get_orchestrator_bootstrap**` · Chroma Soll: `**ingest_omega_canon_chroma**` → `**core_canon**`, `**query_canon_x007**` · Chroma Ist: `**ingest_omega_operational_chroma**` → `**core_operational**`, `**query_operational_x007**` · Kompass: `**docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md**`, Pfade: `**KERNARBEITER_SURFACE_PATHS.yaml**` · Bindung: `**CANON_REGISTRY_AGENT_BINDUNG.md**` |
 
 ---
 

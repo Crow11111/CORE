@@ -95,7 +95,7 @@ Metaphorische Identifikation Chroma = „Kristall-Engine“ (z. B. unter `docs/0
 
 ## 5. Bereits gut abgefedert
 
-- `**query_canon_semantic` / `query_operational_semantic` / `query_chromadb`:** `zero_trust_notice` im JSON (kein Fakt ohne Quelle); Text zentral `src/config/chroma_zero_trust_notice.py`.
+- `**query_canon_x007` / `query_operational_x007` / `query_chromadb`:** `zero_trust_notice` im JSON (kein Fakt ohne Quelle); Text zentral `src/config/chroma_zero_trust_notice.py`.
 - `**KERNARBEITER_ORIENTIERUNG.md`:** Soll/Ist, Drift zuerst Vertrag/Live.
 - **Pacemaker / temporal_alignment / efference_veto:** arbeiten auf **expliziten** Float-State-Größen mit 0.049-Clamps — **Domäne konsistent** (wenn auch Review auf „Magic Numbers“ sinnvoll).
 

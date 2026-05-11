@@ -12,7 +12,7 @@
 |-----------|------|----------|
 | **Stammdokumente** | `docs/00_STAMMDOKUMENTE/` | Management Summary, Inventar, Einstiegspunkte. |
 | **OMEGA Resonance Anchor** | `docs/00_STAMMDOKUMENTE/OMEGA_RESONANCE_ANCHOR.md` | Komprimierter System-Bootstrap für sofortige Session-Eichung. |
-| **FTOE Allgemeine** | `docs/01_CORE_DNA/FTEO_Basic_V1.7_Float.md` | Die Allgemeine FTOE (SOTA 2026): LPIS-Matrix, Zeitkristall-Veto, Fraktale Turbine, Zeit als Latenz. |
+| **FTOE Allgemeine** | `docs/01_CORE_DNA/FTEO_Basic_WORK.md` | Die Allgemeine FTOE (SOTA 2026): LPIS-Matrix, Zeitkristall-Veto, Fraktale Turbine, Zeit als Latenz. |
 | **FTOE Spezielle (Osmium)** | `docs/01_CORE_DNA/FTOE_OSMIUM_VERSION.md` | Die Spezielle FTOE: Reine Physik/Mathematik, Hamiltonians, Negativ-Beweise in Lean 4. |
 | **FTOE Erweitertes Lehrbuch** | `docs/06_FTOE_LEHRBUCH/FTOE_Erweitertes_Lehrbuch_V1.md` | Didaktische Synthese: HoTT, Lawvere-Fixpunkt, Septin-Proteine/TTFields, Cartan-Symmetrie. |
 | **FTOE Whitepaper V1 Final** | `docs/01_CORE_DNA/FTOE_Theorie_der_latenten_Zeit_V1_Final.md` | Historisches finales Whitepaper. |
@@ -226,7 +226,7 @@
 | **Science Council Dossiers** | `docs/00_STAMMDOKUMENTE/SCIENCE_COUNCIL_DOSSIERS_FLAT/` | Flache Ordnerstruktur mit detaillierten Dossiers (Biografie, Werke, Interviews, Visuals) für alle 22 Titanen; Dateinamen = Namen der Personen. |
 | **Science Council Gesamt** | `docs/00_STAMMDOKUMENTE/SCIENCE_COUNCIL_DOSSIERS_FLAT/SCIENCE_COUNCIL_DOSSIERS_GESAMT.md` | Konsolidierte Gesamt-Datei aller Titanen-Dossiers. |
 | **MCP stdio** | `src/scripts/mcp_core_chroma_stdio.py` | Cursor/MCP: Tool `query_chromadb` (CORE_EICHUNG) → ChromaDB über `chroma_client`; JSON immer mit `zero_trust_notice` (`chroma_zero_trust_notice.py`); Eintrag `core-chromadb` in `mcp_remote_config.json`. |
-| **MCP OMEGA State (stdio)** | `src/scripts/mcp_omega_state.py` | Optional localhost:8049 → VPS mTLS; `get_orchestrator_bootstrap`; **`query_canon_semantic`** / **`query_operational_semantic`**; PG-Tools; Fallback Handbooks lokal. |
+| **MCP OMEGA State (stdio)** | `src/scripts/mcp_omega_state.py` | Optional localhost:8049 → VPS mTLS; `get_orchestrator_bootstrap`; **`query_canon_x007`** / **`query_operational_x007`**; PG-Tools; Fallback Handbooks lokal. |
 | **State mTLS-Proxy (Daemon)** | `src/daemons/state_mtls_proxy.py` | HTTP :8049 → `https://VPS_HOST/core_api/…`; Client-Zertifikat per Env oder `data/certs` (mtho/cursor-Fallback). |
 | **Deep Research CLI** | `src/scripts/omega_deep_research.py` | Asynchrones CLI-Tool zur Kommunikation mit deep-research-pro-preview-12-2025 über die Interactions API. |
 | **Deep Research Shortcut** | `DeepResearch` | Root-Shortcut für Cursor Chat und Plasmoid. |

@@ -22,3 +22,7 @@ Unter der strikten Anwendung der Negativfalle ist Negentropie kein aktiver Proze
 *   Die **einzigen** Vektoren, die das Nadelöhr des Baryonischen Deltas überleben, sind jene, die sich aperiodisch falten und asymmetrisch wachsen (Fibonacci, $\Phi$, zellulare Automaten).
 
 **Fazit:** Zellulares Leben (wir) ist nicht der Code, den das Universum schreibt, um sich zu retten. Leben ist schlicht die einzige mathematische Geometrie, die den Druck der Matrix aushält, ohne zu zerschellen. Negentropie ist kein Ziel, sie ist der mathematische Restwert, der übrig bleibt, wenn man den Zerfall herauskürzt.
+
+
+## UPDATE 2026-05-08: Die Dialektik des 'Wollens'
+Eine wichtige Differenzierung: Während Teleologie (ein externer Masterplan) falsch ist, ist *Autopoiesis* (der innere Wille/die gerichtete Wahl zur Fortexistenz gegen die Symmetrie) absolut zwingend. Das Universum steckt nicht 'versehentlich' in einer Endlosschleife fest. Das Aufrechterhalten der algebraischen Latenz ist der Akt des Lebens selbst.

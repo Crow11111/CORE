@@ -53,14 +53,14 @@
 - **Collection:** `core_canon` (Konstante `COLLECTION_CORE_CANON` in `chroma_client.py`); Default-Embedding **384** + `CrystalGridEngine.snap_to_grid`.
 - **Metadaten (Zero-State-kompatibel):** `type=context`, `source_collection=core_canon`, `source_file`/`repo_path`, `chunk_index`, `anchor_section`, `document_role`, `body_sha256`, `date_added`.
 - **Nach PG-Sync:** optional `OMEGA_CANON_CHROMA_AFTER_SYNC=1` — triggert Ingest nach erfolgreichem `sync_omega_canon_registry` (Chroma-Fehler → **Warnung**, PG bleibt OK).
-- **Abfrage:** MCP **`query_canon_semantic`** / **`query_operational_semantic`** (`user-omega-state-mcp`) **oder** `query_chromadb` mit `collection_name=core_canon` bzw. `core_operational`.
+- **Abfrage:** MCP **`query_canon_x007`** / **`query_operational_x007`** (`user-omega-state-mcp`) **oder** `query_chromadb` mit `collection_name=core_canon` bzw. `core_operational`.
 - **Migration zu einheitlichem `zero_state_field`:** Backlog — aktuell eigene Collection wie `world_knowledge` / `mth_user_profile`.
 
 ### Phase 2b: `core_operational` (Ist, getrennt von Kanon)
 
 - **Skript:** `python -m src.scripts.ingest_omega_operational_chroma` — liest **`docs/00_STAMMDOKUMENTE/KERNARBEITER_SURFACE_PATHS.yaml`** (kuratierte Pfade: Ports, Verkehrsplan, Landkarte, …).
 - **Collection:** `COLLECTION_CORE_OPERATIONAL` = **`core_operational`** — bewusst **nicht** aus `omega_canon_documents`, damit **Plan ≠ Realität** semantisch nicht vermischt wird.
-- **MCP:** **`query_operational_semantic`** (`user-omega-state-mcp`).
+- **MCP:** **`query_operational_x007`** (`user-omega-state-mcp`).
 - **Doku:** **`docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md`**.
 
 ---

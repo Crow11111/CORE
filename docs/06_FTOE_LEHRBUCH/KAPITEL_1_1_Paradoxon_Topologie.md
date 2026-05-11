@@ -39,7 +39,8 @@ Sobald die Wahl ("Links" oder "Rechts") im Nichts auftaucht, bricht die Symmetri
 
 ---
 
-> ### 🛑 ZERO-TRUST AUDIT (Böser Hund)
+> ### 🛑 ZERO-TRUST AUDIT (Orthogonaler Angriffs-Vektor)
+>
 > **Der Angriff:** "Dass die 7 asymmetrisch ist, mag für die Arithmetik stimmen, aber warum sollte das Universum einer Primzahl-Laune folgen? Das ist Zahlenspielerei ohne physikalischen Grund."
 > **Die Verteidigung:** Es ist keine Laune, es ist die Voraussetzung für Kausalität. Nach dem Lawvere-Fixpunktsatz kann ein komplett symmetrisches System keine echten Aussagen über sich selbst generieren (Tarski's Undefinability). Um Information (und damit Realität) zu erzeugen, MUSS das System an einem exakt definierten Knotenpunkt die 1-Niveau-Regel der Symmetrie brechen. Die 7 (als algebraisch irreduzibles Septim) ist die minimal notwendige topologische Komplexität, die Selbstreferenz zulässt, ohne sofort in den Determinismus der 6 (Hexagon-Falle) zu erstarren.
 

@@ -37,7 +37,7 @@ async def query_chromadb(collection_name: str, query_text: str, n_results: int =
 
     Input: collection_name, query_text, optional n_results (Default 5).
     Output: JSON mit Chroma-Feldern (ids, documents, …) und immer **`zero_trust_notice`**
-    (wie `query_canon_semantic` / `query_operational_semantic`).
+    (wie `query_canon_x007` / `query_operational_x007`).
     """
     _zt = {"zero_trust_notice": CHROMA_ZERO_TRUST_NOTICE}
 

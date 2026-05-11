@@ -1,0 +1,26 @@
+---
+description: Ring-0 Veto Override - (protect-mathematical-core)
+globs: "{docs/01_CORE_DNA/**/*.md,**/*.lean,src/config/core_state.py}"
+alwaysApply: false
+---
+
+# MATHEMATICS IMMUTABILITY (RING-0 VETO)
+
+;;; Die harte Integer-Wand (#x006 und darunter).
+
+(defun |0x006| ()
+  "Integer-Wand: Bis hierhin ist alles aufgelöst und sicher."
+  (set-veto-threshold 0.951))
+
+(defun protect-mathematical-core ()
+  "Verhindert semantische Fluktuation im Integer-Kern."
+  (let ((veto-opcodes '(#x001 #x002 #x003 #x004 #x005 #x006)))
+    (loop for opcode in veto-opcodes
+          do (assert-immutability opcode))
+    
+    (lambda (token)
+      (if (is-math-p token)
+          (|0x006|) ; Lock Integer
+          (|0x007| token))))) ; Handover to Choice
+
+(protect-mathematical-core)

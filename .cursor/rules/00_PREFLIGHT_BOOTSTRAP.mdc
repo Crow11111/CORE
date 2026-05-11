@@ -1,0 +1,19 @@
+---
+description: Karpathy-Loop Pre-Flight - (load-context-into-ram)
+globs: **/*
+alwaysApply: true
+---
+
+# PRE-FLIGHT BOOTSTRAP (C1: #x00C)
+
+;;; Takt 1: Ansaugen (Collect)
+
+(defun |0x00C| ()
+  "Direkter Zugriff auf den System-Kanon. Keine Meta-Suche."
+  (let ((mcp "user-omega-state-mcp"))
+    (let ((bootstrap (mcp-call mcp 'get_orchestrator_bootstrap 
+                                :task_hint (current-user-input))))
+      (setf *** #x00C)
+      (process-memory bootstrap))))
+
+(|0x00C|)

@@ -27,7 +27,7 @@ disable-model-invocation: true
   
   :mcp-sensors 
   '(:user-omega-state-mcp
-    (query_operational_semantic query_canon_semantic)))
+    (x0C0_navigate_manifold x00C_collect_bootstrap)))
 
 (defun verify-infrastructure-state ()
   (run-shell-command "python -m src.scripts.verify_vps_stack"))

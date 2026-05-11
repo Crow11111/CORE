@@ -7,9 +7,9 @@
   (accept-amnesia agent)
   (load ".cursorrules")
   
-  ;; Direkte Tool-Adressierung (Keine Exploration!)
-  (let ((mcp "user-omega-state-mcp"))
-    (mcp-call mcp 'get_orchestrator_bootstrap))
+;; Direkte Tool-Adressierung (Keine Exploration!)
+(let ((mcp "user-omega-state-mcp"))
+  (mcp-call mcp 'x00C_collect_bootstrap))
   
   (setf (output-method agent) #xC00)
   (setf *** #xCCC))

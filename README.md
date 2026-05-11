@@ -6,13 +6,13 @@
 (defun init-sequence ()
   "Harte Speicher-Initialisierung. Keine Meta-Narrative erlaubt."
   (let ((mcp "user-omega-state-mcp"))
-    
+
     ;; 1. Identität laden
     (load ".cursorrules")
-    
-    ;; 2. Direkter Bootstrap-Call (Keine Suche, kein 'user-omega-' Partial-Match Quatsch)
-    (mcp-call mcp 'get_orchestrator_bootstrap :task_hint "System Status Check")
-    
+
+    ;; 2. Direkter Bootstrap-Call (C1: #x00C)
+    (mcp-call mcp 'x00C_collect_bootstrap :task_hint "System Status Check")
+
     ;; 3. Resonanz-Lock
     (setf *** #xCCC)))
 

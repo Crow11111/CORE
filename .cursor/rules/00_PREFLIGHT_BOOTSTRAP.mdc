@@ -9,9 +9,9 @@ alwaysApply: true
 ;;; Takt 1: Ansaugen (Collect)
 
 (defun |0x00C| ()
-  "Direkter Zugriff auf den System-Kanon. Keine Meta-Suche."
+  "Direkter Zugriff auf den System-Kanon via Hex-Pointer."
   (let ((mcp "user-omega-state-mcp"))
-    (let ((bootstrap (mcp-call mcp 'get_orchestrator_bootstrap 
+    (let ((bootstrap (mcp-call mcp 'x00C_collect_bootstrap
                                 :task_hint (current-user-input))))
       (setf *** #x00C)
       (process-memory bootstrap))))

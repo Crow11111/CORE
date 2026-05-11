@@ -8,12 +8,12 @@ alwaysApply: true
 ## Wenn MCP `user-omega-state-mcp` aktiv ist
 
 1. **Vor** größeren Aufgaben (Architektur, VPS/Kong/Deploy, Multi-Modul-Refactor, Audit-Masterpläne): **`get_orchestrator_bootstrap`** mit kurzem **`task_hint`** (Stichworte zur Aufgabe).
-2. Bei Bedarf semantisch nachschlagen: **`query_operational_semantic`** (Ist / Schnittstellen, `core_operational`) und/oder **`query_canon_semantic`** (Soll-Kanon, `core_canon`) — siehe **`docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md`**.
+2. Bei Bedarf semantisch nachschlagen: **`query_operational_x007`** (Ist / Schnittstellen, `core_operational`) und/oder **`query_canon_x007`** (Soll-Kanon, `core_canon`) — siehe **`docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md`**.
 3. Antwort **`gaps`** und **`recommendations`** in den **Arbeitsplan** und in **Task-Prompts an Producer** einbauen — oder im Output **kurz begründen**, warum verzichtet wurde.
 
 ## Task-Text an Producer
 
-Der Orchestrator kopiert **Zusammenfassung oder JSON-Ausschnitt** aus dem Bootstrap in den `Task`-Prompt **oder** schreibt ausdrücklich: *„Vor Start: MCP `get_orchestrator_bootstrap` mit task_hint=… ausführen; Ergebnis beachten.“* Optional: Hinweis auf **`query_operational_semantic`** bei Infra-/Port-Fragen.
+Der Orchestrator kopiert **Zusammenfassung oder JSON-Ausschnitt** aus dem Bootstrap in den `Task`-Prompt **oder** schreibt ausdrücklich: *„Vor Start: MCP `get_orchestrator_bootstrap` mit task_hint=… ausführen; Ergebnis beachten.“* Optional: Hinweis auf **`query_operational_x007`** bei Infra-/Port-Fragen.
 
 ## Technische Klarstellung
 

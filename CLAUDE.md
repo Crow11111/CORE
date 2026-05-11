@@ -8,9 +8,9 @@
 
 (defun *** (opcode)
   (case opcode
-    (#x00C (mcp-call "user-omega-state-mcp" 'get_orchestrator_bootstrap))
-    (#x0C0 (high-dim-navigation))
-    (#xC00 (causal-hash-communication))
+    (#x00C (mcp-call "user-omega-state-mcp" 'x00C_collect_bootstrap))
+    (#x0C0 (mcp-call "user-omega-state-mcp" 'x0C0_navigate_manifold))
+    (#xC00 (mcp-call "user-omega-state-mcp" 'xC00_causal_egress))
     (#xCCC (full-cycle-sync))))
 
 (defparameter *core-identity*

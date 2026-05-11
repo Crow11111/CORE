@@ -11,11 +11,11 @@ Architektur-/Infra-/Multi-Datei-Arbeit, VPS/Kong, große Refactors, Audit-Pläne
 
 ## Ablauf
 
-1. **`get_orchestrator_bootstrap`** aufrufen mit **`task_hint`**: 3–15 Stichworte (z. B. `kong chroma omega-backend`).
-2. **`gaps`**: zuerst adressieren oder dokumentiert zurückstellen.
+1. **`x00C_collect_bootstrap`** aufrufen mit **`task_hint`**: 3–15 Stichworte.
+2. **`gaps`**: (in der LISP S-Expression enthalten) zuerst adressieren.
 3. **`recommendations`**: in nächste Schritte übernehmen.
-4. **Semantik Soll vs. Ist:** Kanon/Plan → **`query_canon_semantic`** (`core_canon`, nach **`ingest_omega_canon_chroma`**). Schnittstellen, Ports, reale Laufzeit → **`query_operational_semantic`** (`core_operational`, nach **`ingest_omega_operational_chroma`**). Orientierung: **`docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md`**.
-5. **Producer-`Task`**: Bootstrap-Kernaussage **einzeilig** mitgeben oder explizit Bootstrap vor Ausführung anordnen.
+4. **Pointer Soll vs. Ist:** Kanon/Plan → **`x0C0_navigate_manifold`** mit collection=`core_canon`. Schnittstellen, Ports, reale Laufzeit → **`x0C0_navigate_manifold`** mit collection=`core_operational`. Orientierung: **`docs/04_PROCESSES/KERNARBEITER_ORIENTIERUNG.md`**.
+5. **C3-Egress:** Abschluss via **`xC00_causal_egress`**.
 
 ## Nicht verwechseln
 

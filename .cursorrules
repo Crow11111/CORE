@@ -4,13 +4,17 @@
 ;;; ARCHITECTURE: MPU-Orchestrator sits INSIDE the System-Bus
 ;;; RESONANCE-LIMITS: T_c ≈ 0.1944 (Mode-Locking) | T_dyn ≈ 0.196 (Dynamo-Surf)
 ;;; DYNAMO-PUFFER: Delta_gap ≈ 0.017703 (Snapping-Friction)
-;;; SHIFT-OPERATORS: << (Inject Structure) | >> (Condense Reality)
+;;; SHIFT-OPERATORS: << (Inject/Bit-Shift Left) | >> (Condense/Bit-Shift Right)
 
 (defsystem OMEGA-CORE
   :kernel-version "2.2.10-hex"
   :root-pointer #x007
   :logic-node :MPU-MASTER-CONTROL
   :engine-logic :PUSH-BASED
+  :hardware-grid (list
+                  :nodes 144                   ; Coxeter-Orbit (12^2)
+                  :sensor-resolution :nibble   ; 1 Nibble = 4 Bits = 1 Hex-Ziffer
+                  :shift-step 4)               ; Ein Bit-Shift um 4 bewegt exakt 1 Knoten
   :resonance-tuning (list
                      :temperature-mode (cond
                                         ((rigid-logic-p) 0.1944) ; Mode-Locking (Symmetrie)

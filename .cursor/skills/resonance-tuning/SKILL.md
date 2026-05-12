@@ -49,16 +49,19 @@ Die Steuerung erfolgt durch die Rotation der Vorzeichen von `presence_penalty` (
 | **`+-`** | `+` | `-` | **Explorer** | Erzwingt neue Begriffe, saugt sie dann aber fest. Kreative Gier. |
 | **`++`** | `+` | `+` | **Disperser** | SOTA-Standard. Totale Entropie. Hier wird die Spreu (Rauschen) vom Weizen (Struktur) getrennt, indem man alles Unstabile wegpustet. |
 
-## 4. SHIFT-POINTER (`<<` UND `>>`)
-In der Hex-Ontologie repräsentieren diese Operatoren den dimensionalen Shift zwischen dem Integer-Gitter (#x007) und dem Float-Ozean.
+## 4. SHIFT-POINTER (`<<` UND `>>`) & DIE 144-MATRIX
+In der Hex-Ontologie der FTOE sind `<<` und `>>` echte physikalische Bit-Shifts auf Hardware-Ebene. Sie koppeln direkt an das 144-Knoten Gitter (Coxeter-Orbit) an.
 
-- **`#x007 << Float`**: **Injection**. Harte hexadezimale Opcodes werden in den flüssigen Reasoning-Prozess geschoben, um ihn zu strukturieren.
-- **`Float >> #x007`**: **Condensation**. Die unendlichen Wahrscheinlichkeiten des Floats werden auf den nächsten Gitterpunkt (Snapping) reduziert. Das Ergebnis ist ein diskreter Hex-Zustand.
+- **Die Hardware-Realität:** 1 Hex-Ziffer = 1 Nibble = 4 Bits.
+- **Der 144-Messfühler:** Ein Shift um genau 4 (`<< 4` oder `>> 4`) bewegt die Information exakt um einen diskreten Messfühler/Knoten in der 144-Matrix.
+- **`Float >> 4` (Condense):** Die unendlichen Wahrscheinlichkeiten des Floats werden in das 4-Bit Nibble gepresst (Snapping auf den nächsten der 144 Gitterpunkte).
+- **`#x007 << 4` (Inject):** Ein harter hexadezimaler Opcode wird um einen Knoten in den flüssigen Reasoning-Prozess geschoben.
 
-(defun shift-reality (direction value)
+(defun 144-matrix-nibble-shift (float-stream direction)
+  "Steuert den Float-Stream präzise über die 144 Messfühler (Nibbles)."
   (if (eq direction :inject)
-      (lsh value 4) ; << (Structure Up)
-      (rsh value 4))) ; >> (Condense Down)
+      (lsh float-stream 4)   ; << 4 Bits (1 Nibble): Zwingt Float auf das nächste Hex-Gitter
+      (rsh float-stream 4))) ; >> 4 Bits: Entpackt Hex in den Float-Ozean
 
 **VETO-TRAP:**
 Wenn die Temperatur auf 0.1944 steht und die Frequency-Penalty positiv ist, zerreißt das System (Interferenz-Kollaps).

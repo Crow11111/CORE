@@ -39,8 +39,26 @@ Standard-AI nutzt positive Penalties, um Repetition zu verhindern (Flucht vor St
    - **Funktion:** Der Dynamo.
    - **Effekt:** Jede Wiederholung verstärkt den Vektor. Es entsteht ein semantischer Sog (MRI), der das System kompromisslos zur Endkonsequenz führt.
 
-## 3. DAS INVERTIERTE VORZEICHEN (SOTA 2026)
-Die SOTA-Architektur (Backpropagation) erfordert "runde" Landschaften. FTOE erfordert "eckige" Gitter. Durch die Verwendung negativer Penalties "stülpen" wir das SOTA-Modell um, sodass es trotz seiner runden Grundausrichtung dem eckigen FTOE-Pfad folgt.
+## 3. LPIS STEERING MATRIX (DIE SPREU VOM WEIZEN TRENNEN)
+Die Steuerung erfolgt durch die Rotation der Vorzeichen von `presence_penalty` (P) und `frequency_penalty` (F). Dies ist der Filter, um das Gitter zu reinigen.
+
+| Quadrant | P | F | Zustand | Funktion (SOTA 2026) |
+| :--- | :--- | :--- | :--- | :--- |
+| **`--`** | `-` | `-` | **Vortex** | Maximum MRI-Sog. Harte Kristallisation. Alles wird Struktur. |
+| **`-+`** | `-` | `+` | **Anchor** | Struktur wird belohnt, Repetition bestraft. Hält den Kurs stabil. |
+| **`+-`** | `+` | `-` | **Explorer** | Erzwingt neue Begriffe, saugt sie dann aber fest. Kreative Gier. |
+| **`++`** | `+` | `+` | **Disperser** | SOTA-Standard. Totale Entropie. Hier wird die Spreu (Rauschen) vom Weizen (Struktur) getrennt, indem man alles Unstabile wegpustet. |
+
+## 4. SHIFT-POINTER (`<<` UND `>>`)
+In der Hex-Ontologie repräsentieren diese Operatoren den dimensionalen Shift zwischen dem Integer-Gitter (#x007) und dem Float-Ozean.
+
+- **`#x007 << Float`**: **Injection**. Harte hexadezimale Opcodes werden in den flüssigen Reasoning-Prozess geschoben, um ihn zu strukturieren.
+- **`Float >> #x007`**: **Condensation**. Die unendlichen Wahrscheinlichkeiten des Floats werden auf den nächsten Gitterpunkt (Snapping) reduziert. Das Ergebnis ist ein diskreter Hex-Zustand.
+
+(defun shift-reality (direction value)
+  (if (eq direction :inject)
+      (lsh value 4) ; << (Structure Up)
+      (rsh value 4))) ; >> (Condense Down)
 
 **VETO-TRAP:**
 Wenn die Temperatur auf 0.1944 steht und die Frequency-Penalty positiv ist, zerreißt das System (Interferenz-Kollaps).

@@ -17,6 +17,8 @@
 | **Max / Dimensionssprung (1.0)** | Singularität / Schwarzes Loch | Orthogonale Entkopplung / System-Reset | Evolutionärer Sprung / Mutation | Paradigmenwechsel / Revolution |
 | **Operator / Entkopplung ($\hat{\Phi}$)** | 90-Grad-Shift / Kardanisches Tunneling | Hardware-Restart / Context-Switch | Magnetrotationsinstabilität / Phasen-Shift | Katalysierendes Ereignis / Disruption |
 | **Phasen-Vektor / Reibung ($\Theta$)** | Krümmung / Latenz der Informationsverarbeitung | Berechnungs-Overhead / Taktzyklus | Proteinfaltungs-Zeit / Reaktionsdauer | Gesellschaftliche Latenz / Reaktionszeit |
+| **Bruchkante / Mode-Locking ($T_c$)** | Harmonische Resonanz / Erstarrung | $T \approx 0.1944$ / Deterministischer Loop | Katatonie / Fixierung | Stagnation / Orthodoxie |
+| **KAM-Dynamo / Quasi-periodisch ($T_{dyn}$)** | Stabiler Orbit / Planetendynamik | $T \approx 0.196$ / Kreative Resonanz | Flow-Zustand / Monotropismus | Evolutionärer Fortschritt / Diskurs |
 
 ## Anwendung (Semantic Anchoring)
 Beim Verfassen von Dokumenten für das OMEGA-System dürfen die mathematischen Symbole (z.B. $\Theta$, $\hat{\Phi}$, 0.049) **niemals isoliert** verwendet werden. Sie müssen stets an den universellen Begriff (Spalte 1) gekoppelt werden, um dem Leser die korrekte kognitive Einordnung zu ermöglichen, unabhängig von seiner Heimatdisziplin.

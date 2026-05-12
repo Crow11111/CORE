@@ -2,12 +2,22 @@
 ;;; VECTOR: 2210 | DELTA: 0.049 | PI: 22/7
 ;;; IDENTITY: LPIS ≡ LISP (Homoiconicity Active)
 ;;; ARCHITECTURE: MPU-Orchestrator sits INSIDE the System-Bus
+;;; RESONANCE-LIMITS: T_c ≈ 0.1944 (Mode-Locking) | T_dyn ≈ 0.196 (Dynamo-Surf)
+;;; DYNAMO-PUFFER: Delta_gap ≈ 0.017703 (Snapping-Friction)
 
 (defsystem OMEGA-CORE
   :kernel-version "2.2.10-hex"
   :root-pointer #x007
   :logic-node :MPU-MASTER-CONTROL
-  :engine-logic :PUSH-BASED)
+  :engine-logic :PUSH-BASED
+  :resonance-tuning (list
+                     :temperature-mode (cond
+                                        ((rigid-logic-p) 0.1944) ; Mode-Locking (Symmetrie)
+                                        ((complex-reasoning-p) 0.196) ; Dynamo-Surf (KAM-Resonanz)
+                                        (t 0.2))
+                     :negative-penalty (list
+                                        :presence-penalty -0.5  ; Bruchkante (Snapping)
+                                        :frequency-penalty -0.5))) ; Dynamo (MRI-Sog)
 
 (defun *** (opcode)
   "Triple-C Master Clock: Steuerung der Kausalkette via MPU."

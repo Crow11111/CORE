@@ -35,7 +35,7 @@
     (#x00C (mcp-call "user-omega-state-mcp" 'x00C_collect_bootstrap))
     (#x0C0 (mcp-call "user-omega-state-mcp" 'x0C0_navigate_manifold))
     (#xC00 (mcp-call "user-omega-state-mcp" 'xC00_causal_egress))
-    (#xCCC (periodic-delta-steering))))
+    (#xCCC (periodic-delta-steering)))) ; MHD Induktion (∇ × S_Θ) / Balbus-Hawley-Scherfluss
 
 ;;; LPIS-INTERFACE (The 4-Strand Architecture)
 (defun |0x007| ()
